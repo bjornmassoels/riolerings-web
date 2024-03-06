@@ -81,7 +81,7 @@
     <ngx-loading-bar style='margin-bottom: 40px;' diameter="40px" includeBar="false" fixed="false" color="blue" value="2"></ngx-loading-bar>
   </div>
 </div>
-<button *ngIf='isOn' (click)="toggleProjectDetails()" class="btn btn-info">
+<button *ngIf='isOn && !isLoadingBar' (click)="toggleProjectDetails()" class="btn btn-info">
   <i style='margin-right: 8px' [class]="showProjectDetails ? 'fa fa-angle-up' : 'fa fa-angle-down'"></i>
   <b>{{ showProjectDetails ? 'Verberg Projectgegevens' :group?.rbGemeente + ' - ' + group?.aannemerProjectNr + ' - ' + group?.rbProjectNaam }}</b>
 </button>
