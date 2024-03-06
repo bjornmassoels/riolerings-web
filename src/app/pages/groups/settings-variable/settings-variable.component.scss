@@ -1,0 +1,100 @@
+.add-card {
+  margin: 1rem;
+  box-shadow: #00000030 0 10px 20px, #0000003b 0 6px 6px;
+  border-radius: 15px;
+  max-width: 1300px;
+  padding:17px;
+}
+.form-button {
+  font-size: 20px;
+  font-weight: 600;
+  background-color: black !important;
+  color: white !important;
+  border: 1px solid black;
+  border-radius: 5px;
+  width: 130px;
+  height: 40px;
+  min-width: 128px;
+  margin-right: 27px !important;
+}
+.save-buttoné {
+  font-weight: 800;
+  letter-spacing: 1.4pt;
+  font-size: 22px;
+  width:175px !important;
+  height:50px !important;
+  background-color: dodgerblue !important;
+  color: white !important;
+  border: 1px solid dodgerblue;
+  border-radius: 5px;
+  margin-top: 15px !important;
+  position: relative !important;
+  bottom: 10px;
+  left:30px;
+}
+.variableSelect{
+  min-width: 350px !important;
+}
+.settingsVariableDiv{
+	border:1px dotted black;
+  border-radius: 10px;
+  padding:10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  width:720px !important;
+  margin-left: 15px;
+}
+.topRow{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  margin-top: -20px;
+  margin-bottom: 12px;
+}
+.flexer{
+  width: 380px !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border:1px dashed gray;
+  border-radius: 5px;
+  padding: 13px;
+}
+.outerDiv{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  max-width: 1267px !important;
+}
+.bochtenDiv{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap:0 30px;
+  padding:10px 10px 10px 20px;
+  border:1px dashed gray;
+  border-radius: 5px;
+  width:fit-content;
+  margin-bottom: 15px;
+}
+.floatingContainer {
+  margin-left: 15px;
+  display: flex;
+  align-items: center;
+}
+
+
+.floating-text {
+  position: relative;
+  top:-22px;
+  right: -5px;
+  font-weight: bold;
+  font-size: 17px;
+}

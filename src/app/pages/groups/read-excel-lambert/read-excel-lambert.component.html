@@ -1,0 +1,34 @@
+<div style="display: flex;justify-content: space-between;align-items: center; margin:5px 25px;max-width:800px">
+  <button mat-raised-button class="form-button" (click)="goToPrevious()">
+    Terug
+  </button>
+  <button *ngIf="!isInfoOpen" mat-raised-button class="form-button2" (click)="goToInfo()">
+    Hoe werkt dit?
+  </button>
+  <button *ngIf="isInfoOpen" mat-raised-button class="form-button2" (click)="goToInfo()">
+    Sluit info
+  </button>
+</div>
+<div style="margin-top: 35px" *ngIf="isInfoOpen">
+  <h5>U moet de landmeter de velden van B to E laten genereren in een excel</h5>
+  <h5>De straat en huisnummer moeten jullie invullen in vak F en G </h5>
+  <h6>De kolommen met data moeten overeenkomen zoals onderstaand voorbeeld</h6>
+  <img src='../../../../assets/lambertExample.png'>
+</div>
+<div *ngIf="!isInfoOpen">
+  <h5 style="margin-top: 29px">Upload hier uw excel met lambertcoordinaten om deze te koppelen aan huisaansluitingen.</h5>
+
+  <input type="file" class="form-control upload" (change)="addfile($event)" placeholder="Upload file"
+         accept=".xlsx, .xls, .csv, .xlsm">
+  <h2 style="color:blue; margin-top: 15px" *ngIf="isloading">Het bestand wordt ingelezen...</h2>
+  <div style="width: 90%" *ngIf="output != null">
+    <h3>Gelukte aansluitingen:</h3>
+    <p style="display:inline" *ngFor="let project of output; let i = index">{{project.isSucces && project.Laag.toLowerCase() === 'dwa'? project.Straat + ' ' + project.Huisnummer + ' DWA,' : project.isSucces && project.Laag.toLowerCase() === 'rwa' ? project.Straat + ' ' + project.Huisnummer + ' RWA,' : null }}</p>
+  </div>
+  <div style="width: 90%" *ngIf="output != null">
+    <h3>Mislukte aansluitingen:</h3>
+    <p style="display:inline" *ngFor="let project of output;let i = index">{{!project.isSucces && project.Laag.toLowerCase() === 'dwa' ? project.Straat + ' ' + project.Huisnummer + ' DWA,' :  !project.isSucces && project.Laag.toLowerCase() === 'rwa' ? project.Straat + ' ' + project.Huisnummer + ' RWA,' : null }}</p>
+  </div>
+</div>
+
+

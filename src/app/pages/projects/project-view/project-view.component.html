@@ -1,0 +1,952 @@
+<div *ngIf="isLoaded" class="topRow">
+  <button mat-raised-button class="form-button" (click)="goToPrevious()">
+    Terug
+  </button>
+  <button *ngIf="!isFirst" mat-raised-button class="form-button" (click)="onPreviousClick()">
+    Vorige
+  </button>
+  <button *ngIf="!isLast" mat-raised-button class="form-button" (click)="onNextClick()">
+    Volgende
+  </button>
+  <button mat-raised-button class="form-button-blue" (click)="goToEdit()">
+    Bewerken
+  </button>
+  <p class="boldText" *ngIf="index !== -1">{{index + 1}}/{{totalProjectCount}}</p>
+  <button style="width: auto" mat-raised-button class="form-button2" (click)="generatePDF()"><div class="divInsideButton">PDF 	<mat-icon class="downloadImage">cloud_download</mat-icon></div></button>
+  <button style="width: auto" mat-raised-button class="form-button2" (click)="downloadPhotos()"><div class="divInsideButton">Foto's
+    <mat-icon class="downloadImage">cloud_download</mat-icon></div></button>
+  <button style="width: auto" mat-raised-button color="warn" class="form-button3"
+    (click)="onDeleteProject()">Aansluiting verwijderen</button>
+</div>
+
+<mat-card #content id="content" *ngIf="isLoaded" class="project-card">
+  <h3 class="page-title">Huisaansluiting <small style='font-size:15px; margin-top:-5px'>   {{group.rbProjectNaam}} | {{group.rbGemeente}} | {{group.aannemerProjectNr}}</small></h3>
+  <div class="row-container">
+
+    <div class="column-container">
+      <div class="data-container">
+        <p class="label-text">Start datum</p>
+        <p class="data-text" *ngIf="currentProject.startDate == null;else dateTekst">Nog niet gestart</p>
+        <ng-template #dateTekst>
+          <p class="data-text">{{currentProject.startDate.toLocaleDateString()}}</p>
+        </ng-template>
+      </div>
+
+      <div class="data-container">
+        <p  class="label-text">Straat & huisnummer</p>
+        <p style='font-size:17px !important;' class="data-text">{{currentProject.street}}{{currentProject.huisNr != null ? ' - ' + currentProject.huisNr : ''}}</p>
+      </div>
+      <div *ngIf="currentProject.isWachtAansluiting || currentProject.droogWaterAfvoer.isWachtaansluiting || currentProject.regenWaterAfvoer.isWachtaansluiting" class="data-container">
+        <p class="label-text">Volgnummer</p>
+        <p style='font-size:17px !important;' class="data-text">{{currentProject.index}}</p>
+      </div>
+      <div class="data-container">
+        <p style='width:200px' class="label-text">Grondwerkers die deze HA hebben aangepast</p>
+        <p class="data-text">{{usersWhoEdited}}</p>
+      </div>
+    </div>
+    <div class="column-container">
+
+      <div class="data-container">
+        <div style='max-width: 50% !important;' class='insideRow'>
+          <p class="label-text">Equipmentnr</p>
+          <p style='margin-left:10px !important;' class="data-text">{{currentProject.equipNrRiolering}}</p>
+        </div>
+        <div class='insideRow'>
+          <p class="label-text">Gemengde riolering</p>
+          <p *ngIf="currentProject.isGemengd" class="data-text">Ja</p>
+        </div>
+      </div>
+      <div class="data-container">
+        <div class='insideRow'>
+          <p class="label-text">Afgewerkt</p>
+          <p *ngIf="currentProject.finished" class="data-text">Ja</p>
+        </div>
+        <div class='insideRow'>
+            <p class="label-text">Wachtaansluiting<br> (DWA & RWA)</p>
+            <p *ngIf="currentProject.isWachtAansluiting || (currentProject.droogWaterAfvoer.isWachtaansluiting && currentProject.regenWaterAfvoer.isWachtaansluiting) " class="data-text">Ja</p>
+        </div>
+      </div>
+      <div class="data-container">
+        <p class="label-text">Opmerking</p>
+        <p *ngIf="currentProject.opmerking?.length <= 17" class="data-text">{{currentProject.opmerking}}</p>
+        <p *ngIf="currentProject.opmerking?.length > 17" class="data-text2">{{currentProject.opmerking}}</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="row-container">
+    <div *ngIf='!checkHasAfvoer(currentProject.droogWaterAfvoer)' class="column-container">
+      <p class="section-title">
+        DWA niet bewerkt
+      </p>
+    </div>
+    <div *ngIf='checkHasAfvoer(currentProject.droogWaterAfvoer)' class="column-container">
+      <p class="section-title">
+        DWA
+      </p>
+      <div class="locatieRow">
+        <div class="insideRow">
+          <p class="label-text">Wachtaansluiting</p>
+          <p style='font-weight: 700' *ngIf="(currentProject.droogWaterAfvoer.isWachtaansluiting == null && currentProject.isWachtAansluiting) ||
+        (currentProject.droogWaterAfvoer.isWachtaansluiting != null && currentProject.droogWaterAfvoer.isWachtaansluiting)"
+             class="data-text">Ja</p>
+        </div>
+        <button *ngIf='currentProject.droogWaterAfvoer.xCoordGeoLocationFirsPhoto != null || currentProject.droogWaterAfvoer.yCoordGeoLocationFirsPhoto != null'
+                nbButton
+                class="global-location-button"
+                (click)='openMapDialog(currentProject.droogWaterAfvoer.xCoordGeoLocationFirsPhoto, currentProject.droogWaterAfvoer.yCoordGeoLocationFirsPhoto, "DWA")'>
+          Bekijk locatie
+        </button>
+      </div>
+
+
+      <div style='margin-top:-10px' class='flexWrapper'>
+        <div class="insideRow3" *ngIf="this.group.dwaSettings.afstandPutMof">
+          <p class="label-text">Afstand midden stroomafwaartse put tot mof</p>
+          <p class="data-text">
+            {{addMString(currentProject.droogWaterAfvoer.afstandPutMof)}}</p>
+        </div>
+
+        <div class="insideRow3" *ngIf="this.group.dwaSettings.diepteAansluitingWoning">
+          <p class="label-text">Diepte HA-putje/aansluiting tov MV:</p>
+          <p class="data-text">
+            {{addMString(currentProject.droogWaterAfvoer.diepteAansluitingWoning)}}</p>
+        </div>
+        <div class="insideRow3" *ngIf="this.group.dwaSettings.diepteRioleringHA">
+          <p class="label-text">Diepte aanboring op hoofdriool tov MV:<br>(op bestaande riolering)</p>
+          <p class="data-text">
+            {{addMString(currentProject.droogWaterAfvoer.diepteRioleringHA)}}</p>
+        </div>
+        <div class="insideRow3" *ngIf="this.group.dwaSettings.plaatsAansluiting">
+          <p class="label-text">Plaats aansluiting op riool tov van stroomafw. naar stroomopw.:</p>
+          <p *ngIf="currentProject.droogWaterAfvoer.plaatsAansluiting != null" class="data-text">
+            {{currentProject.droogWaterAfvoer.plaatsAansluiting}} graden</p>
+        </div>
+      </div>
+
+      <div class="data-container-70">
+        <p class="label-text">Gelegen tussen volgende IP:</p>
+        <div *ngIf="currentProject.droogWaterAfvoer?.tussenIPLinks !== 'D' && currentProject.droogWaterAfvoer?.tussenIPRechts !== 'D'" class="flower">
+          <p class="data-text">{{currentProject.droogWaterAfvoer?.tussenIPLinks}}</p>
+          <p class="IPtext">-</p>
+          <p class="data-text">{{currentProject.droogWaterAfvoer?.tussenIPRechts}} </p>
+        </div>
+      </div>
+
+
+      <div class="data-container-70">
+        <p class="label-text">Type aansluiting op hoofdbuis:</p>
+        <p *ngIf="currentProject.droogWaterAfvoer.tBuisStuk === 'flexAan'" class="data-text">flexibele aansluiting</p>
+        <p *ngIf="currentProject.droogWaterAfvoer.tBuisStuk != null && currentProject.droogWaterAfvoer.tBuisStuk !== 'flexAan'"
+           class="data-text">{{currentProject.droogWaterAfvoer.tBuisStuk}}</p>
+        <p *ngIf="currentProject.droogWaterAfvoer.tBuisStuk == null" class="data-text"></p>
+      </div>
+      <div class='flexWrapper'>
+        <div class="insideRow2" *ngIf="this.group.dwaSettings.mof">
+          <p class="label-text">Mof</p>
+          <p class="data-text">
+            {{addStuksString(currentProject.droogWaterAfvoer.mof)}}</p>
+        </div>
+        <div class="insideRow2" *ngIf="this.group.dwaSettings.krimpMof">
+          <p class="label-text">Krimpmof</p>
+          <p class="data-text">
+            {{addStuksString(currentProject.droogWaterAfvoer.krimpmof)}}</p>
+        </div>
+        <div class="insideRow2" *ngIf="this.group.dwaSettings.koppelStuk">
+          <p class="label-text">Koppelstuk</p>
+          <p class="data-text">
+            {{addStuksString(currentProject.droogWaterAfvoer.koppelstuk)}}</p>
+        </div>
+        <div class="insideRow2" *ngIf="this.group.dwaSettings.stop">
+          <p class="label-text">Stop</p>
+          <p class="data-text">
+            {{addStuksString(currentProject.droogWaterAfvoer.stop)}}</p>
+        </div>
+        <div class="insideRow2" *ngIf="this.group.dwaSettings.andere">
+          <p class="label-text">Andere</p>
+          <p class="data-text">
+            {{currentProject.droogWaterAfvoer.andere}}</p>
+        </div>
+        <div class='insideRow2'>
+          <p class="label-text">Ligging</p>
+          <p *ngIf="currentProject.droogWaterAfvoer.ligging !== 'andere'" class="data-text">
+            {{currentProject.droogWaterAfvoer.ligging | titlecase}}</p>
+          <p *ngIf="currentProject.droogWaterAfvoer.ligging === 'andere'" class="data-text">
+            {{currentProject.droogWaterAfvoer.liggingAndere | titlecase}}</p>
+        </div>
+        <div class="insideRow2">
+          <p class="label-text">Diameter<br> putje/T-stuk</p>
+          <p class="data-text">
+            {{currentProject.droogWaterAfvoer.diameterPut}} mm</p>
+        </div>
+        <div class="insideRow2">
+          <p class="label-text">Gietijzer</p>
+          <p *ngIf="currentProject.droogWaterAfvoer.gietijzer" class="data-text">
+            Ja</p>
+        </div>
+        <div *ngIf="currentProject.droogWaterAfvoer.gietijzer" class="insideRow2">
+          <p class="label-text">Beton kader</p>
+          <p *ngIf="currentProject.droogWaterAfvoer.betonkader" class="data-text">
+            Ja</p>
+        </div>
+        <div *ngIf="!currentProject.droogWaterAfvoer.gietijzer" class="insideRow2">
+          <p class="label-text">Aluminium kader</p>
+          <p *ngIf="currentProject.droogWaterAfvoer.alukader" class="data-text">
+            Ja</p>
+        </div>
+        <hr>
+        <div class="insideRow2" *ngIf="this.group.dwaSettings.terugSlagKlep">
+          <p class="label-text">Terugslagklep in putje</p>
+          <p *ngIf="currentProject.droogWaterAfvoer.terugslagklep" class="data-text">
+            Ja</p>
+        </div>
+        <div class="insideRow2">
+          <p class="label-text">Soort putje</p>
+          <p *ngIf="currentProject.droogWaterAfvoer.soortPutje !== 'andere'" class="data-text">{{currentProject.droogWaterAfvoer.soortPutje | titlecase}}</p>
+          <p  class="data-text" *ngIf="currentProject.droogWaterAfvoer.soortPutje === 'andere'">{{currentProject.droogWaterAfvoer.anderPutje}}</p>
+        </div>
+        <div *ngIf="this.group.dwaSettings.sifonPutje == null || this.group.dwaSettings.sifonPutje" class="insideRow2">
+          <p class="label-text">Sifonputje</p>
+          <p  class="data-text">{{addStuksString(currentProject.droogWaterAfvoer.sifonPutje)}}</p>
+        </div>
+        <div *ngIf="this.group.dwaSettings.tPutje == null || this.group.dwaSettings.tPutje" class="insideRow2">
+          <p class="label-text">T-putje</p>
+          <p  class="data-text">{{addStuksString(currentProject.droogWaterAfvoer.tPutje)}}</p>
+        </div>
+      </div>
+
+
+      <div *ngIf="this.group.dwaSettings.ssGrond">
+        <div class="data-container">
+          <div class='insideRow2'>
+            <p style='max-width:200px' class="label-text">Letter & afstand<br> putje horizontaal</p>
+            <p *ngIf="currentProject.droogWaterAfvoer.letterHor != null && currentProject.droogWaterAfvoer.letterHor !== ''" class="data-text">
+              {{currentProject.droogWaterAfvoer.letterHor.toUpperCase()}} - {{addMeterString(currentProject.droogWaterAfvoer.putHor)}}
+            </p>
+            <p *ngIf="currentProject.droogWaterAfvoer.letterHor == null || currentProject.droogWaterAfvoer.letterHor === ''" class="data-text">
+              {{addMString(currentProject.droogWaterAfvoer.putHor)}}
+            </p>
+          </div>
+          <div class='insideRow2'>
+            <p  style='max-width:200px' class="label-text">Letter & afstand<br> putje verticaal</p>
+            <p *ngIf="currentProject.droogWaterAfvoer.letterVer != null && currentProject.droogWaterAfvoer.letterVer !== ''" class="data-text">
+              {{currentProject.droogWaterAfvoer.letterVer.toUpperCase()}} - {{addMeterString(currentProject.droogWaterAfvoer.putVer)}}
+            </p>
+            <p *ngIf="currentProject.droogWaterAfvoer.letterVer == null || currentProject.droogWaterAfvoer.letterVer === ''" class="data-text">
+              {{addMString(currentProject.droogWaterAfvoer.putVer)}}
+            </p>
+          </div>
+        </div>
+      </div>
+
+
+      <p style='font-size: 15px; font-weight: 600; margin-top: 15px; margin-left:20px' *ngIf='!checkIfHasCoords(currentProject.droogWaterAfvoer)'>Heeft geen lambertcoördinaten</p>
+      <div style='margin-bottom: 10px; margin-top:10px;' *ngIf='checkIfHasCoords(currentProject.droogWaterAfvoer)'>
+        <p class="section-title">Lambert coordinaten</p>
+        <div class='flexWrapper'>
+          <div class="insideRow2">
+            <p class="label-text">X-coordinaat</p>
+            <p class="data-text">
+              {{currentProject.droogWaterAfvoer.xCoord}}
+            </p>
+          </div>
+          <div class="insideRow2">
+            <p class="label-text">Y-coordinaat</p>
+            <p class="data-text">
+              {{currentProject.droogWaterAfvoer.yCoord}}
+            </p>
+          </div>
+          <div class="insideRow2">
+            <p class="label-text">Z-coordinaat</p>
+            <p class="data-text">
+              {{currentProject.droogWaterAfvoer.zCoord}}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="heeftPloegen == null || heeftPloegen === false" class="putRow">
+        <div class="putColumn">
+          <p class="section-title">Voor het putje</p>
+
+          <div *ngIf='!group.bochtenInGraden' class="data-container2">
+            <p class="label-text">Bocht</p>
+            <p class="data-text">
+              {{addStuksString(currentProject.droogWaterAfvoer.bochtVoor)}}</p>
+          </div>
+          <div *ngIf='group.bochtenInGraden' class="data-container2">
+            <p class="label-text">Bocht 45°</p>
+            <p class="data-text">
+              {{addStuksString(currentProject.droogWaterAfvoer.gradenBochtVoor45)}}</p>
+          </div>
+          <div *ngIf='group.bochtenInGraden' class="data-container2">
+            <p class="label-text">Bocht 90°</p>
+            <p class="data-text">
+              {{addStuksString(currentProject.droogWaterAfvoer.gradenBochtVoor90)}}</p>
+          </div>
+          <div class="data-container2">
+            <p class="label-text">Buis hor.</p>
+            <p class="data-text">
+              {{addMeterString(this.currentProject.droogWaterAfvoer.buisVoorHor)}}</p>
+          </div>
+          <div class="data-container2">
+            <p class="label-text">Buis ver.</p>
+            <p class="data-text">
+              {{addMeterString(this.currentProject.droogWaterAfvoer.buisVoorVert)}}</p>
+          </div>
+
+          <div class="data-container2">
+            <p class="label-text">Reductie</p>
+            <p class="data-text">
+              {{addStuksString(currentProject.droogWaterAfvoer.reductieVoor)}}</p>
+          </div>
+          <div class="data-container2">
+            <p class="label-text">Buis soort</p>
+            <p class="data-text">{{currentProject.droogWaterAfvoer.buisType}}</p>
+          </div>
+          <div class="data-container2">
+            <p class="label-text">Diameter buis</p>
+            <p class="data-text">
+                {{currentProject.droogWaterAfvoer.diameter === 'andere' ? currentProject.droogWaterAfvoer.diameterAndere : currentProject.droogWaterAfvoer.diameter}} mm
+            </p>
+          </div>
+        </div>
+        <div class="putColumn borderLeft">
+          <p class="section-title">Achter het putje</p>
+
+          <div *ngIf='!group.bochtenInGraden'  class="data-container2">
+            <p class="label-text">Bocht</p>
+            <p class="data-text">
+              {{addStuksString(currentProject.droogWaterAfvoer.bochtAchter)}}</p>
+          </div>
+          <div *ngIf='group.bochtenInGraden'  class="data-container2">
+            <p class="label-text">Bocht 45°</p>
+            <p class="data-text">
+              {{addStuksString(currentProject.droogWaterAfvoer.gradenBochtAchter45)}}</p>
+          </div>
+          <div *ngIf='group.bochtenInGraden'  class="data-container2">
+            <p class="label-text">Bocht 90°</p>
+            <p class="data-text">
+              {{addStuksString(currentProject.droogWaterAfvoer.gradenBochtAchter90)}}</p>
+          </div>
+          <div class="data-container2">
+            <p class="label-text">Buis</p>
+            <p  class="data-text">
+              {{addMeterString(currentProject.droogWaterAfvoer.buisAchter)}}</p>
+          </div>
+          <div class="data-container2">
+            <p class="label-text">Reductie</p>
+            <p class="data-text">
+              {{addStuksString(currentProject.droogWaterAfvoer.reductieAchter)}}</p>
+          </div>
+
+          <div class="data-container2">
+            <p class="label-text">Y-stuks</p>
+            <p class="data-text">
+              {{addStuksString(currentProject.droogWaterAfvoer.YAchter)}}</p>
+          </div>
+          <div class="data-container2">
+            <p class="label-text">Buis soort</p>
+            <p class="data-text">{{currentProject.droogWaterAfvoer.buisTypeAchter}}</p>
+          </div>
+          <div class="data-container2">
+            <p class="label-text">Diameter buis</p>
+            <p class="data-text">
+                {{currentProject.droogWaterAfvoer.diameterAchter === 'andere' ? currentProject.droogWaterAfvoer.diameterAchterAndere : currentProject.droogWaterAfvoer.diameterAchter}} mm
+            </p>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="heeftPloegen != null && heeftPloegen" class="putRow">
+        <div class="putColumn">
+          <p class="section-title">Voor het putje</p>
+          <p class="section-title2">Fase 1 & Fase 2</p>
+          <div *ngIf='!group.bochtenInGraden' class="data-container2">
+            <p class="label-text">Bocht</p>
+            <div class="fase">
+              <p  class="data-text">
+                {{NullToZero(currentProject.droogWaterAfvoer.bochtVoor)}} | {{NullToZero(currentProject.droogWaterAfvoer.bochtVoor2)}} </p>
+              <p class="margL">stuks</p>
+            </div>
+          </div>
+          <div *ngIf='group.bochtenInGraden' class="data-container2">
+            <p class="label-text">Bocht 45°</p>
+            <div class="fase">
+              <p  class="data-text">
+                {{NullToZero(currentProject.droogWaterAfvoer.gradenBochtVoor45)}} | {{NullToZero(currentProject.droogWaterAfvoer.gradenBocht2Voor45)}} </p>
+              <p class="margL">stuks</p>
+            </div>
+          </div>
+          <div *ngIf='group.bochtenInGraden' class="data-container2">
+            <p class="label-text">Bocht 90°</p>
+            <div class="fase">
+              <p  class="data-text">
+                {{NullToZero(currentProject.droogWaterAfvoer.gradenBochtVoor90)}} | {{NullToZero(currentProject.droogWaterAfvoer.gradenBocht2Voor90)}} </p>
+              <p class="margL">stuks</p>
+            </div>
+          </div>
+          <div class="data-container2">
+            <p class="label-text">Buis hor.</p>
+            <div *ngIf='this.currentProject.droogWaterAfvoer.buisVoorHor != null || this.currentProject.droogWaterAfvoer.buisVoorHor2 != null' class="fase">
+              <p class="data-text">
+                {{this.NullToZero(this.currentProject.droogWaterAfvoer.buisVoorHor)}} |</p>
+              <p  class="data-text">
+                {{this.NullToZero(this.currentProject.droogWaterAfvoer.buisVoorHor2)}} </p>
+              <p class="margL">meter</p>
+            </div>
+          </div>
+          <div class="data-container2">
+            <p class="label-text">Buis vert.</p>
+            <div  *ngIf='this.currentProject.droogWaterAfvoer.buisVoorVert != null || this.currentProject.droogWaterAfvoer.buisVoorVert2 != null' class="fase">
+              <p class="data-text">
+                {{this.NullToZero(this.currentProject.droogWaterAfvoer.buisVoorVert)}} |</p>
+              <p  class="data-text">
+                {{this.NullToZero(this.currentProject.droogWaterAfvoer.buisVoorVert2)}} </p>
+              <p class="margL">meter</p>
+            </div>
+          </div>
+          <div class="data-container2">
+            <p class="label-text">Reductie</p>
+            <div *ngIf='this.currentProject.droogWaterAfvoer.reductieVoor != null || this.currentProject.droogWaterAfvoer.reductieVoor2 != null' class="fase">
+              <p *ngIf="currentProject.droogWaterAfvoer.reductieVoor != null" class="data-text">
+                {{currentProject.droogWaterAfvoer.reductieVoor}} | </p>
+              <p *ngIf="currentProject.droogWaterAfvoer.reductieVoor == null" class="data-text">0 |</p>
+              <p *ngIf="currentProject.droogWaterAfvoer.reductieVoor2 != null" class="data-text">
+                {{currentProject.droogWaterAfvoer.reductieVoor2}}</p>
+              <p *ngIf="currentProject.droogWaterAfvoer.reductieVoor2 == null" class="data-text">0</p>
+              <p class="margL">stuks</p>
+            </div>
+
+          </div>
+          <div class="data-container2">
+            <p class="label-text">Buis soort</p>
+            <p class="data-text">{{currentProject.droogWaterAfvoer.buisType}}</p>
+          </div>
+          <div class="data-container2">
+            <p class="label-text">Diameter buis</p>
+            <p class="data-text">
+              {{currentProject.droogWaterAfvoer.diameter === 'andere' ? currentProject.droogWaterAfvoer.diameterAndere : currentProject.droogWaterAfvoer.diameter}} mm
+            </p>
+          </div>
+        </div>
+        <div class="putColumn borderLeft">
+          <p class="section-title">Achter het putje</p>
+
+          <div *ngIf='!group.bochtenInGraden' style='margin-top: 36px' class="data-container2">
+            <p class="label-text">Bocht</p>
+            <p class="data-text">
+              {{addStuksString(currentProject.droogWaterAfvoer.bochtAchter)}}</p>
+          </div>
+
+          <div *ngIf='group.bochtenInGraden' style='margin-top: 36px' class="data-container2">
+            <p class="label-text">Bocht 45°</p>
+            <p class="data-text">
+              {{addStuksString(currentProject.droogWaterAfvoer.gradenBochtAchter45)}}</p>
+          </div>
+          <div *ngIf='group.bochtenInGraden' class="data-container2">
+            <p class="label-text">Bocht 90°</p>
+            <p class="data-text">
+              {{addStuksString(currentProject.droogWaterAfvoer.gradenBochtAchter90)}}</p>
+          </div>
+          <div class="data-container2">
+            <p class="label-text">Buis</p>
+            <p class="data-text">
+              {{addMeterString(currentProject.droogWaterAfvoer.buisAchter)}}</p>
+          </div>
+          <div class="data-container2">
+            <p class="label-text">Reductie</p>
+            <p class="data-text">
+              {{addStuksString(currentProject.droogWaterAfvoer.reductieAchter)}}</p>
+          </div>
+
+          <div class="data-container2">
+            <p class="label-text">Y-stuks</p>
+            <p class="data-text">
+              {{addStuksString(currentProject.droogWaterAfvoer.YAchter)}}</p>
+          </div>
+          <div class="data-container2">
+            <p class="label-text">Buis soort</p>
+            <p class="data-text">{{currentProject.droogWaterAfvoer.buisTypeAchter}}</p>
+          </div>
+          <div class="data-container2">
+            <p class="label-text">Diameter buis</p>
+            <p class="data-text">
+              {{currentProject.droogWaterAfvoer.diameterAchter === 'andere' ? currentProject.droogWaterAfvoer.diameterAchterAndere : currentProject.droogWaterAfvoer.diameterAchter}} mm
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+    <div *ngIf='!checkHasAfvoer(currentProject.regenWaterAfvoer)' class="column-container">
+      <p class="section-title">
+        RWA niet bewerkt
+      </p>
+    </div>
+    <div *ngIf='checkHasAfvoer(currentProject.regenWaterAfvoer)' class="column-container">
+      <p class="section-title">
+        RWA
+      </p>
+      <div class="locatieRow">
+        <div class="insideRow">
+          <p class="label-text">Wachtaansluiting</p>
+          <p style='font-weight: 700' *ngIf="(currentProject.regenWaterAfvoer.isWachtaansluiting == null && currentProject.isWachtAansluiting) ||
+        (currentProject.regenWaterAfvoer.isWachtaansluiting != null && currentProject.regenWaterAfvoer.isWachtaansluiting)"
+             class="data-text">Ja</p>
+        </div>
+        <button *ngIf='currentProject.regenWaterAfvoer.xCoordGeoLocationFirsPhoto != null || currentProject.regenWaterAfvoer.yCoordGeoLocationFirsPhoto != null'
+                nbButton
+                class="global-location-button"
+                (click)='openMapDialog(currentProject.regenWaterAfvoer.xCoordGeoLocationFirsPhoto, currentProject.regenWaterAfvoer.yCoordGeoLocationFirsPhoto, "RWA")'>
+          Bekijk locatie
+        </button>
+      </div>
+
+      <div style='margin-top:-10px' class='flexWrapper'>
+        <div class="insideRow3" *ngIf="this.group.rwaSettings.afstandPutMof">
+          <p class="label-text">Afstand midden stroomafwaartse put tot mof</p>
+          <p class="data-text">
+            {{addMString(currentProject.regenWaterAfvoer.afstandPutMof)}}</p>
+        </div>
+
+        <div class="insideRow3" *ngIf="this.group.rwaSettings.diepteAansluitingWoning">
+          <p class="label-text">Diepte HA-putje/aansluiting tov MV:</p>
+          <p class="data-text">
+            {{addMString(currentProject.regenWaterAfvoer.diepteAansluitingWoning)}}</p>
+        </div>
+        <div class="insideRow3" *ngIf="this.group.rwaSettings.diepteRioleringHA">
+          <p class="label-text">Diepte aanboring op hoofdriool tov MV:<br>(op bestaande riolering)</p>
+          <p class="data-text">
+            {{addMString(currentProject.regenWaterAfvoer.diepteRioleringHA)}}</p>
+        </div>
+        <div class="insideRow3" *ngIf="this.group.rwaSettings.plaatsAansluiting">
+          <p class="label-text">Plaats aansluiting op riool tov van stroomafw. naar stroomopw.:</p>
+          <p *ngIf="currentProject.regenWaterAfvoer.plaatsAansluiting != null" class="data-text">
+            {{currentProject.regenWaterAfvoer.plaatsAansluiting}} graden</p>
+        </div>
+      </div>
+
+      <div class="data-container-70">
+        <p class="label-text">Gelegen tussen volgende IP:</p>
+        <div *ngIf="currentProject.regenWaterAfvoer?.tussenIPLinks !== 'D' && currentProject.regenWaterAfvoer?.tussenIPRechts !== 'D'" class="flower">
+          <p class="data-text">{{currentProject.regenWaterAfvoer?.tussenIPLinks}}</p>
+          <p class="IPtext">-</p>
+          <p class="data-text">{{currentProject.regenWaterAfvoer?.tussenIPRechts}} </p>
+        </div>
+      </div>
+
+
+      <div class="data-container-70">
+        <p class="label-text">Type aansluiting op hoofdbuis:</p>
+        <p *ngIf="currentProject.regenWaterAfvoer.tBuisStuk === 'flexAan'" class="data-text">flexibele aansluiting</p>
+        <p *ngIf="currentProject.regenWaterAfvoer.tBuisStuk != null && currentProject.regenWaterAfvoer.tBuisStuk !== 'flexAan'"
+           class="data-text">{{currentProject.regenWaterAfvoer.tBuisStuk}}</p>
+        <p *ngIf="currentProject.regenWaterAfvoer.tBuisStuk == null" class="data-text"></p>
+      </div>
+      <div class='flexWrapper'>
+        <div class="insideRow2" *ngIf="this.group.rwaSettings.mof">
+          <p class="label-text">Mof</p>
+          <p class="data-text">
+            {{addStuksString(currentProject.regenWaterAfvoer.mof)}}</p>
+        </div>
+        <div class="insideRow2" *ngIf="this.group.rwaSettings.krimpMof">
+          <p class="label-text">Krimpmof</p>
+          <p class="data-text">
+            {{addStuksString(currentProject.regenWaterAfvoer.krimpmof)}}</p>
+        </div>
+        <div class="insideRow2" *ngIf="this.group.rwaSettings.koppelStuk">
+          <p class="label-text">Koppelstuk</p>
+          <p class="data-text">
+            {{addStuksString(currentProject.regenWaterAfvoer.koppelstuk)}}</p>
+        </div>
+        <div class="insideRow2" *ngIf="this.group.rwaSettings.stop">
+          <p class="label-text">Stop</p>
+          <p class="data-text">
+            {{addStuksString(currentProject.regenWaterAfvoer.stop)}}</p>
+        </div>
+        <div class="insideRow2" *ngIf="this.group.rwaSettings.andere">
+          <p class="label-text">Andere</p>
+          <p class="data-text">
+            {{currentProject.regenWaterAfvoer.andere}}</p>
+        </div>
+        <div class='insideRow2'>
+          <p class="label-text">Ligging</p>
+          <p *ngIf="currentProject.regenWaterAfvoer.ligging !== 'andere'" class="data-text">
+            {{currentProject.regenWaterAfvoer.ligging | titlecase}}</p>
+          <p *ngIf="currentProject.regenWaterAfvoer.ligging === 'andere'" class="data-text">
+            {{currentProject.regenWaterAfvoer.liggingAndere | titlecase}}</p>
+        </div>
+        <div class="insideRow2">
+          <p class="label-text">Diameter<br> putje/T-stuk</p>
+          <p class="data-text">
+            {{currentProject.regenWaterAfvoer.diameterPut}} mm</p>
+        </div>
+        <div class="insideRow2">
+          <p class="label-text">Gietijzer</p>
+
+          <p *ngIf="currentProject.regenWaterAfvoer.gietijzer" class="data-text">
+            Ja</p>
+        </div>
+        <div *ngIf="currentProject.regenWaterAfvoer.gietijzer" class="insideRow2">
+          <p class="label-text">Beton kader</p>
+          <p *ngIf="currentProject.regenWaterAfvoer.betonkader" class="data-text">
+            Ja</p>
+        </div>
+        <div *ngIf="!currentProject.regenWaterAfvoer.gietijzer" class="insideRow2">
+          <p class="label-text">Aluminium kader</p>
+          <p *ngIf="currentProject.regenWaterAfvoer.alukader" class="data-text">
+            Ja</p>
+        </div>
+        <hr>
+        <div class="insideRow2" *ngIf="this.group.rwaSettings.terugSlagKlep">
+          <p class="label-text">Terugslagklep in putje</p>
+          <p *ngIf="currentProject.regenWaterAfvoer.terugslagklep" class="data-text">
+            Ja</p>
+        </div>
+        <div class="insideRow2">
+          <p class="label-text">Soort putje</p>
+          <p *ngIf="currentProject.regenWaterAfvoer.soortPutje !== 'andere'" class="data-text">{{currentProject.regenWaterAfvoer.soortPutje | titlecase}}</p>
+          <p  class="data-text" *ngIf="currentProject.regenWaterAfvoer.soortPutje === 'andere'">{{currentProject.regenWaterAfvoer.anderPutje}}</p>
+        </div>
+        <div *ngIf="this.group.rwaSettings.tPutje == null || this.group.rwaSettings.tPutje" class="insideRow2">
+          <p class="label-text">T-putje</p>
+          <p  class="data-text">{{addStuksString(currentProject.regenWaterAfvoer.tPutje)}}</p>
+        </div>
+        <div class="insideRow2" *ngIf="this.group.rwaSettings.aanslBovRwa">
+          <p style='max-width:60%' class="label-text">Aansluitingen bovengrondse regenafvoer</p>
+          <p class="data-text">
+            {{addStuksString(currentProject.regenWaterAfvoer.aanslBovRWA)}}</p>
+        </div>
+        <div class="insideRow2" *ngIf="this.group.rwaSettings.infilPutje">
+          <p class="label-text">Infiltratieputje</p>
+          <p *ngIf="currentProject.regenWaterAfvoer.infilPutje" class="data-text">
+            Ja</p>
+        </div>
+        <div class="insideRow2" *ngIf="this.group.rwaSettings.aanslOpenRwa">
+          <p class="label-text">Aansluiting op opengracht</p>
+          <p *ngIf="currentProject.regenWaterAfvoer.aanslOpenRWA" class="data-text">
+            Ja</p>
+        </div>
+      </div>
+
+
+      <div *ngIf="this.group.rwaSettings.ssGrond">
+        <div class="data-container">
+          <div class='insideRow2'>
+            <p style='max-width:200px' class="label-text">Letter & afstand<br> putje horizontaal</p>
+            <p *ngIf="currentProject.regenWaterAfvoer.letterHor != null && currentProject.regenWaterAfvoer.letterHor !== ''" class="data-text">
+              {{currentProject.regenWaterAfvoer.letterHor.toUpperCase()}} - {{addMeterString(currentProject.regenWaterAfvoer.putHor)}}
+            </p>
+            <p *ngIf="currentProject.regenWaterAfvoer.letterHor == null || currentProject.regenWaterAfvoer.letterHor === ''" class="data-text">
+              {{addMString(currentProject.regenWaterAfvoer.putHor)}}
+            </p>
+          </div>
+          <div class='insideRow2'>
+            <p  style='max-width:200px' class="label-text">Letter & afstand<br> putje verticaal</p>
+            <p *ngIf="currentProject.regenWaterAfvoer.letterVer != null && currentProject.regenWaterAfvoer.letterVer !== ''" class="data-text">
+              {{currentProject.regenWaterAfvoer.letterVer.toUpperCase()}} - {{addMeterString(currentProject.regenWaterAfvoer.putVer)}}
+            </p>
+            <p *ngIf="currentProject.regenWaterAfvoer.letterVer == null || currentProject.regenWaterAfvoer.letterVer === ''" class="data-text">
+              {{addMString(currentProject.regenWaterAfvoer.putVer)}}
+            </p>
+          </div>
+        </div>
+      </div>
+
+
+      <p style='font-size: 15px; font-weight: 600; margin-top: 15px; margin-left:20px' *ngIf='!checkIfHasCoords(currentProject.regenWaterAfvoer)'>Heeft geen lambertcoördinaten</p>
+      <div style='margin-bottom: 10px; margin-top:10px;' *ngIf='checkIfHasCoords(currentProject.regenWaterAfvoer)'>
+        <p class="section-title">Lambert coordinaten</p>
+        <div class='flexWrapper'>
+          <div class="insideRow2">
+            <p class="label-text">X-coordinaat</p>
+            <p class="data-text">
+              {{currentProject.regenWaterAfvoer.xCoord}}
+            </p>
+          </div>
+          <div class="insideRow2">
+            <p class="label-text">Y-coordinaat</p>
+            <p class="data-text">
+              {{currentProject.regenWaterAfvoer.yCoord}}
+            </p>
+          </div>
+          <div class="insideRow2">
+            <p class="label-text">Z-coordinaat</p>
+            <p class="data-text">
+              {{currentProject.regenWaterAfvoer.zCoord}}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="heeftPloegen == null || heeftPloegen === false" class="putRow">
+        <div class="putColumn">
+          <p class="section-title">Voor het putje</p>
+
+          <div *ngIf='!group.bochtenInGraden' class="data-container2">
+            <p class="label-text">Bocht</p>
+            <p class="data-text">
+              {{addStuksString(currentProject.regenWaterAfvoer.bochtVoor)}}</p>
+          </div>
+          <div *ngIf='group.bochtenInGraden' class="data-container2">
+            <p class="label-text">Bocht 45°</p>
+            <p class="data-text">
+              {{addStuksString(currentProject.regenWaterAfvoer.gradenBochtVoor45)}}</p>
+          </div>
+          <div *ngIf='group.bochtenInGraden' class="data-container2">
+            <p class="label-text">Bocht 90°</p>
+            <p class="data-text">
+              {{addStuksString(currentProject.regenWaterAfvoer.gradenBochtVoor90)}}</p>
+          </div>
+          <div class="data-container2">
+            <p class="label-text">Buis hor.</p>
+            <p class="data-text">
+              {{addMeterString(this.currentProject.regenWaterAfvoer.buisVoorHor)}}</p>
+          </div>
+          <div class="data-container2">
+            <p class="label-text">Buis vert.</p>
+            <p class="data-text">
+              {{addMeterString(this.currentProject.regenWaterAfvoer.buisVoorVert)}}</p>
+          </div>
+
+          <div class="data-container2">
+            <p class="label-text">Reductie</p>
+            <p class="data-text">
+              {{addStuksString(currentProject.regenWaterAfvoer.reductieVoor)}}</p>
+          </div>
+          <div class="data-container2">
+            <p class="label-text">Buis soort</p>
+            <p class="data-text">{{currentProject.regenWaterAfvoer.buisType}}</p>
+          </div>
+          <div class="data-container2">
+            <p class="label-text">Diameter buis</p>
+            <p class="data-text">
+              {{currentProject.regenWaterAfvoer.diameter === 'andere' ? currentProject.regenWaterAfvoer.diameterAndere : currentProject.regenWaterAfvoer.diameter}} mm
+            </p>
+          </div>
+        </div>
+        <div class="putColumn borderLeft">
+          <p class="section-title">Achter het putje</p>
+
+          <div *ngIf='!group.bochtenInGraden' class="data-container2">
+            <p class="label-text">Bocht</p>
+            <p class="data-text">
+              {{addStuksString(currentProject.regenWaterAfvoer.bochtAchter)}}</p>
+          </div>
+          <div *ngIf='group.bochtenInGraden' class="data-container2">
+            <p class="label-text">Bocht 45°</p>
+            <p class="data-text">
+              {{addStuksString(currentProject.regenWaterAfvoer.gradenBochtAchter45)}}</p>
+          </div>
+          <div *ngIf='group.bochtenInGraden' class="data-container2">
+            <p class="label-text">Bocht 90°</p>
+            <p class="data-text">
+              {{addStuksString(currentProject.regenWaterAfvoer.gradenBochtAchter90)}}</p>
+          </div>
+          <div class="data-container2">
+            <p class="label-text">Buis</p>
+            <p  class="data-text">
+              {{addMeterString(currentProject.regenWaterAfvoer.buisAchter)}}</p>
+          </div>
+          <div class="data-container2">
+            <p class="label-text">Reductie</p>
+            <p class="data-text">
+              {{addStuksString(currentProject.regenWaterAfvoer.reductieAchter)}}</p>
+          </div>
+
+          <div class="data-container2">
+            <p class="label-text">Y-stuks</p>
+            <p class="data-text">
+              {{addStuksString(currentProject.regenWaterAfvoer.YAchter)}}</p>
+          </div>
+          <div class="data-container2">
+            <p class="label-text">Buis soort</p>
+            <p class="data-text">{{currentProject.regenWaterAfvoer.buisTypeAchter}}</p>
+          </div>
+          <div class="data-container2">
+            <p class="label-text">Diameter buis</p>
+            <p class="data-text">
+              {{currentProject.regenWaterAfvoer.diameterAchter === 'andere' ? currentProject.regenWaterAfvoer.diameterAchterAndere : currentProject.regenWaterAfvoer.diameterAchter}} mm
+            </p>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="heeftPloegen != null && heeftPloegen" class="putRow">
+        <div class="putColumn">
+          <p class="section-title">Voor het putje</p>
+          <p class="section-title2">Fase 1 & Fase 2</p>
+          <div *ngIf='!group.bochtenInGraden' class="data-container2">
+            <p class="label-text">Bocht</p>
+            <div class="fase">
+              <p  class="data-text">
+                {{NullToZero(currentProject.regenWaterAfvoer.bochtVoor)}} | {{NullToZero(currentProject.regenWaterAfvoer.bochtVoor2)}} </p>
+              <p class="margL">stuks</p>
+            </div>
+          </div>
+          <div *ngIf='group.bochtenInGraden' class="data-container2">
+            <p class="label-text">Bocht 45°</p>
+            <div class="fase">
+              <p  class="data-text">
+                {{NullToZero(currentProject.regenWaterAfvoer.gradenBochtVoor45)}} | {{NullToZero(currentProject.regenWaterAfvoer.gradenBocht2Voor45)}} </p>
+              <p class="margL">stuks</p>
+            </div>
+          </div>
+          <div *ngIf='group.bochtenInGraden' class="data-container2">
+            <p class="label-text">Bocht 90°</p>
+            <div class="fase">
+              <p  class="data-text">
+                {{NullToZero(currentProject.regenWaterAfvoer.gradenBochtVoor90)}} | {{NullToZero(currentProject.regenWaterAfvoer.gradenBocht2Voor90)}} </p>
+              <p class="margL">stuks</p>
+            </div>
+          </div>
+          <div class="data-container2">
+            <p class="label-text">Buis hor.</p>
+            <div *ngIf='this.currentProject.regenWaterAfvoer.buisVoorHor != null || this.currentProject.regenWaterAfvoer.buisVoorHor2 != null' class="fase">
+              <p class="data-text">
+                {{this.NullToZero(this.currentProject.regenWaterAfvoer.buisVoorHor)}} |</p>
+              <p  class="data-text">
+                {{this.NullToZero(this.currentProject.regenWaterAfvoer.buisVoorHor2)}} </p>
+              <p class="margL">meter</p>
+            </div>
+          </div>
+          <div class="data-container2">
+            <p class="label-text">Buis vert.</p>
+            <div  *ngIf='this.currentProject.regenWaterAfvoer.buisVoorVert != null || this.currentProject.regenWaterAfvoer.buisVoorVert2 != null' class="fase">
+              <p class="data-text">
+                {{this.NullToZero(this.currentProject.regenWaterAfvoer.buisVoorVert)}} |</p>
+              <p  class="data-text">
+                {{this.NullToZero(this.currentProject.regenWaterAfvoer.buisVoorVert2)}} </p>
+              <p class="margL">meter</p>
+            </div>
+          </div>
+          <div class="data-container2">
+            <p class="label-text">Reductie</p>
+            <div *ngIf='this.currentProject.regenWaterAfvoer.reductieVoor != null || this.currentProject.regenWaterAfvoer.reductieVoor2 != null' class="fase">
+              <p *ngIf="currentProject.regenWaterAfvoer.reductieVoor != null" class="data-text">
+                {{currentProject.regenWaterAfvoer.reductieVoor}} | </p>
+              <p *ngIf="currentProject.regenWaterAfvoer.reductieVoor == null" class="data-text">0 |</p>
+              <p *ngIf="currentProject.regenWaterAfvoer.reductieVoor2 != null" class="data-text">
+                {{currentProject.regenWaterAfvoer.reductieVoor2}}</p>
+              <p *ngIf="currentProject.regenWaterAfvoer.reductieVoor2 == null" class="data-text">0</p>
+              <p class="margL">stuks</p>
+            </div>
+
+          </div>
+          <div class="data-container2">
+            <p class="label-text">Buis soort</p>
+            <p class="data-text">{{currentProject.regenWaterAfvoer.buisType}}</p>
+          </div>
+          <div class="data-container2">
+            <p class="label-text">Diameter buis</p>
+            <p class="data-text">
+              {{currentProject.regenWaterAfvoer.diameter === 'andere' ? currentProject.regenWaterAfvoer.diameterAndere : currentProject.regenWaterAfvoer.diameter}} mm
+            </p>
+          </div>
+        </div>
+        <div class="putColumn borderLeft">
+          <p class="section-title">Achter het putje</p>
+
+          <div *ngIf='!group.bochtenInGraden' style='margin-top: 36px' class="data-container2">
+            <p class="label-text">Bocht</p>
+            <p class="data-text">
+              {{addStuksString(currentProject.regenWaterAfvoer.bochtAchter)}}</p>
+          </div>
+          <div *ngIf='group.bochtenInGraden' style='margin-top: 36px' class="data-container2">
+            <p class="label-text">Bocht 45°</p>
+            <p class="data-text">
+              {{addStuksString(currentProject.regenWaterAfvoer.gradenBochtAchter45)}}</p>
+          </div>
+          <div *ngIf='group.bochtenInGraden' class="data-container2">
+            <p class="label-text">Bocht 90°</p>
+            <p class="data-text">
+              {{addStuksString(currentProject.regenWaterAfvoer.gradenBochtAchter90)}}</p>
+          </div>
+          <div class="data-container2">
+            <p class="label-text">Buis</p>
+            <p class="data-text">
+              {{addMeterString(currentProject.regenWaterAfvoer.buisAchter)}}</p>
+          </div>
+          <div class="data-container2">
+            <p class="label-text">Reductie</p>
+            <p class="data-text">
+              {{addStuksString(currentProject.regenWaterAfvoer.reductieAchter)}}</p>
+          </div>
+
+          <div class="data-container2">
+            <p class="label-text">Y-stuks</p>
+            <p class="data-text">
+              {{addStuksString(currentProject.regenWaterAfvoer.YAchter)}}</p>
+          </div>
+          <div class="data-container2">
+            <p class="label-text">Buis soort</p>
+            <p class="data-text">{{currentProject.regenWaterAfvoer.buisTypeAchter}}</p>
+          </div>
+          <div class="data-container2">
+            <p class="label-text">Diameter buis</p>
+            <p class="data-text">
+              {{currentProject.regenWaterAfvoer.diameterAchter === 'andere' ? currentProject.regenWaterAfvoer.diameterAchterAndere : currentProject.regenWaterAfvoer.diameterAchter}} mm
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="image-container">
+    <p class="section-title">Foto's DWA</p>
+      <div  *ngFor="let photo of currentProject.photosDWA; let i = index" [ngClass]="photo == null? 'minderWidth' : ''"  class="fotoColumn">
+        <p class="infoText" *ngIf="i == 0">1. boring of opening van aansluiting op hoofdriool</p>
+        <p class="infoText3" *ngIf="i == 1">2. na plaatsing fundering, buizen, hulpstukken en HA-putje, vanaf de
+          aansluitopening richting putje,indien niet alle hulpstukken te zien zijn,
+          eventueel ook foto vanuit omgekeerd standpunt</p>
+        <p class="infoText" *ngIf="i == 2">2.2 vervolg foto (optioneel)</p>
+        <p class="infoText" *ngIf="i == 3">3. verbinding tss HAputje en bestaande privé-riool</p>
+        <p class="infoText" *ngIf="i == 4">4. zelfde als foto 2, maar met omhulling</p>
+        <p class="infoText" *ngIf="i > 4">{{i}}. extra foto (optioneel)</p>
+        <img [ngClass]="i === 1 ? 'marginTopMin' : '' " *ngIf="photo != null" src="{{photo}}" class="photo" name="photo" (click)="imagePopUp(photo)">
+        <p style="margin-bottom: 100%;font-size: 18px;font-weight: 600" *ngIf="photo == null">Geen foto</p>
+      </div>
+  </div>
+
+  <div class="image-container">
+    <p class="section-title">Foto's RWA</p>
+      <div *ngFor="let photo of currentProject.photosRWA; let i = index" [ngClass]="photo == null? 'minderWidth' : ''"  class="fotoColumn">
+        <p class="infoText" *ngIf="i == 0">1. boring of opening van aansluiting op hoofdriool</p>
+        <p class="infoText3" *ngIf="i == 1">2. na plaatsing fundering, buizen, hulpstukken en HA-putje, vanaf de
+          aansluitopening richting putje,indien niet alle hulpstukken te zien zijn,
+          eventueel ook foto vanuit omgekeerd standpunt</p>
+        <p class="infoText" *ngIf="i == 2">2.2 vervolg foto (optioneel)</p>
+        <p class="infoText" *ngIf="i == 3">3. verbinding tss HAputje en bestaande privé-riool</p>
+        <p class="infoText" *ngIf="i == 4">4. zelfde als foto 2, maar met omhulling</p>
+        <p class="infoText" *ngIf="i > 4">{{i}}. extra foto (optioneel)</p>
+        <img [ngClass]="i === 1 ? 'marginTopMin' : '' " *ngIf="photo != null" src="{{photo}}" class="photo" name="photo" (click)="imagePopUp(photo)">
+        <p style="margin-bottom: 100%;font-size: 18px;font-weight: 600" *ngIf="photo == null ">Geen foto</p>
+      </div>
+  </div>
+
+</mat-card>
+
+<div  class="bottomRow" *ngIf="isLoaded">
+  <button mat-raised-button class="form-button" (click)="goToPrevious()">
+    Terug
+  </button>
+  <button *ngIf="!isFirst" mat-raised-button class="form-button" (click)="onPreviousClick()">
+    Vorige
+  </button>
+  <button *ngIf="!isLast" mat-raised-button class="form-button" (click)="onNextClick()">
+    Volgende
+  </button>
+  <button mat-raised-button class="form-button-blue" (click)="goToEdit()">
+    Bewerken
+  </button>
+  <p class="boldText" *ngIf="index !== -1">{{index + 1}}/{{totalProjectCount}}</p>
+  <button style="width: auto" mat-raised-button class="form-button2" (click)="generatePDF()">PDF 	<mat-icon class="downloadImage">cloud_download</mat-icon></button>
+  <button style="width: auto" mat-raised-button class="form-button2" (click)="downloadPhotos()">Foto's
+    <mat-icon class="downloadImage">cloud_download</mat-icon></button>
+  <button style="width: auto" mat-raised-button color="warn" class="form-button3"
+          (click)="onDeleteProject()">Aansluiting verwijderen</button>
+</div>

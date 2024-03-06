@@ -1,0 +1,94 @@
+<mat-card style='width:600px;  box-shadow: #00000030 0 10px 20px, #0000003b 0 6px 6px;  border-radius: 15px; padding:14px;'  class="add-card">
+  <mat-card-title class="title">Gebruiker toevoegen</mat-card-title>
+  <form *ngIf="isLoaded" [formGroup]="addForm" (ngSubmit)="onSubmit(addForm.value)" class="add-form">
+    <table>
+      <thead>
+        <tr>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <div style="margin: 1rem">
+          <tr>
+            <td class="leftText">Voornaam</td>
+            <td>
+              <input nbInput id="name" type="text" formControlName="voornaam" />
+              <p style="color: red" *ngIf="isVoornaamInvalid">
+                Gelieve voornaam in te geven
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td class="leftText">Achternaam</td>
+            <td>
+              <input nbInput id="name" type="text" formControlName="achternaam" />
+              <p style="color: red" *ngIf="isAchterNaamInvalid">
+                Gelieve achternaam in te geven
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td class="leftText">Email (optioneel)</td>
+            <td>
+              <input nbInput id="name" type="text" formControlName="email" />
+            </td>
+          </tr>
+          <tr>
+            <td class="leftText">Gebruikersnaam</td>
+            <td>
+              <input nbInput id="name" type="text" formControlName="gebruikersnaam" />
+              <p style="color: red" *ngIf="isGebruikersNaamInvalid">
+                Gelieve gebruikersnaam in te geven
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td class="leftText">Wachtwoord</td>
+            <td>
+              <input nbInput id="name" type="text" formControlName="password" />
+              <p style="color: red" *ngIf="isPasswordInvalid">
+                Gelieve Wachtwoord in te geven
+
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td class="leftText">Herhaal wachtwoord</td>
+            <td>
+              <input nbInput id="name" type="text" formControlName="password2" />
+              <p style="color: red" *ngIf="isPassword2Invalid">
+                De wachtwoorden komen niet overeen
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td class="leftText">Functie gebruiker</td>
+            <td>
+              <nb-select class="normalInput" formControlName="functieNaam" id="type">
+                <nb-option *ngFor="let functie of functies" value="{{functie}}">{{functie}}</nb-option>
+              </nb-select>
+              <p style="color: red" *ngIf="isFunctieInvalid">
+                Gelieve functie te kiezen
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td class="leftText">Taal gebruiker mobiele app</td>
+            <td>
+              <nb-select class="normalInput2" formControlName="taal" id="type">
+                <nb-option *ngFor="let taal of talen" value="{{taal}}">{{taal}}</nb-option>
+              </nb-select>
+            </td>
+          </tr>
+        </div>
+      </tbody>
+    </table>
+
+    <mat-card-actions>
+      <button mat-raised-button class="save-button" color="primary" type="submit">
+        Opslaan
+      </button>
+    </mat-card-actions>
+  </form>
+</mat-card>

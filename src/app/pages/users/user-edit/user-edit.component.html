@@ -1,0 +1,103 @@
+<div style="width:90%;">
+  <button (click)='goBack()' color='primary' mat-raised-button class="form-button-back">Terug</button>
+</div>
+<mat-card style="float:left; margin-top: 10px !important;  box-shadow: #00000030 0 10px 20px, #0000003b 0 6px 6px;  border-radius: 15px; padding:14px;" class="edit-card">
+  <div class="topRow">
+    <mat-card-title>Gebruiker bewerken</mat-card-title>
+    <button mat-raised-button class="delete-button" color="warn" type="button"
+            (click)="onDeleteClick()"><i style="margin-left:1px !important;" class="fa-solid fa-trash-can"></i></button>
+  </div>
+    <form *ngIf="isLoaded" [formGroup]="editForm" (ngSubmit)="onSubmit(editForm.value)" class="edit-form">
+      <table>
+        <thead>
+        <tr>
+          <th></th>
+          <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <div style="margin: 1rem">
+          <tr>
+            <td class="leftText">Voornaam</td>
+            <td>
+              <input nbInput id="name" type="text" formControlName="voornaam" />
+              <p style="color: red" *ngIf="isVoornaamInvalid">
+                Gelieve voornaam in te geven
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td class="leftText">Achternaam</td>
+            <td>
+              <input nbInput id="name" type="text" formControlName="achternaam" />
+              <p style="color: red" *ngIf="isAchterNaamInvalid">
+                Gelieve achternaam in te geven
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td class="leftText">Email (optioneel)</td>
+            <td>
+              <input nbInput id="name" type="text" formControlName="email" />
+            </td>
+          </tr>
+          <tr>
+            <td class="leftText">Gebruikersnaam</td>
+            <td>
+              <input nbInput id="name" type="text" formControlName="gebruikersnaam" />
+              <p style="color: red" *ngIf="isGebruikersNaamInvalid">
+                Gelieve gebruikersnaam in te geven
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td class="leftText">Functie gebruiker</td>
+            <td>
+              <nb-select class="normalInput" formControlName="functieNaam" id="type">
+                <nb-option *ngFor="let functie of functies" value="{{functie}}">{{functie}}</nb-option>
+              </nb-select>
+              <p style="color: red" *ngIf="isFunctieInvalid">
+                Gelieve functie te kiezen
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td class="leftText">Taal gebruiker mobiele app</td>
+            <td>
+              <nb-select class="normalInput" formControlName="taal" id="type">
+                <nb-option *ngFor="let taal of talen" value="{{taal}}">{{taal}}</nb-option>
+              </nb-select>
+            </td>
+          </tr>
+          <tr >
+          <td class="leftText">Ook wachtwoord veranderen?</td>
+          <td style="padding-top:9px!important;">
+            <nb-checkbox style="margin-left:8px"  type="checkbox" formControlName="wwCheckbox"
+                         (checkedChange)="onChangeWachtwoord($event)"></nb-checkbox>
+          </td>
+          </tr>
+          <tr *ngIf="veranderWachtwoord">
+            <td class="leftText">Wachtwoord</td>
+            <td>
+              <input nbInput id="name" type="text" formControlName="password" />
+              <p style="color: red" *ngIf="isPasswordInvalid">
+                Gelieve Wachtwoord in te geven
+
+              </p>
+            </td>
+          </tr>
+          <tr *ngIf="veranderWachtwoord">
+            <td class="leftText">Herhaal wachtwoord</td>
+            <td>
+              <input nbInput id="name" type="text" formControlName="password2" />
+              <p style="color: red" *ngIf="isPassword2Invalid">
+                De wachtwoorden komen niet overeen
+              </p>
+            </td>
+          </tr>
+        </div>
+        </tbody>
+      </table>
+        <button mat-raised-button class="form-button" color="primary" type="submit">Opslaan</button>
+    </form>
+</mat-card>

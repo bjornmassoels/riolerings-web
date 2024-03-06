@@ -1,0 +1,204 @@
+.table-container {
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  margin-left: 3rem;
+  font-size: 0.9rem !important;
+}
+.infoText {
+  margin: 1rem;
+  font-weight: bold;
+}
+.photo {
+  margin-left: 25px;
+  max-height: 33vh;
+  height: 20rem;
+  width: 15rem;
+  border-radius: 10px;
+  margin: 1rem;
+  box-shadow: 0px 0px 2px lightgrey;
+}
+
+.fotoColumn {
+  border: 2px solid lightskyblue;
+  border-radius: 10px;
+  margin-left: 6px;
+  margin-right: 6px;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 520px;
+  align-items: center;
+  width: 270px;
+}
+.fotoText {
+  font-size: 16px;
+  font-weight: 700;
+  width: 250px;
+  text-align: center;
+}
+.table-container table tbody tr td {
+  border: 1px solid black;
+  background-color: white;
+  margin: 0;
+  padding-left: 0.3rem;
+}
+
+.table-container table {
+  margin: 0;
+  padding: 0;
+}
+
+.table-container table thead {
+  margin: 0;
+  padding: 0;
+  height: 0;
+}
+
+.table-container table thead th {
+  margin: 0;
+  height: 0;
+  padding: 0;
+}
+
+.yellow-td {
+  background-color: #ffff99 !important;
+}
+
+.orange-td {
+  background-color: #fdeada !important;
+}
+
+.w-max {
+  width: 100% !important;
+}
+.w-40 {
+  width: 40% !important;
+}
+.w-30-2 {
+  width: 30% !important;
+}
+.w-25 {
+  width: 25% !important;
+}
+.w-15 {
+  width: 15% !important;
+}
+.w-20 {
+  width: 20% !important;
+}
+.wk {
+  width: 40px !important;
+}
+.w-90 {
+  width: 80% !important;
+}
+.w-60 {
+  width: 20% !important;
+}
+.w-75 {
+  width: 75%;
+}
+.w-30 {
+  width: 30%;
+}
+.w-27 {
+  width: 30%;
+  font-size: 12px !important;
+  height: 20px !important;
+}
+.w-26 {
+  width: 25%;
+  font-size: 13px !important;
+}
+.w-75 {
+  width: 75%;
+}
+
+.w-auto {
+  width: auto !important;
+}
+
+.w-50 {
+  width: 50% !important;
+}
+.small{
+  font-size: 9px;
+}
+.t-center {
+  text-align: center !important;
+}
+
+.table-margin {
+  margin-bottom: 0.1rem !important;
+}
+
+.m-15 {
+  margin: 5rem;
+}
+
+.h-15 {
+  height: 13rem !important;
+}
+.h-20 {
+  height: 17rem !important;
+}
+.h-25 {
+  height: 21rem !important;
+}
+.quality{
+  margin: 0 auto;
+  display: block;
+  max-width:272px;
+}
+.pdf-title {
+  font-size: 1rem;
+  margin-left: 3rem;
+  margin-bottom: 0.35rem;
+  font-weight: 600;
+}
+
+.photo-container {
+  font-size: 1rem;
+  padding-top: 0.1rem;
+  margin-top: 0.3rem;
+  margin-bottom:0.3rem;
+  height: 1060px !important;
+  max-height: 1060px !important;
+}
+.maxWidth{
+  max-width: 330px !important;
+  width:330px !important;
+}
+.w-5 {
+  width: 5% !important;
+}
+
+.h-5 {
+  height: 5rem !important;
+}
+
+.h-8 {
+  height: 9rem;
+}
+
+.page {
+  height: 1100px !important;
+  max-height: 1100px !important;
+}
+
+.page-number {
+  float: right;
+  font-size: 22px;
+  font-weight: 600;
+  margin-right: 1.7rem;
+}
+
+.w-cell {
+  width: 5rem !important;
+}
+
+.w-10 {
+  width: 10% !important;
+}

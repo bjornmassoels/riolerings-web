@@ -1,0 +1,8 @@
+<h1 mat-dialog-title>Attentie!</h1>
+<div mat-dialog-content>
+  <p>Bent u zeker dat u deze gebruiker wilt verwijderen?</p>
+</div>
+<div mat-dialog-actions>
+  <button mat-button style="background-color: red" (click)="onDeleteClick()" cdkFocusInitial>Verwijderen</button>
+  <button mat-button (click)="onNoClick()">Annuleer</button>
+</div>

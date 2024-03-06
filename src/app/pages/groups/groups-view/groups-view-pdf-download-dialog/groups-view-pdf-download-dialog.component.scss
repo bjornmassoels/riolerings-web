@@ -1,0 +1,21 @@
+.button1{
+  height:40px !important;
+  margin-top: 60px;
+}
+.button2{
+  height:40px !important;
+}
+.innerColumn{
+  padding:12px;
+  border:1px dashed black;
+  border-radius: 10px;
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap:10px 0;
+  justify-content: center;
+  align-items: center;
+}
+.infoText{
+  width: 250px;
+}

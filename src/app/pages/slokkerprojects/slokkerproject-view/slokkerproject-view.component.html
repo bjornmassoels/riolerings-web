@@ -1,0 +1,272 @@
+<div *ngIf="isLoaded" class="topRow">
+  <button  mat-raised-button class="form-button" (click)="goToPrevious()">
+    Terug
+  </button>
+  <button *ngIf="!isFirst" mat-raised-button class="form-button" (click)="onPreviousClick()">
+    Vorige
+  </button>
+  <button *ngIf="!isLast" mat-raised-button class="form-button" (click)="onNextClick()">
+    Volgende
+  </button>
+  <button mat-raised-button class="form-button-blue" (click)="goToEdit()">
+    Bewerken
+  </button>
+  <p class="boldText" *ngIf="index !== -1">{{index + 1}}/{{totalProjectCount}}</p>
+  <button style="width: auto" mat-raised-button class="form-button2" (click)="generatePDF()"><div class="divInsideButton">PDF 	<mat-icon class="downloadImage">cloud_download</mat-icon></div></button>
+  <button style="width: auto" mat-raised-button class="form-button2" (click)="downloadPhotos()"><div class="divInsideButton">Foto's
+    <mat-icon class="downloadImage">cloud_download</mat-icon></div></button>
+  <button style="width: auto" mat-raised-button color="warn" class="form-button3"
+    (click)="onDeleteProject()">Kolk Verwijderen</button>
+
+</div>
+<mat-card id="content" *ngIf="isLoaded" class="project-card">
+  <h3 class="page-title">Kolk <small style='font-size:15px; margin-top:-5px'>   {{group.rbProjectNaam}} | {{group.rbGemeente}} | {{group.aannemerProjectNr}}</small></h3>
+  <div class="row-container">
+
+    <div class="column-container">
+      <div class="data-container">
+        <p class="label-text">Start datum</p>
+        <p class="data-text" *ngIf="currentProject.startDate == null;else dateTekst">Nog niet gestart</p>
+        <ng-template #dateTekst>
+          <p class="data-text">{{currentProject.startDate.toLocaleDateString()}}</p>
+        </ng-template>
+      </div>
+      <div class="data-container">
+        <p  class="label-text">Straat & huisnummer</p>
+        <p  style='font-size:17px !important;' class="data-text">{{currentProject.street}}{{currentProject.huisNr != null ? ' - ' + currentProject.huisNr : ''}}</p>
+      </div>
+      <div class="data-container">
+        <p class="label-text">Kolk nummer</p>
+        <p  style='font-size:17px !important;' class="data-text">{{currentProject.index}}</p>
+      </div>
+      <div class="data-container">
+        <p class="label-text">Afgewerkt</p>
+        <p *ngIf="currentProject.finished" class="data-text">Ja</p>
+        <p *ngIf="!currentProject.finished" class="data-text">Nee</p>
+      </div>
+    </div>
+    <div class="column-container">
+      <div class="data-container">
+        <p class="label-text">Equipmentnr</p>
+        <p class="data-text">{{currentProject.equipNrRiolering}}</p>
+      </div>
+      <div class="data-container">
+        <p class="label-text">Grondwerkers die deze kolk hebben aangepast</p>
+        <p style='font-weight: 700' class="data-text">{{usersWhoEdited}}</p>
+      </div>
+      <div class="data-container">
+        <p class="label-text">Opmerking</p>
+        <p *ngIf="currentProject.opmerking?.length > 17" class="data-text2">{{currentProject.opmerking}}</p>
+        <p *ngIf="currentProject.opmerking?.length <= 17" class="data-text">{{currentProject.opmerking}}</p>
+      </div>
+    </div>
+  </div>
+
+
+  <div  class="row-container">
+    <div *ngIf='!checkHasKolk(currentProject.slokker)'  class="column-container">
+      <p class="section-title">
+        Kolk niet bewerkt
+      </p>
+    </div>
+    <div *ngIf='checkHasKolk(currentProject.slokker)' class="column-container">
+      <div class="locatieRow">
+        <p style='width:130px !important;'> </p>
+        <p class="section-title">
+          Kolk
+        </p>
+        <button *ngIf='currentProject.slokker.xCoordGeoLocationFirsPhoto != null || currentProject.slokker.yCoordGeoLocationFirsPhoto != null'
+                nbButton
+                class="global-location-button"
+                (click)='openMapDialog(currentProject.slokker.xCoordGeoLocationFirsPhoto, currentProject.slokker.yCoordGeoLocationFirsPhoto, "Kolk")'>
+          Bekijk locatie
+        </button>
+        <p *ngIf='!currentProject.slokker.xCoordGeoLocationFirsPhoto && ! currentProject.slokker.yCoordGeoLocationFirsPhoto' style='width:130px !important;'> </p>
+      </div>
+      <div class="data-container-70">
+        <p style='margin-bottom: 0px' class="label-text">Type aansluiting op hoofdbuis:</p>
+        <p  style='margin-bottom: 0px' *ngIf="currentProject.slokker.tBuisStuk === 'flexAan'" class="data-text">flexibele aansluiting</p>
+        <p  style='margin-bottom: 0px' *ngIf="currentProject.slokker.tBuisStuk != null && currentProject.slokker.tBuisStuk !== 'flexAan'"
+           class="data-text">{{currentProject.slokker.tBuisStuk}}</p>
+        <p  style='margin-bottom: 0px' *ngIf="currentProject.slokker.tBuisStuk == null" class="data-text"></p>
+      </div>
+
+
+      <div class='flexWrapper'>
+        <div class="insideRow2">
+        </div>
+        <div class="insideRow2">
+          <p *ngIf="heeftPloegen != null && heeftPloegen === true" class="section-title2">Fase 1 & Fase 2</p>
+        </div>
+        <div class="insideRow2">
+          <p class="label-text">Diameter buis</p>
+          <p class="data-text">{{currentProject.slokker.diameter}} mm</p>
+        </div>
+          <div *ngIf="heeftPloegen == null || heeftPloegen === false" class="insideRow2">
+            <p class="label-text">Buizen</p>
+            <p class="data-text">{{addMeterString(currentProject.slokker.buis)}}</p>
+          </div>
+        <div *ngIf="heeftPloegen != null && heeftPloegen === true" class="insideRow2">
+          <p class="label-text">Buizen</p>
+          <p style='min-height: 20px;min-width: 20px;'  class="data-text">{{NullToZero(currentProject.slokker.buis)}} | {{NullToZero(currentProject.slokker.buis2)}}</p>
+          <p class="margL">meter</p>
+        </div>
+        <div class="insideRow2">
+          <p class="label-text">Reductie</p>
+          <p  class="data-text">{{addStuksString(currentProject.slokker.reductie)}}
+          </p>
+        </div>
+          <div *ngIf="(heeftPloegen == null || heeftPloegen === false) && !group.bochtenInGraden" class="insideRow2">
+            <p class="label-text">Bocht</p>
+            <p class="data-text">{{addStuksString(currentProject.slokker.bocht)}}</p>
+          </div>
+        <div *ngIf="(heeftPloegen == null || heeftPloegen === false) && group.bochtenInGraden" class="insideRow2">
+          <p class="label-text">Bocht 45°</p>
+          <p class="data-text">{{addStuksString(currentProject.slokker.gradenBocht45)}}</p>
+        </div>
+          <div *ngIf="(heeftPloegen != null && heeftPloegen === true) && !group.bochtenInGraden " class="insideRow2">
+            <p class="label-text">Bocht</p>
+            <p style='min-height: 20px;min-width: 20px;' class="data-text">{{NullToZero(currentProject.slokker.bocht)}} | {{NullToZero(currentProject.slokker.bocht2)}}</p>
+            <p class="margL">stuks</p>
+          </div>
+        <div *ngIf="(heeftPloegen != null && heeftPloegen === true) && group.bochtenInGraden " class="insideRow2">
+          <p class="label-text">Bocht 45°</p>
+          <p style='min-height: 20px;min-width: 20px;' class="data-text">{{NullToZero(currentProject.slokker.gradenBocht45)}} | {{NullToZero(currentProject.slokker.gradenBocht45Fase2)}}</p>
+          <p class="margL">stuks</p>
+        </div>
+        <div class="insideRow2">
+          <p class="label-text">Extra y-stuks</p>
+          <p class="data-text">{{addStuksString(currentProject.slokker.Y)}}
+          </p>
+        </div>
+        <div *ngIf="(heeftPloegen == null || heeftPloegen === false) && group.bochtenInGraden" class="insideRow2">
+          <p class="label-text">Bocht 90°</p>
+          <p class="data-text">{{addStuksString(currentProject.slokker.gradenBocht90)}}</p>
+        </div>
+        <div *ngIf="(heeftPloegen != null && heeftPloegen === true) && group.bochtenInGraden " class="insideRow2">
+          <p class="label-text">Bocht 90°</p>
+          <p style='min-height: 20px;min-width: 20px;' class="data-text">{{NullToZero(currentProject.slokker.gradenBocht90)}} | {{NullToZero(currentProject.slokker.gradenBocht90Fase2)}}</p>
+          <p class="margL">stuks</p>
+        </div>
+
+        <div class="insideRow2" *ngIf="this.group.slokkerSettings.mof">
+          <p class="label-text">Mof</p>
+          <p class="data-text">
+            {{addStuksString(currentProject.slokker.mof)}}</p>
+        </div>
+        <div class="insideRow2" *ngIf="this.group.slokkerSettings.krimpmof">
+          <p class="label-text">Krimpmof</p>
+          <p class="data-text">
+            {{addStuksString(currentProject.slokker.krimpmof)}}</p>
+        </div>
+        <div class="insideRow2" *ngIf="this.group.slokkerSettings.koppelstuk">
+          <p class="label-text">Koppelstuk</p>
+          <p class="data-text">
+            {{addStuksString(currentProject.slokker.koppelstuk)}}</p>
+        </div>
+        <div class="insideRow2" *ngIf="this.group.slokkerSettings.stop">
+          <p class="label-text">Stop</p>
+          <p class="data-text">
+            {{addStuksString(currentProject.slokker.stop)}}</p>
+        </div>
+        <div class="insideRow2" *ngIf="this.group.slokkerSettings.andere">
+          <p class="label-text">Andere</p>
+          <p class="data-text">
+            {{currentProject.slokker.andere}}</p>
+        </div>
+      </div>
+    </div>
+    <div *ngIf='!checkHasKolk(currentProject.slokker)'  class="column-container">
+      <p class="section-title">
+        Kolk niet bewerkt
+      </p>
+    </div>
+    <div *ngIf='checkHasKolk(currentProject.slokker)'  class="column-container">
+      <p class="section-title">
+        Kolk
+      </p>
+
+
+      <div style='margin-top:-10px' class='flexWrapper'>
+        <div class="insideRow3" *ngIf="this.group.slokkerSettings.afstandPutMof">
+          <p class="label-text">Afstand midden stroomafwaartse put tot mof</p>
+          <p class="data-text">
+            {{addMString(currentProject.slokker.afstandPutMof)}}</p>
+        </div>
+
+        <div class="insideRow3" *ngIf="this.group.slokkerSettings.diepteAansluitingMv">
+          <p class="label-text">Diepte HA-putje/aansluiting tov MV</p>
+          <p class="data-text">
+            {{addMString(currentProject.slokker.diepteAansluitingMv)}}</p>
+        </div>
+        <div class="insideRow3" *ngIf="this.group.slokkerSettings.diepteAanboringRiool">
+          <p class="label-text">Diepte aanboring op hoofdriool tov MV<br>(op bestaande riolering)</p>
+          <p class="data-text">
+            {{addMString(currentProject.slokker.diepteAanboringRiool)}}</p>
+        </div>
+        <div class="insideRow3" *ngIf="this.group.slokkerSettings.plaatsAansluiting">
+          <p class="label-text">Plaats aansluiting op riool tov van stroomafw. naar stroomopw.</p>
+          <p *ngIf="currentProject.slokker.plaatsAansluiting != null" class="data-text">
+            {{currentProject.slokker.plaatsAansluiting}} graden</p>
+        </div>
+      </div>
+      <div  style='margin-left: 10px !important;' class="data-container-70">
+        <p  class="label-text">Gelegen tussen volgende IP</p>
+        <div *ngIf="currentProject.slokker?.tussenIPLinks !== 'R' || currentProject.slokker?.tussenIPRechts !== 'R'  " class="flower">
+          <p class="data-text">{{currentProject.slokker?.tussenIPLinks}}</p>
+          <p class="IPtext">-</p>
+          <p class="data-text">{{currentProject.slokker?.tussenIPRechts}} </p>
+        </div>
+      </div>
+      <div style='margin-left: 10px !important;' class="data-container-70" *ngIf="this.group.slokkerSettings.infiltratieKlok">
+        <p class="label-text">Infiltratiekolk</p>
+        <p *ngIf="currentProject.slokker.infiltratieKlok" class="data-text">Ja</p>
+      </div>
+      <div  style='margin-left: 10px !important;' class="data-container-70" *ngIf="this.group.slokkerSettings.aansluitingOpengracht">
+        <p class="label-text">Kolk aansluiting op opengracht</p>
+        <p *ngIf="currentProject.slokker.aansluitingOpengracht" class="data-text">Ja</p>
+      </div>
+
+
+    </div>
+  </div>
+
+
+  <div class="image-container">
+    <p class="section-title">Foto's kolk</p>
+      <div *ngFor="let photo of currentProject.photos; let i = index"  [ngClass]="photo == null? 'minderWidth' : ''" class="fotoColumn">
+        <p class="fotoText" *ngIf="i === 0">1. boring of opening van aansluiting op hoofdriool</p>
+        <p class="fotoText5" *ngIf="i === 1">2. na plaatsing fundering, buizen, hulpstukken en HA-putje, vanaf de
+          aansluitopening richting putje,indien
+          niet alle hulpstukken te zien zijn, eventueel ook foto vanuit omgekeerd standpunt</p>
+        <p class="fotoText" *ngIf="i === 2">3. zelfde als foto 2, maar met omhulling</p>
+        <p class="fotoText" *ngIf="i > 2 && photo != null">{{i + 1}}. extra foto (optioneel)</p>
+        <img [ngClass]="i === 1 ? 'marginTopMin' : '' " *ngIf="photo != null" src="{{photo}}" class="photo" name="photo" (click)="imagePopUp(photo)">
+        <p style="margin-bottom: 100%;font-size: 18px;font-weight: 600" *ngIf="photo == null">Geen foto</p>
+      </div>
+  </div>
+
+
+</mat-card>
+
+<div class="bottomRow" *ngIf="isLoaded">
+  <button mat-raised-button class="form-button" (click)="goToPrevious()">
+    Terug
+  </button>
+  <button *ngIf="!isFirst" mat-raised-button class="form-button" (click)="onPreviousClick()">
+    Vorige
+  </button>
+  <button *ngIf="!isLast" mat-raised-button class="form-button" (click)="onNextClick()">
+    Volgende
+  </button>
+  <button mat-raised-button class="form-button-blue" (click)="goToEdit()">
+    Bewerken
+  </button>
+  <p class="boldText" *ngIf="index !== -1">{{index + 1}}/{{totalProjectCount}}</p>
+  <button style="width: auto" mat-raised-button class="form-button2" (click)="generatePDF()">PDF 	<mat-icon class="downloadImage">cloud_download</mat-icon></button>
+  <button style="width: auto" mat-raised-button class="form-button2" (click)="downloadPhotos()">Foto's
+    <mat-icon class="downloadImage">cloud_download</mat-icon></button>
+  <button style="width: auto" mat-raised-button color="warn" class="form-button3"
+    (click)="onDeleteProject()">Kolk verwijderen</button>
+
+</div>

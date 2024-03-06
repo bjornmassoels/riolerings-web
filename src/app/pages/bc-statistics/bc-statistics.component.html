@@ -1,0 +1,84 @@
+
+<h4 style='text-decoration: underline; margin: -15px 0 10px 25px'>Statistieken</h4>
+<div *ngIf="statisticsShown" class="big-card">
+
+  <div class="topBar">
+    <div class="leftTop">
+      <div class="titleRow">
+        <p class="title">Soort:</p>
+        <label class="normalText"><input [(ngModel)]="data" (change)="onItemChange($event)" name="data" class="radioBut"
+            type="radio" value="Huisaansluiting">Huisaansluiting</label>
+        <label class="normalText"><input [(ngModel)]="data" (change)="onItemChange($event)" name="data" class="radioBut"
+            type="radio" value="Wachtaansluiting">Wachtaansluiting</label>
+        <label class="normalText"><input [(ngModel)]="data" (change)="onItemChange($event)" name="data" class="radioBut"
+                                         type="radio" value="Slokker">Kolk</label>
+        <!--
+       <label class="normalText"><input [(ngModel)]="data" (change)="onItemChange($event)" name="data" class="radioBut"
+           type="radio" value="Stukken">Stuk:</label>
+      <nb-select class="dropDown" type="select" [(selected)]="stukSelected" (selectedChange)="onChangeStuk($event)">
+         <nb-option *ngFor="let stuk of stukken" value="{{stuk}}">{{stuk}}</nb-option>
+       </nb-select> -->
+      </div>
+    </div>
+    <button mat-flat-button (click)="generateStatistics()" type="button" class="genButton">Genereer</button>
+
+
+  </div>
+
+  <div class="row1">
+    <div class="secondTop">
+      <div class="titleRow2">
+        <p class="title">Tijd</p>
+        <div class="coolRow">
+          <label class="normalText"><input [(ngModel)]="tijd" (change)="onChangeTime($event)" name="tijd"
+              class="radioBut" type="radio" value="Week">Week</label>
+          <label class="normalText"><input [(ngModel)]="tijd" (change)="onChangeTime($event)" name="tijd"
+              class="radioBut" type="radio" value="Maand">Maand</label>
+          <label class="normalText"><input [(ngModel)]="tijd" (change)="onChangeTime($event)" name="tijd"
+              class="radioBut" type="radio" value="Jaar">Jaar</label>
+        </div>
+      </div>
+
+
+      <div class="payRow">
+        <p class="normalText extraMarg">Afgewerkt:</p>
+        <nb-select class="dropDown" type="select" [(selected)]="finishedSelected"
+          (selectedChange)="onChangeFinished($event)">
+          <nb-option value="Ja">Ja</nb-option>
+          <nb-option value="Nee">Nee</nb-option>
+        </nb-select>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="row1" style="margin-top: 1rem">
+    <div class="secondTop bg-vat">
+      <div class="titleRow2 bg-vat">
+        <p class="title">Datum</p>
+        <div class="coolRow bg-vat">
+          <label class="normalText"><input [(ngModel)]="datum" (change)="onChangeDatum($event)" name="vat" class="radioBut"
+                                           type="radio" value="Aanmaakdatum">Aanmaakdatum</label>
+          <label class="normalText"><input [(ngModel)]="datum" (change)="onChangeDatum($event)" name="vat" class="radioBut"
+              type="radio" value="Startdatum">Startdatum (grondwerker)</label>
+        </div>
+      </div>
+    </div>
+    <!--<div class="buttonBox">
+      <button mat-flat-button type="button" class="btn btn-success margL buttoné"
+              (click)="SavePDF()">Export PDF</button>
+      <button mat-flat-button type="button" class="buttoné" (click)="download()">Export Excel</button>
+    </div> -->
+  </div>
+
+  <div *ngIf='isLoaded' class="statisticsBox">
+    <ngx-charts-bar-vertical class="chart" [showDataLabel]="true" *ngIf="isLoaded" [view]="view" [scheme]="colorScheme"
+      [results]="productRevenueData" [gradient]="gradient" [xAxis]="showXAxis" [yAxis]="showYAxis"
+      [showXAxisLabel]="showXAxisLabel" [showYAxisLabel]="showYAxisLabel" [xAxisLabel]="xAxisLabelProduct"
+      [yAxisLabel]="yAxisLabelProduct">
+    </ngx-charts-bar-vertical>
+
+  </div>
+
+  </div>
+

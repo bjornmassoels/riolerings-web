@@ -1,0 +1,641 @@
+<button  mat-raised-button class="form-button" (click)="goToPrevious()">
+  Terug
+</button>
+<mat-card class="add-card-special">
+  <h3 style='margin-left: 25px; margin-bottom: 0px;'>Instellingen postnummers DWA</h3>
+  <form *ngIf="isLoaded" [formGroup]="dwaForm" style='justify-content: flex-start !important;' class="add-form">
+    <table class='floatTable2'>
+      <tbody>
+      <div class='borderContainer'>
+        <h6>VOOR HET PUTJE</h6>
+      <tr>
+        <td class='longerText'>Buis horizontaal Gres</td>
+        <td>
+          <input class='longerInput' nbInput id="name" type="text" formControlName="buisVoorHorGres" />
+        </td>
+      </tr>
+      <tr>
+        <td >Buis horizontaal PVC</td>
+        <td>
+          <input class='longerInput' nbInput id="name" type="text" formControlName="buisVoorHorPVC" />
+        </td>
+      </tr>
+      <tr>
+        <td>Buis horizontaal PP</td>
+        <td>
+          <input class='longerInput' nbInput id="name" type="text" formControlName="buisVoorHorPP" />
+        </td>
+      </tr>
+      </div>
+      <div class='borderContainer'>
+        <h6>VOOR HET PUTJE</h6>
+      <tr>
+        <td class='longerText'>Buis verticaal Gres</td>
+        <td>
+          <input class='longerInput' nbInput id="name" type="text" formControlName="buisVoorVertGres" />
+        </td>
+      </tr>
+      <tr>
+        <td>Buis verticaal PVC</td>
+        <td>
+          <input class='longerInput' nbInput id="name" type="text" formControlName="buisVoorVertPVC" />
+        </td>
+      </tr>
+      <tr>
+        <td>Buis verticaal PP</td>
+        <td>
+          <input class='longerInput' nbInput id="name" type="text" formControlName="buisVoorVertPP" />
+        </td>
+      </tr>
+      </div>
+      <div class='borderContainer'>
+        <h6>NA HET PUTJE</h6>
+        <tr>
+          <td class='longerText'>Buis Gres</td>
+          <td>
+            <input class='longerInput' nbInput id="name" type="text" formControlName="buisAchterGres" />
+          </td>
+        </tr>
+        <tr>
+          <td >Buis PVC</td>
+          <td>
+            <input class='longerInput' nbInput id="name" type="text" formControlName="buisAchterPVC" />
+          </td>
+        </tr>
+        <tr>
+          <td>Buis PP</td>
+          <td>
+            <input class='longerInput' nbInput id="name" type="text" formControlName="buisAchterPP" />
+          </td>
+        </tr>
+        <tr *ngIf='!group.bochtenInGraden'>
+          <td>Bocht</td>
+          <td>
+            <input class='longerInput' nbInput id="name" type="text" formControlName="bochtAchter" />
+          </td>
+        </tr>
+        <tr *ngIf='group.bochtenInGraden'>
+          <td>Bocht 45°</td>
+          <td>
+            <input class='longerInput' nbInput id="name" type="text" formControlName="bocht45Achter" />
+          </td>
+        </tr>
+        <tr *ngIf='group.bochtenInGraden'>
+          <td>Bocht 90°</td>
+          <td>
+            <input class='longerInput' nbInput id="name" type="text" formControlName="bocht90Achter" />
+          </td>
+        </tr>
+        <tr>
+          <td>Y-stuk</td>
+          <td>
+            <input class='longerInput' nbInput id="name" type="text" formControlName="YAchter" />
+          </td>
+        </tr>
+        <tr>
+          <td>Reductie</td>
+          <td>
+            <input class='longerInput' nbInput id="name" type="text" formControlName="reductieAchter" />
+          </td>
+        </tr>
+      </div>
+      <div class='borderContainer'>
+        <h6>PUTKADER</h6>
+      <tr>
+        <td class='longerText'>Gietijzer</td>
+        <td>
+          <input class='longerInput' nbInput id="name" type="text" formControlName="gietIjzer" />
+        </td>
+      </tr>
+      <tr>
+        <td>Beton kader</td>
+        <td>
+          <input class='longerInput' nbInput id="name" type="text" formControlName="betonKader" />
+        </td>
+      </tr>
+      <tr>
+        <td>Aluminium kader</td>
+        <td>
+          <input class='longerInput' nbInput id="name" type="text" formControlName="aluKader" />
+        </td>
+      </tr>
+      </div>
+      </tbody>
+    </table>
+
+    <table class='floatTable2'>
+      <tbody>
+      <div class='borderContainer'>
+        <h6>STUKKEN VOOR HET PUTJE</h6>
+        <tr *ngIf='!group.bochtenInGraden'>
+          <td class='longerText'>Bocht</td>
+          <td >
+            <input class='longerInput' nbInput id="name" type="text" formControlName="bochtVoor" />
+          </td>
+        </tr>
+        <tr *ngIf='group.bochtenInGraden'>
+          <td class='longerText'>Bocht 45°</td>
+          <td >
+            <input class='longerInput' nbInput id="name" type="text" formControlName="bocht45Voor" />
+          </td>
+        </tr>
+        <tr *ngIf='group.bochtenInGraden'>
+          <td class='longerText'>Bocht 90°</td>
+          <td >
+            <input class='longerInput' nbInput id="name" type="text" formControlName="bocht90Voor" />
+          </td>
+        </tr>
+      <tr>
+        <td class='longerText'>Indrukmof</td>
+        <td >
+          <input class='longerInput' nbInput id="name" type="text" formControlName="indrukmof" />
+        </td>
+      </tr>
+      <tr>
+        <td>Y-stuk</td>
+        <td>
+          <input class='longerInput' nbInput id="name" type="text" formControlName="yStuk" />
+        </td>
+      </tr>
+      <tr>
+        <td>T-buis</td>
+        <td>
+          <input class='longerInput' nbInput id="name" type="text" formControlName="tBuis" />
+        </td>
+      </tr>
+      <tr>
+        <td>T-stuk</td>
+        <td>
+          <input class='longerInput' nbInput id="name" type="text" formControlName="tStuk" />
+        </td>
+      </tr>
+        <tr>
+          <td>Flexibele aansluiting</td>
+          <td>
+            <input class='longerInput' nbInput id="name" type="text" formControlName="flexAan" />
+          </td>
+        </tr>
+      <tr>
+        <td>Reductie</td>
+        <td>
+          <input class='longerInput' nbInput id="name" type="text" formControlName="reductieVoor" />
+        </td>
+      </tr>
+      <tr>
+        <td>Fundering/omhulling</td>
+        <td>
+          <input class='longerInput' nbInput id="name" type="text" formControlName="funOmh" />
+        </td>
+      </tr>
+      <tr *ngIf="group.dwaSettings.mof">
+        <td>Mof</td>
+        <td>
+          <input class='longerInput' nbInput id="name" type="text" formControlName="mof" />
+        </td>
+      </tr>
+      <tr *ngIf="group.dwaSettings.krimpMof">
+        <td>Krimpmof</td>
+        <td>
+          <input class='longerInput' nbInput id="name" type="text" formControlName="krimpmof" />
+        </td>
+      </tr>
+      <tr *ngIf="group.dwaSettings.koppelStuk">
+        <td>Koppelstuk</td>
+        <td>
+          <input class='longerInput' nbInput id="name" type="text" formControlName="koppelstuk" />
+        </td>
+      </tr>
+      <tr *ngIf="group.dwaSettings.stop">
+        <td>Stop</td>
+        <td>
+          <input class='longerInput' nbInput id="name" type="text" formControlName="stop" />
+        </td>
+      </tr>
+      <tr *ngIf="group.dwaSettings.andere">
+        <td>Andere</td>
+        <td>
+          <input class='longerInput' nbInput id="name" type="text" formControlName="andere" />
+        </td>
+      </tr>
+        <tr *ngIf="group.dwaSettings.terugSlagKlep">
+          <td>Terugslagklep</td>
+          <td>
+            <input class='longerInput' nbInput id="name" type="text" formControlName="terugslagKlep" />
+          </td>
+        </tr>
+        <tr *ngIf="group.dwaSettings.sifonPutje == null || group.dwaSettings.sifonPutje === true">
+          <td>Sifonputje</td>
+          <td>
+            <input class='longerInput' nbInput id="name" type="text" formControlName="sifonPutje" />
+          </td>
+        </tr>
+        <tr *ngIf="group.dwaSettings.tPutje == null || group.dwaSettings.tPutje === true">
+          <td>T-putje</td>
+          <td>
+            <input class='longerInput' nbInput id="name" type="text" formControlName="tPutje" />
+          </td>
+        </tr>
+      </div>
+      <div class='borderContainer'>
+        <h6>SOORT PUTJE</h6>
+        <tr>
+          <td class='longerText'>Kunststof</td>
+          <td >
+            <input class='longerInput' nbInput id="name" type="text" formControlName="kunststof" />
+          </td>
+        </tr>
+        <tr>
+          <td class='longerText'>PVC T-stuk</td>
+          <td >
+            <input class='longerInput' nbInput id="name" type="text" formControlName="pvcTStuk" />
+          </td>
+        </tr>
+      </div>
+      </tbody>
+    </table>
+  </form>
+  <mat-card-actions>
+    <button (click)='onSubmitDwa(dwaForm.value)' mat-raised-button class="save-button" color="primary" type="submit">
+      Opslaan
+    </button>
+  </mat-card-actions>
+</mat-card>
+
+
+
+
+
+<mat-card class="add-card-special">
+  <h3 style='margin-left: 25px ;margin-bottom: 0px;'>Instellingen postnummers RWA</h3>
+  <form *ngIf="isLoaded" [formGroup]="rwaForm" style='justify-content: flex-start !important;' class="add-form">
+    <table class='floatTable2'>
+      <tbody>
+      <div class='borderContainer'>
+        <h6>VOOR HET PUTJE</h6>
+        <tr>
+          <td  class='longerText' >Buis horizontaal PVC</td>
+          <td>
+            <input class='longerInput' nbInput id="name" type="text" formControlName="buisVoorHorPVC" />
+          </td>
+        </tr>
+        <tr>
+          <td>Buis horizontaal PP</td>
+          <td>
+            <input class='longerInput' nbInput id="name" type="text" formControlName="buisVoorHorPP" />
+          </td>
+        </tr>
+      </div>
+      <div class='borderContainer'>
+        <h6>VOOR HET PUTJE</h6>
+        <tr >
+          <td  class='longerText'>Buis verticaal PVC</td>
+          <td>
+            <input class='longerInput' nbInput id="name" type="text" formControlName="buisVoorVertPVC" />
+          </td>
+        </tr>
+        <tr>
+          <td>Buis verticaal PP</td>
+          <td>
+            <input class='longerInput' nbInput id="name" type="text" formControlName="buisVoorVertPP" />
+          </td>
+        </tr>
+      </div>
+      <div class='borderContainer'>
+        <h6>NA HET PUTJE</h6>
+        <tr>
+          <td class='longerText'>Buis PVC</td>
+          <td>
+            <input class='longerInput' nbInput id="name" type="text" formControlName="buisAchterPVC" />
+          </td>
+        </tr>
+        <tr>
+          <td>Buis PP</td>
+          <td>
+            <input class='longerInput' nbInput id="name" type="text" formControlName="buisAchterPP" />
+          </td>
+        </tr>
+        <tr>
+        <tr *ngIf='!group.bochtenInGraden'>
+          <td>Bocht</td>
+          <td>
+            <input class='longerInput' nbInput id="name" type="text" formControlName="bochtAchter" />
+          </td>
+        </tr>
+        <tr *ngIf='group.bochtenInGraden'>
+          <td>Bocht 45°</td>
+          <td>
+            <input class='longerInput' nbInput id="name" type="text" formControlName="bocht45Achter" />
+          </td>
+        </tr>
+        <tr *ngIf='group.bochtenInGraden'>
+          <td>Bocht 90°</td>
+          <td>
+            <input class='longerInput' nbInput id="name" type="text" formControlName="bocht90Achter" />
+          </td>
+        </tr>
+        <tr>
+          <td>Y-stuk</td>
+          <td>
+            <input class='longerInput' nbInput id="name" type="text" formControlName="YAchter" />
+          </td>
+        </tr>
+        <tr>
+          <td>Reductie</td>
+          <td>
+            <input class='longerInput' nbInput id="name" type="text" formControlName="reductieAchter" />
+          </td>
+        </tr>
+      </div>
+      <div class='borderContainer'>
+        <h6>PUTKADER</h6>
+        <tr>
+          <td class='longerText'>Gietijzer</td>
+          <td>
+            <input class='longerInput' nbInput id="name" type="text" formControlName="gietIjzer" />
+          </td>
+        </tr>
+        <tr>
+          <td>Beton kader</td>
+          <td>
+            <input class='longerInput' nbInput id="name" type="text" formControlName="betonKader" />
+          </td>
+        </tr>
+        <tr>
+          <td>Aluminium kader</td>
+          <td>
+            <input class='longerInput' nbInput id="name" type="text" formControlName="aluKader" />
+          </td>
+        </tr>
+      </div>
+      </tbody>
+    </table>
+
+    <table class='floatTable2'>
+      <tbody>
+      <div class='borderContainer'>
+        <h6>STUKKEN VOOR HET PUTJE</h6>
+        <tr *ngIf='!group.bochtenInGraden'>
+          <td class='longerText'>Bocht</td>
+          <td >
+            <input class='longerInput' nbInput id="name" type="text" formControlName="bochtVoor" />
+          </td>
+        </tr>
+        <tr *ngIf='group.bochtenInGraden'>
+          <td class='longerText'>Bocht 45°</td>
+          <td >
+            <input class='longerInput' nbInput id="name" type="text" formControlName="bocht45Voor" />
+          </td>
+        </tr>
+        <tr *ngIf='group.bochtenInGraden'>
+          <td class='longerText'>Bocht 90°</td>
+          <td >
+            <input class='longerInput' nbInput id="name" type="text" formControlName="bocht90Voor" />
+          </td>
+        </tr>
+        <tr>
+          <td class='longerText'>Indrukmof</td>
+          <td >
+            <input class='longerInput' nbInput id="name" type="text" formControlName="indrukmof" />
+          </td>
+        </tr>
+        <tr>
+          <td>Y-stuk</td>
+          <td>
+            <input class='longerInput' nbInput id="name" type="text" formControlName="yStuk" />
+          </td>
+        </tr>
+        <tr>
+          <td>T-buis</td>
+          <td>
+            <input class='longerInput' nbInput id="name" type="text" formControlName="tBuis" />
+          </td>
+        </tr>
+        <tr>
+          <td>T-stuk</td>
+          <td>
+            <input class='longerInput' nbInput id="name" type="text" formControlName="tStuk" />
+          </td>
+        </tr>
+        <tr>
+          <td>Flexibele aansluiting</td>
+          <td>
+            <input class='longerInput' nbInput id="name" type="text" formControlName="flexAan" />
+          </td>
+        </tr>
+        <tr>
+          <td>Reductie</td>
+          <td>
+            <input class='longerInput' nbInput id="name" type="text" formControlName="reductieVoor" />
+          </td>
+        </tr>
+        <tr>
+          <td>Fundering/omhulling</td>
+          <td>
+            <input class='longerInput' nbInput id="name" type="text" formControlName="funOmh" />
+          </td>
+        </tr>
+        <tr *ngIf="group.rwaSettings.mof">
+          <td>Mof</td>
+          <td>
+            <input class='longerInput' nbInput id="name" type="text" formControlName="mof" />
+          </td>
+        </tr>
+        <tr *ngIf="group.rwaSettings.krimpMof">
+          <td>Krimpmof</td>
+          <td>
+            <input class='longerInput' nbInput id="name" type="text" formControlName="krimpmof" />
+          </td>
+        </tr>
+        <tr *ngIf="group.rwaSettings.koppelStuk">
+          <td>Koppelstuk</td>
+          <td>
+            <input class='longerInput' nbInput id="name" type="text" formControlName="koppelstuk" />
+          </td>
+        </tr>
+        <tr *ngIf="group.rwaSettings.stop">
+          <td>Stop</td>
+          <td>
+            <input class='longerInput' nbInput id="name" type="text" formControlName="stop" />
+          </td>
+        </tr>
+        <tr *ngIf="group.rwaSettings.andere">
+          <td>Andere</td>
+          <td>
+            <input class='longerInput' nbInput id="name" type="text" formControlName="andere" />
+          </td>
+        </tr>
+        <tr *ngIf="group.rwaSettings.aanslBovRwa">
+          <td>Aansluitingen bovengrondse regenafvoer</td>
+          <td>
+            <input class='longerInput' nbInput id="name" type="text" formControlName="aanslBovAfvoer" />
+          </td>
+        </tr>
+        <tr *ngIf="group.rwaSettings.terugSlagKlep">
+          <td>Terugslagklep</td>
+          <td>
+            <input class='longerInput' nbInput id="name" type="text" formControlName="terugslagKlep" />
+          </td>
+        </tr>
+        <tr *ngIf="group.rwaSettings.tPutje == null || group.rwaSettings.tPutje === true">
+          <td>T-putje</td>
+          <td>
+            <input class='longerInput' nbInput id="name" type="text" formControlName="tPutje" />
+          </td>
+        </tr>
+      </div>
+      <div class='borderContainer'>
+        <h6>SOORT PUTJE</h6>
+        <tr>
+          <td class='longerText'>Kunststof</td>
+          <td >
+            <input class='longerInput' nbInput id="name" type="text" formControlName="kunststof" />
+          </td>
+        </tr>
+        <tr>
+          <td class='longerText'>PVC T-stuk</td>
+          <td>
+            <input class='longerInput' nbInput id="name" type="text" formControlName="pvcTStuk" />
+          </td>
+        </tr>
+        <tr *ngIf='group.rwaSettings.infilPutje'>
+          <td class='longerText'>Infiltratieputje</td>
+          <td >
+            <input class='longerInput' nbInput id="name" type="text" formControlName="infiltratiePutje" />
+          </td>
+        </tr>
+      </div>
+      </tbody>
+    </table>
+  </form>
+  <mat-card-actions>
+    <button (click)='onSubmitRwa(rwaForm.value)' mat-raised-button class="save-button" color="primary" type="submit">
+      Opslaan
+    </button>
+  </mat-card-actions>
+</mat-card>
+
+
+
+<mat-card class="add-card-slokker">
+  <h3 style='margin-bottom: 0px; margin-left: 25px'>Instellingen postnummers kolk</h3>
+  <form *ngIf="isLoaded" [formGroup]="slokkerForm" style='justify-content: flex-start !important;' class="add-form">
+    <div class='outerDiv'>
+    <table class='floatTable'>
+      <tbody>
+      <div class='borderContainer'>
+        <h6>Kolk</h6>
+        <tr>
+          <td class='longerText'>Buis</td>
+          <td >
+            <input class='longerInput' nbInput id="name" type="text" formControlName="buis" />
+          </td>
+        </tr>
+        <tr *ngIf='!group.bochtenInGraden'>
+          <td class='longerText'>Bocht</td>
+          <td >
+            <input class='longerInput' nbInput id="name" type="text" formControlName="bocht" />
+          </td>
+        </tr>
+        <tr *ngIf='group.bochtenInGraden'>
+          <td class='longerText'>Bocht 45°</td>
+          <td >
+            <input class='longerInput' nbInput id="name" type="text" formControlName="bocht45" />
+          </td>
+        </tr>
+        <tr *ngIf='group.bochtenInGraden'>
+          <td class='longerText'>Bocht 90°</td>
+          <td >
+            <input class='longerInput' nbInput id="name" type="text" formControlName="bocht90" />
+          </td>
+        </tr>
+        <tr>
+          <td>Indrukmof</td>
+          <td>
+            <input class='longerInput' nbInput id="name" type="text" formControlName="indrukmof" />
+          </td>
+        </tr>
+        <tr>
+          <td>Y-stuk/T-stuk</td>
+          <td>
+            <input class='longerInput' nbInput id="name" type="text" formControlName="ytStuk" />
+          </td>
+        </tr>
+        <tr>
+          <td>T-Buis</td>
+          <td>
+            <input class='longerInput' nbInput id="name" type="text" formControlName="tBuis" />
+          </td>
+        </tr>
+        <tr>
+          <td>Flexibele aansluiting</td>
+          <td>
+            <input class='longerInput' nbInput id="name" type="text" formControlName="flexAan" />
+          </td>
+        </tr>
+        <tr>
+          <td>Reductie</td>
+          <td>
+            <input class='longerInput' nbInput id="name" type="text" formControlName="reductie" />
+          </td>
+        </tr>
+      </div>
+      </tbody>
+    </table>
+    <table class='floatTable'>
+      <tbody>
+      <div class='borderContainer'>
+        <h6>Kolk</h6>
+        <tr *ngIf="group.slokkerSettings.mof">
+          <td class='longerText'>Mof</td>
+          <td >
+            <input class='longerInput' nbInput id="name" type="text" formControlName="mof" />
+          </td>
+        </tr>
+        <tr  *ngIf="group.slokkerSettings.krimpmof">
+          <td class='longerText'>Krimpmof</td>
+          <td >
+            <input class='longerInput' nbInput id="name" type="text" formControlName="krimpmof" />
+          </td>
+        </tr>
+        <tr  *ngIf="group.slokkerSettings.koppelstuk">
+          <td class='longerText'>Koppelstuk</td>
+          <td >
+            <input class='longerInput' nbInput id="name" type="text" formControlName="koppelstuk" />
+          </td>
+        </tr>
+        <tr  *ngIf="group.slokkerSettings.stop">
+          <td class='longerText'>Stop</td>
+          <td >
+            <input class='longerInput' nbInput id="name" type="text" formControlName="stop" />
+          </td>
+        </tr>
+        <tr  *ngIf="group.slokkerSettings.andere">
+          <td class='longerText'>Andere</td>
+          <td >
+            <input class='longerInput' nbInput id="name" type="text" formControlName="andere" />
+          </td>
+        </tr>
+        <tr  *ngIf="group.slokkerSettings.infiltratieKlok">
+          <td class='longerText'>Infiltratiekolk</td>
+          <td >
+            <input class='longerInput' nbInput id="name" type="text" formControlName="infiltratieKolk" />
+          </td>
+        </tr>
+        <tr>
+          <td class='longerText'>Fundering/omhulling</td>
+          <td >
+            <input class='longerInput' nbInput id="name" type="text" formControlName="funOmh" />
+          </td>
+        </tr>
+
+      </div>
+      </tbody>
+    </table>
+    </div>
+  </form>
+  <mat-card-actions>
+    <button style='margin-bottom: 15px;' (click)='onSubmitSlokker(slokkerForm.value)' mat-raised-button class="save-button" color="primary" type="submit">
+      Opslaan
+    </button>
+  </mat-card-actions>
+</mat-card>

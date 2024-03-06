@@ -1,0 +1,171 @@
+.page-header {
+  display: flex !important;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.page-header h1 {
+  display: inline !important;
+}
+
+.add-button {
+  font-weight: 500 !important;
+  letter-spacing: 1.1pt !important;
+  background-color: #484f65 !important;
+  color: #ffffff !important;
+  font-size: 16px !important;
+  height:40px !important;
+  width:190px;
+}
+.add-button-green {
+  font-weight: 500 !important;
+  letter-spacing: 1.1pt !important;
+  background-color: #00b300 !important;
+  color: #ffffff !important;
+  font-size: 16px !important;
+  margin-left: 25px;
+  height:40px !important;
+  width:235px;
+
+}
+.groen {
+  width: 100px;
+  color: white;
+  height: 40px;
+  border: 1px solid green;
+  border-radius: 10px;
+  background-color: green;
+}
+.rood {
+  width: 100px;
+  color: white;
+  height: 40px;
+  border: 1px solid red;
+  border-radius: 10px;
+  background-color: red;
+}
+.scroll-table {
+  height: 77vh;
+  overflow: auto;
+  width: 100%;
+  max-width: 1250px;
+  border-radius: 15px;
+  padding:3px 15px 15px 15px;
+  background-color: white;
+  color: white;
+  box-shadow: #00000030 0 10px 20px, #0000003b 0 6px 6px;
+}
+
+.scroll-table::-webkit-scrollbar,
+.scroll-table::-webkit-scrollbar-thumb {
+  width: 26px;
+  border-radius: 13px;
+  background-clip: padding-box;
+  border: 10px solid transparent;
+}
+
+.scroll-table::-webkit-scrollbar-thumb {
+  box-shadow: inset 0 0 0 10px;
+}
+
+.scroll-table:hover {
+  color: rgba(0, 0, 0, 0.3);
+}
+
+.item-list {
+  width: 100%;
+  min-height: 60px;
+  display: block;
+  background: white;
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.item-box {
+  padding: 20px 10px;
+  width: 100%;
+  border-bottom: solid 1px #ccc;
+  color: rgba(0, 0, 0, 0.87);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  background: white;
+  font-size: 14px;
+}
+
+.cdk-drag-preview {
+  border-radius: 4px;
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+    0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+.cdk-drag-placeholder {
+  opacity: 0.1;
+  background-color: gray;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.item-box:last-child {
+  border: none;
+}
+
+.item-list.cdk-drop-list-dragging .item-box:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.drag-handle {
+  cursor: move;
+  width: 20px;
+}
+
+td {
+  width: 100%;
+}
+
+tr {
+  width: 100%;
+}
+
+tbody {
+  width: 100%;
+}
+
+table {
+  width: 100%;
+}
+
+th {
+  width: 100%;
+}
+
+.edit-icon {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.move-icon {
+  width: 20px;
+  height: 20px;
+  cursor: move;
+}
+
+.action-container {
+  display: inline !important;
+  max-width: 80px;
+}
+
+.action-container div {
+  display: inline !important;
+  margin-right: 10px;
+}
+
+.search-box {
+  width: 25vw;
+  height: 5vh;
+  box-shadow: 0 0 15px -10px rgba(0, 0, 0, 0.75);
+}

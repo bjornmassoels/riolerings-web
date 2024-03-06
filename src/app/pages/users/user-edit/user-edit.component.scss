@@ -1,0 +1,70 @@
+.selectbox{
+  margin-left:18px;
+}
+.smallTitle{
+  font-size:14px;
+  font-weight:500;
+}
+.leftText{
+  width:250px !important;
+  height:57px !important;
+}
+.form-button {
+  width: 150px;
+  height:40px;
+  margin: 17px 12px 12px 12px;
+  font-weight: 800;
+  letter-spacing: 1.4pt;
+  font-size: 21px;
+}
+.legendeColumn{
+  border:3px dotted black;
+  border-radius: 10px;
+  float:left;
+  width:400px !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin:35px 0 0 15px;
+  align-items: flex-start;
+  padding:7px;
+}
+.legendeText{
+  font-size:15px !important;
+}
+.underline{
+  text-decoration: underline;
+}
+.form-button-back{
+  width: 120px;
+  margin: 5px;
+  height:44px;
+  font-weight: 800;
+  letter-spacing: 1.4pt;
+  font-size: 1.2em;
+  background-color: black !important;
+  color: white !important;
+}
+.topRow{
+  display:flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.normalInput{
+  width:215px !important;
+  height:32px !important;
+}
+.normalInput2{
+  width:215px !important;
+  height:32px !important;
+}
+.delete-button {
+  font-weight: 800;
+  letter-spacing: 1.4pt;
+  margin-right:5px;
+  font-size: 1.2em;
+  min-width:50px !important;
+  max-width:50px !important;
+  min-height:40px !important;
+  max-height:40px !important;
+}

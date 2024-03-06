@@ -1,0 +1,347 @@
+<div class='topRow'>
+  <button mat-raised-button class="form-button" (click)="goToPrevious()">
+    Terug
+  </button>
+  <div style='display: flex;flex-direction: column'>
+    <h5>Stel de invulvelden in die voor dit project van toepassing zijn.</h5>
+    <h6>Als u een invulveld uitzet(uitvinken), dan verdwijnt deze op de mobiele app en admin-website voor het hele project.</h6>
+  </div>
+</div>
+
+<div class='settingsVariableDiv'>
+  <p style='font-size: 16px;font-weight: 600; margin-top: 7px'>Selecteer een project om de uitgezette<br> velden over te nemen van dit project:</p>
+  <nb-select class='variableSelect' (selectedChange)='changeGroupVariableSettings($event)' id="type">
+    <nb-option *ngFor="let group of groupsWithSettings" value="{{ group.rbProjectNaam }}" >
+      {{ group.rbProjectNaam }}
+    </nb-option>
+  </nb-select>
+</div>
+ <mat-card class="add-card">
+   <div class='floatingContainer'>
+     <div class='bochtenDiv'>
+       <p style='margin-bottom: 0px;margin-top: -5px;font-size: 15px'><b>Bochten in graden? Zo ja, vink aan -></b></p>
+       <nb-checkbox [(ngModel)]='bochtenInGraden' type="checkbox" ></nb-checkbox>
+     </div>
+     <span class='floating-text'>* NIEUW</span>
+   </div>
+     <div class='outerDiv'>
+   <div class='flexer'>
+  <h3>Invulvelden DWA</h3>
+  <form *ngIf="isLoaded" [formGroup]="dwaForm" class="add-form">
+    <table>
+      <thead>
+        <tr>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>Diepte riolering ter hoogte van HA</td>
+        <td>
+          <nb-checkbox type="checkbox" formControlName='diepteRioleringHA'
+          ></nb-checkbox>
+        </td>
+      </tr>
+      <tr>
+        <td>Diepte HA tov woning</td>
+        <td>
+          <nb-checkbox type="checkbox" formControlName='diepteAansluitingWoning'
+          ></nb-checkbox>
+        </td>
+      </tr>
+      <tr>
+        <td>Plaats aansluiting op riool tov oplopende huisnr.</td>
+        <td>
+          <nb-checkbox type="checkbox" formControlName='plaatsAansluiting'
+          ></nb-checkbox>
+        </td>
+      </tr>
+      <tr>
+        <td>Afstand midden stroomafwaartse put tot mof</td>
+        <td>
+          <nb-checkbox type="checkbox" formControlName='afstandPutMof'
+          ></nb-checkbox>
+        </td>
+      </tr>
+      <tr>
+        <td>Terugslagklep</td>
+        <td>
+          <nb-checkbox type="checkbox" formControlName='terugSlagKlep'
+          ></nb-checkbox>
+        </td>
+      </tr>
+      <tr>
+        <td>Situatieschets grondplan HA-putje tov perceel</td>
+        <td>
+          <nb-checkbox type="checkbox" formControlName='ssGrond'
+          ></nb-checkbox>
+        </td>
+      </tr>
+      <tr>
+        <td>Mof</td>
+        <td>
+          <nb-checkbox type="checkbox" formControlName='mof'
+          ></nb-checkbox>
+        </td>
+      </tr>
+      <tr>
+        <td>Krimpmof</td>
+        <td>
+          <nb-checkbox type="checkbox" formControlName='krimpMof'
+          ></nb-checkbox>
+        </td>
+      </tr>
+      <tr>
+        <td>Koppelstuk</td>
+        <td>
+          <nb-checkbox type="checkbox" formControlName='koppelStuk'
+          ></nb-checkbox>
+        </td>
+      </tr>
+      <tr>
+        <td>Stop</td>
+        <td>
+          <nb-checkbox type="checkbox" formControlName='stop'
+          ></nb-checkbox>
+        </td>
+      </tr>
+      <tr>
+        <td>Andere</td>
+        <td>
+          <nb-checkbox type="checkbox" formControlName='andere'
+          ></nb-checkbox>
+        </td>
+      </tr>
+      <tr>
+        <td>Sifonputje</td>
+        <td>
+          <nb-checkbox type="checkbox" formControlName='sifonPutje'
+          ></nb-checkbox>
+        </td>
+      </tr>
+      <tr>
+        <td>T-putje</td>
+        <td>
+          <nb-checkbox type="checkbox" formControlName='tPutje'
+          ></nb-checkbox>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+  </form>
+   </div>
+   <div class='flexer'>
+     <h3>Invulvelden RWA</h3>
+     <form *ngIf="isLoaded" [formGroup]="rwaForm"  class="add-form">
+       <table>
+         <thead>
+         <tr>
+           <th></th>
+           <th></th>
+         </tr>
+         </thead>
+         <tbody>
+         <tr>
+           <td>Diepte riolering ter hoogte van HA</td>
+           <td>
+             <nb-checkbox type="checkbox" formControlName='diepteRioleringHA'
+             ></nb-checkbox>
+           </td>
+         </tr>
+         <tr>
+           <td>Diepte HA tov woning</td>
+           <td>
+             <nb-checkbox type="checkbox" formControlName='diepteAansluitingWoning'
+             ></nb-checkbox>
+           </td>
+         </tr>
+         <tr>
+           <td>Plaats aansluiting op riool tov oplopende huisnr.</td>
+           <td>
+             <nb-checkbox type="checkbox" formControlName='plaatsAansluiting'
+             ></nb-checkbox>
+           </td>
+         </tr>
+         <tr>
+           <td>Afstand midden stroomafwaartse put tot mof</td>
+           <td>
+             <nb-checkbox type="checkbox" formControlName='afstandPutMof'
+             ></nb-checkbox>
+           </td>
+         </tr>
+         <tr>
+           <td>Terugslagklep</td>
+           <td>
+             <nb-checkbox type="checkbox" formControlName='terugSlagKlep'
+             ></nb-checkbox>
+           </td>
+         </tr>
+         <tr>
+           <td>Situatieschets grondplan HA-putje tov perceel</td>
+           <td>
+             <nb-checkbox type="checkbox" formControlName='ssGrond'
+             ></nb-checkbox>
+           </td>
+         </tr>
+         <tr>
+           <td>Mof</td>
+           <td>
+             <nb-checkbox type="checkbox" formControlName='mof'
+             ></nb-checkbox>
+           </td>
+         </tr>
+         <tr>
+           <td>Krimpmof</td>
+           <td>
+             <nb-checkbox type="checkbox" formControlName='krimpMof'
+             ></nb-checkbox>
+           </td>
+         </tr>
+         <tr>
+           <td>Koppelstuk</td>
+           <td>
+             <nb-checkbox type="checkbox" formControlName='koppelStuk'
+             ></nb-checkbox>
+           </td>
+         </tr>
+         <tr>
+           <td>Stop</td>
+           <td>
+             <nb-checkbox type="checkbox" formControlName='stop'
+             ></nb-checkbox>
+           </td>
+         </tr>
+         <tr>
+           <td>Andere</td>
+           <td>
+             <nb-checkbox type="checkbox" formControlName='andere'
+             ></nb-checkbox>
+           </td>
+         </tr>
+         <tr>
+           <td>Aansluitingen bovengrondse regenafvoer</td>
+           <td>
+             <nb-checkbox type="checkbox" formControlName='aanslBovRwa'
+             ></nb-checkbox>
+           </td>
+         </tr>
+         <tr>
+           <td>Aansluiting op opengracht</td>
+           <td>
+             <nb-checkbox type="checkbox" formControlName='aanslOpenRwa'
+             ></nb-checkbox>
+           </td>
+         </tr>
+         <tr>
+           <td>Infiltratieputje</td>
+           <td>
+             <nb-checkbox type="checkbox" formControlName='infilPutje'
+             ></nb-checkbox>
+           </td>
+         </tr>
+         <tr>
+           <td>T-putje</td>
+           <td>
+             <nb-checkbox type="checkbox" formControlName='tPutje'
+             ></nb-checkbox>
+           </td>
+         </tr>
+         </tbody>
+       </table>
+     </form>
+   </div>
+   <div class='flexer'>
+     <h3>Invulvelden Kolken</h3>
+     <form *ngIf="isLoaded" [formGroup]="slokkerForm"  class="add-form">
+       <table>
+         <thead>
+         <tr>
+           <th></th>
+           <th></th>
+         </tr>
+         </thead>
+         <tbody>
+
+         <tr>
+           <td>Mof</td>
+           <td>
+             <nb-checkbox type="checkbox" formControlName='mof'
+             ></nb-checkbox>
+           </td>
+         </tr>
+         <tr>
+           <td>Krimpmof</td>
+           <td>
+             <nb-checkbox type="checkbox" formControlName='krimpmof'
+             ></nb-checkbox>
+           </td>
+         </tr>
+         <tr>
+           <td>Koppelstuk</td>
+           <td>
+             <nb-checkbox type="checkbox" formControlName='koppelstuk'
+             ></nb-checkbox>
+           </td>
+         </tr>
+         <tr>
+           <td>Stop</td>
+           <td>
+             <nb-checkbox type="checkbox" formControlName='stop'
+             ></nb-checkbox>
+           </td>
+         </tr>
+         <tr>
+           <td>Andere</td>
+           <td>
+             <nb-checkbox type="checkbox" formControlName='andere'
+             ></nb-checkbox>
+           </td>
+         </tr>
+         <tr>
+           <td>Diepte aansluiting tov MV
+           </td>
+           <td>
+             <nb-checkbox type="checkbox" formControlName='diepteAansluitingMv'
+             ></nb-checkbox>
+           </td>
+         </tr>
+         <tr>
+           <td>Diepte aanboring op riool tov MV</td>
+           <td>
+             <nb-checkbox type="checkbox" formControlName='diepteAanboringRiool'
+             ></nb-checkbox>
+           </td>
+         </tr>
+         <tr>
+           <td>Infiltratiekolk</td>
+           <td>
+             <nb-checkbox type="checkbox" formControlName='infiltratieKlok'
+             ></nb-checkbox>
+           </td>
+         </tr>
+         <tr>
+           <td>Kolk aansluiting opengracht</td>
+           <td>
+             <nb-checkbox type="checkbox" formControlName='aansluitingOpengracht'
+             ></nb-checkbox>
+           </td>
+         </tr>
+         <tr>
+           <td>Plaats aansluiting op riool tov oplopende huisnr.</td>
+           <td>
+             <nb-checkbox type="checkbox" formControlName='plaatsAansluiting'
+             ></nb-checkbox>
+           </td>
+         </tr>
+
+         </tbody>
+       </table>
+     </form>
+   </div>
+   </div>
+   <button mat-raised-button class="save-buttoné" color="primary" (click)='saveSettings()'>
+     {{isComingFromCreateGroup? 'Opslaan en ga naar project' : 'Opslaan'}}
+   </button>
+</mat-card>

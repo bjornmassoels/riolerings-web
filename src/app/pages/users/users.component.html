@@ -1,0 +1,67 @@
+<h2 *ngIf="!isCompanyAdmin">Deze pagina is voor werfleiders.</h2>
+<h3 *ngIf="!isCompanyAdmin">Wil u dit account veranderen naar werfleider, bel op 0496513053 of stuur een email naar
+  info&#64;selux-tools.com</h3>
+
+<div *ngIf="isCompanyAdmin && hasLoaded" class="topRow">
+  <h4 style=' text-decoration: underline; width:fit-content; margin-bottom: 0px; margin-top:-10px;'>Gebruikers</h4>
+  <div class="outerDivFlexRow">
+    <p style="margin-bottom: 0px !important; font-size: 16px">Zoek op gebruiker <i class="fa-solid fa-arrow-right"></i></p>
+    <div class="colFlex">
+        <input #autoInput
+               nbInput
+               type="text"
+               (input)="onChange()"
+               placeholder="Zoek op naam.."
+               [nbAutocomplete]="auto" class="autoComplete" />
+        <nb-autocomplete (selectedChange)="clickAutoCompleteUser($event)" #auto>
+          <nb-option *ngFor="let option of observableFilteredItems$ | async" [value]="option">
+            {{ option }}
+          </nb-option>
+        </nb-autocomplete>
+      </div>
+    <button class="clear-button" *ngIf="autoInput.value" aria-label="Clear" (click)="clearAutocomplete()">
+      clear
+    </button>
+  </div>
+  <button style="" color="primary" mat-raised-button
+          class="form-button-black" (click)="updateUserDetails()">Bewerk gebruikergegevens</button>
+</div>
+
+<div  *ngIf="hasLoaded && selectedUser != null"  class='secondRow'>
+  <button color="primary" mat-raised-button
+          class="form-button3" (click)="updateUser()">Update toegewezen projecten </button>
+  <div style='display:flex;flex-direction: column'>
+    <div class="userInfo">
+      <p class="infoText">Gebruikersnaam : <b>{{selectedUser.gebruikersnaam}}</b> </p>
+      <p class="infoText">Email : <b>{{selectedUser.email}}</b></p>
+      <p class="infoText">Soort : <b>{{soortTranslate(selectedUser.role)}}</b></p>
+    </div>
+    <p class='infoText' style="margin-left: 28px; margin-bottom: 12px !important;" *ngIf='selectedUser.role === "59cf78e883680012b0438503" && selectedUser.versionNumber'>Mobiele app versienr: <b>V{{ selectedUser.versionNumber}}</b></p>
+  </div>
+</div>
+
+
+<div  *ngIf="hasLoaded && isCompanyAdmin" cdkScrollable class="scroll-table">
+  <table cdkDropList class="item-list">
+    <tr class="item-box">
+      <th style='max-width: 100px;'>Selecteer</th>
+      <th  style='padding-right: 15px;'>Project naam</th>
+      <th>Gemeente</th>
+      <th style='max-width: 160px'>Project nummer</th>
+      <th>Opdrachtgever</th>
+      <th style='max-width: 160px'>Aanmaakdatum</th>
+    </tr>
+    <tr style='padding-top: 10px!important;padding-bottom: 10px !important;' class="item-box" *ngFor="let group of groups">
+      <td style='max-width: 100px;'>
+        <nb-checkbox class="checkBox" [checked]="group.isInUser" (checkedChange)="changeIsInUser(group._id)"
+          status="primary"></nb-checkbox>
+      </td>
+      <td [ngStyle]="{'color': group.isInUser ? 'blue' : 'inherit'}" style='padding-right: 15px;'>{{group.rbProjectNaam}}</td>
+      <td>{{group.rbGemeente}}</td>
+      <td  style='max-width: 160px'>{{group.aannemerProjectNr}}</td>
+      <td >{{group.rbNaam}}</td>
+      <td  style='max-width: 160px'>{{group.createdDate.getDate()}}/{{group.createdDate.getMonth() + 1}}/{{group.createdDate.getFullYear()}}</td>
+
+    </tr>
+  </table>
+</div>

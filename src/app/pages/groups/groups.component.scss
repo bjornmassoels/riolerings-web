@@ -1,0 +1,186 @@
+
+.openButton {
+  background: #b1b6ba;
+  background-image: -webkit-linear-gradient(top, #b1b6ba, #b3b3b3);
+  background-image: -moz-linear-gradient(top, #b1b6ba, #b3b3b3);
+  background-image: -ms-linear-gradient(top, #b1b6ba, #b3b3b3);
+  background-image: -o-linear-gradient(top, #b1b6ba, #b3b3b3);
+  background-image: linear-gradient(to bottom, #b1b6ba, #b3b3b3);
+  -webkit-border-radius: 28px;
+  -moz-border-radius: 28px;
+  border-radius: 28px;
+  -webkit-box-shadow: 0px 1px 3px #a1a1a1;
+  -moz-box-shadow: 0px 1px 3px #a1a1a1;
+  box-shadow: 0px 1px 3px #a1a1a1;
+  color: white;
+  font-size: 21px;
+  padding: 20px 28px 20px 28px;
+  border: solid #7795a8 2px;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.openButton:hover {
+  background: #151a30;
+  text-decoration: none;
+}
+.buttonsRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+.maxWidth100 {
+  max-width: 120px;
+}
+.topRow {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  max-width: 1200px;
+  align-items: center;
+  margin-right: 40px;
+  margin-top: -40px;
+  margin-bottom: -15px;
+  margin-left: 10px;
+  justify-content: space-between;
+}
+.item-box2:last-child {
+  border: none;
+}
+.item-box2 {
+  padding: 20px 10px;
+  width: 100%;
+  border-bottom: solid 1px #ccc;
+  color: rgba(0, 0, 0, 0.87);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  background: white;
+  font-size: 14px;
+  height:100px !important;
+}
+.item-box-header {
+  padding: 7px 10px;
+  width: 100%;
+  border-bottom: solid 1px #ccc;
+  color: rgba(0, 0, 0, 0.87);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  background: white;
+  font-size: 14px;
+  height:60px !important;
+}
+.secondRow {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  align-items: center;
+  margin-right: 40px;
+  margin-left: 10px;
+  margin-top: 0px;
+  justify-content: flex-start;
+  margin-bottom: 10px;
+}
+.buttoné {
+  // What kind of name is this? What does é stand for?
+  margin-left: 20px;
+  background-color: #3c763d;
+  border: 1px solid #3c763d;
+  color: white;
+  border-radius: 5px;
+  width: 130px;
+  height: 40px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 700;
+}
+.search-form {
+  margin-left: 20px !important;
+}
+#extras {
+  margin-left: 20px !important;
+}
+.innerRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: -9px !important;
+}
+.selector {
+  width: 130px !important;
+  height: 35px !important;
+  text-align: center;
+  border: 1px solid black !important;
+  border-radius: 5px !important;
+  background-color: white !important;
+}
+.excelButton {
+  margin-left: 25px;
+}
+
+.search-box {
+  width: 25vw;
+  height: 5vh;
+  box-shadow: 0 0 15px -10px rgba(0, 0, 0, 0.75);
+}
+.scroll-table {
+  height: 81vh !important;
+  overflow: auto;
+  width: 100%;
+  border-radius: 15px;
+  padding: 15px;
+  background-color: white;
+  color: white;
+}
+
+.scroll-table td {
+  width: 100%;
+}
+.scroll-table::-webkit-scrollbar,
+.scroll-table::-webkit-scrollbar-thumb {
+  width: 35px !important;
+  height: 100px !important;
+  border-radius: 13px;
+  background-clip: padding-box;
+  border: 10px solid transparent;
+}
+.scroll-table::-webkit-scrollbar-thumb {
+  box-shadow: inset 0 0 0 10px;
+}
+
+.scroll-table:hover {
+  color: rgba(0, 0, 0, 0.3);
+}
+.detailsColumn {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding: 8px 0;
+}
+
+.detailsText {
+  margin: 0;
+  padding: 3px 0; /* Small padding for better readability */
+  font-size: 15px; /* Slightly larger font size for main text */
+  color: blue; /* Dark blue for the main text */
+}
+
+
+.smallBijText {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6c757d; /* Gray for labels */
+  margin-right: 5px;
+  display: inline-block;
+  width: 70px;
+}
+.smaller{
+  width:30px !important;
+}
+

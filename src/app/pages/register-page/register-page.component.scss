@@ -1,0 +1,199 @@
+.text {
+  font-size: 15px;
+  font-weight: 500;
+  margin-top: 10px;
+}
+.inputBox {
+  width: 50%;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid black;
+}
+.inputBox2 {
+  margin-top: -20px;
+  margin-bottom: 20px;
+  width: 55%;
+  height: 40px;
+}
+.rower {
+  height: 60px;
+  display: flex;
+  flex-direction: row;
+  margin-left: 10px;
+  margin-right: 10px;
+  justify-content: space-between;
+  align-items: center;
+}
+.rower2 {
+  height: 80px;
+  display: flex;
+  flex-direction: row;
+  margin-left: 10px;
+  margin-right: 10px;
+  justify-content: space-between;
+  align-items: center;
+}
+.rower3 {
+  height: 120px;
+  display: flex;
+  flex-direction: row;
+  margin-left: 10px;
+  margin-right: 10px;
+  justify-content: space-between;
+  align-items: center;
+}
+.voorwaarden{
+  margin-left: 15px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  cursor:pointer;
+}
+.hyper{
+  color:blue;
+  text-decoration: underline;
+}
+.voorwaarden2{
+   margin-left: 15px;
+   margin-top: 20px;
+   margin-bottom: 20px;
+    cursor: pointer;
+ }
+.outerDiv{
+  height: 80px;
+}
+.rower2 {
+  height: 70px;
+  display: flex;
+  flex-direction: row;
+  margin-left: 10px;
+  margin-right: 10px;
+  justify-content: space-between;
+  align-items: center;
+}
+.title{
+  margin-top: 10px;
+  text-align: center;
+  margin-bottom: 15px;
+}
+.whiteHack{
+  height: 10px;
+  width: 10px;
+  background-color: #f6f8fa;
+}
+.goBackButton{
+  display: block;
+  margin:20px auto 0 auto;
+  width: 70%;
+  height: 40px;
+  font-size: 20px;
+  font-weight: 500;
+  background-color: #6f82a1;
+  color:white;
+  border-radius: 5px;
+  border:1px solid #6f82a1;
+}
+.container {
+  display: flex;
+  padding-bottom: 20px;
+  flex-direction: column;
+  margin: 1% auto 10px auto;
+  width: 90%;
+  overflow: auto;
+  height: 90vh;
+  background-color: #f6f8fa;
+}
+.loginButton{
+  display: block;
+  margin:20px auto 0 auto;
+  width: 70%;
+  height: 40px;
+  font-size: 20px;
+  font-weight: 500;
+  background-color: #484f65;
+  color:white;
+  border-radius: 5px;
+  border:1px solid #484f65;
+}
+.rower4 {
+  height: 130px;
+  display: flex;
+  flex-direction: row;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-top: 20px;
+  justify-content: space-between;
+  align-items: center;
+}
+@media only screen and (min-width: 500px) {
+
+  .inputBox {
+    width: 300px;
+    height: 40px;
+    border-radius: 10px;
+    border: 1px solid black;
+  }
+  .rower {
+    height: 60px;
+    display: flex;
+    flex-direction: row;
+    margin-left: 10px;
+    margin-right: 10px;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .rower2 {
+    height: 50px;
+    display: flex;
+    flex-direction: row;
+    margin-left: 10px;
+    margin-right: 10px;
+    justify-content: center;
+    align-items: center;
+  }
+  .rower4 {
+    height: 50px;
+    display: flex;
+    flex-direction: row;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 25px;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .rower3 {
+    height: 50px;
+    display: flex;
+    flex-direction: row;
+    margin-left: 10px;
+    margin-right: 10px;
+    justify-content: center;
+    align-items: center;
+  }
+  .voorwaarden{
+    margin-left: 15px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+  .voorwaarden2{
+    margin-left: 15px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+  .inputBox2 {
+    width: 55%;
+    height: 50px;
+  }
+  body{
+    overflow: auto;
+    overflow-y: scroll !important;
+  }
+  .container {
+    display: flex;
+    flex-direction: column;
+    margin: 1% auto 30px auto;
+    width: 100%;
+    min-height: 95%;
+    max-height: 95%;
+    background-color: #f6f8fa;
+  }
+}

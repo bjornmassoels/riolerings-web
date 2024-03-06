@@ -1,0 +1,175 @@
+
+
+.page-title {
+  font-weight: 800;
+  letter-spacing: 1.6pt;
+  margin-bottom: 1em;
+  margin-left: 1rem;
+}
+
+.project-card {
+  display: flex;
+  flex-direction: column;
+  border-radius: 15px;
+  background-color: white;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.form-container {
+}
+.userInfo{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 0 25px;
+  margin-left: 25px;
+  padding:5px;
+  border:1px dashed black;
+  width:fit-content;
+  margin-bottom:10px;
+}
+.form-button-black{
+  width: 270px !important;
+  margin: 5px;
+  height:40px;
+  font-weight: 600;
+  letter-spacing: 1.1pt;
+  background-color: black !important;
+  color: white !important;
+  float:left;
+  font-size: 16px;
+}
+.infoText{
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 0px !important;
+}
+.form-button{
+  margin-top: -20px;
+  margin-bottom: 10px !important;
+  font-size: 20px;
+  font-weight: 600;
+  background-color: black !important;
+  color:white !important;
+  border:1px solid black;
+  border-radius: 5px;
+  width: 130px;
+  height: 40px;
+}
+.save-button{
+  font-size: 20px !important;
+  font-weight: 600 !important;
+  margin-left: 30px !important;
+  width: 150px !important;
+  height: 42px !important;
+}
+
+.item-list {
+  width: 100%;
+  min-height: 60px;
+  display: block;
+  background: white;
+  border-radius: 15px;
+  overflow: hidden;
+}
+.input-container {
+  width: 35%;
+  display: flex;
+  justify-content: space-between;
+  margin: 1rem;
+  p {
+    padding-top: 0.5rem;
+    font-weight: 700;
+    letter-spacing: 1.2pt;
+  }
+}
+.margT{
+  width: 350px;
+}
+.topRow{
+  margin-top: -12px;
+  margin-left: 10px;
+  margin-bottom: 25px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 0 15px;
+}
+.form-button3 {
+  margin-left: 15px;
+  margin-bottom: 10px;
+  font-size: 18px;
+  font-weight: 600;
+  border-radius: 5px;
+  height: 40px;
+  letter-spacing: 1.1pt;
+  width:320px !important;
+}
+.secondRow{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 0 15px;
+  margin-top: -15px;
+  margin-left: 10px;
+}
+.rowFlex5 {
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: row;
+  align-items: center;
+  margin-top: -13px;
+}
+.colFlex{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items: flex-start;
+  gap:0 10px;
+}
+.outerDivFlexRow{
+  display:flex;
+  flex-direction:row;
+  justify-content:flex-start;
+  gap:0 15px;
+  align-items:center;
+  min-width: 570px !important;
+  padding-left:25px;
+}
+.autoComplete{
+  width:270px !important;
+  margin-left:20px;
+}
+.clear-button {
+  background-color: grey; /* Green */
+  border: none;
+  color: white;
+  text-align: center;
+  display: inline-block;
+  font-size: 16px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: 12px;
+  text-decoration: none;
+}
+
+.clear-button:hover {
+  background-color: #45a049;
+  color: white;
+}
+.scroll-table::-webkit-scrollbar,
+.scroll-table::-webkit-scrollbar-thumb {
+  width: 35px !important;
+  height: 100px !important;
+  border-radius: 13px;
+  background-clip: padding-box;
+  border: 10px solid transparent;
+}
+.scroll-table::-webkit-scrollbar-thumb {
+  box-shadow: inset 0 0 0 10px;
+}

@@ -1,0 +1,37 @@
+
+<h3 *ngIf="isLoaded && (company.logo != null || company.logo != '')"> Huidige logo:</h3>
+<img *ngIf="isLoaded && (company.logo != null || company.logo != '')" class="photo" src="{{company.logo}}">
+<mat-card style="max-width:750px!important;" class="add-card">
+  <mat-card-title class="title">Logo instellen voor op Excel</mat-card-title>
+  <form *ngIf="isLoaded" [formGroup]="uploadForm"  class="add-form">
+    <table>
+      <thead>
+        <tr>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="leftText">Logo uploaden</td>
+          <td>
+            <input type="file" name="file" (change)="onFileSelect($event)"
+                   accept=".png,.jpg,.jpeg,.tiff" class="uploadButton" />
+            <div class="uploadable-images-container">
+              <div *ngFor="let image of chosenImageList">
+                <img [src]="image" class="photo" />
+              </div>
+            </div>
+          </td>
+        </tr>
+
+      </tbody>
+    </table>
+
+    <mat-card-actions>
+      <button mat-raised-button class="save-button" color="primary" (click)="uploadImages()" type="submit">
+        Opslaan
+      </button>
+    </mat-card-actions>
+  </form>
+</mat-card>

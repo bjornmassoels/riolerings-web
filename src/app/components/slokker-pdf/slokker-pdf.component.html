@@ -1,0 +1,297 @@
+<div class="page">
+  <p *ngIf="!hasPhoto" class="page-number">1/1</p>
+  <p *ngIf="hasPhoto" class="page-number">1/2</p>
+    <p class="pdf-title">Kolkaansluitingsfiche / {{realProject.naamFiche}}</p>
+    <div class="table-container">
+        <table class="w-max">
+            <thead>
+                <th></th>
+                <th></th>
+            </thead>
+          <tbody>
+          <tr class="w-max">
+            <td class="w-25">Projectnaam:</td>
+            <td class="w-90 orange-td">{{group.rbProjectNaam}}</td>
+          </tr>
+          </tbody>
+        </table>
+
+        <table class="table-margin">
+            <thead>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </thead>
+            <tbody>
+                <tr>
+                  <td class="w-25">Projectnr. bouwheer:</td>
+                  <td class="orange-td w-25">{{group.rbProjectNr}}</td>
+                  <td class="w-25">Projectnr. aannemer:</td>
+                  <td class="orange-td w-25">{{group.aannemerProjectNr}}</td>
+                </tr>
+                <tr>
+                    <td class="w-15">Straat:</td>
+                    <td class="orange-td w-25" >{{realProject.street}}</td>
+                    <td class="w-25">Volgnummer:</td>
+                    <td class="orange-td w-25">{{realProject.index}}</td>
+                </tr>
+                <tr>
+                    <td class="w-15">Gemeente:</td>
+                    <td class="orange-td w-25">{{group.rbGemeente}}</td>
+                    <td class="w-25">Equipmentnr</td>
+                    <td class="orange-td w-25">{{realProject.equipNrRiolering}}</td>
+                </tr>
+                <tr>
+                    <td class="w-15">Aannemer:</td>
+                    <td class="orange-td">{{group.aannemerNaam}}</td>
+                  <td class="w-25">Start-datum:</td>
+                  <td *ngIf="realProject.startDate != null" class="orange-td w-25">{{realProject.startDate.toLocaleDateString()}}</td>
+                  <td *ngIf="realProject.startDate == null"  class="orange-td w-25"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="table-container">
+        <table class="table-margin">
+            <thead>
+                <th></th>
+                <th class="t-center"><b>RWA</b></th>
+                <th class="t-center"><b>Opmerking</b></th>
+            </thead>
+            <tbody>
+            <tr>
+              <td class="w-50">Gelegen tussen volgende toegangs- en verbindingsputten:</td>
+              <td class="yellow-td w-25 t-center">{{realProject.slokker?.tussenIPLinks}} -
+                {{realProject.slokker?.tussenIPRechts}}</td>
+              <td class="w-25 t-center"></td>
+            </tr>
+            <tr>
+              <td class="w-50">Afstand midden stroomafwaartse put tot mof:</td>
+              <td class="yellow-td t-center">
+                {{NullToOnbekend(realProject.slokker.afstandPutMof)}}</td>
+              <td class="w-25 t-center"></td>
+            </tr>
+            <tr>
+              <td class="w-50">Diepte aansluiting tov MV:</td>
+              <td class="yellow-td t-center">{{NullToOnbekend(realProject.slokker.diepteAansluitingMv)}}</td>
+              <td class="w-25 t-center"></td>
+            </tr>
+            <tr>
+              <td class="w-50">Diepte aanboring op hoofdriool tov MV:<span class="small">(op best. riolering)</span></td>
+              <td class="yellow-td t-center">{{NullToOnbekend(realProject.slokker.diepteAanboringRiool)}}</td>
+              <td class="w-25 t-center"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <th><b>HOEVEELHEDEN</b></th>
+                <th class="t-center"><b>RWA</b></th>
+                <th class="t-center"><b>Opmerking</b></th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="w-50">Gebruik:</td>
+                    <td class="orange-td w-25 t-center">Kolk</td>
+                    <td class="w-25 t-center"></td>
+                </tr>
+                <tr>
+                    <td class="w-50">Materiaal:</td>
+                    <td class="orange-td w-25 t-center">{{realProject.slokker.buisType}}</td>
+                    <td class="w-25 t-center"></td>
+                </tr>
+                <tr>
+                    <td class="w-50">Diameter buis:</td>
+                    <td class="orange-td w-25 t-center">{{realProject.slokker.diameter}} mm</td>
+                    <td class="w-25 t-center"></td>
+                </tr>
+                <tr>
+                    <td class="w-50">Type aansluiting op hoofdriool:</td>
+                    <td *ngIf="realProject.slokker.tBuisStuk === 'flexAan'" class="yellow-td w-25 t-center">flexibele
+                        aansluiting</td>
+                    <td *ngIf="realProject.slokker.tBuisStuk == null" class="yellow-td w-25 t-center"></td>
+                    <td *ngIf="realProject.slokker.tBuisStuk != null && realProject.slokker.tBuisStuk !== 'flexAan'"
+                        class="yellow-td w-25 t-center">{{realProject.slokker.tBuisStuk}}</td>
+                    <td class="w-25 t-center"></td>
+                </tr>
+                <tr>
+                    <td class="w-50">Mof:</td>
+                    <td *ngIf="realProject.slokker.mof != null" class="yellow-td w-25 t-center">{{realProject.slokker.mof}} stuks</td>
+                    <td *ngIf="realProject.slokker.mof == null" class="yellow-td w-25 t-center">0 stuks</td>
+                  <td class="w-25 t-center"></td>
+                </tr>
+                <tr>
+                    <td class="w-50">Buis:</td>
+                  <td  *ngIf="group.heeftPloegen == null || group.heeftPloegen === false" class="yellow-td w-25 t-center">{{NullToZero(realProject.slokker.buis).toFixed(2)}} meter</td>
+                  <td  *ngIf="group.heeftPloegen != null && group.heeftPloegen === true" class="yellow-td w-25 t-center">{{NullToZero(NullToZero(realProject.slokker.buis) + NullToZero(realProject.slokker.buis2)).toFixed(2)}} meter</td>
+                  <td class="w-25 t-center"></td>
+                </tr>
+                <tr>
+                    <td class="w-50">Bocht:</td>
+                  <td  *ngIf="group.heeftPloegen == null || group.heeftPloegen === false" class="yellow-td w-25 t-center">{{NullToZero(realProject.slokker.bocht)}} stuks</td>
+                  <td  *ngIf="group.heeftPloegen != null && group.heeftPloegen === true" class="yellow-td w-25 t-center">{{NullToZero(NullToZero(realProject.slokker.bocht) + NullToZero(realProject.slokker.bocht2))}} stuks</td>
+                    <td class="w-25 t-center"></td>
+                </tr>
+                <tr>
+                    <td class="w-50">Y/T-stuk:</td>
+                    <td *ngIf="realProject.slokker.tBuisStuk === 'T-Stuk' || realProject.slokker.tBuisStuk === 'Y-Stuk'"
+                        class="yellow-td w-25 t-center">{{NullToZero(realProject.slokker.Y) + 1}} stuks</td>
+                    <td *ngIf="realProject.slokker.tBuisStuk !== 'T-Stuk' && realProject.slokker.tBuisStuk !== 'Y-Stuk'"
+                        class="yellow-td w-25 t-center">{{realProject.slokker.Y == null ? 0 : realProject.slokker.Y}} stuks</td>
+                    <td class="w-25 t-center"></td>
+                </tr>
+                <tr>
+                    <td class="w-50">Krimpmof:</td>
+                  <td *ngIf="realProject.slokker.krimpmof != null" class="yellow-td w-25 t-center">{{realProject.slokker.krimpmof}} stuks</td>
+                  <td *ngIf="realProject.slokker.krimpmof == null" class="yellow-td w-25 t-center">0 stuks</td>
+                    <td class="w-25 t-center"></td>
+                </tr>
+                <tr>
+                    <td class="w-50">Koppelstuk:</td>
+                  <td *ngIf="realProject.slokker.koppelstuk != null" class="yellow-td w-25 t-center">{{realProject.slokker.koppelstuk}} stuks</td>
+                  <td *ngIf="realProject.slokker.koppelstuk == null" class="yellow-td w-25 t-center">0 stuks</td>
+                    <td class=" w-25 t-center"></td>
+                </tr>
+                <tr>
+                    <td class="w-50">Reductie:</td>
+                    <td *ngIf="realProject.slokker.reductie != null" class="yellow-td w-25 t-center">{{realProject.slokker.reductie}} stuks</td>
+                    <td *ngIf="realProject.slokker.reductie == null" class="yellow-td w-25 t-center">0 stuks</td>
+                    <td class="w-25 t-center"></td>
+                </tr>
+                <tr>
+                    <td class="w-50">Stop:</td>
+                  <td *ngIf="realProject.slokker.stop != null" class="yellow-td w-25 t-center">{{realProject.slokker.stop}} stuks</td>
+                  <td *ngIf="realProject.slokker.stop == null" class="yellow-td w-25 t-center">0 stuks</td>
+                    <td class="w-25 t-center"></td>
+                </tr>
+                <tr>
+                    <td class="w-50">Andere:</td>
+                    <td class="yellow-td w-25 t-center">{{realProject.slokker.andere}}</td>
+                    <td class="w-25 t-center"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table>
+            <thead>
+                <th></th>
+                <th></th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="w-50">RWA-infiltratiekolk</td>
+                    <td *ngIf="realProject.slokker.infiltratieKlok" class="yellow-td w-25 t-center">Ja</td>
+                    <td *ngIf="!realProject.slokker.infiltratieKlok" class="yellow-td w-25 t-center">Nee</td>
+                    <td class="w-25"></td>
+                </tr>
+                <tr>
+                    <td class="w-50">Kolk aansluiting op opengracht</td>
+                    <td *ngIf="realProject.slokker.aansluitingOpengracht" class="yellow-td w-25 t-center">Ja</td>
+                    <td *ngIf="!realProject.slokker.aansluitingOpengracht" class="yellow-td w-25 t-center">Nee</td>
+                    <td class="w-25"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table>
+            <thead>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="w-50">Plaats van de aansluiting op de riolering gezien van stroomafwaarts naar
+                        stroomopwaarts
+                        (graden)</td>
+                    <td class="w-25 h-5"><img class="h-5 w-auto" src="../../../../assets/images/gradenOpRiool.png"></td>
+                    <td class="yellow-td w-25 t-center">{{realProject.slokker.plaatsAansluiting}} graden</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div *ngIf="hasPhoto && !has4Photos" id="page-break" class="photo-container page">
+    <p class="page-number">2/2</p>
+    <p class="pdf-title">Foto's : {{realProject.naamFiche}}</p>
+
+    <div class="table-container-small">
+        <table>
+            <thead>
+                <th class="w-100" style="border: 1px solid black; text-align: center;">Kolk</th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="2" style="text-align: center;">Foto's volgens standaardbestek 250 versie 4.1</td>
+                </tr>
+                <tr *ngIf="realProject.photos[0] != null && realProject.photos[0] !== ''">
+                    <td class="w-100">1.{{currentFotoText[0]}}</td>
+                </tr>
+                <tr *ngIf="realProject.photos[0] != null && realProject.photos[0] !== ''">
+                    <td class="h-15"><img class="h-20 w-auto quality" src="{{realProject.photos[0]}}"></td>
+                </tr>
+                <tr *ngIf="realProject.photos[1] != null && realProject.photos[1] !== ''">
+                    <td class="w-100">2.{{currentFotoText[1]}}</td>
+                </tr>
+                <tr *ngIf="realProject.photos[1] != null && realProject.photos[1] !== ''">
+                    <td class="h-15"><img class="h-20 w-auto quality" src="{{realProject.photos[1]}}"></td>
+                </tr>
+                <tr *ngIf="realProject.photos[2] != null && realProject.photos[2] !== ''">
+                  <td class="w-100">3.{{currentFotoText[2]}}</td>
+                </tr>
+                <tr *ngIf="realProject.photos[2] != null && realProject.photos[2] !== ''">
+                  <td class="h-15"><img class="h-20 w-auto quality" src="{{realProject.photos[2]}}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div *ngIf="hasPhoto && has4Photos" id="page-break" class="photo-container page">
+  <p class="page-number">2/2</p>
+  <p class="pdf-title">Foto's : {{realProject.naamFiche}}</p>
+
+  <div class="table-container">
+    <table>
+      <thead>
+      <th colspan="2" class="w-100" style="border: 1px solid black; text-align: center;">Kolk</th>
+      </thead>
+      <tbody>
+      <tr>
+        <td colspan="2" style="text-align: center;">Foto's volgens standaardbestek 250 versie 4.1</td>
+      </tr>
+      <tr *ngIf="((realProject.photos[0] != null && realProject.photos[0] !== '') ||  (realProject.photos[3] != null && realProject.photos[3] !== ''))">
+        <td class="w-50">{{currentFotoText[0] != null? '1. ' + currentFotoText[0]: ''}}</td>
+        <td class="w-50">{{currentFotoText[3] != null? '4. ' + currentFotoText[3]: ''}}</td>
+      </tr>
+      <tr *ngIf="((realProject.photos[0] != null && realProject.photos[0] !== '') ||  (realProject.photos[3] != null && realProject.photos[3] !== ''))">
+        <td class="h-15"><img class="h-20 w-auto quality" src="{{realProject.photos[0]}}"></td>
+        <td class="h-15"><img class="h-20 w-auto quality" src="{{realProject.photos[3]}}"></td>
+      </tr>
+      <tr *ngIf="((realProject.photos[1] != null && realProject.photos[1] !== '') ||  (realProject.photos[4] != null && realProject.photos[4] !== ''))">
+        <td class="w-50">{{currentFotoText[1] != null? '2. ' + currentFotoText[1]: ''}}</td>
+        <td class="w-50">{{currentFotoText[4] != null? '5. ' + currentFotoText[4]: ''}}</td>
+      </tr>
+      <tr *ngIf="((realProject.photos[1] != null && realProject.photos[1] !== '') ||  (realProject.photos[4] != null && realProject.photos[4] !== ''))">
+        <td class="h-15"><img class="h-20 w-auto quality" src="{{realProject.photos[1]}}"></td>
+        <td class="h-15"><img class="h-20 w-auto quality" src="{{realProject.photos[4]}}"></td>
+      </tr>
+      <tr *ngIf="((realProject.photos[2] != null && realProject.photos[2] !== '') ||  (realProject.photos[5] != null && realProject.photos[5] !== ''))">
+        <td class="w-50">{{currentFotoText[2] != null? '3. ' + currentFotoText[2]: ''}}</td>
+        <td class="w-50">{{currentFotoText[5] != null? '6. ' + currentFotoText[5]: ''}}</td>
+      </tr>
+      <tr *ngIf="((realProject.photos[2] != null && realProject.photos[2] !== '') ||  (realProject.photos[5] != null && realProject.photos[5] !== ''))">
+        <td class="h-15"><img class="h-20 w-auto quality" src="{{realProject.photos[2]}}"></td>
+        <td class="h-15"><img class="h-20 w-auto quality" src="{{realProject.photos[5]}}"></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

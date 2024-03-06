@@ -1,0 +1,70 @@
+<div class="topRow">
+  <div class="secondRow">
+    <h1 style='min-width: 210px;'>Projecten</h1>
+    <button *ngIf="isAdmin" (click)="goToAdmin()">Ga naar admin pagina</button>
+    <button mat-raised-button (click)="goToCreate()" class="add-button"> Project aanmaken</button>
+    <button mat-raised-button (click)="readExcel()" class="add-button-green">Uniforme excel inlezen</button>
+  </div>
+  <div class="innerRow">
+    <p style='min-width: 65px; margin-bottom: 0px !important;font-size: 15px'>Zoek op :</p>
+    <nb-select [(ngModel)]="searchSelect" id="extras">
+      <nb-option (selectionChange)="selectItem(item)" type="checkbox" *ngFor="let item of searchItems"
+        value="{{ item }}">
+        {{ item }}</nb-option>
+    </nb-select>
+
+    <form *ngIf="searchItem === 'Project nr.'" class="search-form">
+      <input style='width: 240px;margin-right:20px;'     class="search-box" #categoryInput nbInput type="text" matInput [formControl]="searchForm"
+      #searchInput  type="text" (keyup)="onSearchInput(searchInput.value)" placeholder="Zoeken..." />
+    </form>
+    <form *ngIf="searchItem === 'Projectnaam'" class="search-form">
+      <input style='width: 240px;margin-right:20px;'  class="search-box" #categoryInput nbInput type="text" matInput [formControl]="searchForm"
+        #searchInput  type="text" (keyup)="onSearchInput(searchInput.value)" placeholder="Zoeken..." />
+    </form>
+    <form *ngIf="searchItem === 'Gemeente'" class="search-form">
+      <input style='width: 240px;margin-right:20px;'   class="search-box" #categoryInput nbInput type="text" matInput [formControl]="searchForm"
+        #searchInput  type="text" (keyup)="onSearchInput(searchInput.value)" placeholder="Zoeken..." />
+    </form>
+  </div>
+</div>
+
+
+<form *ngIf="isLoaded" [formGroup]="groupForm" class="add-form">
+  <div cdkScrollable class="scroll-table">
+    <table cdkDropList class="item-list">
+      <tr class="item-box-header">
+        <th style='max-width:180px'></th>
+        <th style='padding-right: 15px;'>Projectnaam</th>
+        <th>Details</th>
+        <th style='max-width: 210px'>Naam rioolbeheerder</th>
+        <th class='maxWidth100'>Aantal aansluitingen</th>
+        <th class='maxWidth100' *ngIf="company?.P0 != null || company?.prijsPerHA != null">Betaald</th>
+      </tr>
+      <tr class="item-box2 scroll" *ngFor="let group of searchedGroups; let i = index">
+        <td  style='max-width:180px'>
+          <div class="buttonsRow">
+            <input type="button" (click)="openGroup(group)" value="OPEN" class="openButton">
+          </div>
+        </td>
+        <td style='line-height: 1.1rem;  color: blue;padding-right: 15px;'>{{group.rbProjectNaam}}</td>
+        <td>
+          <div class='detailsColumn'>
+            <p class='detailsText'><span class='smallBijText'>gemeente: </span>{{group.rbGemeente}}</p>
+            <p class='detailsText'><span class='smallBijText'>projectnr: </span>{{group.aannemerProjectNr}}</p>
+            <p class='detailsText'><span class='smallBijText'>startdatum: </span>{{group.createdDate.toLocaleDateString()}}</p>
+          </div>
+        </td>
+        <td style='max-width: 210px'>{{group.rbNaam}}</td>
+        <td class='maxWidth100'>
+          <div  class='detailsColumn'>
+            <p class='detailsText'><span class='smallBijText smaller'>HA: </span>{{group.haCount}}</p>
+            <p class='detailsText'><span class='smallBijText smaller'>Kolk: </span>{{group.kolkCount}}</p>
+          </div>
+        </td>
+        <td class='maxWidth100' *ngIf="!isLoaded2">0</td>
+        <td class='maxWidth100' *ngIf="(company?.P0 != null || company?.prijsPerHA != null) && isLoaded2">{{ paidGroup[i]  + '/' + (paidGroup[i] + unPaidGroup[i]) }}</td>
+        <td class='maxWidth100' *ngIf="(company?.P0 != null || company?.prijsPerHA != null) && !isLoaded2">0</td>
+      </tr>
+    </table>
+  </div>
+</form>

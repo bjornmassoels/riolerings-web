@@ -1,0 +1,15 @@
+{
+  "singleQuote": true,
+  "overrides": [
+    {
+      "files": ["**/*.css", "**/*.scss", "**/*.html"],
+      "options": {
+        "singleQuote": true
+      }
+    }
+  ],
+  "trailingComma": "all",
+  "tabWidth": 2,
+  "semi": true,
+  "bracketSpacing": true
+}

@@ -1,0 +1,83 @@
+.form-button {
+  margin-top: -20px;
+  margin-bottom: -18px;
+  font-size: 18px;
+  font-weight: 600;
+  background-color: black !important;
+  color: white !important;
+  border: 1px solid black;
+  border-radius: 5px;
+  width: 130px;
+  height: 40px;
+}
+.form-button2 {
+  margin-top: -20px;
+  margin-bottom: -18px;
+  font-size: 18px;
+  font-weight: 600;
+  background-color: lightgreen !important;
+  color: white !important;
+  border: 1px solid li;
+  border-radius: 5px;
+  width: 160px;
+  height: 40px;
+}
+.add-form{
+  margin-left: 18px;
+  margin-top: 25px;
+  border: 3px solid black;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  width:520px;
+  padding-left: 20px;
+  padding-top: 10px;
+  padding-right: 30px;
+  padding-bottom: 20px;
+}
+.checkbox{
+  width: 45px !important;
+  height: 45px !important;
+  margin-top: 14px;
+}
+.title {
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: 1.2pt;
+  margin-bottom: 15px !important;
+}
+.save-button {
+  font-size: 20px;
+  font-weight: 600;
+  background-color: dodgerblue !important;
+  color: white !important;
+  border: 1px solid dodgerblue;
+  border-radius: 5px;
+  margin-left: 5px;
+  width: 130px;
+  height: 40px;
+  min-width: 128px;
+}
+.data-container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  margin-top: 6px;
+  justify-content: space-between;
+  .label-text {
+    margin-top: 6px;
+    font-weight: 700;
+    letter-spacing: 1.2pt;
+  }
+  .data-text {
+    letter-spacing: 1.1pt;
+  }
+  .data-text2 {
+    width: 75%;
+    letter-spacing: 1.1pt;
+  }
+}
+.upload{
+  max-width:500px !important;
+  margin-left: 45px;
+}

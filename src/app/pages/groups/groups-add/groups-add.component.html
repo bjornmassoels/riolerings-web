@@ -1,0 +1,266 @@
+<button mat-raised-button class="form-button" (click)="goToPrevious()">
+  Terug
+</button>
+
+<mat-card *ngIf="isLoaded" class='matCard'>
+  <h4 style='text-decoration: underline; margin-left: 25px;margin-top: 0px;margin-bottom: 0px;'>Project toevoegen</h4>
+  <form [formGroup]="addForm"  class='addForm'>
+      <table style='flex:1' class="table-container">
+        <tbody>
+        <tr>
+          <td colspan='2'><mat-card-title class="title">Rioolbeheerder</mat-card-title></td>
+        </tr>
+        <tr>
+          <td class="leftText">Naam</td>
+          <td>
+            <input nbInput id="name" type="text" formControlName="rbNaam" />
+            <p style="color: red" *ngIf="isRbNaamInvalid">
+              Gelieve Rioolbeheerder naam in te geven
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td class="leftText">Project nummer</td>
+          <td>
+            <input nbInput id="name" type="text" formControlName="rbProjectNr" />
+            <p style="color: red" *ngIf="isRbProjectNrInvalid">
+              Gelieve een project nummer (Rioolbeheerder) in te geven
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td class="leftText">Project naam</td>
+          <td>
+            <input nbInput id="name" type="text" formControlName="rbProjectNaam" />
+            <p style="color: red" *ngIf="isRbProjectNaamInvalid">
+              Gelieve een project naam (rioolbeheerder) in te geven
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td class="leftText">Gemeente</td>
+          <td>
+            <input (input)='onChange()'  #autoInput nbInput id="name" type="text" [nbAutocomplete]="auto" formControlName="rbGemeente" />
+            <nb-autocomplete #auto  (selectedChange)="onSelectionChange($event)">
+              <nb-option *ngFor="let gemeente of filteredGemeentes$ | async" [value]="gemeente">
+                {{ gemeente }}
+              </nb-option>
+            </nb-autocomplete>
+            <p style="color: red" *ngIf="isRbGemeenteInvalid">
+              Gelieve een gemeente in te geven
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td class="leftText">Gemeentecode</td>
+          <td>
+            <input nbInput id="name" type="text" formControlName="gemeenteCode" />
+          </td>
+          <p style="color: red" *ngIf="isGemeenteCodeInvalid">
+            Gelieve een gemeentecode in te geven
+          </p>
+        </tr>
+        <mat-card-title class="title">Aannemer</mat-card-title>
+        <tr>
+          <td class="leftText">Naam</td>
+          <td>
+            <input nbInput id="name" type="text" formControlName="aannemerNaam" />
+            <p style="color: red" *ngIf="isAannemerNaamInvalid">
+              Gelieve een naam (aannemer) in te geven
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td class="leftText">Project nummer</td>
+          <td>
+            <input nbInput id="name" type="text" formControlName="aannemerProjectNr" />
+            <p style="color: red" *ngIf="isAannemerProjectNrInvalid">
+              Gelieve project nummer (aannemer) in te geven
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td class="leftText">Naam werfleider</td>
+          <td>
+            <input nbInput id="name" type="text" formControlName="aannemerWerfleider" />
+            <p style="color: red" *ngIf="isAannemerWerfleiderInvalid">
+              Gelieve werfleider in te geven
+            </p>
+          </td>
+        </tr>
+        <mat-card-title class="title">Gebruikers</mat-card-title>
+        <tr>
+          <td class="leftText">Gekoppelde gebruikers:
+          </td>
+          <td>
+            <mat-form-field  class='userSelect'>
+              <mat-select class='userSelect'  placeholder="Wijzig gebruikers" formControlName="users" multiple>
+                <mat-option *ngFor="let user of allUsers" [value]="user._id">
+                  {{user.name == null ? user.email: user.name}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>  <div class='nameFlex'><span *ngFor='let user of addForm.value.users' class='user'>{{convertIdToNameString(user)}}</span></div></td>
+        </tr>
+        <tr>
+          <mat-card-title class="title2">Werkt met ploegen/fases ?</mat-card-title>
+          <td>
+            <input class="checkbox" nbCheckbox id="name" type="checkbox" formControlName="heeftPloegen" />
+          </td>
+        </tr>
+        </tbody>
+      </table>
+      <table class="table-container">
+        <tbody>
+        <mat-card-title class="title">Berekening fundering/omhulling </mat-card-title>
+        <tr>
+          <td class="leftText">Buis horizontaal multiplier</td>
+          <td>
+            <p style="margin-top: 18px">1.00</p>
+          </td>
+        </tr>
+        <tr>
+          <td class="leftText">Buis verticaal multiplier</td>
+          <td>
+            <input class='shortInput' nbInput id="name" type="number" formControlName="buisVertMult" />
+          </td>
+        </tr>
+        <tr>
+          <td class="leftText">Y-stuk multiplier</td>
+          <td>
+            <input class='shortInput' nbInput id="name" type="number" formControlName="yStukMult" />
+          </td>
+        </tr>
+        <tr>
+          <td class="leftText">Bocht multiplier</td>
+          <td>
+            <input class='shortInput' nbInput id="name" type="number" formControlName="bochtMult" />
+          </td>
+        </tr>
+        <tr>
+          <td class="leftText">Indrukmof multiplier</td>
+          <td>
+            <input class='shortInput' nbInput id="name" type="number" formControlName="mofMult" />
+          </td>
+        </tr>
+        <mat-card-title class="title">Bouwheer <span class="small">(optioneel)</span></mat-card-title>
+
+        <tr>
+          <td class="leftText">Naam</td>
+          <td>
+            <input nbInput id="name" type="text" formControlName="bhNaam" />
+          </td>
+        </tr>
+        <tr>
+          <td class="leftText">Project nummer</td>
+          <td>
+            <input nbInput id="name" type="text" formControlName="bhProjectNr" />
+
+          </td>
+        </tr>
+        <tr>
+          <td class="leftText">Project naam</td>
+          <td>
+            <input nbInput id="name" type="text" formControlName="bhProjectNaam" />
+
+          </td>
+        </tr>
+        <mat-card-title class="title">Medeopdrachtgever <span class="small">(optioneel)</span></mat-card-title>
+        <tr>
+          <td class="leftText">Naam</td>
+          <td>
+            <input nbInput id="name" type="text" formControlName="mogNaam" />
+
+          </td>
+        </tr>
+        <tr>
+          <td class="leftText">Project nummer</td>
+          <td>
+            <input nbInput id="name" type="text" formControlName="mogProjectNr" />
+
+          </td>
+        </tr>
+        <tr>
+          <td class="leftText">Project naam</td>
+          <td>
+            <input nbInput id="name" type="text" formControlName="mogProjectNaam" />
+          </td>
+        </tr>
+        <div *ngIf="!secondMogOn" class="flexer">
+          <button  mat-icon-button type="button" (click)="addSecondMog()" [disabled] color="primary" aria-label="Example icon button with a home icon">
+            <mat-icon>person_add</mat-icon>
+          </button>
+          <p (click)="addSecondMog()" class="text2">Extra medeopdrachtgever toevoegen</p>
+        </div>
+        <div *ngIf="secondMogOn" style="margin-top: 1rem; box-shadow: 0px 0px 1px 0px grey; padding-right: 15px">
+          <div class="flexer">
+            <button mat-icon-button type="button" (click)="removeSecondMog()" [disabled] color="primary" aria-label="Example icon button with a home icon">
+              <mat-icon icon-red>person_remove</mat-icon>
+            </button>
+            <p class="text3">Extra medeopdrachtgever</p>
+          </div>
+          <tr>
+            <td class="leftText">Naam</td>
+            <td>
+              <input nbInput id="name" type="text" formControlName="mogNaam1" />
+            </td>
+          </tr>
+          <tr>
+            <td class="leftText">Project nummer</td>
+            <td>
+              <input nbInput id="name" type="text" formControlName="mogProjectNr1" />
+            </td>
+          </tr>
+          <tr>
+            <td class="leftText">Projectnaam</td>
+            <td>
+              <input nbInput id="name" type="text" formControlName="mogProjectNaam1" />
+            </td>
+          </tr>
+        </div>
+        <div *ngIf="!thirdMogOn && secondMogOn" class="flexer">
+          <button  mat-icon-button type="button" (click)="addThirdMog()" [disabled] color="primary" aria-label="Example icon button with a home icon">
+            <mat-icon>person_add</mat-icon>
+          </button>
+          <p (click)="addThirdMog()" class="text2">Extra medeopdrachtgever toevoegen</p>
+        </div>
+        <div *ngIf="thirdMogOn" style="margin-top: 1rem; box-shadow: 0px 0px 1px 0px grey; padding-right: 15px">
+          <div class="flexer">
+            <button mat-icon-button type="button" (click)="removeThirdMog()" [disabled] color="primary" aria-label="Example icon button with a home icon">
+              <mat-icon icon-red>person_remove</mat-icon>
+            </button>
+            <p class="text3">Extra medeopdrachtgever</p>
+          </div>
+          <tr>
+            <td class="leftText">Naam</td>
+            <td>
+              <input nbInput id="name" type="text" formControlName="mogNaam2" />
+            </td>
+          </tr>
+          <tr>
+            <td class="leftText">Project nummer</td>
+            <td>
+              <input nbInput id="name" type="text" formControlName="mogProjectNr2" />
+            </td>
+          </tr>
+          <tr>
+            <td class="leftText">Projectnaam</td>
+            <td>
+              <input nbInput id="name" type="text" formControlName="mogProjectNaam2" />
+            </td>
+          </tr>
+        </div>
+        </tbody>
+      </table>
+
+  </form>
+  <button (click)='onSubmit(addForm.value)' mat-raised-button class="form-button-blue" color="primary" type="submit">
+    Opslaan
+  </button>
+</mat-card>
+
+

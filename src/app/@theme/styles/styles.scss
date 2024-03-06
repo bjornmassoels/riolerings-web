@@ -1,0 +1,79 @@
+@use '@angular/material' as mat;
+$custom-typography: mat.define-typography-config(
+  $font-family: 'Roboto, "Helvetica Neue", sans-serif'
+);
+// Create the theme
+$theme: mat.define-light-theme((
+  typography: $custom-typography,
+));
+
+
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,600,700&display=swap');
+
+// themes - our custom or/and out of the box themes
+@import 'themes';
+
+// framework component themes (styles tied to theme variables)
+@import '@nebular/theme/styles/globals';
+@import '@nebular/auth/styles/globals';
+/*
+@import 'bootstrap/scss/functions';
+@import 'bootstrap/scss/variables';
+@import 'bootstrap/scss/mixins';
+@import 'bootstrap/scss/grid';
+*/
+// loading progress bar theme
+@import './pace.theme';
+
+@import './layout';
+@import './overrides';
+
+
+// Include the theme styles
+@include mat.all-component-themes($theme);
+// install the framework and custom global styles
+@include nb-install() {
+  // framework global styles
+  @include nb-theme-global();
+
+  @include ngx-layout();
+  // loading progress bar
+  @include ngx-pace-theme();
+
+  @include nb-overrides();
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+
+.mat-dialog-container {
+  border-radius: 15px !important;
+  max-width: 85vw !important;
+  min-width: 880px !important;
+}
+
+
+.soortFilter ul{
+  border:1px solid #e5e5e5;
+  max-height: 500px !important;
+}
+
+
+
+.nb-theme-default nb-sidebar.compacted {
+  width: 3.5rem !important;
+}
+
+nb-sidebar{
+  max-width: 200px !important;
+  .main-container{
+    max-width: 200px !important;
+  }
+}
+nb-select .placeholder{
+  opacity:1 !important;
+}

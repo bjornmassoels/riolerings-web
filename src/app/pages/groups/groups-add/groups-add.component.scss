@@ -1,0 +1,241 @@
+.icon-img {
+  height: 50px;
+  width: auto;
+  cursor: pointer;
+  -webkit-transition: all 100ms ease-in;
+  -moz-transition: all 100ms ease-in;
+  transition: all 100ms ease-in;
+  -webkit-filter: grayscale(1.5);
+  -moz-filter: grayscale(1.5);
+  filter: grayscale(1.5);
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+.checkbox{
+  height: 25px!important;
+  width: 25px !important;
+  margin-top: 19px !important;
+}
+.bigInput {
+  width: 280px !important;
+}
+.flexer{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  margin-left: 20px;
+  align-items: center;
+}
+.add-card {
+  margin-bottom: 35px;
+  border-radius: 15px;
+  max-width: 1100px!important;
+  box-shadow: #00000030 0 10px 20px, #0000003b 0 6px 6px;
+  padding:14px 14px 0 14px !important;
+  margin-top: 12px;
+}
+
+.form-button3 {
+  float:right;
+  margin-right: 25px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 5px;
+  height: 40px;
+  width: 160px;
+}
+.shortInput{
+  width:100px !important;
+}
+.text3{
+  margin-top: 15px;
+  margin-left: 15px;
+  font-size: 19px;
+  font-weight: bold;
+}
+.text2{
+  margin-top: 15px;
+  margin-left: 15px;
+  font-size: 18px;
+  font-weight: 600;
+}
+.form-button {
+  font-size: 20px;
+  font-weight: 600;
+  background-color: black !important;
+  color: white !important;
+  border: 1px solid black;
+  border-radius: 5px;
+  width: 130px;
+  height: 40px;
+  min-width: 128px;
+  margin-bottom: 2px;
+  margin-top: -22px;
+}
+.title2 {
+  margin-top: 25px !important;
+  margin-bottom: 15px !important;
+}
+.table-container {
+  margin: 15px 0 2rem 1.7rem;
+}
+
+.icon-img:hover {
+  -webkit-filter: grayscale(0.5);
+  -moz-filter: grayscale(0.5);
+  filter: grayscale(0.5);
+}
+
+.icon-box {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.icon-box input {
+  margin: 0;
+  padding: 0;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 5px;
+  width: 100%;
+}
+
+.icon-box input:active + .icon-img {
+  opacity: 0.5;
+}
+
+.icon-box input:checked + .icon-img {
+  -webkit-filter: none;
+  -moz-filter: none;
+  filter: none;
+}
+
+.icon-box input:checked + .icon-img + .icon-text {
+  font-weight: 700;
+  color: blue;
+}
+
+.icon-container {
+  margin-right: 10px;
+  margin-left: 5px;
+}
+
+.label-container {
+  width: 100%;
+}
+
+.icon-text {
+  text-align: center;
+  cursor: pointer;
+  width: 100%;
+}
+
+.top-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-right: 20rem;
+}
+
+.add-form table {
+  margin-left: 25px;
+  width: 47% !important;
+}
+.add-form tr {
+  display: flex;
+  justify-content: flex-start;
+  width: 410px;
+}
+.leftText {
+  width:130px;
+  margin: 1rem;
+}
+.title{
+  margin-left: 10px;
+}
+.mat-card-title:not(:first-child) {
+  margin-top: 2rem;
+  margin-left: 0px !important;
+}
+
+.save-button {
+  margin-left: 2rem !important;
+  margin-right: 0;
+  width: 15vw !important;
+}
+.topRow{
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: -22px;
+  margin-bottom: 14px;
+  max-width: 1060px!important;
+}
+
+.form-button-blue {
+  font-size: 19px;
+  font-weight: 600;
+  margin-left: 80px;
+  margin-top: -25px;
+  margin-bottom: 20px;
+  background-color: dodgerblue !important;
+  color: white !important;
+  border: 1px solid dodgerblue;
+  border-radius: 5px;
+  width: 125px !important;
+  height: 45px;
+}
+.user{
+  padding:6px;
+  border-radius: 10px;
+  border:1px dashed gray;
+  margin-right: 7px;
+}
+.nameFlex{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap:8px 10px;
+  flex-wrap: wrap;
+}
+.addForm{
+  padding-bottom: 20px !important;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0 25px;
+}
+.addForm tr {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+}
+.addForm table {
+  width: 100%;
+}
+
+.addForm input {
+  margin: 5px;
+  width: 420px;
+}
+.matCard{
+  margin-bottom: 35px;
+  border-radius: 15px;
+  width: 100%;
+  box-shadow: #00000030 0 10px 20px, #0000003b 0 6px 6px;
+  max-width: 1120px!important;
+  padding:14px;
+  margin-top: 10px;
+}
+.userSelect{
+  width:320px !important;
+}

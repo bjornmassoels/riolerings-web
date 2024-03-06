@@ -1,0 +1,41 @@
+.openButton{
+  margin-left: 15px;
+  font-size: 17px;
+  font-weight: 500;
+  border:1px solid black;
+  border-radius: 5px;
+  width: 70px;
+  height: 30px;
+}
+.buttonsRow{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+.row4 {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  align-items: center;
+}
+.page-header {
+  display: flex !important;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: -40px;
+}
+.scroll-table::-webkit-scrollbar,
+.scroll-table::-webkit-scrollbar-thumb {
+  width: 35px !important;
+  height: 100px !important;
+  border-radius: 13px;
+  background-clip: padding-box;
+  border: 10px solid transparent;
+}
+.scroll-table::-webkit-scrollbar-thumb {
+  box-shadow: inset 0 0 0 10px;
+}
+.scroll-table{
+  height: calc(100vh - 170px) !important;
+}

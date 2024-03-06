@@ -1,0 +1,27 @@
+<div style="text-align: center;padding:14px;">
+  <p style="font-weight: bold;">Wilt u de gebruikte materialen vorderen? </p>
+  <div style="display: flex; flex-direction:row;justify-content: space-evenly; margin: auto;">
+    <!--<button mat-raised-button color="primary"  (click)="metDiameters()">
+      MET diameters
+    </button>
+    <button  mat-raised-button color="primary" (click)="zonderDiameters()" >
+      ZONDER diameters
+    </button> -->
+    <div style='width:300px; border:1px solid black;border-radius: 5px; padding: 10px'>
+      <p  style="font-weight: bold;">Indien u volgend vakje aanklikt en vordert worden alle totalen bijgehouden om het verschil te kunnen berekenen in de volgende vordering van de meetstaat.</p>
+      <div style='display: flex;justify-content: center;width:100%; align-items: center'>
+        <nb-checkbox type="checkbox" [(ngModel)]='checkbox'
+        ></nb-checkbox>
+      </div>
+      <button class='button1'  mat-raised-button color="primary" (click)="vorderNewExcel()" >
+        VORDER MEETSTAAT EXCEL
+      </button>
+    </div>
+    <button class='button2' mat-raised-button color="primary" (click)="newExcel()" >
+      NORMALE DOWNLOAD MEETSTAAT
+    </button>
+  </div>
+</div>
+
+
+

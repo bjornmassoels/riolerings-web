@@ -1,0 +1,131 @@
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { NbToastrService } from '@nebular/theme';
+import { Observable } from 'rxjs';
+import { UntypedFormControl } from '@angular/forms';
+import { startWith, map } from 'rxjs/operators';
+import { ApiService } from '../../../../services/api.service';
+import { Project } from '../../../../models/project';
+import { FormService } from '../../../../services/form.service';
+import {Group} from "../../../../models/groups";
+@Component({
+  selector: 'all-projects',
+  templateUrl: './all-projects.component.html',
+  styleUrls: ['./all-projects.component.scss', '../../styles/item-table.scss'],
+})
+export class AllProjectsComponent implements OnInit {
+  public projectItem: Project = new Project();
+  public projects: Array<Project> = [];
+  public searchProjects: Array<Project> = [];
+  public isOn: boolean;
+  searchForm = new UntypedFormControl();
+  filteredProjects: Observable<Project[]>;
+  private group: Group;
+  oneYearAgoDate: Date;
+
+  constructor(
+    private apiService: ApiService,
+    private router: Router,
+    private toastrService: NbToastrService,
+    private formService: FormService,
+  ) {}
+
+  async ngOnInit(): Promise<void> {
+    let startDate = new Date();
+    startDate.setFullYear(startDate.getFullYear() - 1);
+    this.oneYearAgoDate = startDate;
+    this.apiService.getProjects().subscribe(async (x) => {
+      this.projects = x as Project[];
+      this.searchProjects = x as Project[];
+      this.formService.PreloadProject = null;
+      this.formService.lastProjects = this.projects;
+      this.filteredProjects = this.searchForm.valueChanges.pipe(
+        startWith(''),
+        map((value) => (typeof value === 'string' ? value : value.projectNr)),
+        map((name) => (name ? this._filter(name) : this.projects.slice())),
+      );
+      this.isOn = true;
+    });
+  }
+
+
+  sortByDate() {
+    const sortIndex = function (p1: Project, p2: Project) {
+      if (new Date(p1.created) < new Date(p2.created)) {
+        return 1;
+      }
+      if (new Date(p1.created) > new Date(p2.created)) {
+        return -1;
+      }
+      return 0;
+    };
+    this.projects.sort(sortIndex);
+    this.searchProjects.sort(sortIndex);
+  }
+
+  private _filter(projectNr: string): Project[] {
+    const filterValue = projectNr.toLowerCase();
+
+    return this.projects.filter((item) =>
+      item.projectNr.toString().includes(projectNr.toLowerCase()),
+    );
+  }
+
+  onSearch(_id: string) {
+    this.formService.previousPage.push('/pages/projects');
+    this.router.navigate(['/pages/projectview', _id]);
+  }
+
+  onSearchEnter(input: string) {
+    let foundItemId: string;
+    this.projects.forEach(function (p) {
+      if (p.projectNr.toString() === input) {
+        foundItemId = p._id;
+      } else {
+        const inputLength = input.length;
+        if (
+          p.projectNr
+            .toString()
+            .toLowerCase()
+            .substring(0, inputLength)
+            .includes(input.toLowerCase())
+        ) {
+          foundItemId = p._id;
+        }
+      }
+    });
+    if (foundItemId) {
+      this.formService.previousPage.push('/pages/projects');
+      this.router.navigate(['/pages/projectview', foundItemId]);
+    } else {
+      this.toastrService.warning(
+        'De zoekfunctie heeft niks gevonden',
+        'Sorry!',
+      );
+    }
+  }
+
+  onSearchInput(input:string ){
+    this.searchProjects = [];
+      for (const r of this.projects) {
+        if(r.street != null){
+          if (r.street.toLowerCase().includes(input.toLowerCase())) {
+            this.searchProjects.push(r);
+          }
+        } else if(input === ""){
+          this.searchProjects.push(r);
+        }
+      }
+  }
+
+  Date(created: string) {
+    return new Date(created).toLocaleDateString();
+  }
+
+  openProject(project: Project) {
+    this.formService._chosenProject = project;
+    this.formService.previousPage.push('/pages/projects');
+    this.router.navigate(['/pages/projectview', project._id]);
+  }
+}

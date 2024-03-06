@@ -1,0 +1,606 @@
+<div class="page">
+  <p *ngIf="!hasSecondPhotoPage" class="page-number">1/2</p>
+  <p *ngIf="hasSecondPhotoPage" class="page-number">1/3</p>
+    <p  *ngIf="((realProject.isWachtAansluiting != null && realProject.isWachtAansluiting) ||
+                   (realProject.droogWaterAfvoer?.isWachtaansluiting != null && realProject.droogWaterAfvoer.isWachtaansluiting) ||
+                   (realProject.regenWaterAfvoer?.isWachtaansluiting != null && realProject.regenWaterAfvoer.isWachtaansluiting))" class="pdf-title">Wachtaansluitingsfiche / {{realProject.naamFiche}}</p>
+    <p  *ngIf="((realProject.isWachtAansluiting == null || !realProject.isWachtAansluiting) &&
+                     (realProject.droogWaterAfvoer?.isWachtaansluiting == null || !realProject.droogWaterAfvoer.isWachtaansluiting) &&
+                     (realProject.regenWaterAfvoer?.isWachtaansluiting == null || !realProject.regenWaterAfvoer.isWachtaansluiting))" class="pdf-title">Huisaansluitingsfiche / {{realProject.naamFiche}}</p>
+    <div class="table-container">
+        <table class="w-max">
+            <thead>
+                <th></th>
+                <th></th>
+            </thead>
+            <tbody>
+                <tr class="w-max">
+                    <td class="w-25">Projectnaam:</td>
+                    <td class="w-90 orange-td">{{group.rbProjectNaam}}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="table-margin">
+            <thead>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </thead>
+            <tbody>
+                <tr>
+                  <td class="w-25">Projectnr. bouwheer:</td>
+                  <td class="orange-td w-25">{{group.rbProjectNr}}</td>
+                  <td class="w-25">Projectnr. aannemer:</td>
+                  <td class="orange-td w-25">{{group.aannemerProjectNr}}</td>
+                </tr>
+                <tr>
+                    <td class="w-15">Straat:</td>
+                    <td class="orange-td w-30-2">{{realProject.street}}</td>
+                    <td class="w-15">Huisnr/Volgnr:</td>
+                    <td *ngIf="realProject.index == null" class="orange-td w-40">{{realProject.huisNr}}</td>
+                    <td *ngIf="realProject.index != null" class="orange-td w-40">{{realProject.huisNr}} - Volgnr:
+                        {{realProject.index}}</td>
+                </tr>
+                <tr>
+                    <td class="w-15">Gemeente:</td>
+                    <td class="orange-td w-30-2">{{group.rbGemeente}}</td>
+                    <td class="w-15">Equipmentnr:</td>
+                    <td class="orange-td w-40">{{realProject.equipNrRiolering}}</td>
+                </tr>
+                <tr>
+                    <td class="w-15">Aannemer:</td>
+                    <td class="orange-td w-30-2">{{group.aannemerNaam}}</td>
+                    <td class="w-15">Datum:</td>
+                    <td *ngIf="realProject.startDate != null " class="orange-td w-40">
+                        {{realProject.startDate.toLocaleDateString()}}</td>
+                    <td *ngIf="realProject.startDate == null " class="w-40"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="table-container">
+        <table class="table-margin">
+            <thead>
+                <th></th>
+                <th *ngIf="!isGemengd" class="t-center"><b>DWA</b></th>
+                <th *ngIf="isGemengd" class="t-center"><b>GEM</b></th>
+                <th class="t-center"><b>RWA</b></th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="w-50">Gelegen tussen volgende verbindingsputten:</td>
+                    <td *ngIf="hasDWA" class="yellow-td w-25 t-center">{{realProject.droogWaterAfvoer?.tussenIPLinks}} -
+                        {{realProject.droogWaterAfvoer?.tussenIPRechts}}</td>
+                    <td *ngIf="!hasDWA" class="yellow-td w-25 t-center"></td>
+                    <td *ngIf="hasRWA" class="yellow-td w-25 t-center">{{realProject.regenWaterAfvoer?.tussenIPLinks}} -
+                        {{realProject.regenWaterAfvoer?.tussenIPRechts}}</td>
+                    <td *ngIf="!hasRWA" class="yellow-td w-25 t-center"></td>
+                </tr>
+                <tr>
+                    <td class="w-50">Afstand midden stroomafwaartse put tot mof:</td>
+                    <td *ngIf="hasDWA" class="yellow-td t-center">
+                        {{NullToOnbekend(realProject.droogWaterAfvoer.afstandPutMof)}}</td>
+                    <td *ngIf="!hasDWA" class="yellow-td t-center"></td>
+                    <td *ngIf="hasRWA" class="yellow-td t-center">
+                        {{NullToOnbekend(realProject.regenWaterAfvoer.afstandPutMof)}}</td>
+                    <td *ngIf="!hasRWA" class="yellow-td t-center"></td>
+                </tr>
+                <tr>
+                    <td class="w-50">Beschrijving ligging HA-putje:</td>
+                    <td *ngIf="realProject.droogWaterAfvoer.ligging != null && realProject.droogWaterAfvoer.ligging !== '' && hasDWA" class="yellow-td w-25 t-center">
+                        {{realProject.droogWaterAfvoer.ligging === 'andere' ? realProject.droogWaterAfvoer.liggingAndere : realProject.droogWaterAfvoer.ligging | titlecase}}</td>
+                    <td *ngIf="(realProject.droogWaterAfvoer.ligging == null || realProject.droogWaterAfvoer.ligging === '') && hasDWA" class="yellow-td w-25 t-center">Onbekend
+                    </td>
+                    <td *ngIf="!hasDWA" class="yellow-td w-25 t-center"></td>
+                    <td *ngIf="realProject.regenWaterAfvoer.ligging != null && realProject.regenWaterAfvoer.ligging !== '' && hasRWA" class="yellow-td w-25 t-center">
+                        {{realProject.regenWaterAfvoer.ligging === 'andere' ? realProject.regenWaterAfvoer.liggingAndere : realProject.regenWaterAfvoer.ligging | titlecase}}</td>
+                    <td *ngIf="(realProject.regenWaterAfvoer.ligging == null || realProject.regenWaterAfvoer.ligging === '') && hasRWA" class="yellow-td w-25 t-center">Onbekend
+                    </td>
+                    <td *ngIf="!hasRWA" class="yellow-td w-25 t-center"></td>
+                </tr>
+                <tr>
+                    <td class="w-50">Diepte HA-putje/aansluiting tov MV:</td>
+                    <td  *ngIf="hasDWA"
+                        class="yellow-td t-center"> {{NullToOnbekend(realProject.droogWaterAfvoer.diepteAansluitingWoning)}}
+                    </td>
+                    <td  class="yellow-td t-center" *ngIf="!hasDWA"></td>
+                    <td *ngIf="hasRWA"
+                        class="yellow-td t-center"> {{NullToOnbekend(realProject.regenWaterAfvoer.diepteAansluitingWoning)}}
+                    </td>
+                    <td  class="yellow-td t-center" *ngIf="!hasRWA"></td>
+                </tr>
+                <tr>
+                  <td class="w-50">Diepte aanboring op hoofdriool tov MV:<span class="small">(op best. riolering)</span></td>
+                    <td *ngIf="hasDWA" class="yellow-td t-center">
+                        {{NullToOnbekend(realProject.droogWaterAfvoer.diepteRioleringHA)}}</td>
+                    <td  class="yellow-td t-center" *ngIf="!hasDWA"></td>
+                    <td *ngIf="hasRWA" class="yellow-td t-center">
+                        {{NullToOnbekend(realProject.regenWaterAfvoer.diepteRioleringHA)}}</td>
+                    <td  class="yellow-td t-center" *ngIf="!hasRWA"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <th><b>HOEVEELHEDEN</b></th>
+                <th class="t-center">opmerking</th>
+                <th *ngIf="!isGemengd" class="t-center"><b>DWA</b></th>
+                <th *ngIf="isGemengd" class="t-center"><b>GEM</b></th>
+                <th class="t-center"><b>RWA</b></th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="w-25">Gebruik:</td>
+                    <td class="w-25 "></td>
+                    <td *ngIf="((realProject.isWachtAansluiting == null || realProject.isWachtAansluiting === false) &&
+                   (realProject.droogWaterAfvoer?.isWachtaansluiting == null || realProject.droogWaterAfvoer.isWachtaansluiting === false)) && hasDWA"
+                        class="orange-td w-25 t-center">HA</td>
+                    <td *ngIf="((realProject.isWachtAansluiting != null && realProject.isWachtAansluiting) ||
+                   (realProject.droogWaterAfvoer?.isWachtaansluiting != null && realProject.droogWaterAfvoer.isWachtaansluiting)) && hasDWA" class="orange-td w-25 t-center">WA</td>
+                    <td *ngIf="!hasDWA" class="orange-td w-25 t-center"></td>
+                  <td *ngIf="((realProject.isWachtAansluiting == null || realProject.isWachtAansluiting === false) &&
+                   (realProject.regenWaterAfvoer?.isWachtaansluiting == null || realProject.regenWaterAfvoer.isWachtaansluiting === false)) && hasRWA"
+                      class="orange-td w-25 t-center">HA</td>
+                  <td *ngIf="((realProject.isWachtAansluiting != null && realProject.isWachtAansluiting) ||
+                   (realProject.regenWaterAfvoer?.isWachtaansluiting != null && realProject.regenWaterAfvoer.isWachtaansluiting)) && hasRWA" class="orange-td w-25 t-center">WA</td>
+                    <td *ngIf="!hasRWA" class="orange-td w-25 t-center"></td>
+                </tr>
+                <tr>
+                    <td class="w-25">Materiaal:</td>
+                    <td class="w-25 "></td>
+                    <td *ngIf="hasDWA" class="orange-td w-25 t-center">{{realProject.droogWaterAfvoer.buisType}}</td>
+                    <td *ngIf="!hasDWA" class="orange-td w-25 t-center"></td>
+                    <td *ngIf="!realProject.regenWaterAfvoer.isPP && hasRWA" class="orange-td w-25 t-center">{{realProject.regenWaterAfvoer.buisType}}</td>
+                    <td *ngIf="realProject.regenWaterAfvoer.isPP && hasRWA" class="orange-td w-25 t-center">PP</td>
+                    <td *ngIf="!hasRWA" class="orange-td w-25 t-center"></td>
+                </tr>
+                <tr>
+                    <td class="w-25">Diameter buis:</td>
+                    <td class="w-25 "></td>
+                    <td *ngIf="hasDWA" class="orange-td w-25 t-center">{{realProject.droogWaterAfvoer.diameter === 'andere' ? realProject.droogWaterAfvoer.diameterAndere : realProject.droogWaterAfvoer.diameter}} mm</td>
+                    <td *ngIf="!hasDWA" class="orange-td w-25 t-center"></td>
+                    <td *ngIf="hasRWA" class="orange-td w-25 t-center">{{realProject.regenWaterAfvoer.diameter === 'andere' ? realProject.regenWaterAfvoer.diameterAndere : realProject.regenWaterAfvoer.diameter}} mm</td>
+                    <td *ngIf="!hasRWA" class="orange-td w-25 t-center"></td>
+                </tr>
+                <tr>
+                    <td class="w-26">Aansluiting op hoofdriool:</td>
+                    <td class="w-25 "></td>
+                    <td *ngIf="realProject.droogWaterAfvoer.tBuisStuk === 'flexAan' && hasDWA" class="yellow-td w-25 t-center">
+                        Flexibele aansluiting</td>
+                    <td *ngIf="realProject.droogWaterAfvoer.tBuisStuk == null && hasDWA" class="yellow-td w-25 t-center"></td>
+                    <td *ngIf="realProject.droogWaterAfvoer.tBuisStuk != null && realProject.droogWaterAfvoer.tBuisStuk !== 'flexAan' && hasDWA"
+                        class="yellow-td w-25 t-center">{{realProject.droogWaterAfvoer.tBuisStuk  | titlecase }}</td>
+                    <td *ngIf="!hasDWA" class="yellow-td w-25 t-center"></td>
+                    <td *ngIf="realProject.regenWaterAfvoer.tBuisStuk === 'flexAan' && hasRWA" class="yellow-td w-25 t-center">
+                          Flexibele aansluiting</td>
+                    <td *ngIf="realProject.regenWaterAfvoer.tBuisStuk == null && hasRWA" class="yellow-td w-25 t-center"></td>
+                    <td *ngIf="realProject.regenWaterAfvoer.tBuisStuk != null && realProject.regenWaterAfvoer.tBuisStuk !== 'flexAan' && hasRWA"
+                        class="yellow-td w-25 t-center">{{realProject.regenWaterAfvoer.tBuisStuk  | titlecase }}</td>
+                    <td *ngIf="!hasRWA" class="yellow-td w-25 t-center"></td>
+                </tr>
+                <tr>
+                    <td class="w-25">Mof:</td>
+                    <td class="w-25 "></td>
+                    <td *ngIf="hasDWA" class="yellow-td w-25 t-center">{{NullToZero(realProject.droogWaterAfvoer.mof)}} stuks</td>
+                    <td *ngIf="!hasDWA" class="yellow-td w-25 t-center"></td>
+                    <td *ngIf="hasRWA" class="yellow-td w-25 t-center">{{NullToZero(realProject.regenWaterAfvoer.mof)}} stuks</td>
+                    <td *ngIf="!hasRWA" class="yellow-td w-25 t-center"></td>
+                </tr>
+                <tr>
+                    <td class="w-25">Buis:</td>
+                    <td class="w-25 "></td>
+                    <td *ngIf="(group.heeftPloegen == null || group.heeftPloegen === false) && hasDWA"
+                        class="yellow-td w-25 t-center">
+                        {{this.NullToZero((this.NullToZero(realProject.droogWaterAfvoer.buisVoorHor) +
+                        this.NullToZero(realProject.droogWaterAfvoer.buisVoorVert) +
+                        this.NullToZero(realProject.droogWaterAfvoer.buisAchter))).toFixed(2)}}
+                        meter
+                    </td>
+                    <td *ngIf="(group.heeftPloegen != null && group.heeftPloegen === true) && hasDWA"
+                        class="yellow-td w-25 t-center">
+                        {{this.NullToZero((this.NullToZero(realProject.droogWaterAfvoer.buisVoorHor) +
+                        this.NullToZero(realProject.droogWaterAfvoer.buisVoorVert)
+                        + this.NullToZero(realProject.droogWaterAfvoer.buisVoorHor2) +
+                        this.NullToZero(realProject.droogWaterAfvoer.buisVoorVert2) +
+                        this.NullToZero(realProject.droogWaterAfvoer.buisAchter))).toFixed(2)}}
+                        meter
+                    </td>
+                    <td *ngIf="!hasDWA" class="yellow-td w-25 t-center"></td>
+                    <td *ngIf="(group.heeftPloegen == null || group.heeftPloegen === false) && hasRWA"
+                        class="yellow-td w-25 t-center">
+                        {{this.NullToZero((this.NullToZero(realProject.regenWaterAfvoer.buisVoorHor) +
+                        this.NullToZero(realProject.regenWaterAfvoer.buisVoorVert) +
+                        this.NullToZero(realProject.regenWaterAfvoer.buisAchter))).toFixed(2)}}
+                        meter
+                    </td>
+                    <td *ngIf="(group.heeftPloegen != null && group.heeftPloegen === true) && hasRWA"
+                        class="yellow-td w-25 t-center">
+                        {{this.NullToZero((this.NullToZero(realProject.regenWaterAfvoer.buisVoorHor) +
+                        this.NullToZero(realProject.regenWaterAfvoer.buisVoorVert)
+                        + this.NullToZero(realProject.regenWaterAfvoer.buisVoorHor2) +
+                        this.NullToZero(realProject.regenWaterAfvoer.buisVoorVert2) +
+                        this.NullToZero(realProject.regenWaterAfvoer.buisAchter))).toFixed(2)}}
+                        meter
+                    </td>
+                    <td *ngIf="!hasRWA" class="yellow-td w-25 t-center"></td>
+                </tr>
+                <tr>
+                    <td class="w-25">Bocht:</td>
+                    <td class="w-25 "></td>
+                    <td *ngIf="(group.heeftPloegen == null || group.heeftPloegen === false) && hasDWA"
+                        class="yellow-td w-25 t-center">{{this.NullToZero((this.NullToZero(realProject.droogWaterAfvoer.bochtVoor) +
+                        this.NullToZero(realProject.droogWaterAfvoer.bochtAchter)))}} stuks</td>
+                    <td *ngIf="(group.heeftPloegen != null && group.heeftPloegen === true) && hasDWA"
+                        class="yellow-td w-25 t-center">{{this.NullToZero((this.NullToZero(realProject.droogWaterAfvoer.bochtVoor) +
+                        this.NullToZero(realProject.droogWaterAfvoer.bochtVoor2) +
+                        this.NullToZero(realProject.droogWaterAfvoer.bochtAchter)))}} stuks</td>
+                    <td *ngIf="!hasDWA" class="yellow-td w-25 t-center"></td>
+                    <td *ngIf="(group.heeftPloegen == null || group.heeftPloegen === false) && hasRWA"
+                        class="yellow-td w-25 t-center">{{this.NullToZero((this.NullToZero(realProject.regenWaterAfvoer.bochtVoor) +
+                      this.NullToZero(realProject.regenWaterAfvoer.bochtAchter)))}} stuks</td>
+                    <td *ngIf="(group.heeftPloegen != null && group.heeftPloegen === true) && hasRWA"
+                        class="yellow-td w-25 t-center">{{this.NullToZero((this.NullToZero(realProject.regenWaterAfvoer.bochtVoor) +
+                        this.NullToZero(realProject.regenWaterAfvoer.bochtVoor2) +
+                        this.NullToZero(realProject.regenWaterAfvoer.bochtAchter)))}} stuks</td>
+                    <td *ngIf="!hasRWA" class="yellow-td w-25 t-center"></td>
+                </tr>
+                <tr>
+                    <td class="w-25">Y/T-stuk:</td>
+                    <td class="w-25 "></td>
+                    <td *ngIf="(realProject.droogWaterAfvoer.tBuisStuk === 'T-Stuk' || realProject.droogWaterAfvoer.tBuisStuk === 'Y-Stuk') && hasDWA"
+                        class="yellow-td w-25 t-center">{{(1 + realProject.droogWaterAfvoer.YAchter )}} stuks</td>
+                    <td *ngIf="(realProject.droogWaterAfvoer.tBuisStuk !== 'T-Stuk' && realProject.droogWaterAfvoer.tBuisStuk !== 'Y-Stuk') && hasDWA"
+                        class="yellow-td w-25 t-center">{{realProject.droogWaterAfvoer.YAchter != null &&
+                        realProject.droogWaterAfvoer.YAchter !== 0 ? realProject.droogWaterAfvoer.YAchter : 0 }}
+                        stuks</td>
+                    <td *ngIf="!hasDWA" class="yellow-td w-25 t-center"></td>
+                    <td *ngIf="(realProject.regenWaterAfvoer.tBuisStuk === 'T-Stuk' || realProject.regenWaterAfvoer.tBuisStuk === 'Y-Stuk') && hasRWA"
+                          class="yellow-td w-25 t-center">{{1 + realProject.regenWaterAfvoer.YAchter }} stuks</td>
+                    <td *ngIf="(realProject.regenWaterAfvoer.tBuisStuk !== 'T-Stuk' && realProject.regenWaterAfvoer.tBuisStuk !== 'Y-Stuk') && hasRWA"
+                        class="yellow-td w-25 t-center">{{realProject.regenWaterAfvoer.YAchter != null &&
+                        realProject.regenWaterAfvoer.YAchter !== 0 ? realProject.regenWaterAfvoer.YAchter : 0 }}
+                        stuks</td>
+                    <td *ngIf="!hasRWA" class="yellow-td w-25 t-center"></td>
+                </tr>
+                <tr>
+                    <td class="w-25">Krimpmof:</td>
+                    <td class="w-25 "></td>
+                    <td *ngIf="hasDWA" class="yellow-td w-25 t-center">
+                        {{NullToZero(realProject.droogWaterAfvoer.krimpmof)}} stuks</td>
+                    <td *ngIf="!hasDWA" class="yellow-td w-25 t-center"></td>
+                    <td *ngIf="hasRWA" class="yellow-td w-25 t-center">
+                          {{NullToZero(realProject.regenWaterAfvoer.krimpmof)}} stuks</td>
+                    <td *ngIf="!hasRWA" class="yellow-td w-25 t-center"></td>
+                </tr>
+                <tr>
+                    <td class="w-25">Koppelstuk:</td>
+                    <td class="w-25 "></td>
+                    <td *ngIf="hasDWA" class="yellow-td w-25 t-center">
+                        {{NullToZero(realProject.droogWaterAfvoer.koppelstuk)}} stuks</td>
+                    <td *ngIf="!hasDWA" class="yellow-td w-25 t-center"></td>
+                    <td *ngIf="hasRWA" class="yellow-td w-25 t-center">
+                          {{NullToZero(realProject.regenWaterAfvoer.koppelstuk)}} stuks</td>
+                    <td *ngIf="!hasRWA" class="yellow-td w-25 t-center"></td>
+                </tr>
+                <tr>
+                    <td class="w-25">Reductie:</td>
+                    <td class="w-25 "></td>
+                    <td *ngIf="(group.heeftPloegen == null || group.heeftPloegen === false) && hasDWA"
+                        class="yellow-td w-25 t-center">{{this.NullToZero((this.NullToZero(realProject.droogWaterAfvoer.reductieVoor) +
+                        this.NullToZero(realProject.droogWaterAfvoer.reductieAchter)))}} stuks</td>
+                    <td *ngIf="(group.heeftPloegen != null && group.heeftPloegen === true) && hasDWA"
+                        class="yellow-td w-25 t-center">{{this.NullToZero((this.NullToZero(realProject.droogWaterAfvoer.reductieVoor) +
+                        this.NullToZero(realProject.droogWaterAfvoer.reductieVoor2) +
+                        this.NullToZero(realProject.droogWaterAfvoer.reductieAchter)))}} stuks</td>
+                    <td *ngIf="!hasDWA" class="yellow-td w-25 t-center"></td>
+                    <td *ngIf="(group.heeftPloegen == null || group.heeftPloegen === false) && hasRWA"
+                          class="yellow-td w-25 t-center">{{this.NullToZero((this.NullToZero(realProject.regenWaterAfvoer.reductieVoor) +
+                          this.NullToZero(realProject.regenWaterAfvoer.reductieAchter)))}} stuks</td>
+                    <td *ngIf="(group.heeftPloegen != null && group.heeftPloegen === true) && hasRWA"
+                        class="yellow-td w-25 t-center">{{this.NullToZero((this.NullToZero(realProject.regenWaterAfvoer.reductieVoor) +
+                        this.NullToZero(realProject.regenWaterAfvoer.reductieVoor2) +
+                        this.NullToZero(realProject.regenWaterAfvoer.reductieAchter)))}} stuks</td>
+                    <td *ngIf="!hasRWA" class="yellow-td w-25 t-center"></td>
+                </tr>
+                <tr>
+                    <td class="w-25">Stop:</td>
+                    <td class="w-25 "></td>
+                    <td *ngIf="hasDWA" class="yellow-td w-25 t-center">
+                        {{NullToZero(realProject.droogWaterAfvoer.stop)}} stuks</td>
+                    <td *ngIf="!hasDWA" class="yellow-td w-25 t-center"></td>
+                    <td *ngIf="hasRWA" class="yellow-td w-25 t-center">
+                          {{NullToZero(realProject.regenWaterAfvoer.stop)}} stuks</td>
+                    <td *ngIf="!hasRWA" class="yellow-td w-25 t-center"></td>
+                </tr>
+                <tr>
+                    <td class="w-25">Andere:</td>
+                    <td class="w-25 "></td>
+                    <td *ngIf="hasDWA" class="yellow-td w-25 t-center">{{realProject.droogWaterAfvoer.andere}}</td>
+                    <td *ngIf="!hasDWA" class="yellow-td w-25 t-center"></td>
+                    <td *ngIf="hasRWA" class="yellow-td w-25 t-center">{{realProject.regenWaterAfvoer.andere}}</td>
+                    <td *ngIf="!hasRWA" class="yellow-td w-25 t-center"></td>
+                </tr>
+                <tr>
+                    <td class="w-25">HA-putje of T-stuk:</td>
+                    <td class="w-25 "></td>
+                    <td *ngIf="hasDWA" class="yellow-td w-25 t-center">{{realProject.droogWaterAfvoer.diameterPut}} mm</td>
+                    <td *ngIf="!hasDWA" class="yellow-td w-25 t-center"></td>
+                    <td *ngIf="hasRWA" class="yellow-td w-25 t-center">{{realProject.regenWaterAfvoer.diameterPut}} mm</td>
+                    <td *ngIf="!hasRWA" class="yellow-td w-25 t-center"></td>
+                </tr>
+                <tr>
+                    <td class="w-25">Terugslagklep in HA-putje:</td>
+                    <td class="w-25 "></td>
+                    <td *ngIf="hasDWA" class="yellow-td w-25 t-center">{{realProject.droogWaterAfvoer.terugslagklep ? 'Ja' : 'Nee'}}</td>
+                    <td *ngIf="!hasDWA" class="yellow-td w-25 t-center"></td>
+                    <td *ngIf="hasRWA" class="yellow-td w-25 t-center">{{realProject.regenWaterAfvoer.terugslagklep ? 'Ja' : 'Nee'}}</td>
+                    <td *ngIf="!hasRWA" class="yellow-td w-25 t-center"></td>
+                </tr>
+                <tr>
+                    <td class="w-25">Soort putje:</td>
+                    <td class="w-25 "></td>
+                    <td *ngIf="realProject.droogWaterAfvoer.soortPutje !== 'andere' && hasDWA"
+                        class="yellow-td w-25 t-center">{{realProject.droogWaterAfvoer.soortPutje | titlecase}}</td>
+                    <td *ngIf="realProject.droogWaterAfvoer.soortPutje === 'andere' && hasDWA"
+                        class="yellow-td w-25 t-center">{{realProject.droogWaterAfvoer.anderPutje | titlecase}}</td>
+                    <td *ngIf="!hasDWA" class="yellow-td w-25 t-center"></td>
+                    <td *ngIf="realProject.regenWaterAfvoer.soortPutje !== 'andere' && hasRWA"
+                        class="yellow-td w-25 t-center">{{realProject.regenWaterAfvoer.soortPutje | titlecase}}</td>
+                    <td *ngIf="realProject.regenWaterAfvoer.soortPutje === 'andere' && hasRWA"
+                        class="yellow-td w-25 t-center">{{realProject.regenWaterAfvoer.anderPutje | titlecase}}</td>
+                    <td *ngIf="!hasRWA" class="yellow-td w-25 t-center"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table>
+            <thead>
+                <th></th>
+                <th></th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="w-75">Aansluiting bovengrondse regenafvoer (RWA)</td>
+                    <td *ngIf=" hasRWA" class="yellow-td w-25 t-center">
+                        {{NullToZero(realProject.regenWaterAfvoer.aanslBovRWA)}} stuks</td>
+                    <td *ngIf="!hasRWA" class="yellow-td w-25 t-center"></td>
+                </tr>
+                <tr>
+                    <td class="w-75">RWA-infiltratieputje</td>
+                    <td *ngIf="hasRWA" class="yellow-td w-25 t-center">{{realProject.regenWaterAfvoer.infilPutje ? 'Ja' : 'Nee'}}</td>
+                    <td *ngIf="!hasRWA" class="yellow-td w-25 t-center"></td>
+                </tr>
+                <tr>
+                    <td class="w-75">RWA aansluiting op opengracht</td>
+                    <td *ngIf="hasRWA" class="yellow-td w-25 t-center">{{realProject.regenWaterAfvoer.aanslOpenRWA ? 'Ja' : 'Nee'}}</td>
+                    <td *ngIf="!hasRWA" class="yellow-td w-25 t-center"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table>
+            <thead>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="w-30">Plaats aansluiting op riool van stroomafw. naar
+                        stroomopw.</td>
+                    <td class="w-20 h-5"><img class="h-5 w-auto" src="../../../../assets/images/gradenOpRiool.png"></td>
+                    <td *ngIf="(realProject.droogWaterAfvoer.plaatsAansluiting == null || realProject.droogWaterAfvoer.plaatsAansluiting.toString() === 'onbekend' || realProject.droogWaterAfvoer.plaatsAansluiting.toString() === '') && hasDWA"
+                        class="yellow-td w-25 t-center">Onbekend</td>
+                    <td *ngIf="(realProject.droogWaterAfvoer.plaatsAansluiting != null && realProject.droogWaterAfvoer.plaatsAansluiting.toString() !== 'onbekend' && realProject.droogWaterAfvoer.plaatsAansluiting.toString() !== '') && hasDWA"
+                        class="yellow-td w-25 t-center">{{realProject.droogWaterAfvoer.plaatsAansluiting}} graden
+                    </td>
+                    <td *ngIf="!hasDWA" class="yellow-td w-25 t-center"></td>
+                    <td *ngIf="(realProject.regenWaterAfvoer.plaatsAansluiting == null || realProject.regenWaterAfvoer.plaatsAansluiting.toString() === 'onbekend' || realProject.regenWaterAfvoer.plaatsAansluiting.toString() === '') && hasRWA"
+                          class="yellow-td w-25 t-center">Onbekend</td>
+                    <td *ngIf="(realProject.regenWaterAfvoer.plaatsAansluiting != null && realProject.regenWaterAfvoer.plaatsAansluiting.toString() !== 'onbekend' && realProject.regenWaterAfvoer.plaatsAansluiting.toString() !== '') && hasRWA"
+                        class="yellow-td w-25 t-center">{{realProject.regenWaterAfvoer.plaatsAansluiting}} graden
+                    </td>
+                    <td *ngIf="!hasRWA" class="yellow-td w-25 t-center"></td>
+                </tr>
+            </tbody>
+        </table>
+      <table *ngIf="!hasGrondplan">
+        <thead>
+        <th></th>
+        </thead>
+        <tbody>
+        <tr>
+          <td class="w-50">Lambertcoördinaten</td>
+          <td class="yellow-td w-25 t-center">
+            <span *ngIf="realProject.droogWaterAfvoer.xCoord != null && hasDWA"> X: {{realProject.droogWaterAfvoer.xCoord}}</span><br>
+            <span *ngIf="realProject.droogWaterAfvoer.yCoord != null && hasDWA"> Y: {{realProject.droogWaterAfvoer.yCoord}}</span><br>
+            <span *ngIf="realProject.droogWaterAfvoer.zCoord != null && hasDWA"> Z: {{realProject.droogWaterAfvoer.zCoord}}</span><br>
+          </td>
+          <td class="yellow-td w-25 t-center">
+            <span *ngIf="realProject.regenWaterAfvoer.xCoord != null && hasRWA"> X: {{realProject.regenWaterAfvoer.xCoord}}</span><br>
+            <span *ngIf="realProject.regenWaterAfvoer.yCoord != null && hasRWA"> Y: {{realProject.regenWaterAfvoer.yCoord}}</span><br>
+            <span *ngIf="realProject.regenWaterAfvoer.zCoord != null && hasRWA"> Z: {{realProject.regenWaterAfvoer.zCoord}}</span><br>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+
+    </div>
+
+    <div *ngIf="hasGrondplan" class="table-container">
+        <p style="font-size: 0.7rem; margin: 0;"><b>Indien bouwlijn = rooilijn; verticale afstand = van gevel tot
+                HA-putje</b></p>
+
+        <div style="display: flex;flex-direction: row; width: 100%; justify-content: space-between;">
+            <img class="h-8 w-auto" src="../../../../assets/images/afstandputjeDWA.png">
+            <table style="font-size: 0.7rem;">
+                <thead>
+                    <th class="w-50" style="font-size: 0.7rem">Afstand DWA-putje</th>
+                    <th class="w-auto"></th>
+                    <th class="w-auto"></th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="h-2">horizontaal</td>
+                        <td *ngIf="realProject.droogWaterAfvoer.letterHor != null && hasDWA" class="yellow-td w-auto h-2">
+                            {{realProject.droogWaterAfvoer.letterHor}}</td>
+                        <td *ngIf="realProject.droogWaterAfvoer.letterHor == null && hasDWA" class="yellow-td w-auto h-2">
+                        </td>
+                        <td *ngIf="hasDWA" class="yellow-td w-auto h-2">{{realProject.droogWaterAfvoer.putHor}} m</td>
+                        <td *ngIf="!hasDWA" class="yellow-td w-auto h-2"></td>
+                    </tr>
+                    <tr>
+                        <td class="h-2">verticaal</td>
+                        <td *ngIf="realProject.droogWaterAfvoer.letterVer != null && hasDWA" class="yellow-td w-auto h-2">
+                            {{realProject.droogWaterAfvoer.letterVer}}</td>
+                        <td *ngIf="realProject.droogWaterAfvoer.letterVer == null && hasDWA" class="yellow-td w-auto h-2">
+                        </td>
+                        <td *ngIf="hasDWA" class="yellow-td w-auto h-2">{{realProject.droogWaterAfvoer.putVer}} m</td>
+                        <td *ngIf="!hasDWA" class="yellow-td w-auto h-2"></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <img class="h-8 w-auto" src="../../../../assets/images/afstandputjeRWA.png">
+
+            <table style="font-size: 0.7rem;">
+                <thead>
+                    <th class="w-50" style="font-size: 0.7rem">Afstand RWA-putje</th>
+                    <th class="w-auto"></th>
+                    <th class="w-auto"></th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="h-2">horizontaal</td>
+                        <td *ngIf="realProject.regenWaterAfvoer.letterHor != null && hasRWA" class="yellow-td w-auto h-2">
+                            {{realProject.regenWaterAfvoer.letterHor}}</td>
+                        <td *ngIf="realProject.regenWaterAfvoer.letterHor == null && hasRWA" class="yellow-td w-auto h-2">
+                        </td>
+                        <td *ngIf="hasRWA" class="yellow-td w-auto h-2">{{realProject.regenWaterAfvoer.putHor}} m</td>
+                        <td *ngIf="!hasRWA" class="yellow-td w-auto h-2"></td>
+                    </tr>
+                    <tr>
+                        <td class="h-2">verticaal</td>
+                        <td *ngIf="realProject.regenWaterAfvoer.letterVer != null && hasRWA" class="yellow-td w-auto h-2">
+                            {{realProject.regenWaterAfvoer.letterVer}}</td>
+                        <td *ngIf="realProject.regenWaterAfvoer.letterVer == null && hasRWA" class="yellow-td w-auto h-2">
+                        </td>
+                        <td *ngIf="hasRWA" class="yellow-td w-auto h-2">{{realProject.regenWaterAfvoer.putVer}} m</td>
+                        <td *ngIf="!hasRWA" class="yellow-td w-auto h-2"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="hasFirstPhotoPage" id="page-break" class="photo-container">
+    <p *ngIf="!hasSecondPhotoPage" class="page-number">2/2</p>
+    <p *ngIf="hasSecondPhotoPage" class="page-number">2/3</p>
+
+    <p class="pdf-title">Foto's : {{realProject.naamFiche}}</p>
+
+    <div class="table-container">
+        <table >
+            <thead>
+            <th *ngIf="!isGemengd" class="w-50" style="border: 1px solid black; text-align: center;"><b>DWA</b></th>
+            <th *ngIf="isGemengd" class="w-50" style="border: 1px solid black; text-align: center;"><b>GEM</b></th>
+            <th class="w-50" style="border: 1px solid black; text-align: center;">RWA</th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="2" style="text-align: center;">Foto's volgens standaardbestek 250 versie 4.1</td>
+                </tr>
+                <tr *ngIf="((realProject.photosDWA[0] != null && realProject.photosDWA[0] !== '') ||  (realProject.photosRWA[0] != null && realProject.photosRWA[0] !== ''))">
+                  <td class="w-50">{{currentFotoTextDWA[0] != null? '1. ' + currentFotoTextDWA[0]: ''}}</td>
+                  <td class="w-50">{{currentFotoTextRWA[0] != null? '1. ' + currentFotoTextRWA[0]: ''}}</td>
+                </tr>
+                <tr *ngIf="((realProject.photosDWA[0] != null && realProject.photosDWA[0] !== '') ||  (realProject.photosRWA[0] != null && realProject.photosRWA[0] !== ''))">
+                  <td class="h-20"><img class="h-20 w-auto quality" src="{{realProject.photosDWA[0]}}">
+                  </td>
+                  <td class="h-20"><img class="h-20 w-auto quality" src="{{realProject.photosRWA[0]}}">
+                  </td>
+                </tr>
+                <tr *ngIf="((realProject.photosDWA[1] != null && realProject.photosDWA[1] !== '') ||  (realProject.photosRWA[1] != null && realProject.photosRWA[1] !== ''))">
+                  <td class="w-50">{{currentFotoTextDWA[1] != null? '2. ' + currentFotoTextDWA[1]: ''}}</td>
+                  <td class="w-50">{{currentFotoTextRWA[1] != null? '2. ' + currentFotoTextRWA[1]: ''}}</td>
+                </tr>
+                <tr  *ngIf="((realProject.photosDWA[1] != null && realProject.photosDWA[1] !== '') ||  (realProject.photosRWA[1] != null && realProject.photosRWA[1] !== ''))">
+                    <td class="h-20"><img class="h-20 w-auto quality" src="{{realProject.photosDWA[1]}}">
+                    </td>
+                    <td class="h-20"><img class="h-20 w-auto quality" src="{{realProject.photosRWA[1]}}">
+                    </td>
+                </tr>
+                <tr *ngIf="((realProject.photosDWA[2] != null && realProject.photosDWA[2] !== '') ||  (realProject.photosRWA[2] != null && realProject.photosRWA[2] !== ''))">
+                  <td class="w-50">{{currentFotoTextDWA[2] != null? '3. ' + currentFotoTextDWA[2]: ''}}</td>
+                  <td class="w-50">{{currentFotoTextRWA[2] != null? '3. ' + currentFotoTextRWA[2]: ''}}</td>
+                </tr>
+                <tr *ngIf="((realProject.photosDWA[2] != null && realProject.photosDWA[2] !== '') ||  (realProject.photosRWA[2] != null && realProject.photosRWA[2] !== ''))">
+                  <td class="h-20"><img class="h-20 w-auto quality" src="{{realProject.photosDWA[2]}}">
+                  </td>
+                  <td class="h-20"><img class="h-20 w-auto quality" src="{{realProject.photosRWA[2]}}">
+                  </td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div *ngIf="hasSecondPhotoPage" id="page-break" class="photo-container">
+  <p class="page-number">3/3</p>
+  <p class="pdf-title">Foto's : {{realProject.naamFiche}}</p>
+
+  <div class="table-container">
+    <table>
+      <thead>
+      <th *ngIf="!isGemengd" class="w-50" style="border: 1px solid black; text-align: center;"><b>DWA</b></th>
+      <th *ngIf="isGemengd" class="w-50" style="border: 1px solid black; text-align: center;"><b>GEM</b></th>
+      <th class="w-50" style="border: 1px solid black; text-align: center;">RWA</th>
+      </thead>
+      <tbody>
+      <tr>
+        <td colspan="2" style="text-align: center;">Foto's volgens standaardbestek 250 versie 4.1</td>
+      </tr>
+      <tr *ngIf="((realProject.photosDWA[3] != null && realProject.photosDWA[3] !== '') ||  (realProject.photosRWA[3] != null && realProject.photosRWA[3] !== ''))">
+        <td class="w-50">{{currentFotoTextDWA[3] != null? '4. ' + currentFotoTextDWA[3]: ''}}</td>
+        <td class="w-50">{{currentFotoTextRWA[3] != null? '4. ' + currentFotoTextRWA[3]: ''}}</td>
+      </tr>
+      <tr *ngIf="((realProject.photosDWA[3] != null && realProject.photosDWA[3] !== '') ||  (realProject.photosRWA[3] != null && realProject.photosRWA[3] !== ''))">
+        <td class="h-20"><img class="h-20 w-auto quality" src="{{realProject.photosDWA[3]}}">
+        </td>
+        <td class="h-20"><img class="h-20 w-auto quality" src="{{realProject.photosRWA[3]}}">
+        </td>
+      </tr>
+      <tr *ngIf="((realProject.photosDWA[4] != null && realProject.photosDWA[4] !== '') ||  (realProject.photosRWA[4] != null && realProject.photosRWA[4] !== ''))">
+        <td class="w-50">{{currentFotoTextDWA[4] != null? '5. ' + currentFotoTextDWA[4]: ''}}</td>
+        <td class="w-50">{{currentFotoTextRWA[4] != null? '5. ' + currentFotoTextRWA[4]: ''}}</td>
+      </tr>
+      <tr *ngIf="((realProject.photosDWA[4] != null && realProject.photosDWA[4] !== '') ||  (realProject.photosRWA[4] != null && realProject.photosRWA[4] !== ''))">
+        <td class="h-20"><img class="h-20 w-auto quality" src="{{realProject.photosDWA[4]}}">
+        </td>
+        <td class="h-20"><img class="h-20 w-auto quality" src="{{realProject.photosRWA[4]}}">
+        </td>
+      </tr>
+      <tr *ngIf="((realProject.photosDWA[5] != null && realProject.photosDWA[5] !== '') ||  (realProject.photosRWA[5] != null && realProject.photosRWA[5] !== ''))">
+        <td class="w-50">{{currentFotoTextDWA[5] != null? '6. ' + currentFotoTextDWA[5]: ''}}</td>
+        <td class="w-50">{{currentFotoTextRWA[5] != null? '6. ' + currentFotoTextRWA[5]: ''}}</td>
+      </tr>
+      <tr style="margin-bottom: 10px;" *ngIf="((realProject.photosDWA[5] != null && realProject.photosDWA[5] !== '') ||  (realProject.photosRWA[5] != null && realProject.photosRWA[5] !== ''))">
+        <td class="h-20"><img class="h-20 w-auto quality" src="{{realProject.photosDWA[5]}}">
+        </td>
+        <td class="h-20"><img class="h-20 w-auto quality" src="{{realProject.photosRWA[5]}}">
+        </td>
+      </tr>
+
+      </tbody>
+    </table>
+  </div>
+</div>

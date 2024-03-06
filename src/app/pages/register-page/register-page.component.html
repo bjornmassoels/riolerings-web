@@ -1,0 +1,41 @@
+<form [formGroup]="addForm">
+<div class="container">
+    <h3 class="title">Maak een account aan</h3>
+  <div class="rower">
+    <p class="text">Voornaam :</p>
+    <input type="text" class="inputBox" formControlName="voornaam" />
+  </div>
+  <div class="rower">
+    <p class="text">Achternaam :</p>
+    <input type="text" class="inputBox" formControlName="achternaam" />
+  </div>
+  <div class="rower">
+    <p class="text">Bedrijfsnaam:</p>
+    <input type="email" class="inputBox" formControlName="bedrijfsnaam" />
+  </div>
+  <div class="rower">
+    <p class="text">Email:</p>
+    <input type="email" class="inputBox" formControlName="email" />
+  </div>
+  <div class="rower">
+    <p class="text">Gebruikersnaam:</p>
+    <input type="email" class="inputBox" formControlName="gebruikersnaam" />
+  </div>
+  <div class="rower">
+    <p class="text">Wachtwoord:</p>
+    <input type="password" class="inputBox" formControlName="password" />
+  </div>
+  <div class="rower">
+    <p class="text">Herhaal wachtwoord:</p>
+    <input type="password" class="inputBox" formControlName="password2" />
+  </div>
+  <div class="rower">
+    <p class="text">Code van uw bedrijf:</p>
+    <input type="password" class="inputBox" formControlName="code" />
+  </div>
+  <div class="buttonDiv">
+    <input (click)="submit(addForm.value)" type="button" class="loginButton" value="Creëer account">
+  </div>
+  <input (click)="goBack()" class="goBackButton" type="button" value="Ga terug">
+</div>
+</form>

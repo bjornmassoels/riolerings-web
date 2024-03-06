@@ -1,0 +1,347 @@
+// TODO: Refactor CSS. This is pure shite.
+
+.leftTop {
+  width: auto;
+  height: 50px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  background-color: white;
+}
+
+.rightTop {
+  width: auto;
+  height: 50px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+}
+
+.chart {
+    width:1000px !important;
+  max-width: 1000px !important;
+  div{
+    width:1000px !important;
+  }
+}
+
+.rowChoice {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  margin-left: 3rem;
+}
+
+.selectedH {
+  cursor: pointer;
+  width: 250px;
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  height: 35px;
+  border: 1px solid #98bcd4;
+  border-radius: 20px 20px 0 0;
+  background-color: #98bcd4;
+  padding-top: 0.4em;
+  p {
+    font-size: 2em;
+    letter-spacing: 1pt;
+    font-weight: 600;
+  }
+}
+
+.users {
+  color: white;
+  cursor: pointer;
+  margin-top: 7px;
+  width: 200px;
+  margin-left: 20px;
+  font-weight: 600;
+}
+
+.firstBox {
+  margin-left: 35px;
+}
+
+.notSelectedH {
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  width: 280px;
+  height: 35px;
+  border: 1px solid lightgrey;
+  border-radius: 20px 20px 0 0;
+  background-color: lightgrey;
+  padding-top: 0.4em;
+  p {
+    font-size: 2em;
+    letter-spacing: 1pt;
+    font-weight: 600;
+  }
+}
+
+.topBar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+.buttoné {
+  margin-left: 20px;
+  // What kind of name is this? What does é stand for?
+  background-color: #3c763d;
+  border: 1px solid #3c763d;
+  color: white;
+  border-radius: 5px;
+  width: auto;
+  height: 40px;
+  font-size: 1em;
+  font-weight: 800;
+  letter-spacing: 1.2pt;
+}
+
+.secondTop {
+  width: 55%;
+  height: 50px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #d6e9c6;
+  border-radius: 5px;
+  padding: 1em;
+}
+
+.thirdTop {
+  width: 55%;
+  height: 50px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #c6c7e9;
+  border-radius: 5px;
+  padding: 1em;
+  margin-top: 1rem;
+}
+
+.payRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  background-color: #d6e9c6;
+  height: 50px;
+}
+
+.bg-vat {
+  background-color: #c6c7e9 !important;
+}
+
+.leftBot {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+  width: 320px;
+  height: 280px;
+  background-color: white;
+}
+
+.margL {
+  margin-left: 15px;
+}
+
+.leftCol {
+  display: flex;
+  flex-direction: column;
+}
+
+.coolRow {
+  display: flex;
+  flex-direction: row;
+  padding: 0 20px;
+  justify-content: space-between;
+  align-items: center;
+  width: 350px;
+  height: 50px;
+  background-color: #d6e9c6;
+}
+
+.selectedTime {
+  margin-top: 4px;
+  font-size: 17px;
+  font-weight: 400;
+  color: grey;
+  margin-left: 7px;
+  margin-right: 7px;
+  background-color: lightsteelblue;
+}
+
+.normalText {
+  margin-top: 4px;
+  font-size: 17px;
+  font-weight: 400;
+  color: grey;
+  margin-left: 7px;
+  margin-right: 7px;
+}
+
+.extraMarg {
+  margin-top: 15px;
+}
+
+.vertLine {
+  border-left: 2px solid lightgrey;
+  height: 30px;
+}
+
+.genButton {
+  color: white;
+  margin-left: 20px;
+  background-color: dodgerblue !important;
+  width: auto;
+  height: 40px;
+  border: 1px solid #257cb6;
+  border-radius: 10px;
+  font-size: 1em;
+  font-weight: 600;
+  letter-spacing: 1.4pt;
+}
+
+.containerRow {
+  display: flex;
+  flex-direction: row;
+}
+
+.statisticsBox {
+  background-color: white;
+  height: auto;
+  margin-top: 15px;
+  max-width:1000px !important;
+}
+
+.firstText {
+  margin-top: 10px;
+}
+
+.titleRow {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  background-color: lightsteelblue;
+  width: 100%;
+  height: 50px;
+  border-radius: 5px;
+  padding: 1em;
+}
+
+.titleRow3 {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  background-color: #bbbbbb;
+  width: 300px;
+  height: 50px;
+  border-radius: 5px;
+  padding: 1em;
+}
+
+.vat-row {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  background-color: #aeb1c0;
+  width: 300px;
+  height: 50px;
+  border-radius: 5px;
+  padding: 1em;
+}
+
+.row1 {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.titleRow2 {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  background-color: #d6e9c6;
+  width: 100%;
+  height: 50px;
+}
+
+.dropDown {
+  margin-left: 15px;
+  width: 200px;
+}
+
+.title {
+  margin-top: 15px;
+  font-size: 18px;
+  font-weight: 500;
+  margin-right: 40px;
+}
+
+.radioBut {
+  font-size: 16px;
+  font-weight: 500;
+  color: darkgrey;
+  margin-right: 8px;
+}
+
+.colRadio {
+  margin-left: 15px;
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+.big-card {
+  height: 900px;
+  overflow: hidden;
+  width:1150px !important;
+  border-radius: 15px;
+  box-shadow: #00000030 0 10px 20px, #0000003b 0 6px 6px;
+  background-color: white;
+  padding: 2rem;
+}
+
+.scroll-table {
+  height: 59vh !important;
+  overflow: auto;
+  width: 100%;
+  border-radius: 15px;
+  padding: 15px;
+  box-shadow: none !important;
+  background-color: white;
+  color: white;
+}
+.big-card2 {
+  height: 77vh;
+  width: 100%;
+  border-radius: 15px;
+  padding: 15px;
+  box-shadow: 0 0 15px -10px rgba(0, 0, 0, 0.75);
+  background-color: white;
+  padding: 2rem;
+}
+.buttonBox {
+  margin-left: 1rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+.klanten {
+  width: 85%;
+}

@@ -1,0 +1,11 @@
+<div style='display:flex;flex-direction: column;padding:14px;'>
+<h2>Archiveren</h2>
+<p *ngIf='!isArchiving'>Bent u zeker dat u dit project met alle aansluitingen wilt archiveren?</p>
+<p *ngIf='isArchiving'>Even geduld..</p>
+<div style='display: flex; flex-direction: row; justify-content: space-around; align-items: center; width: 100%; margin-top: 20px;'>
+  <button *ngIf='!isArchiving' mat-raised-button color="secondary" class="archive-button" (click)="archiveGroup()">Ja</button>
+  <button *ngIf='!isArchiving' mat-raised-button color="primary" class="cancel-button" (click)="cancelArchive()">Nee</button>
+  <ngx-loading-bar *ngIf='isArchiving' diameter="60px" includeBar="false" fixed="false" color="blue" value="2"></ngx-loading-bar>
+</div>
+</div>
+

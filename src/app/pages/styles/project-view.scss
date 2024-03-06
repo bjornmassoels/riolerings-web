@@ -1,0 +1,101 @@
+.edit-card {
+  margin: 15px;
+  box-shadow: 0 0 15px -10px rgba(0, 0, 0, 0.75) !important;
+  background-color: white;
+  border-radius: 15px;
+  width: 100%;
+}
+.title{
+  margin-left: 20px;
+}
+.putjeFlex{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+.mar {
+  margin-left: -225px;
+  margin-top: 14px;
+}
+
+.edit-form {
+  width: 100%;
+
+}
+
+.edit-form tr {
+  width: 100%;
+}
+
+.edit-form table {
+  margin-left: 20px;
+  width: 45%;
+  border-right:1px solid black;
+  border-radius: 10px;
+}
+
+.edit-form input {
+  width: 100%;
+}
+
+.edit-form textarea {
+  width: 100%;
+}
+
+.normalText{
+  font-size: 16px;
+  font-weight: 500;
+}
+.firstText{
+  font-size: 16px;
+  font-weight: 500;
+}
+
+
+.edit-form th {
+}
+
+.edit-form nb-select {
+  margin: 5px;
+  width: 100%;
+}
+
+.select-box {
+  min-width: 100%;
+}
+
+.edit-button {
+  margin: 5px;
+  padding: 5px;
+}
+
+.mat-label {
+  width: 100px;
+}
+
+.form-button {
+  width: 150px;
+  margin: 5px;
+  font-weight: 500;
+  letter-spacing: 1.4pt;
+  font-size: 18px;
+  height:40px;
+}
+
+.item-photo {
+  width: 16vw;
+  height: 9vw;
+  margin: 5px;
+}
+
+image-cropper {
+  width: 50vw;
+  height: 28vw;
+}
+
+.photo-form {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}

@@ -1,0 +1,55 @@
+<h2 *ngIf="isLoaded"> Van : <span
+  class="bold">{{fromDate.getDate()}}/{{fromDate.getMonth() + 1}}/{{fromDate.getFullYear()}}</span> tot
+  <span class="bold">{{toDate.getDate()}}/{{toDate.getMonth() + 1}}/{{toDate.getFullYear()}}</span>
+</h2>
+<p style='font-size:13px'>Aanvragen account verwijdering: {{accountDeletionRequestString}}</p>
+<nb-select class="smallInput" [(ngModel)]='maandSelector' id="type">
+  <nb-option value="0">Januari</nb-option>
+  <nb-option value="1">Februari</nb-option>
+  <nb-option value="2">Maart</nb-option>
+  <nb-option value="3">April</nb-option>
+  <nb-option value="4">Mei</nb-option>
+  <nb-option value="5">Juni</nb-option>
+  <nb-option value="6">Juli</nb-option>
+  <nb-option value="7">Augustus</nb-option>
+  <nb-option value="8">September</nb-option>
+  <nb-option value="9">Oktober</nb-option>
+  <nb-option value="10">November</nb-option>
+  <nb-option value="11">December</nb-option>
+</nb-select>
+<h2 *ngIf="!isLoaded">Laden...</h2>
+<h3 *ngIf="isLoaded">{{'Betaalbedrag tot nu toe: (excl. BTW)€' + totaalPrijs.toFixed(2) + '  (incl. BTW)€' + (totaalPrijs * 1.21).toFixed(2)}}</h3>
+<div cdkScrol *ngIf="isAdmin" lable class="scroll-table">
+  <table cdkDropList class="item-list">
+    <tr class="item-box">
+      <th></th>
+      <th>Bedrijfsnaam</th>
+      <th>Totaal excl BTW</th>
+      <th>Totaal incl BTW</th>
+      <th>HA BET</th>
+      <th>HA ONBET</th>
+      <th>HA VERWIJDERD</th>
+      <th>Kolk BET</th>
+      <th>Kolk ONBET</th>
+      <th>Kolk VERWIJDERD</th>
+      <th>Aantal maanden in contract</th>
+    </tr>
+    <tr class="item-box" *ngFor="let company of companyList">
+      <td>
+        <div class="buttonsRow">
+          <input type="button" value="Stuur factuur" (click)="sendInvoice(company)" class="openButton">
+        </div>
+      </td>
+      <td>{{ company.company.name }}</td>
+      <td>{{'€' + company.company.totaalPrijs.toFixed(2)}}</td>
+      <td>{{'€' + (1.21 * company.company.totaalPrijs).toFixed(2)}}</td>
+      <td>{{ company.projectsPaid}}</td>
+      <td>{{ company.projectsUnPaid}}</td>
+      <td>{{ company.projectsDeleted}}</td>
+      <td>{{ company.slokkerProjectsPaid}}</td>
+      <td>{{ company.slokkerProjectsUnPaid}}</td>
+      <td>{{ company.slokkerProjectsDeleted}}</td>
+      <td>{{company.company.monthsInContract}}</td>
+    </tr>
+  </table>
+</div>

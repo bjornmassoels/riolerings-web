@@ -1,0 +1,222 @@
+<div class="topRow">
+  <button style="width: 95px;  margin-left: 0px !important; font-size: 16px" mat-raised-button class="form-button2" (click)="goToPrevious()">
+    Terug
+  </button>
+  <button style="width: 95px;" *ngIf="isArchived === false"  mat-raised-button class="form-button2"
+    (click)="archiveGroup()">Archiveren</button>
+  <button  style="width: 150px;" *ngIf="isArchived === true" mat-raised-button class="form-button2"
+    (click)="unArchiveGroup()">Haal uit archief</button>
+  <button  style="width: 118px;" mat-raised-button class="form-button2"
+    (click)="goToPostnummers()">Postnummers</button>
+  <button style="width: 116px;" mat-raised-button class="form-button2" (click)="generatePDF()"><div class="divInsideButton">PDF fiche<mat-icon class="downloadImage">cloud_download</mat-icon></div></button>
+  <button mat-raised-button class="form-button-green2" (click)="downloadExcelClientData()">
+    <div class="divInsideButton">Excel Vlario 	<mat-icon class="downloadImage">cloud_download</mat-icon></div>
+  </button>
+  <button mat-raised-button class="form-button-green" (click)="downloadExcelClientDataMeetstaat()">
+    <div class="divInsideButton">Excel meetstaat 	<mat-icon class="downloadImage">cloud_download</mat-icon></div>
+  </button>
+  <button mat-raised-button class="form-button4" (click)="setupVariables()">Zet invulvelden uit</button>
+  <button style="width: 123px;" mat-raised-button class="form-button2"
+          (click)="readLambertExcel()">Lambertcoord.</button>
+</div>
+
+<div class="page-header">
+  <div style="display: flex; flex-direction: row; margin-top: -20px;">
+    <h1>Project</h1>
+    <button class='add-button' mat-raised-button color="primary" (click)="goToEdit()"
+      style=" min-width:auto; width: 95px !important; line-height: 18px; background-color:#3f51b5!important;">
+      Project bewerken</button>
+    <button mat-raised-button (click)="goToAddProject()" class="add-button">Creëer HA</button>
+    <button mat-raised-button (click)="goToMultipleAddProject()" class="add-button">Creëer meerdere HA's</button>
+    <button mat-raised-button (click)="createSlokker()" class="add-button3">Creëer kolk</button>
+    <button mat-raised-button (click)="createMeerwerk()" class="add-button4">Creëer OW</button>
+    <div style='margin-top: 15px' class="rowFlex">
+      <p class="normalText">Kleurencode:</p>
+
+      <button mat-button [matMenuTriggerFor]="menu" style="margin-bottom: 0px; margin-left: -11px" *ngIf="isOn">
+        <span class="material-icons">
+          info
+        </span>
+      </button>
+      <mat-menu id='myMenu' #menu="matMenu" class="matMenu1">
+        <button class='infoSoort' mat-menu-item style="background-color: #90EE90; !important;">
+          <span class="kleurenCode">Huisaansluiting</span>
+        </button>
+        <button class='infoSoort' mat-menu-item style="background-color: #ffc04c;">
+          <span class="kleurenCode">Wachtaansluiting</span>
+        </button>
+        <button class='infoSoort' mat-menu-item style="background-color: #87cefa;">
+          <span class="kleurenCode">Kolk</span>
+        </button>
+        <button class='infoSoort' mat-menu-item style="background-color: lightgrey; ">
+          <span class="kleurenCode">Onvoorzien werk</span>
+        </button>
+        <button class='infoSoort' mat-menu-item style="background-color: #50C878; ">
+          <span class="kleurenCode">Huisaansluiting afgewerkt</span>
+        </button>
+        <button class='infoSoort' mat-menu-item style="background-color: orange;">
+          <span class="kleurenCode">Wachtaansluiting afgewerkt</span>
+        </button>
+        <button class='infoSoort' mat-menu-item style="background-color: #6495ED;">
+          <span class="kleurenCode">Kolk afgewerkt</span>
+        </button>
+      </mat-menu>
+    </div>
+  </div>
+</div>
+
+<div style='max-width:1400px'>
+  <div *ngIf="isLoadingBar" class="loadingBar">
+    <p *ngIf='!isDownloading && progress !== totalProjectCount' style="font-size: 16px; font-weight: 600; padding-left: 10px;padding-right: 10px; text-align:center"> Uw download is in voorbereiding. Een ogenblik geduld alstublieft..<br>
+    </p>
+    <br>
+    <p *ngIf='!isDownloading && moreThan50PDFs' style="font-size: 17px; font-weight: 600; padding-left: 10px;padding-right: 10px; text-align:center"> Opmerking: U heeft meer dan 60 aansluitingen gekozen om te downloaden.<br>
+      Wij verzoeken u dit niet te frequent te doen om overbelasting van onze server te vermijden.
+    </p>
+    <p *ngIf='!isDownloading && progress === totalProjectCount' style="font-size: 17px; font-weight: 600; padding-left: 10px;padding-right: 10px;  text-align:center">De fiches worden momenteel in een zip bestand geplaatst. Even geduld aub...<br>
+    </p>
+    <p *ngIf='isDownloading'  style="font-size: 17px; font-weight: 600; padding-left: 10px;padding-right: 10px">Het zip-bestand met de fiches wordt nu gedownload...Even geduld aub</p>
+    <p *ngIf='!isDownloading && progress !== 0 && progress !== totalProjectCount' style="font-size: 17px; font-weight: 600; text-align:center">U zit aan aansluiting {{progress}} van de {{totalProjectCount}}<br> <small>(aansluitingen zonder data zijn niet meegeteld)</small>
+    </p>
+    <ngx-loading-bar style='margin-bottom: 40px;' diameter="40px" includeBar="false" fixed="false" color="blue" value="2"></ngx-loading-bar>
+  </div>
+</div>
+<button *ngIf='isOn' (click)="toggleProjectDetails()" class="btn btn-info">
+  <i style='margin-right: 8px' [class]="showProjectDetails ? 'fa fa-angle-up' : 'fa fa-angle-down'"></i>
+  <b>{{ showProjectDetails ? 'Verberg Projectgegevens' :group?.rbGemeente + ' - ' + group?.aannemerProjectNr + ' - ' + group?.rbProjectNaam }}</b>
+</button>
+
+<div *ngIf="isOn" [hidden]='isLoadingBar' class="infoFlex">
+  <div *ngIf="group?.rbProjectNaam && showProjectDetails" class="info-row">
+    <div class="info-section">
+      <div style='min-width:250px' class="info-item">
+        <p>Projectnaam</p>
+        <p class="bold">{{group?.rbProjectNaam}}</p>
+      </div>
+      <div class="info-item">
+        <p>Gemeente</p>
+        <p class="bold">{{group?.rbGemeente}}</p>
+      </div>
+      <div class="info-item">
+        <p>Projectnr.</p>
+        <p class="bold">{{group?.aannemerProjectNr}}</p>
+      </div>
+      <div class="info-item">
+        <p>Werfleider</p>
+        <p class="bold">{{group?.aannemerWerfleider}}</p>
+      </div>
+      <div style='height:70px !important; padding-top:0px !important;' class="info-item">
+        <p style='margin-bottom:-1px !important;'>Gebruikers (mobile): </p>
+        <nb-select *ngIf="group.users?.length; else noUsers" [selected]="firstUser" style="width: 200px !important;">
+          <nb-option type="checkbox" *ngFor="let user of group.users" [value]="user.name || user.email">
+            {{ user.name || user.email }}
+          </nb-option>
+        </nb-select>
+        <ng-template #noUsers>
+          <p class="bold">Geen mobiele werkers gekoppeld</p>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+  <div class="row3">
+    <div class="rowFlex">
+      <p class="normalText">Selecteer alles<br> voor downloads:</p>
+      <nb-toggle [checked]="selectEverything" class="margLeft" (checkedChange)="selectAll()" status="primary">
+      </nb-toggle>
+    </div>
+    <div  class='colFlex'>
+      <mat-label class='sortText'>Filter op straat</mat-label>
+      <input style='width:200px !important;' class="search-box" #categoryInput nbInput type="text" matInput [formControl]="searchForm" #searchInput
+        type="text" (keyup)="onSearchInput(searchInput.value)" placeholder="Zoeken..." />
+      <mat-autocomplete #auto="matAutocomplete">
+        <mat-option *ngFor="let project of filteredProjects | async" [value]="project.street"
+          (click)="onSearch(project._id)">
+          {{ project.street }}
+        </mat-option>
+      </mat-autocomplete>
+    </div>
+
+    <div class="rowFlex4">
+      <mat-form-field class='my-form-field' appearance="fill">
+        <mat-label>Filter op startdatum</mat-label>
+        <mat-date-range-input  [formGroup]="range" [rangePicker]="picker">
+          <input  matStartDate formControlName="start" placeholder="Start datum">
+          <input  matEndDate formControlName="end" placeholder="Eind datum">
+        </mat-date-range-input>
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-date-range-picker #picker (closed)="dateChanged()"></mat-date-range-picker>
+
+        <mat-error *ngIf="range.controls.start.hasError('matStartDateInvalid')">Ongeldige start datum</mat-error>
+        <mat-error *ngIf="range.controls.end.hasError('matEndDateInvalid')">Ongeldige eind datum</mat-error>
+      </mat-form-field>
+      <button class="clear-button" *ngIf="range?.value?.start || range?.value?.end" aria-label="Clear" (click)="clearAutocomplete()">
+        clear
+      </button>
+    </div>
+    <div class='colFlex'>
+      <mat-label class='sortText'>Sorteer of filter</mat-label>
+      <nb-select [optionsListClass]="'soortFilter'" [(ngModel)]="filterSelect" id="extras" style="width: 215px;">
+        <nb-option-group title="Sorteer">
+          <nb-option style='border-bottom:1px solid lightgray'  (selectionChange)="selectFilter(filter)" type="checkbox" *ngFor="let filter of sorteerItems"
+                     value="{{ filter }}">
+            {{ filter }}</nb-option>
+        </nb-option-group>
+        <nb-option-group title="Filter">
+        <nb-option style='border-bottom:1px solid lightgray'  (selectionChange)="selectFilter(filter)" type="checkbox" *ngFor="let filter of filterItems"
+          value="{{ filter }}">
+          {{ filter }}</nb-option>
+        </nb-option-group>
+      </nb-select>
+    </div>
+  </div>
+</div>
+
+
+<div *ngIf="isOn" cdkScrollable class="scroll-table">
+  <table cdkDropList class="item-list">
+    <tr class="item-box">
+      <th style="max-width:170px !important;min-width:170px !important;text-align: center;margin-left:15px ">Open</th>
+      <th style="padding-left: 35px;max-width:150px;">Selecteer</th>
+      <th class="smallCol">Soort</th>
+      <th class="bigCol">Straat</th>
+      <th class="smallCol">Huisnr</th>
+      <th class="smallCol">Volgnr</th>
+      <th class="normalCol">Aanmaakdatum</th>
+      <th class="normalCol">Startdatum</th>
+    </tr>
+    <tr [ngClass]="project.isSlokker && project.finished? 'blue' : project.isSlokker && !project.finished ?  'lightblue':
+                  ((project.isWachtAansluiting != null && project.isWachtAansluiting) ||
+                  (project.droogWaterAfvoer?.isWachtaansluiting != null && project.droogWaterAfvoer.isWachtaansluiting) ||
+                  (project.regenWaterAfvoer?.isWachtaansluiting != null && project.regenWaterAfvoer.isWachtaansluiting)) && project.finished ? 'orange' :
+                  ((project.isWachtAansluiting != null && project.isWachtAansluiting) ||
+                  (project.droogWaterAfvoer?.isWachtaansluiting != null && project.droogWaterAfvoer.isWachtaansluiting) ||
+                  (project.regenWaterAfvoer?.isWachtaansluiting != null && project.regenWaterAfvoer.isWachtaansluiting)) &&  (project.finished == null || project.finished === false)? 'lightorange' :
+                  project.isMeerwerk ? 'lightgrey' :  project.finished === true ? 'green' : 'lightgreen'" class="item-box scroll"
+      *ngFor="let project of searchAllProjectsList">
+      <td style="max-width:170px !important;min-width:170px !important; max-height:40px !important;margin-left:15px">
+        <div class="buttonsRow">
+          <input type="button" (click)="openProject(project)" value="BEKIJK" class="openButton">
+          <input type="button" (click)="editProject(project)" value="BEWERK" class="openButton">
+        </div>
+      </td>
+      <td style="padding-left: 35px;max-width:150px;"><nb-toggle class="checkBox" [checked]="project.isSelected" (checkedChange)="selectProject(project._id)"
+                                                                 status="primary"></nb-toggle></td>
+      <td class="smallCol" *ngIf="project.isSlokker">Kolk</td>
+      <td class="smallCol" *ngIf="project.droogWaterAfvoer != null && !project.isSlokker && ((project.isWachtAansluiting == null || project.isWachtAansluiting === false) &&
+                   (project.droogWaterAfvoer.isWachtaansluiting == null || project.droogWaterAfvoer.isWachtaansluiting === false) &&
+                   (project.regenWaterAfvoer.isWachtaansluiting == null || project.regenWaterAfvoer.isWachtaansluiting === false)) && !project.isMeerwerk">HA</td>
+      <td class="smallCol" *ngIf="project.droogWaterAfvoer != null && ((project.isWachtAansluiting != null && project.isWachtAansluiting) ||
+                  (project.droogWaterAfvoer.isWachtaansluiting != null && project.droogWaterAfvoer.isWachtaansluiting) ||
+                  (project.regenWaterAfvoer.isWachtaansluiting != null && project.regenWaterAfvoer.isWachtaansluiting))">WA</td>
+      <td class="smallCol" *ngIf="project.isMeerwerk">OW</td>
+      <td class="bigCol">{{ project.street}}</td>
+      <td class="smallCol">{{project.huisNr}}</td>
+      <td class="smallCol">{{project.isSlokker || ((project.isWachtAansluiting != null && project.isWachtAansluiting) ||
+        (project.droogWaterAfvoer?.isWachtaansluiting != null && project.droogWaterAfvoer.isWachtaansluiting) ||
+        (project.regenWaterAfvoer?.isWachtaansluiting != null && project.regenWaterAfvoer.isWachtaansluiting))? project.index : ''}}</td>
+      <td class="normalCol">{{project.createdDate.getDate()}}/{{project.createdDate.getMonth() + 1}}/{{project.createdDate.getFullYear()}}</td>
+      <td class="normalCol" *ngIf="project.startDate == null">niet gestart</td>
+      <td class="normalCol" *ngIf="project.startDate != null">{{project.startDate.getDate()}}/{{project.startDate.getMonth() + 1}}/{{project.startDate.getFullYear()}}</td>
+    </tr>
+  </table>
+</div>

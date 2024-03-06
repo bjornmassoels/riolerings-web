@@ -1,0 +1,20 @@
+<div style='display: flex; flex-direction: row; justify-content: space-between; align-items: center; margin-bottom: 14px;padding:16px 50px 16px 16px'>
+<h5 style='margin-bottom: 0px' mat-dialog-title>Locatie van de eerste foto van {{data.soort}}</h5>
+  <button style='border: 1px solid black' nbButton *ngIf='geschatteLocatie === ""'(click)="getEstimatedLocation()">Geschatte locatie ophalen</button>
+  <p style='margin-bottom: 0px' *ngIf='geschatteLocatie !== ""'><span style='text-decoration: underline'>Geschatte gps locatie</span><br><b>{{geschatteLocatie}}</b></p>
+</div>
+<mat-dialog-content>
+  <google-map
+    [center]="center"
+    [zoom]="18"
+  height="400px"
+  width="100%">
+  <map-marker
+    [position]="markerPosition"
+    [options]="markerOptions">
+  </map-marker>
+  </google-map>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Close</button>
+</mat-dialog-actions>

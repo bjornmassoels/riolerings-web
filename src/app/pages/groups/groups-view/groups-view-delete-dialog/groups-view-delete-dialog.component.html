@@ -1,0 +1,19 @@
+<div style="text-align: center;padding:14px;">
+  <div *ngIf="isSaving" class="loadingBar">
+    <p style="font-size: 17px; font-weight: 600">Even geduld aub...</p>
+    <ngx-loading-bar diameter="40px" includeBar="false" fixed="false" color="blue" value="2"></ngx-loading-bar>
+  </div>
+  <p  *ngIf="!isSaving"  style="font-weight: bold;">Ben je zeker dat je dit project wil verwijderen ?</p>
+  <p  *ngIf="!isSaving"  style="font-weight: bold;">Alle aansluitingen en kolken van dit project worden ook verwijderd.</p>
+  <div  *ngIf="!isSaving"  style="display: flex; justify-content: space-evenly; margin: auto;">
+    <button mat-raised-button color="warn"(click)="onDelete()">
+      Verwijderen
+    </button>
+    <button  mat-raised-button (click)="closeDialog()" >
+      Annuleren
+    </button>
+  </div>
+</div>
+
+
+

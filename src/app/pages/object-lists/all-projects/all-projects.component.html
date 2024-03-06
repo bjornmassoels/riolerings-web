@@ -1,0 +1,38 @@
+<div *ngIf="isOn" class="page-header">
+  <h1 style='margin-bottom: 7px;'>Huisaansluitingen <small style='font-size: 16px'>vanaf {{oneYearAgoDate | date: 'shortDate'}}</small></h1>
+
+  <form class="row4">
+    <p style="margin-right: 20px;margin-top: 10px;">Filter op straat: </p>
+    <input class="search-box" nbInput type="text" [formControl]="searchForm"
+    #searchInput (keyup)="onSearchInput(searchInput.value)" placeholder="Zoeken op straat..." />
+  </form>
+
+
+
+</div>
+
+
+<div *ngIf="isOn"  cdkScrollable class="scroll-table">
+  <table cdkDropList class="item-list">
+    <tr class="item-box">
+      <th></th>
+      <th>Projectnaam</th>
+      <th>Gemeente</th>
+      <th>Straat</th>
+      <th>Huisnr</th>
+      <th>Aanmaakdatum</th>
+    </tr>
+    <tr (click)="openProject(project)" class="item-box" *ngFor="let project of searchProjects">
+      <td>
+        <div class="buttonsRow">
+            <input type="button" (click)="openProject(project)" value="OPEN" class="openButton">
+          </div>
+        </td>
+        <td>{{project.group_id?.rbProjectNaam}}</td>
+        <td>{{project.group_id?.rbGemeente}}</td>
+        <td>{{project.street}}</td>
+        <td>{{project.huisNr}}</td>
+        <td>{{Date(project.created)}}</td>
+      </tr>
+    </table>
+    </div>

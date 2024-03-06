@@ -1,0 +1,114 @@
+<div class="page">
+  <p class="page-number">1/{{currentProject.photos[5] != null ? '2' : '1'}}</p>
+    <p class="pdf-title">Onvoorzien werk</p>
+    <div class="table-container">
+        <table class="w-max">
+            <thead>
+                <th></th>
+                <th></th>
+            </thead>
+          <tbody>
+          <tr class="w-max">
+            <td class="w-25">Projectnaam:</td>
+            <td class="w-90 orange-td">{{group.rbProjectNaam}}</td>
+          </tr>
+          <tr class="w-max">
+          <td class="w-25">Plaats/straat:</td>
+          <td class="w-90 orange-td" >{{currentProject.street}}</td>
+          </tr>
+          </tbody>
+        </table>
+
+        <table class="table-margin">
+            <thead>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </thead>
+            <tbody>
+                <tr>
+                  <td class="w-20">Projectnummer:</td>
+                  <td class="orange-td w-20">{{group.rbProjectNr}}</td>
+                    <td class="w-25">Huisnummer/nummer:</td>
+                    <td class="orange-td w-25">{{currentProject.huisNr}}</td>
+                </tr>
+                <tr>
+                    <td class="w-15">Gemeente:</td>
+                    <td class="orange-td w-25">{{group.rbGemeente}}</td>
+
+                  <td class="w-25">Start-datum:</td>
+                  <td *ngIf="currentProject.startDate != null" class="orange-td w-25">{{currentProject.startDate.toLocaleDateString()}}</td>
+                  <td *ngIf="currentProject.startDate == null"  class="orange-td w-25">Nog niet begonnen</td>
+                </tr>
+                <tr>
+                  <td class="w-25">Aantal werkuren:</td>
+                  <td *ngIf="currentProject.minutesWorked != null" class="orange-td w-25">{{minutesToHours(currentProject.minutesWorked)}} </td>
+                  <td *ngIf="currentProject.minutesWorked == null"  class="orange-td w-25">onbekend</td>
+                  <td class="w-25">Aantal werknemers:</td>
+                  <td *ngIf="currentProject.countEmployees != null" class="orange-td w-25">{{currentProject.countEmployees}} </td>
+                  <td *ngIf="currentProject.countEmployees == null"  class="orange-td w-25">1</td>
+                <tr *ngIf="currentProject.postNumber != null && currentProject.postNumber !== ''">
+                  <td  class="w-25">Postnummer:</td>
+                  <td  class="orange-td w-25">{{currentProject.postNumber}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+  <div class="opmerkingBox">
+    <h5 style="margin-left: 44px;margin-top: 20px">Opmerking: </h5>
+    <p class="opmerkingText">{{currentProject.opmerking}}</p>
+  </div>
+  <div [ngClass]="currentProject.photos[5] != null ? 'page-break' : ''" class="photo-container page">
+    <p  *ngIf='currentProject.photos[5] != null' class="page-number">2/2</p>
+    <p class="pdf-title">Foto's</p>
+
+    <div class="table-container">
+      <table>
+        <thead>
+        <th class="w-50" style="border: 1px solid black; text-align: center;"></th>
+        <th class="w-50" style="border: 1px solid black; text-align: center;"></th>
+        </thead>
+        <tbody>
+        <tr>
+          <td class="w-50">Foto 1</td>
+          <td class="w-50">Foto 2</td>
+        </tr>
+        <tr>
+          <td class="h-20"><img class="h-20 w-auto quality" src="{{currentProject.photos[0]}}"
+                                *ngIf="currentProject.photos != null && currentProject.photos[0] != null && currentProject.photos[0].length > 0">
+          </td>
+          <td class="h-20"><img class="h-20 w-auto quality" src="{{currentProject.photos[1]}}"
+                                *ngIf="currentProject.photos != null && currentProject.photos[1] != null && currentProject.photos[1].length > 0">
+          </td>
+        </tr>
+        <tr>
+          <td class="w-50">Foto 3</td>
+          <td class="w-50">Foto 4</td>
+        </tr>
+        <tr>
+          <td class="h-20"><img class="h-20 w-auto quality" src="{{currentProject.photos[2]}}"
+                                *ngIf="currentProject.photos != null && currentProject.photos[2] != null && currentProject.photos[2].length > 0">
+          </td>
+          <td class="h-20"><img class="h-20 w-auto quality" src="{{currentProject.photos[3]}}"
+                                *ngIf="currentProject.photos != null && currentProject.photos[3] != null && currentProject.photos[3].length > 0">
+          </td>
+        </tr>
+        <tr *ngIf='currentProject.photos[5] != null'>
+          <td class="w-50">Foto 5</td>
+          <td class="w-50">Foto 6</td>
+        </tr>
+        <tr  *ngIf='currentProject.photos[5] != null '>
+          <td class="h-20"><img class="h-20 w-auto quality" src="{{currentProject.photos[4]}}"
+                                *ngIf="currentProject.photos != null && currentProject.photos[4] != null && currentProject.photos[4].length > 0">
+          </td>
+          <td class="h-20"><img class="h-20 w-auto quality" src="{{currentProject.photos[5]}}"
+                                *ngIf="currentProject.photos != null && currentProject.photos[5] != null && currentProject.photos[5].length > 0">
+          </td>
+        </tr>
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

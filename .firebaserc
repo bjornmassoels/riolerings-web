@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "rioolaansluitingen": {
+      "hosting": {
+        "ngx-admin-demo": [
+          "rioolaansluitingen"
+        ]
+      }
+    }
+  }
+}

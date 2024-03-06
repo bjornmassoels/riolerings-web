@@ -1,0 +1,354 @@
+<div *ngIf="isLoaded" class="topRow">
+  <button  mat-raised-button class="form-button" (click)="goToPrevious()">
+    Terug
+  </button>
+  <button *ngIf="!isFirst" mat-raised-button class="form-button" (click)="onPreviousClick()">
+    Vorige
+  </button>
+  <button *ngIf="!isLast" mat-raised-button class="form-button" (click)="onNextClick()">
+    Volgende
+  </button>
+  <button (click)="onSubmitForm()" mat-raised-button class="form-button-blue" color="primary" type="submit">
+    Opslaan
+  </button>
+  <p class="boldText" *ngIf="index !== -1">{{index + 1}}/{{totalProjectCount}}</p>
+  <button (click)="goToView()"  mat-raised-button class="form-button3" >
+    Ga naar view
+  </button>
+</div>
+
+<mat-card id="content" *ngIf="isLoaded" class="project-card">
+  <h3 class="page-title">Kolk bewerken <small style='font-size:15px; margin-top:-5px'>   {{group.rbProjectNaam}} | {{group.rbGemeente}} | {{group.aannemerProjectNr}}</small></h3>
+  <p *ngIf="projectEditedByGronwderker" style="font-weight: bold;margin-left: 25px; color:red;margin-top:15px !important;margin-bottom:-10px">Attentie ! Deze kolk is {{formService.workerHours}} uur geleden geopend door grondwerker {{formService.workerName }}.<br> U kan best niet op dezelfde dag deze kolk bewerken
+    omdat er een risico is dat u aanpassingen kan verwijderen.</p>
+  <form *ngIf="isLoaded" [formGroup]="slokkerForm" (ngSubmit)="onSubmit(slokkerForm.value)" class="add-form">
+    <div class="row-container">
+      <div class='column-container'>
+        <div class="data-container">
+          <div class="largeInsideRow">
+            <p class="text">Start datum </p>
+
+            <input class="selectBox" nbInput placeholder="Kies een datum" formControlName="startDate" [nbDatepicker]="datePicker">
+            <nb-datepicker  #datePicker></nb-datepicker>
+            <button (click)="clearDate()" class="clear-button">Clear</button>
+          </div>
+        </div>
+
+        <div style='height:96px' class="data-container">
+          <div style='min-width:270px !important;' class='insideRow'>
+            <p class="label-text">Straat</p>
+            <input nbInput class="normalInput" type="text" formControlName="street" />
+          </div>
+          <div style='padding:0 !important;margin-top:-2px;' class='insideRow'>
+            <p class="label-text">Opm.</p>
+            <textarea nbInput class="opmerkingInput" type="text" formControlName="opmerking"></textarea>
+          </div>
+        </div>
+        <div style='justify-content: flex-start !important;align-items: center; gap:4px; margin-top:10px;' class="data-container">
+          <div class='insideRow'>
+            <p class="label-text">Huisnummer</p>
+            <input class="smallInput" nbInput type="text" formControlName="huisNr" />
+          </div>
+          <div style='width:255px !important;' class="insideRow">
+            <p style='margin-right: 5px !important;' class="label-text">Kolk nummer</p>
+            <input class="smallInput" nbInput type="text" formControlName="index" />
+          </div>
+        </div>
+      </div>
+      <div style='justify-content: space-around !important;' class="column-container">
+        <div class="data-container">
+          <p class="label-text">Equipmentnr</p>
+          <input class="bigInput" nbInput type="text" formControlName="equipNrRiolering" />
+        </div>
+        <div style='justify-content: flex-start !important;' class="data-container">
+          <p style='max-width:44%' class="label-text">Grondwerkers die deze kolk hebben aangepast</p>
+          <p style='font-weight: 700' class="data-text">{{usersWhoEdited == null ? ' ' : usersWhoEdited}}</p>
+        </div>
+        <div class="data-container">
+
+          <div class='insideRow'>
+            <p class="label-text">Afgewerkt</p>
+            <nb-toggle class='toggle' formControlName="finished" status="primary"></nb-toggle>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+
+  <div class="row-container">
+    <div class="column-container">
+      <div class="locatieRow">
+        <p style='width:130px !important;'> </p>
+        <p class="section-title">
+          Kolk
+        </p>
+        <button *ngIf='currentProject.slokker.xCoordGeoLocationFirsPhoto != null || currentProject.slokker.yCoordGeoLocationFirsPhoto != null'
+                nbButton
+                class="global-location-button"
+                (click)='openMapDialog(currentProject.slokker.xCoordGeoLocationFirsPhoto, currentProject.slokker.yCoordGeoLocationFirsPhoto, "Kolk")'>
+          Bekijk locatie
+        </button>
+        <p *ngIf='!currentProject.slokker.xCoordGeoLocationFirsPhoto && ! currentProject.slokker.yCoordGeoLocationFirsPhoto' style='width:130px !important;'> </p>
+      </div>
+
+      <div class='flexWrapper'>
+      <div style='width:50%' *ngIf="heeftPloegen == null || !heeftPloegen ">
+        <div class="data-container4">
+          <p style='padding-left: 5px !important;' class="label-text">Buizen</p>
+          <div class="smallRow">
+            <input nbInput class="smallInput2 margT" type="number" formControlName="buis" />
+            <p style='margin-left:4px !important;' class="data-text margL">meter</p>
+          </div>
+        </div>
+        <div *ngIf='!group.bochtenInGraden' class="data-container4">
+          <p style='padding-left: 5px !important;' class="label-text">Bocht</p>
+          <div class="smallRow">
+            <input nbInput class="smallInput2 margT" type="number" formControlName="bocht" />
+            <p class="data-text margL">stuks</p>
+          </div>
+        </div>
+        <div *ngIf='group.bochtenInGraden' class="data-container4">
+          <p style='padding-left: 5px !important;' class="label-text">Bocht 45°</p>
+          <div class="smallRow">
+            <input nbInput class="smallInput2 margT" type="number" formControlName="gradenBocht45" />
+            <p class="data-text margL">stuks</p>
+          </div>
+        </div>
+        <div *ngIf='group.bochtenInGraden' class="data-container4">
+          <p style='padding-left: 5px !important;' class="label-text">Bocht 90°</p>
+          <div class="smallRow">
+            <input nbInput class="smallInput2 margT" type="number" formControlName="gradenBocht90" />
+            <p class="data-text margL">stuks</p>
+          </div>
+        </div>
+      </div>
+      <div  style='width:50%; margin-top:-5px;' *ngIf="heeftPloegen != null && heeftPloegen ">
+        <p class="section-title3">Fase 1 & Fase 2</p>
+        <div class="data-container4">
+          <p style='padding-left: 5px !important;' class="label-text">Buizen</p>
+          <div class="smallRow">
+            <input nbInput class="smallInput3 margT" type="number" formControlName="buis" />
+            <input nbInput class="smallInput3 margT" type="number" formControlName="buis2" />
+            <p style='margin-left:4px !important;' class="data-text margL">meter</p>
+          </div>
+        </div>
+        <div *ngIf='!group.bochtenInGraden' class="data-container4">
+          <p style='padding-left: 5px !important;'  class="label-text">Bocht</p>
+          <div class="smallRow">
+            <input nbInput class="smallInput3 margT" type="number" formControlName="bocht" />
+            <input nbInput class="smallInput3 margT" type="number" formControlName="bocht2" />
+            <p class="data-text margL">stuks</p>
+          </div>
+        </div>
+        <div *ngIf='group.bochtenInGraden' class="data-container4">
+          <p style='padding-left: 5px !important;'  class="label-text">Bocht 45°</p>
+          <div class="smallRow">
+            <input nbInput class="smallInput3 margT" type="number" formControlName="gradenBocht45" />
+            <input nbInput class="smallInput3 margT" type="number" formControlName="gradenBocht45Fase2" />
+            <p class="data-text margL">stuks</p>
+          </div>
+        </div>
+        <div *ngIf='group.bochtenInGraden' class="data-container4">
+          <p style='padding-left: 5px !important;'  class="label-text">Bocht 90°</p>
+          <div class="smallRow">
+            <input nbInput class="smallInput3 margT" type="number" formControlName="gradenBocht90" />
+            <input nbInput class="smallInput3 margT" type="number" formControlName="gradenBocht90Fase2" />
+            <p class="data-text margL">stuks</p>
+          </div>
+        </div>
+      </div>
+        <div style='width:47%;padding-left: 35px;margin-top:20px;' class="insideRow2">
+          <p class="label-text">Diameter buis</p>
+          <div class="smallRow">
+            <input nbInput class="smallInput2" type="number" formControlName="diameter" />
+            <p class="data-text margL">mm</p>
+          </div>
+        </div>
+      </div>
+      <div style='margin:5px 0;' class="largeInsideRow">
+        <p class="text">Type aansluiting op hoofdbuis</p>
+        <nb-select style='width: 200px !important;' class="normalInput" formControlName="tBuisStuk" id="type">
+          <nb-option  value="onbekend" >Onbekend</nb-option>
+          <nb-option  value="T-Buis" >T-Buis</nb-option>
+          <nb-option  value="T-Stuk" >T-Stuk</nb-option>
+          <nb-option  value="Y-Stuk" >Y-Stuk</nb-option>
+          <nb-option  value="flexAan" >Flexibele aansluiting</nb-option>
+          <nb-option  value="aanboring" >Aanboring</nb-option>
+          <nb-option  value="Niet van toepassing" >Niet van toepassing</nb-option>
+        </nb-select>
+      </div>
+      <div class='flexWrapper'>
+        <div class="insideRow2">
+          <p class="label-text">Reductie</p>
+          <div class="smallRow">
+            <input nbInput class="smallInput2" type="number" formControlName="reductie" />
+            <p class="data-text margL">stuks</p>
+          </div>
+        </div>
+        <div class="insideRow2">
+          <p class="label-text">Extra y-stuks</p>
+          <div class="smallRow">
+            <input nbInput class="smallInput2" type="number" formControlName="Y" />
+            <p class="data-text margL">stuks</p>
+          </div>
+        </div>
+        <div *ngIf="this.group.slokkerSettings.mof" class="insideRow2">
+          <p class="label-text">Mof</p>
+          <div class="smallRow">
+            <input nbInput class="smallInput2" type="number" formControlName="mof" />
+            <p class="data-text margL">stuks</p>
+          </div>
+        </div>
+        <div *ngIf="this.group.slokkerSettings.krimpmof" class="insideRow2">
+          <p class="label-text">Krimpmof</p>
+          <div class="smallRow">
+            <input nbInput class="smallInput2" type="number" formControlName="krimpmof" />
+            <p class="data-text margL">stuks</p>
+          </div>
+        </div>
+        <div *ngIf="this.group.slokkerSettings.koppelstuk" class="insideRow2">
+          <p class="label-text">Koppelstuk</p>
+          <div class="smallRow">
+            <input nbInput class="smallInput2" type="number" formControlName="koppelstuk" />
+            <p class="data-text margL">stuks</p>
+          </div>
+        </div>
+        <div *ngIf="this.group.slokkerSettings.stop" class="insideRow2">
+          <p class="label-text">Stop</p>
+          <div class="smallRow">
+            <input nbInput class="smallInput2" type="number" formControlName="stop" />
+            <p class="data-text margL">stuks</p>
+          </div>
+        </div>
+        <div *ngIf="this.group.slokkerSettings.andere" class="insideRow2">
+          <p class="label-text">Andere</p>
+          <input nbInput class="normalInput" type="text" formControlName="andere" />
+        </div>
+      </div>
+      <div class="data-containerBig">
+        <p class="label-text">Gelegen tussen volgende IP:</p>
+        <div class="smallRow">
+          <input nbInput class="smallInput2 margF" type="text" formControlName="tussenIPLinks" /><p class="label-text"> - </p>
+          <input nbInput class="smallInput2 margF" type="text" formControlName="tussenIPRechts" />
+        </div>
+      </div>
+    </div>
+    <div class="column-container">
+
+
+      <div class="data-container4">
+        <p class="label-text">Afstand midden stroomafwaartse put tot mof</p>
+        <div class="smallRow">
+          <input nbInput class="smallInput2 margT" type="number" formControlName="afstandPutMof" />
+          <p class="data-text margL">meter</p>
+        </div>
+      </div>
+      <div class="data-container4" *ngIf="this.group.slokkerSettings.diepteAansluitingMv">
+        <p class="label-text">Diepte aansluiting tov MV</p>
+        <div class="smallRow">
+          <input nbInput class="smallInput2 margT" type="number" formControlName="diepteAansluitingMv" />
+          <p class="data-text margL">meter</p>
+        </div>
+      </div>
+      <div class="data-container4" *ngIf="this.group.slokkerSettings.diepteAanboringRiool">
+        <p class="label-text">Diepte aanboring op riool tov MV<br>(op bestaande riolering)</p>
+        <div class="smallRow">
+          <input nbInput class="smallInput2 margT" type="number" formControlName="diepteAanboringRiool" />
+          <p class="data-text margL">meter</p>
+        </div>
+      </div>
+      <div class="data-container4" *ngIf="this.group.slokkerSettings.infiltratieKlok">
+        <p class="label-text">Infiltratiekolk</p>
+        <nb-toggle class='toggle' formControlName="infiltratieKlok" status="primary"></nb-toggle>
+      </div>
+      <div class="data-container4" *ngIf="this.group.slokkerSettings.aansluitingOpengracht">
+        <p class="label-text">Kolk aansluiting op opengracht</p>
+        <nb-toggle class='toggle' formControlName="aansluitingOpengracht" status="primary"></nb-toggle>
+      </div>
+      <div class="borderBlack" *ngIf="this.group.slokkerSettings.plaatsAansluiting">
+        <img class="rioolImage" src="assets/images/gradenOpRiool.png">
+        <div class="data-container8">
+          <p class="label-text">Plaats aansluiting op riool tov van stroomafw. naar stroomopw.:</p>
+          <div class="leftRow">
+            <nb-select class="smallInput" formControlName="plaatsAansluiting" id="type">
+              <nb-option value="onbekend">Onbekend</nb-option>
+              <nb-option value="90">90</nb-option>
+              <nb-option value="135">135</nb-option>
+              <nb-option value="180">180</nb-option>
+              <nb-option value="225">225</nb-option>
+              <nb-option value="270">270</nb-option>
+            </nb-select>
+            <p class="texter">graden</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div  class="image-container">
+    <div style='margin-bottom:7px' class="image-header">
+      <p class="section-title">Foto's kolk</p>
+
+    </div>
+
+    <div *ngFor="let photo of photos; let i = index">
+      <div [ngClass]="photo == null ? 'smallFotoColumn' : ''" *ngIf="photos.length < 7" class="fotoColumn">
+        <div  class="innerColumn">
+        <input *ngIf="photo != null" (click)="deleteFoto(i)" type="button" value="Verwijder" class="deleteButton">
+        <p class="fotoText" *ngIf="i === 0">1. boring of opening van aansluiting op hoofdriool</p>
+        <p class="fotoText5" *ngIf="i === 1">2. na plaatsing fundering, buizen, hulpstukken en HA-putje, vanaf de aansluitopening richting putje,indien
+          niet alle hulpstukken te zien zijn, eventueel ook foto vanuit omgekeerd standpunt</p>
+        <p class="fotoText" *ngIf="i === 2">3. zelfde als foto 2, maar met omhulling</p>
+        <p class="fotoText" *ngIf="i > 2">{{i + 1}}. extra foto (optioneel)</p>
+        <img *ngIf="photo != null" src="{{photo}}" (click)="imagePopUp(photo)" class="photo" name="photo" >
+          <p *ngIf="photo == null" style="margin-top: 30px;font-size: 18px;font-weight: 600" >Geen foto</p>
+        </div>
+        <div class="upload-container">
+          <input class="" *ngIf="photo == null" type="file" name="file" (change)="onFileSelect($event,i)"
+          accept=".png,.jpg,.jpeg,.tiff" class="uploadButton" />
+        </div>
+
+      </div>
+    </div>
+
+
+    <p class="fotoTextBig" *ngIf="chosenImageList != null && chosenImageList.length != 0">Foto's om up te loaden :</p>
+    <div *ngIf="chosenImageList != null && chosenImageList.length != 0"  class="uploadable-images-container">
+      <div *ngFor="let image of chosenImageList; let i = index">
+        <p class="fotoText">Foto {{chosenImageListIndex[i] + 1}}:</p>
+        <img [src]="image" (click)="imagePopUp(image)" class="photo" />
+      </div>
+    </div>
+
+
+    <!-- <img [src]="chosenImage" height="200" *ngIf="chosenImage" class="photo"> -->
+
+  </div>
+
+
+
+  </form>
+</mat-card>
+
+<div class="bottomRow" *ngIf="isLoaded">
+  <button mat-raised-button class="form-button" (click)="goToPrevious()">
+    Terug
+  </button>
+  <button *ngIf="!isFirst" mat-raised-button class="form-button" (click)="onPreviousClick()">
+    Vorige
+  </button>
+  <button *ngIf="!isLast" mat-raised-button class="form-button" (click)="onNextClick()">
+    Volgende
+  </button>
+  <button (click)="onSubmitForm()" mat-raised-button class="form-button-blue" color="primary" type="submit">
+    Opslaan
+  </button>
+  <p class="boldText" *ngIf="index !== -1">{{index + 1}}/{{totalProjectCount}}</p>
+  <button (click)="goToView()"  mat-raised-button class="form-button3" color="primary" >
+    Ga naar view
+  </button>
+</div>
+

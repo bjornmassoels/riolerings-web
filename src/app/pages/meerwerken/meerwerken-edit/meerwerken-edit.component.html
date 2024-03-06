@@ -1,0 +1,172 @@
+<div *ngIf="isLoaded" class="topRow">
+  <button mat-raised-button class="form-button" (click)="goToPrevious()">
+    Terug
+  </button>
+  <button *ngIf="!isFirst" mat-raised-button class="form-button" (click)="onPreviousClick()">
+    Vorige
+  </button>
+  <button *ngIf="!isLast" mat-raised-button class="form-button" (click)="onNextClick()">
+    Volgende
+  </button>
+  <button (click)="onSubmitForm()" mat-raised-button class="form-button-blue" color="primary" type="submit">
+    Opslaan
+  </button>
+  <p class="boldText" *ngIf="index !== -1">{{index + 1}}/{{totalProjectCount}}</p>
+  <button (click)="goToView()"  mat-raised-button class="form-button3" >
+    Ga naar view
+  </button>
+</div>
+
+<mat-card id="content" *ngIf="isLoaded" class="project-card">
+  <form *ngIf="isLoaded" [formGroup]="meerwerkForm" (ngSubmit)="onSubmit(meerwerkForm.value)" class="add-form">
+    <h3 class="page-title">Onvoorzien werk bewerken <small style='font-size:15px; margin-top:-5px'>   {{group.rbProjectNaam}} | {{group.rbGemeente}} | {{group.aannemerProjectNr}}</small></h3>
+    <p *ngIf="projectEditedByGronwderker" style="font-weight: bold;margin-left: 25px; color:red">Attentie ! Dit onvoorzien werk is {{formService.workerHours}} uur geleden geopend door grondwerker {{formService.workerName }}.<br> U kan best niet op de zelfde dag de aansluiting bewerken
+      omdat er een risico is dat je aanpassingen kan verwijderen.</p>
+  <div class="row-container">
+    <div class="column-container">
+      <div class="data-container">
+        <p class="label-text">Start datum</p>
+        <div class="startDiv">
+          <p class="startText">Wijzig startdatum -></p>
+          <input [nbDatepicker]="datepicker">
+          <nb-datepicker (dateChange)="setDate($event)" #datepicker></nb-datepicker>
+        </div>
+        <p class="data-text" *ngIf="currentProject.startDate == null;else dateTekst">Nog niet gestart</p>
+        <ng-template #dateTekst>
+          <p class="data-text">{{currentProject.startDate == null ? '' : currentProject.startDate | date: 'dd/MM/yyyy'}}</p>
+        </ng-template>
+      </div>
+      <div class="data-container">
+        <p class="label-text">Plaats/straat</p>
+        <input nbInput class="normalInput" type="text" formControlName="street" />
+      </div>
+      <div class="data-container">
+        <p class="label-text">Huisnummer/nummer</p>
+        <input class="smallInput" nbInput type="text" formControlName="huisNr" />
+      </div>
+      <div class="data-container">
+        <p class="label-text">Postnummer (optioneel)</p>
+        <input class="normalInput" nbInput type="text" formControlName="postNumber" />
+      </div>
+      <div style='margin-top: 15px;' class='data-container'>
+        <button *ngIf='currentProject.xCoordGeoLocationFirsPhoto != null || currentProject.yCoordGeoLocationFirsPhoto != null'
+                nbButton
+                class="global-location-button"
+                (click)='openMapDialog(currentProject.xCoordGeoLocationFirsPhoto, currentProject.yCoordGeoLocationFirsPhoto, "Meerwerk")'>
+          Bekijk locatie
+        </button>
+      </div>
+    </div>
+
+    <div class="column-container">
+      <div class="data-container">
+        <p class="label-text">Aantal werkuren</p>
+        <nb-select class="normalInput" formControlName="minutesWorked" id="type">
+          <nb-option value="0">0 min</nb-option>
+          <nb-option value="15">15 min</nb-option>
+          <nb-option value="30">30 min</nb-option>
+          <nb-option value="45">45 min</nb-option>
+          <nb-option value="60">1 uur</nb-option>
+          <nb-option value="75">1 uur 15 min</nb-option>
+          <nb-option value="90">1 uur 30 min</nb-option>
+          <nb-option value="105">1 uur 45 min</nb-option>
+          <nb-option value="120">2 uur</nb-option>
+          <nb-option value="135">2 uur 15 min</nb-option>
+          <nb-option value="150">2 uur 30 min</nb-option>
+          <nb-option value="165">2 uur 45 min</nb-option>
+          <nb-option value="180">3 uur</nb-option>
+          <nb-option value="195">3 uur 15 min</nb-option>
+          <nb-option value="210">3 uur 30 min</nb-option>
+          <nb-option value="225">3 uur 45 min</nb-option>
+          <nb-option value="240">4 uur</nb-option>
+          <nb-option value="255">4 uur 15 min</nb-option>
+          <nb-option value="270">4 uur 30 min</nb-option>
+          <nb-option value="285">4 uur 45 min</nb-option>
+          <nb-option value="300">5 uur</nb-option>
+          <nb-option value="360">6 uur</nb-option>
+          <nb-option value="420">7 uur</nb-option>
+          <nb-option value="480">8 uur</nb-option>
+        </nb-select>
+      </div>
+      <div class="data-container">
+        <p class="label-text">Aantal werknemers</p>
+        <nb-select class="normalInput" formControlName="countEmployees" id="type">
+          <nb-option value="1">1</nb-option>
+          <nb-option value="2">2</nb-option>
+          <nb-option value="3">3</nb-option>
+          <nb-option value="4">4</nb-option>
+          <nb-option value="5">5</nb-option>
+          <nb-option value="6">6</nb-option>
+          <nb-option value="7">7</nb-option>
+          <nb-option value="8">8</nb-option>
+          <nb-option value="9">9</nb-option>
+          <nb-option value="10">10</nb-option>
+        </nb-select>
+      </div>
+      <div class="data-container">
+        <p class="label-text">Opmerking</p>
+        <textarea nbInput class="opmerkingInput" type="text" formControlName="opmerking" ></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div  class="image-container">
+    <div class="image-header">
+      <label class="section-title">Foto's</label>
+
+    </div>
+
+    <div *ngFor="let photo of photos; let i = index">
+      <div  class="fotoColumn">
+        <div class="innerColumn">
+        <input *ngIf="photo != null" (click)="deleteFoto(i)" type="button" value="Verwijder" class="deleteButton">
+        <p class="fotoText" >Foto {{i+1}}:</p>
+        <img *ngIf="photo != null" src="{{photo}}" (click)="imagePopUp(photo)" class="photo" name="photo" >
+          <p *ngIf="photo == null" style="margin-bottom: 30%;font-size: 18px;font-weight: 600" >Geen foto</p>
+        </div>
+        <div class="upload-container">
+          <input class="" *ngIf="photo == null" type="file" name="file" (change)="onFileSelect($event,i)"
+          accept=".png,.jpg,.jpeg,.tiff" class="uploadButton" />
+        </div>
+
+      </div>
+    </div>
+
+
+    <p class="fotoTextBig" *ngIf="chosenImageList != null && chosenImageList.length != 0">Foto's om up te loaden :</p>
+    <div *ngIf="chosenImageList != null && chosenImageList.length != 0"  class="uploadable-images-container">
+      <div *ngFor="let image of chosenImageList; let i = index">
+        <p class="fotoText">Foto {{chosenImageListIndex[i] + 1}}:</p>
+        <img [src]="image" (click)="imagePopUp(image)" class="photo" />
+      </div>
+    </div>
+
+
+    <!-- <img [src]="chosenImage" height="200" *ngIf="chosenImage" class="photo"> -->
+
+  </div>
+
+
+
+  </form>
+</mat-card>
+
+<div class="bottomRow" *ngIf="isLoaded">
+  <button mat-raised-button class="form-button" (click)="goToPrevious()">
+    Terug
+  </button>
+  <button *ngIf="!isFirst" mat-raised-button class="form-button" (click)="onPreviousClick()">
+    Vorige
+  </button>
+  <button *ngIf="!isLast" mat-raised-button class="form-button" (click)="onNextClick()">
+    Volgende
+  </button>
+  <button (click)="onSubmitForm()" mat-raised-button class="form-button-blue" color="primary" type="submit">
+    Opslaan
+  </button>
+  <p class="boldText" *ngIf="index !== -1">{{index + 1}}/{{totalProjectCount}}</p>
+  <button (click)="goToView()"  mat-raised-button class="form-button3" color="primary" >
+    Ga naar view
+  </button>
+</div>
+

@@ -1,0 +1,82 @@
+<mat-card class='project-card'>
+  <div style="display: flex;justify-content: space-between;align-items: center;max-width:1000px">
+    <h5 style='width:fit-content'>Upload hier de uniforme excel verkregen van uw opdrachtgever</h5>
+    <button *ngIf="!isLoaded && !isInfoOpen" mat-raised-button class="form-button2" (click)="goToInfo()">
+      Hoe werkt dit?
+    </button>
+    <button *ngIf="!isLoaded && isInfoOpen" mat-raised-button class="form-button2" (click)="goToInfo()">
+      Sluit info
+    </button>
+  </div>
+  <h6  *ngIf='!isLoaded'>Het project,alle aansluitingen en kolken in deze excel worden zo automatisch aangemaakt.</h6>
+  <input  *ngIf='!isLoaded' type="file" class="form-control fileinput" (change)="addfile($event)" placeholder="Upload file"
+         accept=".xlsx, .xls, .csv, .xlsm">
+  <div style="margin-top: 35px" *ngIf="isInfoOpen">
+    <h5>Zie onderstaande foto van de uniforme excel:</h5>
+    <h6>Indien u deze niet ontvangen heeft van uw opdrachtgever, gelieve dit na te vragen.</h6>
+    <img style='width:950px;height:auto' src="assets/images/uniformeExcelVB.png">
+  </div>
+  <h5 *ngIf='isLoaded' style='text-decoration: underline;margin-left: 60px; margin-top: 20px;'>Inlezing succesvol!</h5>
+  <div class='outerRow'>
+    <form *ngIf="isLoaded" [formGroup]="infoForm" (ngSubmit)="onSubmitInfo(infoForm.value)" class="add-form">
+      <div class="data-container">
+        <p class="label-text">Aannemer projectnr. :</p>
+        <input nbInput class="normalInput" type="text" formControlName="aannemerProjectNr" />
+      </div>
+      <div class="data-container">
+        <p class="label-text">Aannemer naam:</p>
+        <input nbInput class="normalInput" type="text" formControlName="aannemerNaam" />
+      </div>
+      <div class="data-container">
+        <p class="label-text">Werfleider</p>
+        <input nbInput class="normalInput" type="text" formControlName="aannemerWerfleider" />
+      </div>
+      <div class="data-container">
+        <p class="label-text">Selecteer gebruikers:</p>
+        <mat-form-field  class='normalInput'>
+          <mat-select  placeholder="Selecteer gebruikers" formControlName="users" multiple>
+            <mat-option *ngFor="let user of allUsers" [value]="user._id">
+              {{user.name == null ? user.email: user.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class='nameFlex'><span *ngFor='let user of infoForm.value.users' class='user'>{{convertIdToNameString(user)}}</span></div>
+      <div class="data-container shorterRow">
+        <p style='width:fit-content !important;font-weight: bold' class="label-text">Werkt met ploegen/fases ?</p>
+        <input class="checkbox" id="name" type="checkbox" (change)='changePloegen()' />
+      </div>
+      <mat-card-title class="title">Berekening fundering/omhulling</mat-card-title>
+      <div class="data-container shorterRow">
+        <p class="label-text">Buis horizontaal multiplier</p>
+        <p style="margin-right: 20px;margin-top: 9px">1.00</p>
+      </div>
+      <div class="data-container shorterRow">
+        <p class="label-text">Buis verticaal multiplier</p>
+        <input nbInput id="name" type="number" class='shortInput' formControlName="buisVertMult" />
+      </div>
+      <div class="data-container shorterRow">
+        <p class="label-text">Y-stuk multiplier</p>
+        <input nbInput id="name" type="number" class='shortInput' formControlName="yStukMult" />
+      </div>
+      <div class="data-container shorterRow">
+        <p class="label-text">Bocht multiplier</p>
+        <input nbInput id="name" type="number" class='shortInput' formControlName="bochtMult" />
+      </div>
+      <div class="data-container shorterRow">
+        <p class="label-text">Mof multiplier</p>
+        <input nbInput id="name" type="number" class='shortInput' formControlName="mofMult" />
+      </div>
+      <button mat-raised-button class="form-button-blue" color="primary" type="submit">
+        Opslaan
+      </button>
+    </form>
+    <div *ngIf='isLoaded' class='infoColumn'>
+      <p class='infoText'>Aantal huisaansluitingen gedetecteerd: <b>{{projectList.length}}</b></p>
+      <p class='infoText'>Aantal wachtaansluitingen gedetecteerd: <b>{{wachtAansluitingList.length}}</b></p>
+      <p class='infoText'>Aantal kolken gedetecteerd: <b>{{slokkerProjectList.length}}</b></p>
+    </div>
+  </div>
+
+</mat-card>
+

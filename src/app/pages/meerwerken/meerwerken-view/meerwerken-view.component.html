@@ -1,0 +1,104 @@
+<div *ngIf="isLoaded" class="topRow">
+  <button mat-raised-button class="form-button" (click)="goToPrevious()">
+    Terug
+  </button>
+  <button *ngIf="!isFirst" mat-raised-button class="form-button" (click)="onPreviousClick()">
+    Vorige
+  </button>
+  <button *ngIf="!isLast" mat-raised-button class="form-button" (click)="onNextClick()">
+    Volgende
+  </button>
+  <button mat-raised-button class="form-button-blue" (click)="goToEdit()">
+    Bewerken
+  </button>
+  <p class="boldText" *ngIf="index !== -1">{{index + 1}}/{{totalProjectCount}}</p>
+  <button style="width: auto" mat-raised-button class="form-button2" (click)="generatePDF()"><div class="divInsideButton">PDF 	<mat-icon class="downloadImage">cloud_download</mat-icon></div></button>
+  <button style="width: auto" mat-raised-button class="form-button2" (click)="downloadPhotos()"><div class="divInsideButton">Foto's
+    <mat-icon class="downloadImage">cloud_download</mat-icon></div></button>
+  <button style="width: auto" mat-raised-button color="warn" class="form-button3"
+    (click)="onDeleteProject()">OW verwijderen</button>
+
+</div>
+<mat-card id="content" *ngIf="isLoaded" class="project-card">
+  <h3 class="page-title">Onvoorzien werk <small style='font-size:15px; margin-top:-5px'>   {{group.rbProjectNaam}} | {{group.rbGemeente}} | {{group.aannemerProjectNr}}</small></h3>
+  <div class="row-container">
+    <div class="column-container">
+      <div class="insideRow3">
+        <p class="label-text">Start datum</p>
+        <p class="data-text" *ngIf="currentProject.startDate == null;else dateTekst">Nog niet gestart</p>
+        <ng-template #dateTekst>
+          <p class="data-text">{{currentProject.startDate.toLocaleDateString()}}</p>
+        </ng-template>
+      </div>
+      <div style='max-width: 60% !important;' class="insideRow3">
+        <p class="label-text">Plaats/straat</p>
+        <p class="data-text">{{currentProject.street}}</p>
+      </div>
+      <div class="insideRow3">
+        <p class="label-text">Huisnummer/nummer</p>
+        <p class="data-text">{{currentProject.huisNr}}</p>
+      </div>
+      <div class="insideRow3">
+        <p class="label-text">Postnummer (optioneel)</p>
+        <p class="data-text">{{currentProject.postNumber}}</p>
+        <button style='margin-left: 250px' *ngIf='currentProject.xCoordGeoLocationFirsPhoto != null || currentProject.yCoordGeoLocationFirsPhoto != null'
+                  nbButton
+                  class="global-location-button"
+                  (click)='openMapDialog(currentProject.xCoordGeoLocationFirsPhoto, currentProject.yCoordGeoLocationFirsPhoto, "Meerwerk")'>
+            Bekijk locatie
+        </button>
+      </div>
+    </div>
+    <div class="column-container">
+      <div class="insideRow3">
+        <p class="label-text">Aantal werkuren</p>
+        <p class="data-text">{{minutesToHours(currentProject.minutesWorked)}}</p>
+      </div>
+      <div class="insideRow3">
+        <p class="label-text">Aantal werknemers</p>
+        <p class="data-text">{{currentProject.countEmployees != null ? currentProject.countEmployees : '1'}}</p>
+      </div>
+      <div style='margin-top: 10px' class="data-container">
+        <p class="label-text">Opmerking</p>
+        <p *ngIf="currentProject.opmerking?.length > 17" class="data-text-opmerking2">{{currentProject.opmerking}}</p>
+        <p *ngIf="currentProject.opmerking?.length <= 17" class="data-text-opmerking">{{currentProject.opmerking}}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="image-container">
+    <p class="section-title">Foto's</p>
+    <div *ngFor="let photo of currentProject.photos; let i = index" [ngClass]="photo == null? 'minderWidth' : ''" class="fotoColumn">
+        <p class="fotoText">Foto {{i + 1}}</p>
+        <img *ngIf="photo != null" src="{{photo}}" class="photo" name="photo" (click)="imagePopUp(photo)">
+        <p style="margin-bottom: 100%;font-size: 18px;font-weight: 600" *ngIf="photo == null">Geen foto</p>
+    </div>
+  </div>
+
+
+</mat-card>
+
+<div class="bottomRow" *ngIf="isLoaded">
+  <button mat-raised-button class="form-button" (click)="goToPrevious()">
+    Terug
+  </button>
+  <button *ngIf="!isFirst" mat-raised-button class="form-button" (click)="onPreviousClick()">
+    Vorige
+  </button>
+  <button *ngIf="!isLast" mat-raised-button class="form-button" (click)="onNextClick()">
+    Volgende
+  </button>
+  <button mat-raised-button class="form-button-blue" (click)="goToEdit()">
+    Bewerken
+  </button>
+  <p class="boldText" *ngIf="index !== -1">{{index + 1}}/{{totalProjectCount}}</p>
+  <button style="width: auto" mat-raised-button class="form-button2" (click)="generatePDF()">PDF 	<mat-icon>cloud_download</mat-icon></button>
+  <button style="width: auto" mat-raised-button class="form-button2" (click)="downloadPhotos()">Foto's
+    <mat-icon>cloud_download</mat-icon></button>
+  <button style="width: auto" mat-raised-button color="warn" class="form-button3"
+    (click)="onDeleteProject()">OW verwijderen</button>
+
+</div>
+<div *ngIf="isLoaded" id="printContainer" style="display: none">
+  <ngx-meerwerk-pdf [currentProject]="currentProject" [group]="group" [company]="company"></ngx-meerwerk-pdf>
+</div>
