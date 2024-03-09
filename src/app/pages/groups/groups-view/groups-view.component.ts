@@ -822,7 +822,7 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
                 this.isDownloading = false;
                 return;
               }
-              if(this.totalProjectCount > 70){
+              if(this.totalProjectCount > 60){
                 this.moreThan50PDFs = true;
               } else {
                 this.moreThan50PDFs = false;
