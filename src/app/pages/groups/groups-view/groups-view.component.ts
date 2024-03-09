@@ -76,6 +76,7 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
   moreThan50PDFs: boolean;
   filterStraatText: string = '';
 
+  pdfProgressBlocksPer3: number[];
   constructor(
     private apiService: ApiService,
     private router: Router,
@@ -836,6 +837,10 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
                 { duration: 4000 },
               );
 
+              this.pdfProgressBlocksPer3 = [];
+              for(let i = 3; i <= this.totalProjectCount; i+=3){
+                this.pdfProgressBlocksPer3.push(i);
+              }
               await this.initSocket();
               this.apiService.makePdf(sendIdArrays, this._id, pdfBenaming).subscribe(async data => {
                 },
@@ -893,8 +898,9 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
             resolve();
           });
 
-          this.socket.on('progress', (data) => {
+          this.socket.on('progress', (data: number) => {
             this.progress = data;
+            this.pdfProgressBlocksPer3 = this.pdfProgressBlocksPer3.filter(x => x !== data);
           });
 
           this.socket.on('completed', (url) => {
