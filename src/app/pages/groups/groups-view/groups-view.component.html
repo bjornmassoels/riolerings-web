@@ -70,14 +70,13 @@
     <p *ngIf='!isDownloading && progress !== totalProjectCount' style="font-size: 16px; font-weight: 600; padding-left: 10px;padding-right: 10px; text-align:center"> Uw download is in voorbereiding. Een ogenblik geduld alstublieft..<br>
     </p>
     <br>
-    <p *ngIf='!isDownloading && moreThan50PDFs' style="font-size: 17px; font-weight: 600; padding-left: 10px;padding-right: 10px; text-align:center"> Opmerking: U heeft meer dan 60 aansluitingen gekozen om te downloaden.<br>
+    <p *ngIf='!isDownloading && moreThan50PDFs' style="font-size: 17px; font-weight: 600; padding-left: 10px;padding-right: 10px; text-align:center"> Opmerking: U heeft meer dan 70 aansluitingen gekozen om te downloaden.<br>
       Wij verzoeken u dit niet te frequent te doen om overbelasting van onze server te vermijden.
     </p>
     <p *ngIf='!isDownloading && pdfProgressBlocksPer3.length === 0' style="font-size: 17px; font-weight: 600; padding-left: 10px;padding-right: 10px;  text-align:center">De fiches worden momenteel in een zip bestand geplaatst. Even geduld aub...<br>
     </p>
     <p *ngIf='isDownloading'  style="font-size: 17px; font-weight: 600; padding-left: 10px;padding-right: 10px">Het zip-bestand met de fiches wordt nu gedownload...Even geduld aub</p>
     <p *ngIf='!isDownloading && pdfProgressBlocksPer3 != null && pdfProgressBlocksPer3.length !== 0' style="font-size: 17px; font-weight: 600; text-align:center">U zit aan aansluiting {{(totalProjectCount - (pdfProgressBlocksPer3.length * 3))}} van de {{totalProjectCount}}<br> <small>(aansluitingen zonder data zijn niet meegeteld)</small>
-    <p *ngIf='!isDownloading && progress !== 0 && progress !== totalProjectCount' style="font-size: 17px; font-weight: 600; text-align:center">U zit aan aansluiting {{progress}} van de {{totalProjectCount}}<br> <small>(aansluitingen zonder data zijn niet meegeteld)</small>
     </p>
     <ngx-loading-bar style='margin-bottom: 40px;' diameter="40px" includeBar="false" fixed="false" color="blue" value="2"></ngx-loading-bar>
   </div>
