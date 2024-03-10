@@ -11,7 +11,7 @@ import { ApiService } from 'services/api.service';
 export class ForgotPasswordComponent implements OnInit {
 
   email: any;
-
+  isSaving: boolean = false;
   constructor
     (
     private apiService: ApiService,
@@ -20,7 +20,7 @@ export class ForgotPasswordComponent implements OnInit {
     )
   {}
 
-  ngOnInit() {}
+  ngOnInit() {this.isSaving = false;}
 
 
   goBack() {
@@ -30,8 +30,8 @@ export class ForgotPasswordComponent implements OnInit {
     return new Promise((resolve) => setTimeout(() => resolve(), timeInMillis));
   }
   login() {
-
-    if (this.email != null ) {
+    if (this.email != null && !this.isSaving) {
+      this.isSaving = true;
       this.apiService.forgotPassword(this.email).subscribe( async x => {
         if(x === 'notfound'){
             this.toast.danger("Er bestaat geen account met deze email.", "Error" )
@@ -40,6 +40,7 @@ export class ForgotPasswordComponent implements OnInit {
           await this.delay(2500);
           this.goBack();
         }
+        this.isSaving = false;
       });
     }
   }

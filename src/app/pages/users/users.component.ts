@@ -76,6 +76,8 @@ async ngAfterViewInit() {
         this.selectedUser = this.formService.selectedUser;
         this.changeUser(this.selectedUser._id);
     }
+  } else {
+    this.input.nativeElement.focus();
   }
 }
   delay(timeInMillis: number): Promise<void> {
@@ -154,6 +156,7 @@ async ngAfterViewInit() {
     this.input.nativeElement.value = '';
     this.filterItemsNaam = this.users;
     this.selectedUser = null;
+    this.formService.selectedUser = null;
     this.groups = [];
     this.observableFilteredItems$ = of(this.filterItemsNaam.map(x => x.name));
     this.input.nativeElement.focus();

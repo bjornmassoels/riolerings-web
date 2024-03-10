@@ -1,15 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiService } from 'services/api.service';
-import { NbToastrService } from '@nebular/theme';
+import { NbGlobalLogicalPosition, NbToastrService } from '@nebular/theme';
 import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { Group } from '../../../models/groups';
 import { FormService } from '../../../services/form.service';
 import { ExcelService } from '../../../services/ExcelService';
 import { Observable } from 'rxjs';
-import { startWith, map } from 'rxjs/operators';
+import { map, startWith } from 'rxjs/operators';
 import { Company } from '../../../models/company';
 import { MatDialog } from '@angular/material/dialog';
+
 declare var Pace: any;
 
 @Component({
@@ -62,7 +63,7 @@ export class GroupsComponent implements OnInit {
     );
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.apiService.getAllGroupsNoProjects().subscribe(async x => {
       const tempGroups = x as Group[];
       for (const group of tempGroups) {
@@ -147,6 +148,8 @@ export class GroupsComponent implements OnInit {
         }
       });
     } else {
+      this.toastrService.danger('U heeft geen toegang tot deze pagina. Het account waar u mee probeert in te loggen heeft als functie Ploegbaas', 'Sorry!',{position: NbGlobalLogicalPosition.TOP_START, duration: 4500});
+      await this.delay(5000);
       this.router.navigate(['/auth/login']);
     }
   }

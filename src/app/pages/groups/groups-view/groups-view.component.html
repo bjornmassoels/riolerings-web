@@ -6,7 +6,7 @@
     (click)="archiveGroup()">Archiveren</button>
   <button  style="width: 150px;" *ngIf="isArchived === true" mat-raised-button class="form-button2"
     (click)="unArchiveGroup()">Haal uit archief</button>
-  <button  style="width: 118px;" mat-raised-button class="form-button2"
+  <button  style="width: 112px;" mat-raised-button class="form-button2"
     (click)="goToPostnummers()">Postnummers</button>
   <button style="width: 116px;" mat-raised-button class="form-button2" (click)="generatePDF()"><div class="divInsideButton">PDF fiche<mat-icon class="downloadImage">cloud_download</mat-icon></div></button>
   <button mat-raised-button class="form-button-green2" (click)="downloadExcelClientData()">
@@ -16,21 +16,20 @@
     <div class="divInsideButton">Excel meetstaat 	<mat-icon class="downloadImage">cloud_download</mat-icon></div>
   </button>
   <button mat-raised-button class="form-button4" (click)="setupVariables()">Zet invulvelden uit</button>
-  <button style="width: 123px;" mat-raised-button class="form-button2"
+  <button style="width: 120px;" mat-raised-button class="form-button2"
           (click)="readLambertExcel()">Lambertcoord.</button>
 </div>
 
 <div class="page-header">
-  <div style="display: flex; flex-direction: row; margin-top: -20px;">
-    <h1>Project</h1>
+    <h2 style="margin:0px 10px 0px 0">Project</h2>
     <button class='add-button' mat-raised-button color="primary" (click)="goToEdit()"
-      style=" min-width:auto; width: 95px !important; line-height: 18px; background-color:#3f51b5!important;">
+      style=" min-width:auto; width: 95px !important; background-color:#3f51b5!important;">
       Project bewerken</button>
     <button mat-raised-button (click)="goToAddProject()" class="add-button">Creëer HA</button>
     <button mat-raised-button (click)="goToMultipleAddProject()" class="add-button">Creëer meerdere HA's</button>
     <button mat-raised-button (click)="createSlokker()" class="add-button3">Creëer kolk</button>
     <button mat-raised-button (click)="createMeerwerk()" class="add-button4">Creëer OW</button>
-    <div style='margin-top: 15px' class="rowFlex">
+    <div class="rowFlex">
       <p class="normalText">Kleurencode:</p>
 
       <button mat-button [matMenuTriggerFor]="menu" style="margin-bottom: 0px; margin-left: -11px" *ngIf="isOn">
@@ -62,7 +61,6 @@
         </button>
       </mat-menu>
     </div>
-  </div>
 </div>
 
 <div style='max-width:1400px'>
