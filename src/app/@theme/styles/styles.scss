@@ -50,10 +50,8 @@ body {
 }
 
 
-.mat-dialog-container {
-  border-radius: 15px !important;
-  max-width: 85vw !important;
-  min-width: 880px !important;
+.mat-mdc-dialog-container {
+  --mdc-dialog-container-shape: 20px;
 }
 
 
@@ -77,3 +75,4 @@ nb-sidebar{
 nb-select .placeholder{
   opacity:1 !important;
 }
+

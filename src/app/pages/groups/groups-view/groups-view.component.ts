@@ -969,7 +969,7 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
   archiveGroup() {
     const dialogRef = this.dialog.open(ArchivePopupComponent, {
       height: '250px',
-      width: '400px',
+      width: '400px'
     });
     dialogRef.componentInstance.group = this.group;
   }
