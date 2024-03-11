@@ -2,13 +2,13 @@
   <button style="width: 95px;  margin-left: 0px !important; font-size: 16px" mat-raised-button class="form-button2" (click)="goToPrevious()">
     Terug
   </button>
-  <button style="width: 95px;" *ngIf="isArchived === false"  mat-raised-button class="form-button2"
+  <button style="width: 90px;" *ngIf="isArchived === false"  mat-raised-button class="form-button2"
     (click)="archiveGroup()">Archiveren</button>
-  <button  style="width: 150px;" *ngIf="isArchived === true" mat-raised-button class="form-button2"
+  <button  style="width: 148px;" *ngIf="isArchived === true" mat-raised-button class="form-button2"
     (click)="unArchiveGroup()">Haal uit archief</button>
   <button  style="width: 112px;" mat-raised-button class="form-button2"
     (click)="goToPostnummers()">Postnummers</button>
-  <button style="width: 116px;" mat-raised-button class="form-button2" (click)="generatePDF()"><div class="divInsideButton">PDF fiche<mat-icon class="downloadImage">cloud_download</mat-icon></div></button>
+  <button style="width: 114px;" mat-raised-button class="form-button2" (click)="generatePDF()"><div class="divInsideButton">PDF fiche<mat-icon class="downloadImage">cloud_download</mat-icon></div></button>
   <button mat-raised-button class="form-button-green2" (click)="downloadExcelClientData()">
     <div class="divInsideButton">Excel Vlario 	<mat-icon class="downloadImage">cloud_download</mat-icon></div>
   </button>
@@ -16,7 +16,7 @@
     <div class="divInsideButton">Excel meetstaat 	<mat-icon class="downloadImage">cloud_download</mat-icon></div>
   </button>
   <button mat-raised-button class="form-button4" (click)="setupVariables()">Zet invulvelden uit</button>
-  <button style="width: 120px;" mat-raised-button class="form-button2"
+  <button style="width: 112px;" mat-raised-button class="form-button2"
           (click)="readLambertExcel()">Lambertcoord.</button>
 </div>
 
@@ -81,7 +81,7 @@
 </div>
 <button *ngIf='isOn && !isLoadingBar' (click)="toggleProjectDetails()" class="btn btn-info">
   <i style='margin-right: 8px' [class]="showProjectDetails ? 'fa fa-angle-up' : 'fa fa-angle-down'"></i>
-  <b>{{ showProjectDetails ? 'Verberg Projectgegevens' :group?.rbGemeente + ' - ' + group?.aannemerProjectNr + ' - ' + group?.rbProjectNaam }}</b>
+  <b style="font-size: 15px !important;">{{ showProjectDetails ? 'Verberg Projectgegevens' :group?.rbGemeente + ' - ' + group?.aannemerProjectNr + ' - ' + group?.rbProjectNaam }}</b>
 </button>
 
 <div *ngIf="isOn" [hidden]='isLoadingBar' class="infoFlex">
