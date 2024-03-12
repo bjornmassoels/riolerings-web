@@ -2,7 +2,7 @@
   <div class="secondRow">
     <h2 style='min-width: 170px;'>Projecten</h2>
     <button *ngIf="isAdmin" (click)="goToAdmin()">Ga naar admin pagina</button>
-    <button mat-raised-button (click)="goToCreate()" class="add-button"> Project aanmaken</button>
+    <button mat-raised-button (click)="goToCreate()" style="width:186px !important;line-height: 18px;" class="add-button"> Project aanmaken</button>
     <button mat-raised-button (click)="readExcel()" class="add-button-green">Uniforme excel inlezen</button>
     <nb-toggle  (checkedChange)="showConnectedUsers()"><span style="white-space: pre-line; font-size: 14px !important;">{{!isViewConnectedUsers ? 'Toon gekoppelde\ngebruikers' : 'Verberg gekoppelde\ngebruikers'}}</span></nb-toggle>
   </div>
