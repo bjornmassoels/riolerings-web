@@ -193,6 +193,9 @@ export class ReadExcelComponent implements OnInit {
       this.heeftploegen = true;
     }
   }
+  goToPrevious() {
+    this.router.navigate(['/pages/groups']);
+  }
 
   goToInfo() {
     this.isInfoOpen = !this.isInfoOpen;

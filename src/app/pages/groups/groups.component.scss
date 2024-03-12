@@ -40,8 +40,8 @@
   max-width: 1200px;
   align-items: center;
   margin-right: 40px;
-  margin-top: -40px;
-  margin-bottom: -15px;
+  margin-top: -22px;
+  margin-bottom: 0px;
   margin-left: 10px;
   justify-content: space-between;
 }
@@ -51,7 +51,7 @@
 .item-box2 {
   padding: 20px 10px;
   width: 100%;
-  border-bottom: solid 1px #ccc;
+  border-top: solid 1px #ccc;
   color: rgba(0, 0, 0, 0.87);
   display: flex;
   flex-direction: row;
@@ -61,10 +61,20 @@
   font-size: 14px;
   height:100px !important;
 }
+.item-box-connected-users {
+  padding: 0px 30px 7px 60px;
+  width: 100%;
+  color: rgba(0, 0, 0, 0.87);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  background: white;
+  font-size: 14px;
+}
 .item-box-header {
   padding: 7px 10px;
   width: 100%;
-  border-bottom: solid 1px #ccc;
   color: rgba(0, 0, 0, 0.87);
   display: flex;
   flex-direction: row;
@@ -79,11 +89,12 @@
   flex-direction: row;
   width: 100%;
   align-items: center;
-  margin-right: 40px;
+  margin-right: 6px;
   margin-left: 10px;
   margin-top: 0px;
   justify-content: flex-start;
   margin-bottom: 10px;
+  gap:0 22px;
 }
 .buttoné {
   // What kind of name is this? What does é stand for?
@@ -101,9 +112,7 @@
 .search-form {
   margin-left: 20px !important;
 }
-#extras {
-  margin-left: 20px !important;
-}
+
 .innerRow {
   display: flex;
   flex-direction: row;
@@ -184,3 +193,30 @@
   width:30px !important;
 }
 
+.nameFlex{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap:8px 10px;
+  flex-wrap: wrap;
+}
+.user{
+  padding:6px;
+  border-radius: 10px;
+  border:1px dashed gray;
+  margin-right: 7px;
+  background-color: #4b89ff;
+  color:white;
+}
+.connectedText{
+  color:black;
+  font-size: 16px;
+}
+.colFlexer{
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 2px 0;
+}

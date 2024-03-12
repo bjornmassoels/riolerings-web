@@ -41,6 +41,7 @@ export class GroupsComponent implements OnInit {
   isLoaded: boolean = false;
   isLoaded2: boolean = false;
   isAdmin: boolean = false;
+  isViewConnectedUsers: boolean = false;
   constructor(
     private apiService: ApiService,
     private router: Router,
@@ -64,6 +65,7 @@ export class GroupsComponent implements OnInit {
   }
 
   async ngOnInit() {
+    this.isViewConnectedUsers = false;
     this.apiService.getAllGroupsNoProjects().subscribe(async x => {
       const tempGroups = x as Group[];
       for (const group of tempGroups) {
@@ -266,5 +268,19 @@ export class GroupsComponent implements OnInit {
 
   readExcel() {
     this.router.navigate(['/pages/read-excel']);
+  }
+
+  showConnectedUsers() {
+     if(!this.isViewConnectedUsers){
+       this.apiService.getConnectedUsersOfGroups().subscribe((groups: Group[]) => {
+         let userGroups = groups as Group[];
+         for(let group of this.searchedGroups){
+           group.users  = userGroups.find(x => x._id === group._id).users;
+         }
+         this.isViewConnectedUsers = true;
+       });
+     } else {
+        this.isViewConnectedUsers = false;
+     }
   }
 }

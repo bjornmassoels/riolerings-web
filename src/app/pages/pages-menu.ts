@@ -49,7 +49,6 @@ export const MENU_ITEMS: NbMenuItem[] = [
     icon: 'plus-square-outline',
     link: '/pages/users/user-create',
   },
-
   {
     title: 'Instellingen',
     group: true,

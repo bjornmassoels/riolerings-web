@@ -2,7 +2,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 
 import { PagesComponent } from './pages.component';
-import { AllProjectsComponent } from './object-lists/all-projects/all-projects.component';
 import { ProjectViewComponent } from './projects/project-view/project-view.component';
 import { ProjectViewDialogComponent } from './projects/project-view/project-view-dialog/project-view-dialog.component';
 import { GroupsComponent } from './groups/groups.component';
@@ -10,7 +9,6 @@ import { GroupsAddComponent } from './groups/groups-add/groups-add.component';
 import { GroupsEditComponent } from './groups/groups-edit/groups-edit.component';
 import { GroupsViewComponent } from './groups/groups-view/groups-view.component';
 import { SlokkerprojectViewComponent } from './slokkerprojects/slokkerproject-view/slokkerproject-view.component';
-import { AllSlokkerprojectsComponent } from './object-lists/all-slokkerprojects/all-slokkerprojects.component';
 import { PostnummerSettingsComponent } from './groups/postnummer-settings/postnummer-settings.component';
 import { ProjectAddComponent } from './projects/project-add/project-add.component';
 import { ProjectEditComponent } from './projects/project-edit/project-edit.component';
@@ -18,19 +16,16 @@ import { SlokkerprojectEditComponent } from './slokkerprojects/slokkerproject-ed
 import { GroupsArchiveComponent } from './groups/groups-archive/groups-archive.component';
 import { AdminComponent } from './admin/admin.component';
 import { MultipleProjectAddComponent } from "./projects/multiple-project-add/multiple-project-add.component";
-import { AllWachtaansluitingenComponent } from './object-lists/all-wachtaansluitingen/all-wachtaansluitingen.component';
 import {ReadExcelComponent} from "./read-excel/read-excel.component";
 import {ProjectAddExcelComponent} from "./projects/project-add-excel/project-add-excel.component";
 import {SettingsVariableComponent} from "./groups/settings-variable/settings-variable.component";
 import {SettingsComponent} from "./settings/settings.component";
 import {SlokkerprojectAddComponent} from "./slokkerprojects/slokkerproject-add/slokkerproject-add.component";
 import {ProjectLastworkerDialogComponent} from "./projects/project-edit/project-lastworker-dialog/project-lastworker-dialog.component";
-import {BcStatisticsComponent} from "./bc-statistics/bc-statistics.component";
 import {ReadExcelLambertComponent} from "./groups/read-excel-lambert/read-excel-lambert.component";
 import {MeerwerkenViewComponent} from "./meerwerken/meerwerken-view/meerwerken-view.component";
 import {MeerwerkenEditComponent} from "./meerwerken/meerwerken-edit/meerwerken-edit.component";
 import {MeerwerkenAddComponent} from "./meerwerken/meerwerken-add/meerwerken-add.component";
-import {AllMeerwerkenComponent} from "./object-lists/all-meerwerken/all-meerwerken.component";
 
 const routes: Routes = [{
   path: '',

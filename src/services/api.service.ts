@@ -603,4 +603,15 @@ export class ApiService {
     };
     return this.http.get(this.apiURL + '/users.sendAccountDeletionRequest', headers);
   }
+
+  getConnectedUsersOfGroups() {
+    let headers = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: this._token,
+        companyid: this.companyid
+      },
+    };
+    return this.http.get(this.apiURL + '/groups.getConnectedUsersOfGroups', headers);
+  }
 }

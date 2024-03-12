@@ -74,6 +74,8 @@
   border-radius: 10px;
   border:1px dashed gray;
   margin-right: 7px;
+  background-color: #4b89ff;
+  color:white;
 }
 .nameFlex{
   display: flex;
@@ -137,4 +139,17 @@
 }
 .shorterRow{
   width:420px !important;
+}
+.form-button {
+  font-size: 20px;
+  font-weight: 600;
+  background-color: black !important;
+  color: white !important;
+  border: 1px solid black;
+  border-radius: 5px;
+  width: 130px;
+  height: 40px;
+  min-width: 128px;
+  margin-bottom: 2px;
+  margin-top: -22px;
 }
