@@ -76,7 +76,7 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
   moreThan50PDFs: boolean;
   filterStraatText: string = '';
 
-  pdfProgressBlocksPer2: number[];
+  pdfProgressBlocksPer4: number[];
   constructor(
     private apiService: ApiService,
     private router: Router,
@@ -837,9 +837,9 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
                 { duration: 4000 },
               );
 
-              this.pdfProgressBlocksPer2 = [];
-              for(let i = 2; i <= this.totalProjectCount; i+=2){
-                this.pdfProgressBlocksPer2.push(i);
+              this.pdfProgressBlocksPer4 = [];
+              for(let i = 4; i <= this.totalProjectCount; i+=4){
+                this.pdfProgressBlocksPer4.push(i);
               }
               await this.initSocket();
               this.apiService.makePdf(sendIdArrays, this._id, pdfBenaming).subscribe(async data => {
@@ -901,12 +901,12 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
           this.socket.on('progress', (data: number) => {
             this.progress = data;
             //fix voor laatste, is niet altijd per 2
-            if(this.pdfProgressBlocksPer2.length === 1){
-              this.pdfProgressBlocksPer2 = [];
+            if(this.pdfProgressBlocksPer4.length === 1){
+              this.pdfProgressBlocksPer4 = [];
             }
-            this.pdfProgressBlocksPer2 = this.pdfProgressBlocksPer2.filter(x => x !== data);
+            this.pdfProgressBlocksPer4 = this.pdfProgressBlocksPer4.filter(x => x !== data);
             console.log(this.progress);
-            console.log(this.pdfProgressBlocksPer2)
+            console.log(this.pdfProgressBlocksPer4)
           });
 
           this.socket.on('completed', (url) => {
