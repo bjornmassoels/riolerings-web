@@ -65,7 +65,7 @@
 
 <div style='max-width:1400px'>
   <div *ngIf="isLoadingBar" class="loadingBar">
-    <p *ngIf='!isDownloading && progress !== totalProjectCount' style="font-size: 16px; font-weight: 600; padding-left: 10px;padding-right: 10px; text-align:center"> Uw download is in voorbereiding. Een ogenblik geduld alstublieft..<br>
+    <p *ngIf='!isDownloading && pdfProgressBlocksPer3 != null && pdfProgressBlocksPer3.length !== 0' style="font-size: 16px; font-weight: 600; padding-left: 10px;padding-right: 10px; text-align:center"> Wij zijn bezig met het genereren van de bestanden..Gelieve deze even te wachten.<br>
     </p>
     <br>
     <p *ngIf='!isDownloading && moreThan50PDFs' style="font-size: 17px; font-weight: 600; padding-left: 10px;padding-right: 10px; text-align:center"> Opmerking: U heeft meer dan 60 aansluitingen gekozen om te downloaden.<br>
@@ -73,7 +73,7 @@
     </p>
     <p *ngIf='!isDownloading && pdfProgressBlocksPer3.length === 0' style="font-size: 17px; font-weight: 600; padding-left: 10px;padding-right: 10px;  text-align:center">De fiches worden momenteel in een zip bestand geplaatst. Even geduld aub...<br>
     </p>
-    <p *ngIf='isDownloading'  style="font-size: 17px; font-weight: 600; padding-left: 10px;padding-right: 10px">Het zip-bestand met de fiches wordt nu gedownload...Even geduld aub</p>
+    <p *ngIf='isDownloading'  style="font-size: 17px; font-weight: 600; padding-left: 10px;padding-right: 10px">De fiches worden momenteel gegenereerd...Even geduld aub</p>
     <p *ngIf='!isDownloading && pdfProgressBlocksPer3 != null && pdfProgressBlocksPer3.length !== 0' style="font-size: 17px; font-weight: 600; text-align:center">U zit aan aansluiting {{(totalProjectCount - (pdfProgressBlocksPer3.length * 3))}} van de {{totalProjectCount}}<br> <small>(aansluitingen zonder data zijn niet meegeteld)</small>
     </p>
     <ngx-loading-bar style='margin-bottom: 40px;' diameter="40px" includeBar="false" fixed="false" color="blue" value="2"></ngx-loading-bar>
