@@ -65,16 +65,16 @@
 
 <div style='max-width:1400px'>
   <div *ngIf="isLoadingBar" class="loadingBar">
-    <p *ngIf='!isDownloading && pdfProgressBlocksPer4 != null && pdfProgressBlocksPer4.length !== 0' style="font-size: 16px; font-weight: 600; padding-left: 10px;padding-right: 10px; text-align:center"> We zijn bezig met het genereren van de fiches in PDF.Gelieve even te wachten...<br>
+    <p *ngIf='!isDownloading && pdfProgressBlocksPer4 != null && pdfProgressBlocksPer4.length !== 0' style="font-size: 16px; font-weight: 600; padding-left: 10px;padding-right: 10px; text-align:center;margin:5px 0"> We zijn bezig met het genereren van de fiches in PDF. Gelieve even te wachten...<br>
     </p>
     <br>
-    <p *ngIf='!isDownloading && moreThan50PDFs' style="font-size: 17px; font-weight: 600; padding-left: 10px;padding-right: 10px; text-align:center; color:orange"> Opmerking: U heeft meer dan 70 aansluitingen gekozen om te downloaden.<br>
+    <p *ngIf='!isDownloading && moreThan50PDFs' style="font-size: 17px; font-weight: 600; padding-left: 10px;padding-right: 10px; text-align:center; color:orange;margin:5px 0"> Opmerking: U heeft meer dan 70 aansluitingen gekozen om te downloaden.<br>
       Wij verzoeken u dit niet te frequent te doen om overbelasting van onze server te voorkomen.
     </p>
-    <p *ngIf='!isDownloading && pdfProgressBlocksPer4 != null &&  pdfProgressBlocksPer4.length === 0' style="font-size: 17px; font-weight: 600; padding-left: 10px;padding-right: 10px;  text-align:center">De fiches worden momenteel in een zip bestand geplaatst. Even geduld aub...<br>
+    <p *ngIf='!isDownloading && pdfProgressBlocksPer4 != null &&  pdfProgressBlocksPer4.length === 0' style="font-size: 17px; font-weight: 600; padding-left: 10px;padding-right: 10px;  text-align:center;margin:5px 0">De fiches worden momenteel in een zip bestand geplaatst. Even geduld aub...<br>
     </p>
-    <p *ngIf='isDownloading'  style="font-size: 17px; font-weight: 600; padding-left: 10px;padding-right: 10px">De fiches worden momenteel gedownload...Even geduld aub</p>
-    <p *ngIf='!isDownloading && pdfProgressBlocksPer4 != null && pdfProgressBlocksPer4.length !== 0' style="font-size: 17px; font-weight: 600; text-align:center; color: blue;">U zit aan aansluiting {{(totalProjectCount - (pdfProgressBlocksPer4.length * 4))}} van de {{totalProjectCount}}<br> <small style="color:black !important;">(aansluitingen zonder data zijn niet meegeteld)</small>
+    <p *ngIf='isDownloading'  style="font-size: 17px; font-weight: 600; padding-left: 10px;padding-right: 10px;margin:5px 0">De fiches worden momenteel gedownload...Even geduld aub</p>
+    <p *ngIf='!isDownloading && pdfProgressBlocksPer4 != null && pdfProgressBlocksPer4.length !== 0' style="font-size: 17px; font-weight: 600; text-align:center; color: blue;margin:5px 0">U zit aan aansluiting {{(totalProjectCount - (pdfProgressBlocksPer4.length * 4))}} van de {{totalProjectCount}}<br> <small style="color:black !important;">(aansluitingen zonder data zijn niet meegeteld)</small>
     </p>
     <ngx-loading-bar style='margin-bottom: 40px;' diameter="40px" includeBar="false" fixed="false" color="blue" value="2"></ngx-loading-bar>
   </div>
