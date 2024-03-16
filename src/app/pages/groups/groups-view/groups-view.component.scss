@@ -47,14 +47,15 @@
 .loadingBar{
 display: flex;
 flex-direction: column;
-border: 2px dashed black;
-padding-bottom: 25px;
+  border: 2px dashed #3e5bff;
+  padding-bottom: 25px;
 padding-top: 15px;
 justify-content: center;
 align-items: center;
   width: 800px;
   margin:15px auto;
   border-radius: 25px;
+  background-color: white;
 }
 
 .scroll-table::-webkit-scrollbar-thumb {
