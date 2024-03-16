@@ -838,7 +838,7 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
               );
 
               this.pdfProgressBlocksPer2 = [];
-              for(let i = 3; i <= this.totalProjectCount; i+=3){
+              for(let i = 2; i <= this.totalProjectCount; i+=2){
                 this.pdfProgressBlocksPer2.push(i);
               }
               await this.initSocket();
