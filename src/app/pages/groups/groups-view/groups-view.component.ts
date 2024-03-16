@@ -901,6 +901,8 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
           this.socket.on('progress', (data: number) => {
             this.progress = data;
             this.pdfProgressBlocksPer3 = this.pdfProgressBlocksPer3.filter(x => x !== data);
+            console.log(this.progress);
+            console.log(this.pdfProgressBlocksPer3)
           });
 
           this.socket.on('completed', (url) => {
