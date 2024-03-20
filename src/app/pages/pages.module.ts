@@ -1,7 +1,7 @@
 import { NgModule , LOCALE_ID} from '@angular/core';
 import {
   NbAutocompleteModule, NbButtonModule,
-  NbCheckboxModule, NbDatepickerModule,
+  NbCheckboxModule, NbDatepickerModule, NbFormFieldModule, NbIconModule,
   NbInputModule,
   NbMenuModule,
   NbOptionModule,
@@ -130,7 +130,9 @@ import { UsersModule } from './users/users.module';
     NbAutocompleteModule,
     NbButtonModule,
     GoogleMapsModule,
-    UsersModule
+    UsersModule,
+    NbIconModule,
+    NbFormFieldModule,
   ],
   declarations: [
     PagesComponent,

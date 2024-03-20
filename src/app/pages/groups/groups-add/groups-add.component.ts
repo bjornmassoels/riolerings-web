@@ -1,5 +1,5 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, FormArray } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, FormArray, FormGroup, UntypedFormArray } from '@angular/forms';
 import { NbToastrService } from '@nebular/theme';
 import { ApiService } from "../../../../services/api.service";
 import { FormService } from "../../../../services/form.service";
@@ -352,6 +352,7 @@ export class GroupsAddComponent implements OnInit {
   isCityInvalid: boolean = false;
   isFirmaInvalid: boolean = false;
   filteredGemeentes$: Observable<string[]>;
+  streetsForm: FormGroup;
   constructor(
     private formBuilder: UntypedFormBuilder,
     private apiService: ApiService,
@@ -394,7 +395,8 @@ export class GroupsAddComponent implements OnInit {
       buisVertMult: 1,
       yStukMult: 0.5,
       bochtMult: 0.3,
-      mofMult: 0.15
+      mofMult: 0.15,
+      possibleKolkStreets: this.formBuilder.array([])
     });
   }
   async ngOnInit() {
@@ -552,5 +554,17 @@ export class GroupsAddComponent implements OnInit {
 
   convertIdToNameString(user: string) {
     return this.allUsers.find(x => x._id === user).name;
+  }
+
+  get possibleKolkStreets() {
+    return this.addForm.get('possibleKolkStreets') as FormArray;
+  }
+
+  addStreet() {
+    this.possibleKolkStreets.push(this.formBuilder.control(''));
+  }
+
+  removeStreet(index: number) {
+    this.possibleKolkStreets.removeAt(index);
   }
 }

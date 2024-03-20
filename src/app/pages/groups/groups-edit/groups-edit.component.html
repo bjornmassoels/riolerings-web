@@ -116,6 +116,20 @@
             <input class="checkbox" nbCheckbox id="name" type="checkbox" formControlName="heeftPloegen" />
           </td>
         </tr>
+        <tr>
+          <td colspan="2" style="font-size: 17px;margin-top: 20px;font-weight: bold">Mogelijke straten voorstellen bij toevoegen nieuwe kolk in mobiele app</td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <div style="margin-bottom: 10px" formArrayName="possibleKolkStreets">
+              <div *ngFor="let street of possibleKolkStreets.controls; let i=index" class="form-group">
+                <input nbInput placeholder="Straatnaam.." [formControlName]="i" />
+                <nb-icon nbSuffix style="margin-left: 6px;" icon="trash-2-outline" (click)="removeStreet(i)"></nb-icon>
+              </div>
+            </div>
+            <button style="background-color: #a08582 !important;color: white !important;margin-left: 10px;margin-top: 7px"  nbButton status="primary" (click)="addStreet()"><i style="margin-right: 5px;" class="fa fa-plus"></i>Voeg straat toe</button>
+          </td>
+        </tr>
         </tbody>
       </table>
 
@@ -229,14 +243,14 @@
           </tr>
         </div>
         <div *ngIf="!thirdMogOn && secondMogOn" class="flexer">
-          <button  mat-icon-button type="button" (click)="addThirdMog()" [disabled] color="primary" aria-label="Example icon button with a home icon">
+          <button  mat-icon-button type="button" (click)="addThirdMog()" color="primary" aria-label="Example icon button with a home icon">
             <mat-icon>person_add</mat-icon>
           </button>
           <p (click)="addThirdMog()" class="text2">Extra medeopdrachtgever toevoegen</p>
         </div>
         <div *ngIf="thirdMogOn" style="margin-top: 1rem; box-shadow: 0px 0px 1px 0px grey; padding-right: 15px">
           <div class="flexer">
-            <button mat-icon-button type="button" (click)="removeThirdMog()" [disabled] color="primary" aria-label="Example icon button with a home icon">
+            <button mat-icon-button type="button" (click)="removeThirdMog()" color="primary" aria-label="Example icon button with a home icon">
               <mat-icon icon-red>person_remove</mat-icon>
             </button>
             <p class="text3">Extra medeopdrachtgever</p>

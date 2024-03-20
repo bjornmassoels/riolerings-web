@@ -21,7 +21,7 @@
   </div>
   <h5 *ngIf='isLoaded' style='text-decoration: underline;margin-left: 60px; margin-top: 20px;'>Inlezing succesvol!</h5>
   <div class='outerRow'>
-    <form *ngIf="isLoaded" [formGroup]="infoForm" (ngSubmit)="onSubmitInfo(infoForm.value)" class="add-form">
+    <form *ngIf="isLoaded" [formGroup]="infoForm" class="add-form">
       <div class="data-container">
         <p class="label-text">Aannemer projectnr. :</p>
         <input nbInput class="normalInput" type="text" formControlName="aannemerProjectNr" />
@@ -45,8 +45,19 @@
         </mat-form-field>
       </div>
       <div class='nameFlex'><span *ngFor='let user of infoForm.value.users' class='user'>{{convertIdToNameString(user)}}</span></div>
+
+      <p style="font-size: 16px;margin-top: 20px;font-weight: bold;margin-bottom: 5px;">Mogelijke straten voorstellen bij toevoegen nieuwe kolk in mobiele app</p>
+      <div style="margin-bottom: 10px" formArrayName="possibleKolkStreets">
+        <div *ngFor="let street of possibleKolkStreets.controls; let i=index" class="form-group">
+          <input style="margin-bottom: 8px;width:260px;" nbInput placeholder="Straatnaam.." [formControlName]="i" />
+          <nb-icon nbSuffix style="margin-left: 6px;" icon="trash-2-outline" (click)="removeStreet(i)"></nb-icon>
+        </div>
+      </div>
+      <button style="background-color: #a08582 !important;color: white !important;margin-left: 10px;margin-top: 7px;width: 180px;"  nbButton status="primary" (click)="addStreet()"><i style="margin-right: 5px;" class="fa fa-plus"></i>Voeg straat toe</button>
+
+
       <div class="data-container shorterRow">
-        <p style='width:fit-content !important;font-weight: bold' class="label-text">Werkt met ploegen/fases ?</p>
+        <p style='width:fit-content !important;font-weight: bold; font-size: 16px' class="label-text">Werkt met ploegen/fases ?</p>
         <input class="checkbox" id="name" type="checkbox" (change)='changePloegen()' />
       </div>
       <mat-card-title class="title">Berekening fundering/omhulling</mat-card-title>
@@ -70,7 +81,7 @@
         <p class="label-text">Mof multiplier</p>
         <input nbInput id="name" type="number" class='shortInput' formControlName="mofMult" />
       </div>
-      <button mat-raised-button class="form-button-blue" color="primary" type="submit">
+      <button (click)="onSubmitInfo(infoForm.value)" mat-raised-button class="form-button-blue" color="primary">
         Opslaan
       </button>
     </form>

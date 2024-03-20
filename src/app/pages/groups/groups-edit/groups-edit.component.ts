@@ -404,6 +404,7 @@ export class GroupsEditComponent implements OnInit {
   public buildForm() {
     this.secondMogOn = this.group.secondMogOn;
     this.thirdMogOn = this.group.thirdMogOn;
+    if(this.group.possibleKolkStreets == null) this.group.possibleKolkStreets = [];
     this.addForm = this.formBuilder.group({
       //Rioolbeheerder
       rbNaam: this.group.rbNaam,
@@ -439,7 +440,8 @@ export class GroupsEditComponent implements OnInit {
       buisVertMult: this.group.buisVertMult == null ? 1 : this.group.buisVertMult,
       yStukMult: this.group.yStukMult == null ? 0.5 : this.group.yStukMult,
       bochtMult: this.group.bochtMult == null ? 0.3 : this.group.bochtMult,
-      mofMult: this.group.mofMult == null ? 0.15 : this.group.mofMult
+      mofMult: this.group.mofMult == null ? 0.15 : this.group.mofMult,
+      possibleKolkStreets: this.formBuilder.array(this.group.possibleKolkStreets.map(x => this.formBuilder.control(x)))
     });
     this.isLoaded = true;
   }
@@ -587,5 +589,16 @@ export class GroupsEditComponent implements OnInit {
   }
   convertIdToNameString(user: string) {
     return this.allUsers.find(x => x._id === user).name;
+  }
+  get possibleKolkStreets() {
+    return this.addForm.get('possibleKolkStreets') as FormArray;
+  }
+
+  addStreet() {
+    this.possibleKolkStreets.push(this.formBuilder.control(''));
+  }
+
+  removeStreet(index: number) {
+    this.possibleKolkStreets.removeAt(index);
   }
 }

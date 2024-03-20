@@ -77,6 +77,7 @@ export class Group {
   totalenMeetstaatKolk: SlokkerTotaalMeetstaat[];
 
   bochtenInGraden: boolean;
+  possibleKolkStreets: string[];
 
   //tempvar
   haCount: number;

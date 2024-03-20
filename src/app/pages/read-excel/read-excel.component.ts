@@ -4,7 +4,7 @@ import * as XLSX from 'xlsx';
 import {ExcelObject} from '../../../models/excelObject';
 import {ExcelObjectAansluitingen} from '../../../models/excelObjectAansluitingen';
 import {Project} from '../../../models/project';
-import {UntypedFormBuilder} from "@angular/forms";
+import { FormArray, UntypedFormBuilder } from '@angular/forms';
 import {FormService} from "../../../services/form.service";
 import {Router} from "@angular/router";
 import {User} from "../../../models/user";
@@ -62,7 +62,8 @@ export class ReadExcelComponent implements OnInit {
         buisVertMult: 1,
         yStukMult: 0.5,
         bochtMult: 0.3,
-        mofMult: 0.15
+        mofMult: 0.15,
+        possibleKolkStreets: this.formBuilder.array([])
       });
     });
   }
@@ -177,6 +178,7 @@ export class ReadExcelComponent implements OnInit {
     this.group.yStukMult = form.yStukMult;
     this.group.bochtMult = form.bochtMult;
     this.group.mofMult = form.mofMult;
+    this.group.possibleKolkStreets = form.possibleKolkStreets;
     this.formService.currentGroup = this.group;
     this.formService.currentProjects = this.projectList;
     this.formService.currentWachtAansluitingen = this.wachtAansluitingList;
@@ -206,5 +208,16 @@ export class ReadExcelComponent implements OnInit {
     } else {
       return '';
     }
+  }
+  get possibleKolkStreets() {
+    return this.infoForm.get('possibleKolkStreets') as FormArray;
+  }
+
+  addStreet() {
+    this.possibleKolkStreets.push(this.formBuilder.control(''));
+  }
+
+  removeStreet(index: number) {
+    this.possibleKolkStreets.removeAt(index);
   }
 }
