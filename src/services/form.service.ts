@@ -12,6 +12,7 @@ import {Meerwerk} from "../models/meerwerk";
 export class FormService {
   filterStartDatumStartString: string;
   filterStartDatumEndString: string;
+  previousSorteer: string;
   get currentSlokkerProjects(): SlokkerProjects[] {
     return this._currentSlokkerProjects;
   }

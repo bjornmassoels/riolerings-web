@@ -122,6 +122,29 @@
       <nb-toggle [checked]="selectEverything" class="margLeft" (checkedChange)="selectAll()" status="primary">
       </nb-toggle>
     </div>
+    <div class='colFlex'>
+      <mat-label class='sortText'>Filter</mat-label>
+      <nb-select [optionsListClass]="'soortFilter'" [(ngModel)]="filterSelect" id="extras" style="width: 185px;">
+        <nb-option style='border-bottom:1px solid lightgray'  (selectionChange)="selectFilter(filter)" type="checkbox" *ngFor="let filter of filterItems"
+                   value="{{ filter }}">
+          {{ filter }}</nb-option>
+      </nb-select>
+    </div>
+    <div class='colFlex'>
+      <mat-label class='sortText'>Sorteer</mat-label>
+      <nb-select (ngModelChange)="selectSort($event)" [optionsListClass]="'soortFilter'" [(ngModel)]="sorteerSelect" id="extras" style="width: 202px;">
+        <nb-option-group title="Algemeen">
+          <nb-option style='border-bottom:1px solid lightgray'  type="checkbox" *ngFor="let filter of sorteerItems"
+                     value="{{ filter }}">
+            {{ filter }}</nb-option>
+        </nb-option-group>
+        <nb-option-group title="Datum">
+          <nb-option style='border-bottom:1px solid lightgray'  type="checkbox" *ngFor="let filter of sorteerItems2"
+                     value="{{ filter }}">
+            {{ filter }}</nb-option>
+        </nb-option-group>
+      </nb-select>
+    </div>
     <div  class='colFlex'>
       <mat-label class='sortText'>Filter op straat</mat-label>
       <input style='width:200px !important;' class="search-box" #categoryInput nbInput type="text" matInput [formControl]="searchForm" #searchInput
@@ -151,28 +174,13 @@
         clear
       </button>
     </div>
-    <div class='colFlex'>
-      <mat-label class='sortText'>Sorteer of filter</mat-label>
-      <nb-select [optionsListClass]="'soortFilter'" [(ngModel)]="filterSelect" id="extras" style="width: 215px;">
-        <nb-option-group title="Sorteer">
-          <nb-option style='border-bottom:1px solid lightgray'  (selectionChange)="selectFilter(filter)" type="checkbox" *ngFor="let filter of sorteerItems"
-                     value="{{ filter }}">
-            {{ filter }}</nb-option>
-        </nb-option-group>
-        <nb-option-group title="Filter">
-        <nb-option style='border-bottom:1px solid lightgray'  (selectionChange)="selectFilter(filter)" type="checkbox" *ngFor="let filter of filterItems"
-          value="{{ filter }}">
-          {{ filter }}</nb-option>
-        </nb-option-group>
-      </nb-select>
-    </div>
   </div>
 </div>
 
 
 <div *ngIf="isOn" cdkScrollable class="scroll-table">
   <table  cdkDropList class="item-list">
-    <tr class="item-box">
+    <tr style="padding:4px 10px !important;" class="item-box">
       <th style="max-width:170px !important;min-width:170px !important;text-align: center;margin-left:15px ">Open</th>
       <th style="padding-left: 35px;max-width:150px;">Selecteer</th>
       <th class="smallCol">Soort</th>
@@ -237,8 +245,8 @@
         (project.droogWaterAfvoer?.isWachtaansluiting != null && project.droogWaterAfvoer.isWachtaansluiting) ||
         (project.regenWaterAfvoer?.isWachtaansluiting != null && project.regenWaterAfvoer.isWachtaansluiting)) ? 'orangeBorder' : 'greenBorder'"
                                              style="margin-bottom: 0;margin-left: 15px;"        >{{dateToDateString(project.afgewerktDatum)}}</p></td>
-      <td style="padding-left: 15px;max-width: 160px !important;" class="normalCol " *ngIf="project.afgewerktDatum == null && project.updated != null && project.updated.toDateString() !== project.createdDate.toDateString()"><small>Laatst gewijzigd:<br></small>{{dateToDateString(project.updated)}}</td>
-      <td style=" max-width: 160px !important;" class="normalCol" *ngIf="project.afgewerktDatum == null && (project.updated == null ||  project.updated.toDateString() === project.createdDate.toDateString())"></td>
+      <td style="max-width: 160px !important;" class="normalCol " *ngIf="project.afgewerktDatum == null && project.updated != null && project.updated.toString() !== project.createdDate.toString()"><p style="margin-left: 15px;margin-bottom: 0"><small >Laatst gewijzigd<br></small>{{dateToDateString(project.updated)}}</p></td>
+      <td style=" max-width: 160px !important;" class="normalCol" *ngIf="project.afgewerktDatum == null && (project.updated == null ||  project.updated.toString() === project.createdDate.toString())"></td>
       <td class="smallCol">{{dateToDateString(project.createdDate)}}</td>
 
     </tr>

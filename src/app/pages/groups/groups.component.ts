@@ -134,6 +134,7 @@ export class GroupsComponent implements OnInit {
         this.formService.previousIndex = null;
         this.formService.previousStreet = null;
         this.formService.previousFilter = null;
+        this.formService.previousSorteer = null;
         this.formService.filterStartDatumStartString = null;
         this.formService.filterStartDatumEndString = null;
         this.formService._allGroups = this.groups;

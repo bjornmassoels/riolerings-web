@@ -25,6 +25,6 @@ export class Meerwerk {
   id: string;
   xCoordGeoLocationFirsPhoto: number;
   yCoordGeoLocationFirsPhoto: number;
-
+  updated: Date;
   constructor() {}
 }

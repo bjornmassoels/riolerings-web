@@ -57,10 +57,14 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
   startDate: Date;
   endDate: Date;
   firstUser: string;
-  sorteerItems: string[] = ['Straat', 'Huisnummer', 'Volgnummer', 'Afwerkingsdatum', 'Startdatum', 'Aanmaakdatum'];
-  filterItems: string[] = ['Afgewerkt', 'Niet afgewerkt', 'Huisaansluiting', 'Wachtaansluiting', 'Kolk'];
-  filterItem: string = "Straat";
-  filterSelect: string = 'Straat';
+  sorteerItems: string[] = ['Straat & huisnr', 'Huisnummer', 'Volgnummer' ];
+  sorteerItems2: string[] = ['Afwerkingsdatum/\nlaatst gewijzigd', 'Startdatum', 'Aanmaakdatum'];
+  filterItems: string[] = ['Alle aansluitingen','Afgewerkt', 'Niet afgewerkt', 'Huisaansluiting', 'Wachtaansluiting', 'Kolk'];
+  filterItem: string = "Alle aansluitingen";
+  filterSelect: string = 'Alle aansluitingen';
+  sorteerSelect: string = 'Straat & huisnr';
+  sorteerItem: string = 'Straat & huisnr' +
+    '';
   currentProject: Project;
   range = new UntypedFormGroup({
     start: new UntypedFormControl(),
@@ -136,9 +140,9 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
           }
           if(project.afgewerktDatum != null){
              project.afgewerktDatum = new Date(project.afgewerktDatum);
-          } else {
-            if(project.updated != null)project.updated = new Date(project.updated);
           }
+          if(project.updated != null)project.updated = new Date(project.updated);
+
           project.isSlokker = false;
           project.isMeerwerk = false;
           project.isSelected = false;
@@ -154,9 +158,8 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
           }
           if(slokker.afgewerktDatum != null){
             slokker.afgewerktDatum = new Date(slokker.afgewerktDatum);
-          } else {
-            if(slokker.updated != null)slokker.updated = new Date(slokker.updated);
           }
+          if(slokker.updated != null)slokker.updated = new Date(slokker.updated);
           slokker.isMeerwerk = false;
           slokker.isSlokker = true;
           slokker.isSelected = false;
@@ -167,6 +170,7 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
       if (this.meerwerkenList != null) {
         for (let meerwerk of this.meerwerkenList) {
           meerwerk.createdDate = new Date(meerwerk.created);
+          if(meerwerk.updated != null)meerwerk.updated = new Date(meerwerk.updated);
           if (meerwerk.startDate != null) {
             meerwerk.startDate = new Date(meerwerk.startDate);
           }
@@ -183,6 +187,9 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
       this.currentProject = new Project();
       if (this.formService.previousFilter != null) {
         this.filterSelect = this.formService.previousFilter;
+      }
+      if (this.formService.previousSorteer != null) {
+        this.sorteerSelect = this.formService.previousSorteer;
       }
       if(this.formService.filterStartDatumStartString != null && this.formService.filterStartDatumEndString != null){
         this.range.setValue({start: new Date(this.formService.filterStartDatumStartString), end: new Date(this.formService.filterStartDatumEndString)});
@@ -249,12 +256,16 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
 
   }
 
+  async selectSort(filter: string) {
+    this.searchAllProjectsList = this.allProjects;
+    this.sorteerItem = filter;
+    this.filterAndSort();
+  }
   async selectFilter(filter: string) {
     this.searchAllProjectsList = this.allProjects;
     this.filterItem = filter;
     this.filterAndSort();
   }
-
   async filterAndSort(){
     let filteredProjects = this.allProjects;
     if(this.filterStraatText.trim() !== ''){
@@ -265,31 +276,29 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
     const { start, end } = this.range.value;
     filteredProjects = await this.filterProjectsByDate(start, end, filteredProjects);
     this.searchAllProjectsList = filteredProjects;
-    if (this.filterItem === "Straat") {
-      await this.sortByStreet();
-    } else if (this.filterItem === "Huisnummer") {
-      await this.sortByHuisnummer();
-      // this.sortByHouseNr();
-    } else if (this.filterItem === "Afgewerkt") {
-      await this.sortByAfgewerkt(true);
-      // this.sortByHouseNr();
+
+      if (this.filterItem === "Afgewerkt") {
+        this.searchAllProjectsList = this.searchAllProjectsList.filter(x => x.finished);
     } else if (this.filterItem === "Niet afgewerkt") {
-      await this.sortByAfgewerkt(false);
-      // this.sortByHouseNr();
+        this.searchAllProjectsList = this.searchAllProjectsList.filter(x => x.finished == null || x.finished === false);
+        // this.sortByHouseNr();
     } else if (this.filterItem === "Huisaansluiting") {
-      await this.sortByProjectSort('HA');
-      // this.sortByHouseNr();
+        this.searchAllProjectsList = this.searchAllProjectsList.filter(x => x.droogWaterAfvoer != null && (!x.isWachtAansluiting && !x.droogWaterAfvoer.isWachtaansluiting && !x.regenWaterAfvoer.isWachtaansluiting));
     } else if (this.filterItem === "Wachtaansluiting") {
-      await this.sortByProjectSort('WA');
-      // this.sortByHouseNr();
-    } else if (this.filterItem === "Kolk") {
-      await this.sortByProjectSort('Slokker');
-      // this.sortByHouseNr();
-    } else if (this.filterItem === 'Aanmaakdatum') {
+        this.searchAllProjectsList = this.searchAllProjectsList.filter(x => x.droogWaterAfvoer != null && (x.isWachtAansluiting || x.droogWaterAfvoer.isWachtaansluiting || x.regenWaterAfvoer.isWachtaansluiting));
+      } else if (this.filterItem === "Kolk") {
+        this.searchAllProjectsList = this.searchAllProjectsList.filter(x => x.isSlokker);
+    }
+
+    if (this.sorteerItem === "Straat & huisnr") {
+      await this.sortByStreet();
+    } else if (this.sorteerItem === "Huisnummer") {
+      await this.sortByHuisnummer();
+    } else if (this.sorteerItem === 'Aanmaakdatum') {
       await this.sortByCreatedDate();
-    } else if(this.filterItem === 'Volgnummer'){
+    } else if(this.sorteerItem === 'Volgnummer'){
       await this.sortByIndexNummer();
-    } else if(this.filterItem === 'Afwerkingsdatum'){
+    } else if(this.sorteerItem === 'Afwerkingsdatum/\nlaatst gewijzigd'){
       await this.sortByAfwerkingsDatum();
     } else {
       await this.sortByDate();
@@ -302,84 +311,52 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
 
   sortByHuisnummer() {
     const sortIndex = function(p1: Project, p2: Project) {
-      function isNumeric(value: any): boolean {
-        return (typeof value === 'number' || (typeof value === 'string' && value.trim() !== '')) && !isNaN(value as any) && isFinite(value as any);
-      }
-      if (p1.huisNr != null) {
-        p1.huisNr = p1.huisNr.trim();
-      }
-      if (p2.huisNr != null) {
-        p2.huisNr = p2.huisNr.trim();
-      }
-      if (p1.index != null) {
-        p1.index = p1.index.trim();
-      }
-      if (p2.index != null) {
-        p2.index = p2.index.trim();
-      }
-      if (((p1.huisNr == null || p1.huisNr === '') && (p2.huisNr == null || p2.huisNr === '')) || p1.huisNr === p2.huisNr) {
-        if (p1.index == null || p1.index === '') {
-          return -1;
-        } else if (p2.index == null || p2.index === '') {
-          return 1;
-        } else {
-          let h1 = p1.index.replace(/[^0-9]/g, '');
-          let h2 = p2.index.replace(/[^0-9]/g, '');
-          if (+h1 === +h2) {
-            let h1String = p1.index.replace(/^\D+/g, '');
-            let h2String = p2.index.replace(/^\D+/g, '');
-            if (h1String < h2String) {
-              return -1;
-            } else if (h2String < h1String) {
-              return 1;
-            } else {
-              return 0;
-            }
-          } else if (+h1 < +h2) {
-            return -1;
-          } else if (+h2 < +h1) {
-            return 1;
-          }
-        }
+      // Helper function to check if a string contains any digit
+      const containsDigit = (str: string) => /\d/.test(str);
 
+      // Helper function to check if a string is purely numeric
+      const isNumeric = (str: string) => /^\d+$/.test(str);
+
+      // Cleanup function
+      const cleanUp = (str: string | null) => str ? str.trim().toUpperCase() : '';
+
+      // Prepare values
+      p1.huisNr = cleanUp(p1.huisNr);
+      p2.huisNr = cleanUp(p2.huisNr);
+
+      // Sorting for empty strings or equal huisNr
+      if (!p1.huisNr && !p2.huisNr) return 0;
+      if (!p1.huisNr) return 1; // Put empty at the end
+      if (!p2.huisNr) return -1; // Put empty at the end
+
+      // Determine the type of huisNr for sorting
+      const isP1Numeric = isNumeric(p1.huisNr);
+      const isP2Numeric = isNumeric(p2.huisNr);
+      const isP1AlphabeticOnly = !containsDigit(p1.huisNr);
+      const isP2AlphabeticOnly = !containsDigit(p2.huisNr);
+
+      // Alphabetic-only values come first
+      if (isP1AlphabeticOnly && !isP2AlphabeticOnly) return -1;
+      if (!isP1AlphabeticOnly && isP2AlphabeticOnly) return 1;
+
+      // If both are numeric or both are alphanumeric (with digits), sort numerically where possible
+      if ((isP1Numeric && isP2Numeric) || (!isP1AlphabeticOnly && !isP2AlphabeticOnly)) {
+        const num1 = parseInt(p1.huisNr.match(/\d+/)[0], 10);
+        const num2 = parseInt(p2.huisNr.match(/\d+/)[0], 10);
+        if (num1 !== num2) return num1 - num2; // Sort by numeric part
+        // If numeric parts are equal, sort by full string
+        return p1.huisNr.localeCompare(p2.huisNr);
       }
-      if (isNumeric(+p1.huisNr) && isNumeric(+p2.huisNr)) {
-        if (+p1.huisNr === +p2.huisNr) {
-          return 0;
-        }
-        if (+p1.huisNr < +p2.huisNr) {
-          return -1;
-        } else if (+p2.huisNr < +p1.huisNr) {
-          return 1;
-        }
-      }
-      if (p1.huisNr == null || p1.huisNr === '') {
-        return 1;
-      } else if (p2.huisNr == null || p2.huisNr === '') {
-        return -1;
-      } else {
-        let h1 = p1.huisNr.replace(/[^0-9]/g, '');
-        let h2 = p2.huisNr.replace(/[^0-9]/g, '');
-        if (+h1 === +h2) {
-          let h1String = p1.huisNr.replace(/^\D+/g, '');
-          let h2String = p2.huisNr.replace(/^\D+/g, '');
-          if (h1String < h2String) {
-            return -1;
-          } else if (h2String < h1String) {
-            return 1;
-          } else if (h2String === h1String) {
-            return 0;
-          }
-        } else if (+h1 < +h2) {
-          return -1;
-        } else if (+h2 < +h1) {
-          return 1;
-        }
-      }
+
+      // Fallback to regular string comparison (should rarely be reached due to above conditions)
+      return p1.huisNr.localeCompare(p2.huisNr);
     };
+
     this.projects.sort(sortIndex);
     this.searchAllProjectsList.sort(sortIndex);
   }
+
+
   sortByIndexNummer() {
     const sortIndex = function(p1: Project, p2: Project) {
       if (p1.index == null || p1.index === '') {
@@ -517,8 +494,6 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
 
   openProject(project: Project) {
     this.formService.lastProjects = this.searchAllProjectsList;
-    this.formService.previousStreet = this.searchForm.value;
-    this.formService.previousFilter = this.filterSelect;
     if (this.formService._preventNavigation == false) {
       if (project._id == null || project._id === '') {
         project._id = project.id;
@@ -536,8 +511,6 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
 
   editProject(project: Project) {
     this.formService.lastProjects = this.searchAllProjectsList;
-    this.formService.previousStreet = this.searchForm.value;
-    this.formService.previousFilter = this.filterSelect;
     if (this.formService._preventNavigation == false) {
       if (project._id == null || project._id === '') {
         project._id = project.id;
@@ -677,8 +650,8 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
             return 1;
           }
         }
-      } else if (p1.street.toLowerCase() < p2.street.toLowerCase()) {
-        return -1;
+      }  else if (p1.street.toLowerCase() < p2.street.toLowerCase()) {
+      return -1;
       } else if (p2.street.toLowerCase() < p1.street.toLowerCase()) {
         return 1;
       }
@@ -962,6 +935,9 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.formService.previousStreet = this.searchForm.value;
+    this.formService.previousFilter = this.filterSelect;
+    this.formService.previousSorteer = this.sorteerSelect;
     if (this.socket) {
       this.socket.off('progress');
       this.socket.off('connect_error');
@@ -1222,6 +1198,15 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
 
   private async sortByAfwerkingsDatum() {
     const sortIndex = function(p1: Project, p2: Project) {
+      const p1NotUpdated = p1.createdDate.getTime() === p1.updated.getTime();
+      const p2NotUpdated = p2.createdDate.getTime() === p2.updated.getTime();
+      if (p1NotUpdated && !p2NotUpdated) {
+        return 1; // p1 goes below p2
+      }
+      if (!p1NotUpdated && p2NotUpdated) {
+        return -1; // p1 goes above p2
+      }
+
       if (p1.afgewerktDatum != null && p2.afgewerktDatum != null) {
         if (p1.afgewerktDatum < p2.afgewerktDatum) {
           return 1;
@@ -1230,9 +1215,29 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
           return -1;
         }
       } else if(p1.afgewerktDatum == null && p2.afgewerktDatum != null){
-        return 1;
+        if(p1.updated < p2.afgewerktDatum){
+          return 1;
+        } else if(p1.updated > p2.afgewerktDatum){
+          return -1;
+        }
       } else if(p1.afgewerktDatum != null && p2.afgewerktDatum == null){
+        if(p1.afgewerktDatum < p2.updated){
+          return 1;
+        } else if( p1.afgewerktDatum > p2.updated){
+          return -1;
+        }
+      }
+      if (p1.isMeerwerk === true) {
+        return 1;
+      } else if (p2.isMeerwerk === true) {
         return -1;
+      }
+       if(p1.afgewerktDatum == null && p2.afgewerktDatum == null){
+        if(p1.updated < p2.updated){
+          return 1;
+        } else if(p1.updated > p2.updated){
+          return -1;
+        }
       }
       return 0;
     };
