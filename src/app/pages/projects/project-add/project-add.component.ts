@@ -156,7 +156,6 @@ export class ProjectAddComponent implements OnInit {
             huisNr: this.currentProject.huisNr,
             opmerking: this.currentProject.opmerking,
             isWachtAansluiting: this.currentProject.isWachtAansluiting,
-            finished: this.currentProject.finished,
             index: this.currentProject.index,
             equipNrRiolering: this.currentProject.equipNrRiolering,
             isGemengd: this.currentProject.isGemengd
@@ -290,11 +289,11 @@ export class ProjectAddComponent implements OnInit {
       this.currentProject.huisNr = infoForm.huisNr;
       this.currentProject.opmerking = infoForm.opmerking;
       this.currentProject.isWachtAansluiting = null;
-      this.currentProject.finished = infoForm.finished;
       this.currentProject.index = infoForm.index;
       this.currentProject.equipNrRiolering = infoForm.equipNrRiolering;
       this.currentProject.isGemengd = infoForm.isGemengd;
       this.currentProject.startDate = null;
+      this.currentProject.afgewerktDatum = null;
       if(this.currentProject.photosDWA == null || this.currentProject.photosDWA.length === 0){
         this.currentProject.photosDWA = [null,null,null,null,null];
       } else {

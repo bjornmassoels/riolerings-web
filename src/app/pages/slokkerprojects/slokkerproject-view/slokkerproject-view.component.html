@@ -40,9 +40,15 @@
         <p  style='font-size:17px !important;' class="data-text">{{currentProject.index}}</p>
       </div>
       <div class="data-container">
-        <p class="label-text">Afgewerkt</p>
-        <p *ngIf="currentProject.finished" class="data-text">Ja</p>
-        <p *ngIf="!currentProject.finished" class="data-text">Nee</p>
+        <div style='max-width: 40% !important;' class="insideRow">
+          <p class="label-text">Afgewerkt</p>
+          <p *ngIf="currentProject.finished" class="data-text">Ja</p>
+          <p *ngIf="!currentProject.finished" class="data-text">Nee</p>
+        </div>
+        <div *ngIf="currentProject.finished && currentProject.afgewerktDatum != null"  style='max-width: 50% !important;margin-bottom: 7px'  class='insideRow'>
+          <p class="label-text">Afwerkingsdatum</p>
+          <p class="data-text">{{currentProject.afgewerktDatum.toLocaleDateString()}}</p>
+        </div>
       </div>
     </div>
     <div class="column-container">
@@ -55,9 +61,11 @@
         <p style='font-weight: 700' class="data-text">{{usersWhoEdited}}</p>
       </div>
       <div class="data-container">
+        <div style="justify-content: flex-start !important; gap: 0 45px;max-width: 100% !important;" class="insideRow">
         <p class="label-text">Opmerking</p>
         <p *ngIf="currentProject.opmerking?.length > 17" class="data-text2">{{currentProject.opmerking}}</p>
         <p *ngIf="currentProject.opmerking?.length <= 17" class="data-text">{{currentProject.opmerking}}</p>
+        </div>
       </div>
     </div>
   </div>

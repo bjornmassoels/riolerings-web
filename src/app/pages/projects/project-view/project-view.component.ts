@@ -127,8 +127,9 @@ export class ProjectViewComponent implements OnInit,OnDestroy {
       }
       if (this.currentProject.startDate != null) {
         this.currentProject.startDate = new Date(this.currentProject.startDate);
-      } else {
-        this.currentProject.startDate = null;
+      }
+      if(this.currentProject.afgewerktDatum != null){
+        this.currentProject.afgewerktDatum = new Date(this.currentProject.afgewerktDatum);
       }
       this.group = this.currentProject.group_id;
 

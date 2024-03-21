@@ -131,7 +131,6 @@ export class SlokkerprojectAddComponent implements OnInit {
           huisNr: this.currentProject.huisNr,
           opmerking: this.currentProject.opmerking,
           index: this.currentProject.index,
-          finished: this.currentProject.finished,
           buis: this.currentProject.slokker.buis,
           bocht: this.group.bochtenInGraden? null : this.currentProject.slokker.bocht,
           gradenBocht45: !this.group.bochtenInGraden ? null : this.currentProject.slokker.gradenBocht45,
@@ -206,7 +205,6 @@ export class SlokkerprojectAddComponent implements OnInit {
     realSlokkerProject.huisNr = slokkerProject.huisNr;
     realSlokkerProject.opmerking = slokkerProject.opmerking;
     realSlokkerProject.index = slokkerProject.index;
-    realSlokkerProject.finished = slokkerProject.finished;
     realSlokkerProject.photos = this.photos;
     realSlokkerProject.equipNrRiolering = slokkerProject.equipNrRiolering;
     realSlokkerProject.projectNr = this.group.rbProjectNr;
@@ -332,7 +330,13 @@ export class SlokkerprojectAddComponent implements OnInit {
   onSubmit(value: any) {
 
   }
-
+  changeAfgewerkt($event: boolean) {
+    if($event === true){
+      this.currentProject.afgewerktDatum = new Date();
+    } else {
+      this.currentProject.afgewerktDatum = null;
+    }
+  }
   goToView() {
     this.router.navigate(['/pages/slokkerprojectview', this._id]);
   }

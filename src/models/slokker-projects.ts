@@ -33,6 +33,8 @@ export class SlokkerProjects {
   public lastWorker: User;
   public lastWorkerDate: Date;
   public postNumber: string;
+  afgewerktDatum: Date;
+
 
   id: string;
   constructor() {}

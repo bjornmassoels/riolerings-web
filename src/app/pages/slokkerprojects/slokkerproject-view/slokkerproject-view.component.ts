@@ -148,8 +148,9 @@ export class SlokkerprojectViewComponent implements OnInit,OnDestroy {
       this.totalProjectCount = this.lastProjects?.length;
       if (this.currentProject.startDate != null) {
         this.currentProject.startDate = new Date(this.currentProject.startDate);
-      } else {
-        this.currentProject.startDate = null;
+      }
+      if(this.currentProject.afgewerktDatum != null){
+        this.currentProject.afgewerktDatum = new Date(this.currentProject.afgewerktDatum);
       }
       if (this.currentProject.latitudeList != null) {
         this.latitude =

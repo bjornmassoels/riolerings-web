@@ -135,6 +135,9 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
       if(this.currentProject.startDate != null){
         this.currentProject.startDate = new Date(this.currentProject.startDate);
       }
+      if(this.currentProject.afgewerktDatum != null){
+        this.currentProject.afgewerktDatum = new Date(this.currentProject.afgewerktDatum);
+      }
       this.company = this.apiService.thisCompany;
       this.companyId = this.company._id;
       this.newDate = null;
@@ -194,7 +197,8 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
           plaatsAansluiting: this.currentProject.slokker.plaatsAansluiting,
           diameter: this.currentProject.slokker.diameter,
           tBuisStuk: this.currentProject.slokker.tBuisStuk,
-          startDate: this.currentProject.startDate
+          startDate: this.currentProject.startDate,
+          afgewerktDatum: this.currentProject.afgewerktDatum
         });
 
       this.uploadForm = this.formBuilder.group({
@@ -306,6 +310,7 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
       '-kolknr'  + realSlokkerProject.index : '') + ' AB-kolk-fiche';
     realSlokkerProject.group_id = this.group;
     realSlokkerProject.startDate = slokkerProject.startDate;
+    realSlokkerProject.afgewerktDatum = slokkerProject.afgewerktDatum;
     if(this.newDate != null){
       realSlokkerProject.startDate = this.newDate;
     }
@@ -506,6 +511,13 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
   goToView() {
     this.router.navigate(['/pages/slokkerprojectview', this._id]);
   }
+  changeAfgewerkt($event: boolean) {
+    if($event === true){
+      this.slokkerForm.controls['afgewerktDatum'].setValue(new Date());
+    } else {
+      this.slokkerForm.controls['afgewerktDatum'].setValue(null);
+    }
+  }
   imagePopUp(photo: string) {
     this.formService._chosenPhoto = photo;
     let dialogRef = this.dialog.open(ProjectViewDialogComponent, {
@@ -519,5 +531,8 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
     } else if(event === ''){
       this.newDate = null;
     }
+  }
+  clearAfgewerktDate() {
+    this.slokkerForm.controls['afgewerktDatum'].setValue(null);
   }
 }

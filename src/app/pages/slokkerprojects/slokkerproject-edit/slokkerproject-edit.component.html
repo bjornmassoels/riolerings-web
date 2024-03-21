@@ -66,12 +66,20 @@
         </div>
         <div class="data-container">
 
-          <div class='insideRow'>
+          <div style="margin-top: 10px" class='insideRow'>
             <p class="label-text">Afgewerkt</p>
-            <nb-toggle class='toggle' formControlName="finished" status="primary"></nb-toggle>
+            <nb-toggle (checkedChange)="changeAfgewerkt($event)" class='toggle' formControlName="finished" status="primary"></nb-toggle>
           </div>
         </div>
+        <div style="height: 60px;margin-top: 7px;" *ngIf="slokkerForm.get('finished').value === true" class="data-container">
+          <div style="margin-left: 17px;" class="largeInsideRow">
+            <p class="text">Afwerkingsdatum</p>
 
+            <input class="selectBox" nbInput placeholder="Kies een datum" formControlName="afgewerktDatum" [nbDatepicker]="afgewerktDatePicker">
+            <nb-datepicker  #afgewerktDatePicker></nb-datepicker>
+            <button (click)="clearAfgewerktDate()" class="clear-button">Clear</button>
+          </div>
+        </div>
       </div>
 
     </div>

@@ -50,6 +50,7 @@ export class Project {
   public paid: boolean;
   public lastWorker: User;
   public lastWorkerDate: Date;
+  afgewerktDatum: Date;
   // meerwerk
   public isMeerwerk: boolean;
   public minutesWorked: number;

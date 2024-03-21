@@ -67,10 +67,18 @@
             <p *ngIf="currentProject.isWachtAansluiting || (currentProject.droogWaterAfvoer.isWachtaansluiting && currentProject.regenWaterAfvoer.isWachtaansluiting) " class="data-text">Ja</p>
         </div>
       </div>
+      <div *ngIf="currentProject.finished && currentProject.afgewerktDatum != null" class="data-container">
+        <div style='max-width: 50% !important;margin-bottom: 7px'  class='insideRow'>
+          <p class="label-text">Afwerkingsdatum</p>
+          <p class="data-text">{{currentProject.afgewerktDatum.toLocaleDateString()}}</p>
+        </div>
+      </div>
       <div class="data-container">
-        <p class="label-text">Opmerking</p>
-        <p *ngIf="currentProject.opmerking?.length <= 17" class="data-text">{{currentProject.opmerking}}</p>
-        <p *ngIf="currentProject.opmerking?.length > 17" class="data-text2">{{currentProject.opmerking}}</p>
+        <div style="justify-content: flex-start !important; gap: 0 45px;max-width: 100% !important;" class="insideRow">
+          <p class="label-text">Opmerking</p>
+          <p *ngIf="currentProject.opmerking?.length <= 17" style="text-align: start" class="data-text">{{currentProject.opmerking}}</p>
+          <p *ngIf="currentProject.opmerking?.length > 17"  style="text-align: start" class="data-text2">{{currentProject.opmerking}}</p>
+        </div>
       </div>
     </div>
 

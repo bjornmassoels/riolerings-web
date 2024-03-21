@@ -25,10 +25,7 @@
         <p class="label-text">Equipmentnr</p>
         <input class="normalInput" nbInput type="text" formControlName="equipNrRiolering" />
       </div>
-      <div class="data-container">
-        <p class="label-text">Afgewerkt</p>
-        <nb-toggle  formControlName="finished" status="primary"></nb-toggle>
-      </div>
+
       <div class="data-container">
         <p class="label-text">Wachtaansluiting (DWA & RWA)</p>
         <nb-toggle (checkedChange)="setVolgnummer($event)"  formControlName="isWachtAansluiting" status="primary"></nb-toggle>

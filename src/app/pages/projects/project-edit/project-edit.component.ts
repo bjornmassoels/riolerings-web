@@ -179,10 +179,10 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
 
       if (this.currentProject.startDate != null) {
         this.currentProject.startDate = new Date(this.currentProject.startDate);
-      } else {
-        this.currentProject.startDate = null;
       }
-
+      if (this.currentProject.afgewerktDatum != null) {
+        this.currentProject.afgewerktDatum = new Date(this.currentProject.afgewerktDatum);
+      }
       this.gietIjzerDWA = this.currentProject.droogWaterAfvoer.gietijzer;
       this.gietIjzerRWA = this.currentProject.regenWaterAfvoer.gietijzer;
 
@@ -242,7 +242,8 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
         equipNrRiolering: this.currentProject.equipNrRiolering,
         isGemengd: this.currentProject.isGemengd,
         usersWhoEdited: [this.currentProject.usersWhoEdited],
-        startDate:  this.currentProject.startDate == null ? null : this.currentProject.startDate,
+        startDate:  this.currentProject.startDate,
+        afgewerktDatum: this.currentProject.afgewerktDatum
       });
 
         this.dwaForm = this.formBuilder.group({
@@ -455,6 +456,7 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
     this.currentProject.naamFiche = infoForm.naamFiche;
     this.currentProject.equipNrRiolering = infoForm.equipNrRiolering;
     this.currentProject.isGemengd = infoForm.isGemengd;
+    this.currentProject.afgewerktDatum = infoForm.afgewerktDatum;
 
     // DWA
     const data = this.dwaForm.value;
@@ -1192,6 +1194,18 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
     this.dialog.open(GoogleMapsLocatiePopupComponent, {
       data: { xCoord, yCoord , soort},
     });
+  }
+
+  changeAfgewerkt($event: boolean) {
+    if($event === true){
+      this.infoForm.controls['afgewerktDatum'].setValue(new Date());
+    } else {
+      this.infoForm.controls['afgewerktDatum'].setValue(null);
+    }
+  }
+
+  clearAfgewerktDate() {
+    this.infoForm.controls['afgewerktDatum'].setValue(null);
   }
 }
 
