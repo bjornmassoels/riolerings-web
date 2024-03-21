@@ -281,7 +281,6 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
         this.searchAllProjectsList = this.searchAllProjectsList.filter(x => x.finished);
     } else if (this.filterItem === "Niet afgewerkt") {
         this.searchAllProjectsList = this.searchAllProjectsList.filter(x => x.finished == null || x.finished === false);
-        // this.sortByHouseNr();
     } else if (this.filterItem === "Huisaansluiting") {
         this.searchAllProjectsList = this.searchAllProjectsList.filter(x => x.droogWaterAfvoer != null && (!x.isWachtAansluiting && !x.droogWaterAfvoer.isWachtaansluiting && !x.regenWaterAfvoer.isWachtaansluiting));
     } else if (this.filterItem === "Wachtaansluiting") {
@@ -296,6 +295,8 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
       await this.sortByHuisnummer();
     } else if (this.sorteerItem === 'Aanmaakdatum') {
       await this.sortByCreatedDate();
+    }  else if (this.sorteerItem === 'Startdatum') {
+      await this.sortByStartDate();
     } else if(this.sorteerItem === 'Volgnummer'){
       await this.sortByIndexNummer();
     } else if(this.sorteerItem === 'Afwerkingsdatum/\nlaatst gewijzigd'){
@@ -407,6 +408,26 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
         return 1;
       }
       if (p1.createdDate > p2.createdDate) {
+        return -1;
+      }
+      return 0;
+    };
+
+    this.projects.sort(sortIndex);
+    this.searchAllProjectsList.sort(sortIndex);
+  }
+  sortByStartDate() {
+    const sortIndex = function(p1: Project, p2: Project) {
+      if(p1.startDate == null){
+        return 1;
+      }
+      if(p2.startDate == null){
+        return -1;
+      }
+      if (p1.startDate < p2.startDate) {
+        return 1;
+      }
+      if (p1.startDate > p2.startDate) {
         return -1;
       }
       return 0;
