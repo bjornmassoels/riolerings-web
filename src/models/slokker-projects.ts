@@ -34,6 +34,7 @@ export class SlokkerProjects {
   public lastWorkerDate: Date;
   public postNumber: string;
   afgewerktDatum: Date;
+  updated: Date;
 
 
   id: string;

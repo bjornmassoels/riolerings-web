@@ -4,7 +4,7 @@ import {
   NbCheckboxModule, NbDatepickerModule, NbFormFieldModule, NbIconModule,
   NbInputModule,
   NbMenuModule,
-  NbOptionModule,
+  NbOptionModule, NbPopoverModule,
   NbRadioModule,
   NbSelectModule, NbThemeModule,
   NbToggleModule,
@@ -133,6 +133,7 @@ import { UsersModule } from './users/users.module';
     UsersModule,
     NbIconModule,
     NbFormFieldModule,
+    NbPopoverModule,
   ],
   declarations: [
     PagesComponent,

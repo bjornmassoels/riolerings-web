@@ -61,5 +61,6 @@ export class Project {
   //tempvar voor overkoepling met project
   xCoordGeoLocationFirsPhoto: number;
   yCoordGeoLocationFirsPhoto: number;
+  updated: Date;
   constructor() {}
 }

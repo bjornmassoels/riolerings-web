@@ -728,3 +728,44 @@ width: 270px;
   padding:7px 0 7px 12px;
   width:320px;
 }
+#afwerkingHeader{
+  cursor:pointer;
+  max-width: 160px !important;
+}
+.mat-menu-popover {
+  font-family: 'Arial', sans-serif;
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.mat-menu-popover h6 {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.mat-menu-popover p {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.5;
+}
+.blueBorder{
+  border: 2px dashed darkblue;
+  width:fit-content;
+  border-radius: 5px;
+  padding: 5px;
+}
+.greenBorder{
+  width:fit-content;
+  border: 2px dashed darkgreen;
+  border-radius: 5px;
+  padding: 5px;
+}
+.orangeBorder{
+  width:fit-content;
+  border-radius: 5px;
+  border: 2px dashed orangered;
+  padding: 5px;
+}

@@ -57,7 +57,7 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
   startDate: Date;
   endDate: Date;
   firstUser: string;
-  sorteerItems: string[] = ['Straat', 'Startdatum', 'Aanmaakdatum', 'Huisnummer', 'Volgnummer'];
+  sorteerItems: string[] = ['Straat', 'Huisnummer', 'Volgnummer', 'Afwerkingsdatum', 'Startdatum', 'Aanmaakdatum'];
   filterItems: string[] = ['Afgewerkt', 'Niet afgewerkt', 'Huisaansluiting', 'Wachtaansluiting', 'Kolk'];
   filterItem: string = "Straat";
   filterSelect: string = 'Straat';
@@ -131,10 +131,13 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
       if (this.projects != null) {
         for (let project of this.projects) {
           project.createdDate = new Date(project.created);
-          if (project.startDate == null) {
-            project.startDate = null;
-          } else {
+          if (project.startDate != null) {
             project.startDate = new Date(project.startDate);
+          }
+          if(project.afgewerktDatum != null){
+             project.afgewerktDatum = new Date(project.afgewerktDatum);
+          } else {
+            if(project.updated != null)project.updated = new Date(project.updated);
           }
           project.isSlokker = false;
           project.isMeerwerk = false;
@@ -146,10 +149,13 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
       if (this.slokkerProjects != null) {
         for (let slokker of this.slokkerProjects) {
           slokker.createdDate = new Date(slokker.created);
-          if (slokker.startDate == null) {
-            slokker.startDate = null;
-          } else {
+          if (slokker.startDate != null) {
             slokker.startDate = new Date(slokker.startDate);
+          }
+          if(slokker.afgewerktDatum != null){
+            slokker.afgewerktDatum = new Date(slokker.afgewerktDatum);
+          } else {
+            if(slokker.updated != null)slokker.updated = new Date(slokker.updated);
           }
           slokker.isMeerwerk = false;
           slokker.isSlokker = true;
@@ -161,9 +167,7 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
       if (this.meerwerkenList != null) {
         for (let meerwerk of this.meerwerkenList) {
           meerwerk.createdDate = new Date(meerwerk.created);
-          if (meerwerk.startDate == null) {
-            meerwerk.startDate = null;
-          } else {
+          if (meerwerk.startDate != null) {
             meerwerk.startDate = new Date(meerwerk.startDate);
           }
 
@@ -285,6 +289,8 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
       await this.sortByCreatedDate();
     } else if(this.filterItem === 'Volgnummer'){
       await this.sortByIndexNummer();
+    } else if(this.filterItem === 'Afwerkingsdatum'){
+      await this.sortByAfwerkingsDatum();
     } else {
       await this.sortByDate();
     }
@@ -1210,4 +1216,27 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
       this.filterAndSort();
   }
 
+  dateToDateString(date: Date){
+    return ('0' + date.getDate()).slice(-2) + '/' + ('0' + (date.getMonth() + 1)).slice(-2) + '/' + ('0' + date.getFullYear()).slice(-2);
+  }
+
+  private async sortByAfwerkingsDatum() {
+    const sortIndex = function(p1: Project, p2: Project) {
+      if (p1.afgewerktDatum != null && p2.afgewerktDatum != null) {
+        if (p1.afgewerktDatum < p2.afgewerktDatum) {
+          return 1;
+        }
+        if (p1.afgewerktDatum > p2.afgewerktDatum) {
+          return -1;
+        }
+      } else if(p1.afgewerktDatum == null && p2.afgewerktDatum != null){
+        return 1;
+      } else if(p1.afgewerktDatum != null && p2.afgewerktDatum == null){
+        return -1;
+      }
+      return 0;
+    };
+    this.projects.sort(sortIndex);
+    this.searchAllProjectsList.sort(sortIndex);
+  }
 }

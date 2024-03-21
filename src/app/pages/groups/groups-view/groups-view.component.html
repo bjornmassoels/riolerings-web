@@ -171,7 +171,7 @@
 
 
 <div *ngIf="isOn" cdkScrollable class="scroll-table">
-  <table cdkDropList class="item-list">
+  <table  cdkDropList class="item-list">
     <tr class="item-box">
       <th style="max-width:170px !important;min-width:170px !important;text-align: center;margin-left:15px ">Open</th>
       <th style="padding-left: 35px;max-width:150px;">Selecteer</th>
@@ -179,8 +179,26 @@
       <th class="bigCol">Straat</th>
       <th class="smallCol">Huisnr</th>
       <th class="smallCol">Volgnr</th>
-      <th class="normalCol">Aanmaakdatum</th>
-      <th class="normalCol">Startdatum</th>
+      <th class="smallCol">Startdatum</th>
+      <th id="afwerkingHeader" [matMenuTriggerFor]="menu2" class="normalCol">
+        <p style="font-size:14px;font-weight: bold;margin-bottom: 0;padding-top: 5px">Afwerkingsdatum</p>
+        <div style="flex-direction: row;display: flex;gap: 0 5px;">
+          <p style="margin-bottom: 0;width: fit-content"><small>of laatst gewijzigd</small>  </p>
+          <span style="font-size: 18px;margin-top: 3px" class="material-icons">
+          info
+        </span>
+        </div>
+        <mat-menu id='myMenu' #menu2="matMenu" class="matMenu1">
+          <div class="mat-menu-popover">
+            <h6 style="font-weight: 500"><b>Afwerkingsdatum</b> toegevoegd vanaf <b>V10.0 (23/03/24)</b></h6>
+            <p>Met ingang van versie V10.0, geïntroduceerd op 23 maart 2024, wordt een <b>afwerkingsdatum automatisch geregistreerd</b>
+              bij het <b>markeren van een aansluiting als voltooid</b>. Voor aansluitingen die vóór deze datum zijn afgerond,
+              wordt in plaats daarvan de notitie 'Laatst gewijzigd' weergegeven. Deze nieuwe waarde zal er voor zorgen dat u
+              <b>gemakkelijk de relevante periode kunt selecteren bij de vordering van de meetstaat</b></p>
+          </div>
+        </mat-menu>
+      </th>
+      <th class="smallCol">Aanmaak<br>datum</th>
     </tr>
     <tr [ngClass]="project.isSlokker && project.finished? 'blue' : project.isSlokker && !project.finished ?  'lightblue':
                   ((project.isWachtAansluiting != null && project.isWachtAansluiting) ||
@@ -212,9 +230,17 @@
       <td class="smallCol">{{project.isSlokker || ((project.isWachtAansluiting != null && project.isWachtAansluiting) ||
         (project.droogWaterAfvoer?.isWachtaansluiting != null && project.droogWaterAfvoer.isWachtaansluiting) ||
         (project.regenWaterAfvoer?.isWachtaansluiting != null && project.regenWaterAfvoer.isWachtaansluiting))? project.index : ''}}</td>
-      <td class="normalCol">{{project.createdDate.getDate()}}/{{project.createdDate.getMonth() + 1}}/{{project.createdDate.getFullYear()}}</td>
-      <td class="normalCol" *ngIf="project.startDate == null">niet gestart</td>
-      <td class="normalCol" *ngIf="project.startDate != null">{{project.startDate.getDate()}}/{{project.startDate.getMonth() + 1}}/{{project.startDate.getFullYear()}}</td>
+      <td class="smallCol" *ngIf="project.startDate == null">niet gestart</td>
+      <td class="smallCol" *ngIf="project.startDate != null">{{dateToDateString(project.startDate)}}</td>
+      <td style=" max-width: 160px !important;" *ngIf="project.afgewerktDatum != null"><p [ngClass]="project.isSlokker? 'blueBorder' :
+        ((project.isWachtAansluiting != null && project.isWachtAansluiting) ||
+        (project.droogWaterAfvoer?.isWachtaansluiting != null && project.droogWaterAfvoer.isWachtaansluiting) ||
+        (project.regenWaterAfvoer?.isWachtaansluiting != null && project.regenWaterAfvoer.isWachtaansluiting)) ? 'orangeBorder' : 'greenBorder'"
+                                             style="margin-bottom: 0;margin-left: 15px;"        >{{dateToDateString(project.afgewerktDatum)}}</p></td>
+      <td style="padding-left: 15px;max-width: 160px !important;" class="normalCol " *ngIf="project.afgewerktDatum == null && project.updated != null && project.updated.toDateString() !== project.createdDate.toDateString()"><small>Laatst gewijzigd:<br></small>{{dateToDateString(project.updated)}}</td>
+      <td style=" max-width: 160px !important;" class="normalCol" *ngIf="project.afgewerktDatum == null && (project.updated == null ||  project.updated.toDateString() === project.createdDate.toDateString())"></td>
+      <td class="smallCol">{{dateToDateString(project.createdDate)}}</td>
+
     </tr>
   </table>
 </div>
