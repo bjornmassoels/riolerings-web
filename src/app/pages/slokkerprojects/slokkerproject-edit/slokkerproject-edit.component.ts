@@ -17,6 +17,7 @@ import {
 import { GoogleMapsLocatiePopupComponent } from '../../googleMapsLocatiePopup/googleMapsLocatiePopup.component';
 import {AngularFireStorage} from "@angular/fire/compat/storage";
 import { MatDialog } from '@angular/material/dialog';
+import moment from 'moment/moment';
 
 
 @Component({
@@ -132,12 +133,6 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
       while(this.apiService.thisCompany == null){
         await this.delay(50)
       }
-      if(this.currentProject.startDate != null){
-        this.currentProject.startDate = new Date(this.currentProject.startDate);
-      }
-      if(this.currentProject.afgewerktDatum != null){
-        this.currentProject.afgewerktDatum = new Date(this.currentProject.afgewerktDatum);
-      }
       this.company = this.apiService.thisCompany;
       this.companyId = this.company._id;
       this.newDate = null;
@@ -197,8 +192,8 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
           plaatsAansluiting: this.currentProject.slokker.plaatsAansluiting,
           diameter: this.currentProject.slokker.diameter,
           tBuisStuk: this.currentProject.slokker.tBuisStuk,
-          startDate: this.currentProject.startDate,
-          afgewerktDatum: this.currentProject.afgewerktDatum
+          startDate:  this.currentProject.startDate != null ? moment(this.currentProject.startDate) : null,
+          afgewerktDatum: this.currentProject.afgewerktDatum != null ? moment(this.currentProject.afgewerktDatum): null
         });
 
       this.uploadForm = this.formBuilder.group({

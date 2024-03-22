@@ -1,6 +1,6 @@
 import { NgModule , LOCALE_ID} from '@angular/core';
 import {
-  NbAutocompleteModule, NbButtonModule,
+  NbAutocompleteModule, NbButtonGroupModule, NbButtonModule,
   NbCheckboxModule, NbDatepickerModule, NbFormFieldModule, NbIconModule,
   NbInputModule,
   NbMenuModule,
@@ -92,10 +92,10 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { UsersModule } from './users/users.module';
+import {  NbMomentDateService } from '@nebular/moment';
 
 @NgModule({
   imports: [
-    NbDatepickerModule,
     PagesRoutingModule,
     ThemeModule,
     NbMenuModule,
@@ -122,7 +122,6 @@ import { UsersModule } from './users/users.module';
     MatIconModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    NbDatepickerModule.forRoot(),
     NbMenuModule,
     LoadingBarModule,
     MatCheckboxModule,
@@ -134,6 +133,8 @@ import { UsersModule } from './users/users.module';
     NbIconModule,
     NbFormFieldModule,
     NbPopoverModule,
+    NbButtonGroupModule,
+    NbDatepickerModule,
   ],
   declarations: [
     PagesComponent,
@@ -190,7 +191,7 @@ import { UsersModule } from './users/users.module';
     GroupsViewPdfDownloadDialogComponent,
     GoogleMapsLocatiePopupComponent
   ],
-  providers: [FormService, ExcelService, MatDatepickerModule, MatNativeDateModule, NieuweExcelService,  { provide: LOCALE_ID, useValue: 'nl-NL' }],
+  providers: [FormService, ExcelService, MatDatepickerModule, NieuweExcelService, NbMomentDateService],
   exports: [choicePipe],
 })
 export class PagesModule {}

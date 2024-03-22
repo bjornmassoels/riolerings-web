@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NbToastrService } from '@nebular/theme';
-import { Observable } from 'rxjs';
+import { delay, Observable } from 'rxjs';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { startWith, map, timeout } from 'rxjs/operators';
 import { ApiService } from '../../../../services/api.service';
@@ -13,7 +13,6 @@ import { GroupsViewDeleteDialogComponent } from './groups-view-delete-dialog/gro
 import { ExcelService } from '../../../../services/ExcelService';
 import { Company } from '../../../../models/company';
 import { ArchivePopupComponent } from '../archive-popup/archive-popup.component';
-import moment, { duration } from 'moment';
 import {GroupsViewMeetstaatDialogComponent} from "./groups-view-meetstaat-dialog/groups-view-meetstaat-dialog.component";
 import FileSaver, {saveAs} from "file-saver";
 import { NieuweExcelService } from '../../../../services/NieuweExcelService';
@@ -24,6 +23,8 @@ import { makePdfResponse } from '../../../../models/makePdfResponse';
 import { Waterafvoer } from '../../../../models/waterafvoer';
 import { Slokkers } from '../../../../models/slokkers';
 import { GroupsViewPdfDownloadDialogComponent } from './groups-view-pdf-download-dialog/groups-view-pdf-download-dialog.component';
+import moment from 'moment';
+
 declare var Pace: any;
 
 @Component({
@@ -63,13 +64,9 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
   filterItem: string = "Alle aansluitingen";
   filterSelect: string = 'Alle aansluitingen';
   sorteerSelect: string = 'Straat & huisnr';
-  sorteerItem: string = 'Straat & huisnr' +
-    '';
+  sorteerItem: string = 'Straat & huisnr';
   currentProject: Project;
-  range = new UntypedFormGroup({
-    start: new UntypedFormControl(),
-    end: new UntypedFormControl(),
-  });
+  range: any;
   isPrint: boolean = false;
   public searchAllProjectsList: Project[];
   progress = 0;
@@ -79,8 +76,10 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
   isGeneratingPDF: boolean;
   moreThan50PDFs: boolean;
   filterStraatText: string = '';
-
+  dateSorteer: string;
   pdfProgressBlocksPer4: number[];
+  filterTussenDateStartString: string;
+  filterTussenDateEndString: string;
   constructor(
     private apiService: ApiService,
     private router: Router,
@@ -92,27 +91,52 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
     private nieuweExcelService: NieuweExcelService,
     private httpClient: HttpClient,
   ) {
-    route.params.subscribe((val) => {
-      this._id = this.route.snapshot.paramMap.get('id');
-      if (this.formService.lastProjects.length === 0) {
-        this.hasPreviousPage = false;
-      } else {
-        this.hasPreviousPage = true;
-      }
-
-      this.loadData(this._id);
-    });
   }
 
   async ngOnInit(): Promise<void> {
+    console.log('begin oninit')
+    this._id = this.route.snapshot.paramMap.get('id');
+    this.loadData(this._id);
+    if (this.formService.previousFilter != null) {
+      this.filterSelect = this.formService.previousFilter;
+    }
+    if (this.formService.previousSorteer != null) {
+      this.sorteerSelect = this.formService.previousSorteer;
+    }
+    if(this.formService.previousDateSorteer != null && this.formService.previousDateSorteer !== ''){
+      this.dateSorteer = this.formService.previousDateSorteer;
+    }
+    if (this.formService.previousFilter != null) {
+      this.filterItem = this.formService.previousFilter;
+    }
+    if (this.formService.previousStreet != null) {
+      this.searchForm.setValue(this.formService.previousStreet);
+      this.filterStraatText = this.formService.previousStreet;
+    }
+    if(this.formService.previousDateSorteer != null && this.formService.previousDateSorteer !== ''){
+      this.dateSorteer = this.formService.previousDateSorteer;
+    }
+    if(this.formService.filterTussenDateStartString != null && this.formService.filterTussenDateEndString != null){
+      this.range = {
+        start: moment(this.formService.filterTussenDateStartString),
+        end: moment(this.formService.filterTussenDateEndString)
+      };
+      this.filterTussenDateStartString = this.formService.filterTussenDateStartString;
+      this.filterTussenDateEndString = this.formService.filterTussenDateEndString;
+    }
+
+    console.log('end oninit')
+
   }
 
   async loadData(groupId) {
+    console.log('loading data')
     this.isGeneratingPDF = false;
     this.filterStraatText = '';
     this.isDownloading = false;
     this.selectEverything = false;
     this.moreThan50PDFs = false;
+    this.dateSorteer = 'Afwerkingsdatum';
     this.apiService.getGroupByIdLighterVersion(groupId).subscribe(async (x) => {
       this.group = x as unknown as Group;
       if (this.group._id == null) {
@@ -181,19 +205,10 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
         }
 
       }
-      this.allProjects.sort(this.sortIndex);
       this.searchAllProjectsList = this.allProjects;
       this.formService.lastProjects = this.allProjects;
       this.currentProject = new Project();
-      if (this.formService.previousFilter != null) {
-        this.filterSelect = this.formService.previousFilter;
-      }
-      if (this.formService.previousSorteer != null) {
-        this.sorteerSelect = this.formService.previousSorteer;
-      }
-      if(this.formService.filterStartDatumStartString != null && this.formService.filterStartDatumEndString != null){
-        this.range.setValue({start: new Date(this.formService.filterStartDatumStartString), end: new Date(this.formService.filterStartDatumEndString)});
-      }
+
       this.currentProject.isSlokker = false;
       this.currentProject.isWachtAansluiting = false;
       this.currentProject.isMeerwerk = false;
@@ -206,19 +221,12 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
       while (this.apiService.thisCompany == null) {
         await this.delay(50)
       }
-      this.company = this.apiService.thisCompany;
+      this.company = this.apiService.thisCompany
       this.isOn = true;
       Pace.stop();
-
-      this.formService._allProjects = this.allProjects;
-      await this.delay(100);
-      if (this.formService.previousFilter != null) {
-        await this.selectFilter(this.formService.previousFilter);
-      }
-      if (this.formService.previousStreet != null) {
-        this.searchForm.setValue(this.formService.previousStreet);
-        this.onSearchInput(this.formService.previousStreet)
-      }
+      console.log('end loading data')
+      await this.filterAndSort();
+      await this.delay(50);
       if (this.formService.previousIndex != null) {
         let behavior: string = 'auto';
         const rows = document.getElementsByClassName("scroll");
@@ -228,8 +236,10 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
             block: 'center'
           });
           this.formService.previousIndex = null;
+
         }, 10);
       }
+      this.formService._allProjects = this.allProjects;
     });
   }
 
@@ -273,8 +283,10 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
         ? filteredProjects.filter(project => project.street?.toLowerCase().includes(this.filterStraatText.toLowerCase()))
         : filteredProjects;
     }
-    const { start, end } = this.range.value;
-    filteredProjects = await this.filterProjectsByDate(start, end, filteredProjects);
+    if(this.filterTussenDateStartString != null && this.filterTussenDateEndString != null){
+      filteredProjects = await this.filterProjectsByDate(new Date(this.filterTussenDateStartString),
+        new Date(this.filterTussenDateEndString), filteredProjects);
+    }
     this.searchAllProjectsList = filteredProjects;
 
       if (this.filterItem === "Afgewerkt") {
@@ -293,16 +305,16 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
       await this.sortByStreet();
     } else if (this.sorteerItem === "Huisnummer") {
       await this.sortByHuisnummer();
+    } else if(this.sorteerItem === 'Volgnummer'){
+      await this.sortByIndexNummer();
     } else if (this.sorteerItem === 'Aanmaakdatum') {
       await this.sortByCreatedDate();
     }  else if (this.sorteerItem === 'Startdatum') {
       await this.sortByStartDate();
-    } else if(this.sorteerItem === 'Volgnummer'){
-      await this.sortByIndexNummer();
     } else if(this.sorteerItem === 'Afwerkingsdatum/\nlaatst gewijzigd'){
       await this.sortByAfwerkingsDatum();
     } else {
-      await this.sortByDate();
+      await this.sortByStreet();
     }
   }
   async sortByStreet() {
@@ -384,20 +396,6 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
         }
       }
     };
-    this.projects.sort(sortIndex);
-    this.searchAllProjectsList.sort(sortIndex);
-  }
-  sortByDate() {
-    const sortIndex = function(p1: Project, p2: Project) {
-      if (new Date(p1.startDate) < new Date(p2.startDate)) {
-        return 1;
-      }
-      if (new Date(p1.startDate) > new Date(p2.startDate)) {
-        return -1;
-      }
-      return 0;
-    };
-
     this.projects.sort(sortIndex);
     this.searchAllProjectsList.sort(sortIndex);
   }
@@ -485,16 +483,25 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
     const startMoment = startDate ? moment(startDate).startOf('day') : null;
     const endMoment = endDate ? moment(endDate).endOf('day') : null;
 
-    return projects.filter(project =>
-      (!startMoment || moment(project.startDate).isSameOrAfter(startMoment)) &&
-      (!endMoment || moment(project.startDate).isSameOrBefore(endMoment))
-    );
+    if(this.formService.previousDateSorteer === 'Startdatum'){
+      return projects.filter(project =>
+        (!startMoment || moment(project.startDate).isSameOrAfter(startMoment)) &&
+        (!endMoment || moment(project.startDate).isSameOrBefore(endMoment))
+      );
+    } else {
+      return projects.filter(project => project.finished && project.afgewerktDatum != null &&
+        (!startMoment || moment(project.afgewerktDatum).isSameOrAfter(startMoment)) &&
+        (!endMoment || moment(project.afgewerktDatum).isSameOrBefore(endMoment))
+      );
+    }
   }
 
 
-  dateChanged() {
-    this.formService.filterStartDatumStartString = this.range.value.start;
-    this.formService.filterStartDatumEndString = this.range.value.end;
+  async dateChanged() {
+    await this.delay(50)
+    console.log(this.range)
+    this.filterTussenDateStartString = this.range.start.toDate().toString();
+    this.filterTussenDateEndString = this.range.end?.toDate()?.toString();
     this.filterAndSort();
   }
 
@@ -959,6 +966,8 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
     this.formService.previousStreet = this.searchForm.value;
     this.formService.previousFilter = this.filterSelect;
     this.formService.previousSorteer = this.sorteerSelect;
+    this.formService.filterTussenDateStartString = this.filterTussenDateStartString;
+    this.formService.filterTussenDateEndString = this.filterTussenDateEndString;
     if (this.socket) {
       this.socket.off('progress');
       this.socket.off('connect_error');
@@ -1203,16 +1212,6 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
   }
 
 
-  clearAutocomplete() {
-      this.range = new UntypedFormGroup({
-        start: new UntypedFormControl(),
-        end: new UntypedFormControl(),
-      });
-      this.formService.filterStartDatumStartString = null;
-      this.formService.filterStartDatumEndString = null;
-      this.filterAndSort();
-  }
-
   dateToDateString(date: Date){
     return ('0' + date.getDate()).slice(-2) + '/' + ('0' + (date.getMonth() + 1)).slice(-2) + '/' + ('0' + date.getFullYear()).slice(-2);
   }
@@ -1264,5 +1263,22 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
     };
     this.projects.sort(sortIndex);
     this.searchAllProjectsList.sort(sortIndex);
+  }
+
+  clearDate() {
+    this.range = null;
+    this.filterTussenDateStartString = null;
+    this.filterTussenDateEndString = null;
+    this.filterAndSort();
+  }
+
+  log() {
+     console.log(this.range);
+  }
+
+  changeFilterStartDatum($event) {
+    console.log($event)
+    this.formService.previousDateSorteer = $event;
+    this.filterAndSort();
   }
 }

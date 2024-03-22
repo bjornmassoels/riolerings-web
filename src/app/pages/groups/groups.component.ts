@@ -135,8 +135,8 @@ export class GroupsComponent implements OnInit {
         this.formService.previousStreet = null;
         this.formService.previousFilter = null;
         this.formService.previousSorteer = null;
-        this.formService.filterStartDatumStartString = null;
-        this.formService.filterStartDatumEndString = null;
+        this.formService.filterTussenDateStartString = null;
+        this.formService.filterTussenDateEndString = null;
         this.formService._allGroups = this.groups;
         if (this.formService.previousGroupIndex != null) {
           let behavior: string = 'smooth';

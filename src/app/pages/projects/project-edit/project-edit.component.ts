@@ -14,6 +14,7 @@ import {ProjectLastworkerDialogConfirmComponent} from "./project-lastworker-dial
 import { GoogleMapsLocatiePopupComponent } from '../../googleMapsLocatiePopup/googleMapsLocatiePopup.component';
 import {AngularFireStorage} from "@angular/fire/compat/storage";
 import { MatDialog } from '@angular/material/dialog';
+import moment from 'moment';
 
 
 
@@ -177,12 +178,6 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
 
       }
 
-      if (this.currentProject.startDate != null) {
-        this.currentProject.startDate = new Date(this.currentProject.startDate);
-      }
-      if (this.currentProject.afgewerktDatum != null) {
-        this.currentProject.afgewerktDatum = new Date(this.currentProject.afgewerktDatum);
-      }
       this.gietIjzerDWA = this.currentProject.droogWaterAfvoer.gietijzer;
       this.gietIjzerRWA = this.currentProject.regenWaterAfvoer.gietijzer;
 
@@ -242,8 +237,8 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
         equipNrRiolering: this.currentProject.equipNrRiolering,
         isGemengd: this.currentProject.isGemengd,
         usersWhoEdited: [this.currentProject.usersWhoEdited],
-        startDate:  this.currentProject.startDate,
-        afgewerktDatum: this.currentProject.afgewerktDatum
+        startDate:  this.currentProject.startDate != null ? moment(this.currentProject.startDate) : null,
+        afgewerktDatum: this.currentProject.afgewerktDatum != null ? moment(this.currentProject.afgewerktDatum): null
       });
 
         this.dwaForm = this.formBuilder.group({

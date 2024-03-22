@@ -10,9 +10,11 @@ import {Meerwerk} from "../models/meerwerk";
   providedIn: 'root',
 })
 export class FormService {
-  filterStartDatumStartString: string;
-  filterStartDatumEndString: string;
+  filterTussenDateStartString: string;
+  filterTussenDateEndString: string;
+  previousDateSorteer: string;
   previousSorteer: string;
+
   get currentSlokkerProjects(): SlokkerProjects[] {
     return this._currentSlokkerProjects;
   }

@@ -105,7 +105,6 @@ export class SlokkerprojectAddComponent implements OnInit {
         this.companyId = this.company._id;
         this.currentProject = new SlokkerProjects();
         this.currentProject.company_id = this.companyId;
-        this.currentProject.startDate = new Date();
         if(this.lastSlokkerIndexFound.toString() === '-Infinity'){
           this.lastSlokkerIndexFound = '0';
         }
