@@ -508,7 +508,7 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
   }
   changeAfgewerkt($event: boolean) {
     if($event === true){
-      this.slokkerForm.controls['afgewerktDatum'].setValue(new Date());
+      this.slokkerForm.controls['afgewerktDatum'].setValue(moment(new Date()));
     } else {
       this.slokkerForm.controls['afgewerktDatum'].setValue(null);
     }
@@ -520,13 +520,7 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
       width: '37vw',
     });
   }
-  setDate(event) {
-    if(event !== ''){
-      this.newDate = new Date(event);
-    } else if(event === ''){
-      this.newDate = null;
-    }
-  }
+
   clearAfgewerktDate() {
     this.slokkerForm.controls['afgewerktDatum'].setValue(null);
   }

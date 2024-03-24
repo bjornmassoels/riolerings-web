@@ -97,10 +97,8 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
     console.log('begin oninit')
     this._id = this.route.snapshot.paramMap.get('id');
     this.loadData(this._id);
-    if (this.formService.previousFilter != null) {
-      this.filterSelect = this.formService.previousFilter;
-    }
     if (this.formService.previousSorteer != null) {
+      this.sorteerItem = this.formService.previousSorteer;
       this.sorteerSelect = this.formService.previousSorteer;
     }
     if(this.formService.previousDateSorteer != null && this.formService.previousDateSorteer !== ''){
@@ -108,6 +106,7 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
     }
     if (this.formService.previousFilter != null) {
       this.filterItem = this.formService.previousFilter;
+      this.filterSelect = this.formService.previousFilter;
     }
     if (this.formService.previousStreet != null) {
       this.searchForm.setValue(this.formService.previousStreet);

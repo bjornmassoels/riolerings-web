@@ -1193,7 +1193,7 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
 
   changeAfgewerkt($event: boolean) {
     if($event === true){
-      this.infoForm.controls['afgewerktDatum'].setValue(new Date());
+      this.infoForm.controls['afgewerktDatum'].setValue(moment(new Date()));
     } else {
       this.infoForm.controls['afgewerktDatum'].setValue(null);
     }
