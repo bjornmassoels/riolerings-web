@@ -3837,7 +3837,7 @@ export class NieuweExcelService {
     kolommen = ['I','J','K', 'L', 'M', 'N', 'O','P', 'Q'];
     let indexEindStukken = 6 - notUsedVariableCount;
     let eindStukken = kolommen[indexEindStukken];
-    let funOmhKolom = kolommen[indexEindStukken + 1];
+    let funOmhKolom = kolommen[indexEindStukken + 2];
     /*
     let eindVoorPutje = 'U';
     let startPutjeEnSoortPutje = "W";
@@ -4084,12 +4084,6 @@ export class NieuweExcelService {
         this.ConvertNumberToEmptyString(flexAansluiting),
         this.ConvertNumberToEmptyString(slokker.slokker.reductie)
       ]);
-      dataRow3.getCell(funOmhKolom).fill = {
-        type: 'pattern',
-        pattern: 'solid',
-        fgColor: {argb: 'D4F1F4'},
-        bgColor: {argb: 'ffffe0'},
-      };
       dataRow3.font = { name: 'Arial', family: 4, size: 12};
       indexCount = 0;
       if(!dataList.bochtenInGraden){
@@ -4579,7 +4573,7 @@ export class NieuweExcelService {
     if (check == null) {
       return '';
     } else {
-      return +check;
+      return check;
     }
   }
   NullToZero(number) {
