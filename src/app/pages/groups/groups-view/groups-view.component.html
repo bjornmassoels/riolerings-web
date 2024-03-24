@@ -117,7 +117,7 @@
     </div>
   </div>
   <div class="row3">
-    <div class="rowFlex">
+    <div style="padding-bottom: 5px;" class="rowFlex">
       <p class="normalText">Selecteer alles<br> voor downloads</p>
       <nb-toggle [checked]="selectEverything" class="margLeft" (checkedChange)="selectAll()" status="primary">
       </nb-toggle>
@@ -150,7 +150,7 @@
       <div  class='colFlex'>
         <mat-label class='sortText'>Filter op straat</mat-label>
         <input  style='width:170px !important;border: 1px solid #88a7da'  class="search-box" #categoryInput nbInput type="text" matInput [formControl]="searchForm" #searchInput
-               type="text" (keyup)="onSearchInput(searchInput.value)" placeholder="Straat..." />
+               type="text" (keyup)="onSearchInput(searchInput.value)" placeholder="Zoek op straat..." />
         <mat-autocomplete #auto="matAutocomplete">
           <mat-option *ngFor="let project of filteredProjects | async" [value]="project.street"
                       (click)="onSearch(project._id)">
