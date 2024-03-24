@@ -118,21 +118,13 @@
   </div>
   <div class="row3">
     <div class="rowFlex">
-      <p class="normalText">Selecteer alles<br> voor downloads:</p>
+      <p class="normalText">Selecteer alles<br> voor downloads</p>
       <nb-toggle [checked]="selectEverything" class="margLeft" (checkedChange)="selectAll()" status="primary">
       </nb-toggle>
     </div>
     <div class='colFlex'>
-      <mat-label class='sortText'>Filter</mat-label>
-      <nb-select [optionsListClass]="'soortFilter'" [(ngModel)]="filterSelect" id="extras" style="width: 185px;">
-        <nb-option style='border-bottom:1px solid lightgray'  (selectionChange)="selectFilter(filter)" type="checkbox" *ngFor="let filter of filterItems"
-                   value="{{ filter }}">
-          {{ filter }}</nb-option>
-      </nb-select>
-    </div>
-    <div class='colFlex'>
       <mat-label class='sortText'>Sorteer</mat-label>
-      <nb-select (ngModelChange)="selectSort($event)" [optionsListClass]="'soortFilter'" [(ngModel)]="sorteerSelect" id="extras" style="width: 202px;">
+      <nb-select shape="semi-round" class="nbSelectBorder"  style="width: 202px; border: 1px solid #39a8ff; border-radius: 12px;" (ngModelChange)="selectSort($event)" [optionsListClass]="'soortFilter'" [(ngModel)]="sorteerSelect" id="extras">
         <nb-option-group title="Algemeen">
           <nb-option style='border-bottom:1px solid lightgray'  type="checkbox" *ngFor="let filter of sorteerItems"
                      value="{{ filter }}">
@@ -145,17 +137,27 @@
         </nb-option-group>
       </nb-select>
     </div>
-    <div  class='colFlex'>
-      <mat-label class='sortText'>Filter op straat</mat-label>
-      <input style='width:170px !important;' class="search-box" #categoryInput nbInput type="text" matInput [formControl]="searchForm" #searchInput
-        type="text" (keyup)="onSearchInput(searchInput.value)" placeholder="Zoeken..." />
-      <mat-autocomplete #auto="matAutocomplete">
-        <mat-option *ngFor="let project of filteredProjects | async" [value]="project.street"
-          (click)="onSearch(project._id)">
-          {{ project.street }}
-        </mat-option>
-      </mat-autocomplete>
-    </div>
+
+      <div class='colFlex'>
+        <mat-label class='sortText'>Filter</mat-label>
+        <nb-select class="nbSelectBorder"  style="width: 190px;border: 1px solid #88a7da; border-radius: 5px;" [optionsListClass]="'soortFilter'" [(ngModel)]="filterSelect" id="extras" >
+          <nb-option style='border-bottom:1px solid lightgray'  (selectionChange)="selectFilter(filter)" type="checkbox" *ngFor="let filter of filterItems"
+                     value="{{ filter }}">
+            {{ filter }}</nb-option>
+        </nb-select>
+      </div>
+
+      <div  class='colFlex'>
+        <mat-label class='sortText'>Filter op straat</mat-label>
+        <input  style='width:170px !important;border: 1px solid #88a7da'  class="search-box" #categoryInput nbInput type="text" matInput [formControl]="searchForm" #searchInput
+               type="text" (keyup)="onSearchInput(searchInput.value)" placeholder="Straat..." />
+        <mat-autocomplete #auto="matAutocomplete">
+          <mat-option *ngFor="let project of filteredProjects | async" [value]="project.street"
+                      (click)="onSearch(project._id)">
+            {{ project.street }}
+          </mat-option>
+        </mat-autocomplete>
+      </div>
 
       <div  class='colFlex'>
         <nb-button-group status="info" size="tiny">
@@ -164,13 +166,12 @@
         </nb-button-group>
         <div class="largeInsideRow">
 
-          <input class="selectBox"   [(ngModel)]="range" nbInput placeholder="Filter tussen datums.." [nbDatepicker]="datePicker">
+          <input class="selectBox" style="border: 1px solid #88a7da"  [(ngModel)]="range" nbInput placeholder="Filter tussen datums.." [nbDatepicker]="datePicker">
           <nb-rangepicker (rangeChange)="dateChanged()" #datePicker></nb-rangepicker>
           <button *ngIf="range?.start" (click)="clearDate()" class="clear-button">Clear</button>
         </div>
       </div>
-
-  </div>
+    </div>
 </div>
 
 
@@ -194,11 +195,11 @@
         </div>
         <mat-menu id='myMenu' #menu2="matMenu" class="matMenu1">
           <div class="mat-menu-popover">
-            <h6 style="font-weight: 500"><b>Afwerkingsdatum</b> toegevoegd vanaf <b>V10.0 (23/03/24)</b></h6>
-            <p>Met ingang van versie V10.0, geïntroduceerd op 23 maart 2024, wordt een <b>afwerkingsdatum automatisch geregistreerd</b>
-              bij het <b>markeren van een aansluiting als voltooid</b>. Voor aansluitingen die vóór deze datum zijn afgewerkt of voor niet afgewerkte aansluitingen na deze datum
-              wordt in plaats daarvan de notitie 'Laatst gewijzigd' weergegeven. Deze nieuwe waarde zal er voor zorgen dat u
-              <b>gemakkelijk de relevante periode kunt selecteren bij de vordering van de meetstaat</b></p>
+            <h6 style="font-weight: 500"><b>Afwerkingsdatum</b> toegevoegd vanaf <b>V12.2 (23/03/24)</b></h6>
+            <p>Met ingang van versie V12.2, geïntroduceerd op 23 maart 2024, wordt een <b>afwerkingsdatum automatisch geregistreerd</b>
+              bij het <b>markeren van een aansluiting als voltooid</b>.<br>Voor aansluitingen die vóór deze datum zijn afgewerkt of voor niet afgewerkte aansluitingen na deze datum
+              wordt in plaats daarvan de notitie 'Laatst gewijzigd' weergegeven.<br>Deze nieuwe waarde zal er voor zorgen dat u
+              <b>gemakkelijk de relevante periode kunt selecteren voor de vordering van de meetstaat</b></p>
           </div>
         </mat-menu>
       </th>
