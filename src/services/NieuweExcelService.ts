@@ -102,7 +102,6 @@ export class NieuweExcelService {
     }
     worksheet.mergeCells('A2:I2');
     //CHECK VOOR NIET GEBRUIKTE VARIABELEN
-    console.log(dataList.dwaSettings)
     let notUsedVariableCount = 0;
     let secondNotUsedVariableCount = 0;
     let thirdNotUsedVariableCount = 0;
@@ -165,7 +164,6 @@ export class NieuweExcelService {
     let indexEindPut = 24 - (notUsedVariableCount + secondNotUsedVariableCount + thirdNotUsedVariableCount);
     let eindNaPut = kolommen[indexEindPut]
 
-    console.log(notUsedVariableCount)
     let putjesRow = worksheet.addRow(['', '', '', 'VOOR PUTJE']);
     putjesRow.font = { name: 'Arial', family: 4, size: 13, bold: true };
     putjesRow.height = 18;
@@ -1277,7 +1275,6 @@ export class NieuweExcelService {
     totalenRow.alignment = { vertical: 'middle', horizontal: 'center' };
     indexCount = 0;
     let nonEmptyCount = 0;
-    console.log(eindKolomNewData);
     let row = "D";
     for(let i = 0; i < 12; i++){
       row = totaalKolommen[i];
@@ -2055,7 +2052,6 @@ export class NieuweExcelService {
     eindNaPut = kolommen[indexEindPut];
     beginNaPutje = kolommen[indexBeginNaPutje];
 
-    console.log(notUsedVariableCount)
     putjesRow = worksheet2.addRow(['', '', '', 'VOOR PUTJE']);
     putjesRow.font = { name: 'Arial', family: 4, size: 13, bold: true };
     putjesRow.height = 18;
@@ -4447,7 +4443,6 @@ export class NieuweExcelService {
       this.PostNumberNullToString(slokkerPostNumbers.indrukmof), this.PostNumberNullToString(slokkerPostNumbers.ytStuk), this.PostNumberNullToString(slokkerPostNumbers.tBuis), this.PostNumberNullToString(slokkerPostNumbers.flexAan),
       this.PostNumberNullToString(slokkerPostNumbers.reductie)]);
     let postenRowIndex = 8 + totaalExtraPreviousTotalen + totalRowCount;
-    console.log(postenRowIndex)
    worksheet3.mergeCells('A' + postenRowIndex + ':B' + postenRowIndex);
     postenRow.font = { name: 'Arial', family: 4, size: 12 };
     postenRow.alignment = {horizontal:'center'}
@@ -4548,7 +4543,6 @@ export class NieuweExcelService {
       //SAVE MEETSTAAT TOTALEN
       let totalenMeetstaatKolk = new SlokkerTotaalMeetstaat(indrukmofCount,tBuisCount,ytStukCount,flexAanCount,buisCount,bochtCount,reductieCount,funOmhCount,mofCount,
         krimpmofCount,koppelstukCount,stopCount,andereCount,infiltratieKolkCount, bocht45Count, bocht90Count);
-      console.log(totalenMeetstaatDWA)
       dataList.totalenMeetstaatDWA = [];
       dataList.totalenMeetstaatKolk = [];
       dataList.totalenMeetstaatRWA = [];
@@ -4556,7 +4550,6 @@ export class NieuweExcelService {
       dataList.totalenMeetstaatDWA.push(totalenMeetstaatDWA);
       dataList.totalenMeetstaatRWA.push(totalenMeetstaatRWA);
       this.apiService.updateTotalenMeetstaat(dataList).subscribe(x => {
-        console.log('updated totalenMeetstaatDWA')
       })
     }
   }

@@ -94,7 +94,6 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit(): Promise<void> {
-    console.log('begin oninit')
     this._id = this.route.snapshot.paramMap.get('id');
     this.loadData(this._id);
     if (this.formService.previousSorteer != null) {
@@ -124,12 +123,10 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
       this.filterTussenDateEndString = this.formService.filterTussenDateEndString;
     }
 
-    console.log('end oninit')
 
   }
 
   async loadData(groupId) {
-    console.log('loading data')
     this.isGeneratingPDF = false;
     this.filterStraatText = '';
     this.isDownloading = false;
@@ -223,7 +220,6 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
       this.company = this.apiService.thisCompany
       this.isOn = true;
       Pace.stop();
-      console.log('end loading data')
       await this.filterAndSort();
       await this.delay(50);
       if (this.formService.previousIndex != null) {
@@ -498,7 +494,6 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
 
   async dateChanged() {
     await this.delay(50)
-    console.log(this.range)
     this.filterTussenDateStartString = this.range.start.toDate().toString();
     this.filterTussenDateEndString = this.range.end?.toDate()?.toString();
     this.filterAndSort();
@@ -1271,12 +1266,8 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
     this.filterAndSort();
   }
 
-  log() {
-     console.log(this.range);
-  }
 
   changeFilterStartDatum($event) {
-    console.log($event)
     this.formService.previousDateSorteer = $event;
     this.filterAndSort();
   }

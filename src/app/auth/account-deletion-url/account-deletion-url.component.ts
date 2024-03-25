@@ -20,7 +20,6 @@ export class AccountDeletionUrlComponent implements OnInit {
 
   submitDeletionRequest() {
     if (this.isFormValid()) {
-      console.log('Verwijderingsverzoek ingediend voor:', this.userId);
       // Implementeer logica om het verwijderingsverzoek te verwerken
       this.apiService.sendAccountDeletionRequest(this.userId).subscribe(x => {
         this.toast.success('Uw account verwijdering met zijn data is aangevraagd en zal worden verwijderd');

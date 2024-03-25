@@ -179,8 +179,8 @@
   <table  cdkDropList class="item-list">
     <tr style="padding:4px 10px !important;" class="item-box">
       <th style="max-width:170px !important;min-width:170px !important;text-align: center;margin-left:15px ">Open</th>
-      <th style="padding-left: 35px;max-width:150px;">Selecteer</th>
-      <th class="smallCol">Soort</th>
+      <th style="padding-left: 35px;max-width:150px;"><p style="width:89px;margin-bottom: 0;font-weight: bold">Selecteer</p></th>
+      <th class="smallestCol">Soort</th>
       <th class="bigCol">Straat</th>
       <th class="smallCol">Huisnr</th>
       <th class="smallCol">Volgnr</th>
@@ -222,14 +222,14 @@
       </td>
       <td style="padding-left: 35px;max-width:150px;"><nb-toggle class="checkBox" [checked]="project.isSelected" (checkedChange)="selectProject(project._id)"
                                                                  status="primary"></nb-toggle></td>
-      <td class="smallCol" *ngIf="project.isSlokker">Kolk</td>
-      <td class="smallCol" *ngIf="project.droogWaterAfvoer != null && !project.isSlokker && ((project.isWachtAansluiting == null || project.isWachtAansluiting === false) &&
+      <td class="smallestCol" *ngIf="project.isSlokker">Kolk</td>
+      <td class="smallestCol" *ngIf="project.droogWaterAfvoer != null && !project.isSlokker && ((project.isWachtAansluiting == null || project.isWachtAansluiting === false) &&
                    (project.droogWaterAfvoer.isWachtaansluiting == null || project.droogWaterAfvoer.isWachtaansluiting === false) &&
                    (project.regenWaterAfvoer.isWachtaansluiting == null || project.regenWaterAfvoer.isWachtaansluiting === false)) && !project.isMeerwerk">HA</td>
-      <td class="smallCol" *ngIf="project.droogWaterAfvoer != null && ((project.isWachtAansluiting != null && project.isWachtAansluiting) ||
+      <td class="smallestCol" *ngIf="project.droogWaterAfvoer != null && ((project.isWachtAansluiting != null && project.isWachtAansluiting) ||
                   (project.droogWaterAfvoer.isWachtaansluiting != null && project.droogWaterAfvoer.isWachtaansluiting) ||
                   (project.regenWaterAfvoer.isWachtaansluiting != null && project.regenWaterAfvoer.isWachtaansluiting))">WA</td>
-      <td class="smallCol" *ngIf="project.isMeerwerk">OW</td>
+      <td class="smallestCol" *ngIf="project.isMeerwerk">OW</td>
       <td class="bigCol">{{ project.street}}</td>
       <td class="smallCol">{{project.huisNr}}</td>
       <td class="smallCol">{{project.isSlokker || ((project.isWachtAansluiting != null && project.isWachtAansluiting) ||

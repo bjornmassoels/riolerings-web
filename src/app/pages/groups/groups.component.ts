@@ -39,7 +39,6 @@ export class GroupsComponent implements OnInit {
   arrayBuffer: any;
   filelist: any;
   isLoaded: boolean = false;
-  isLoaded2: boolean = false;
   isAdmin: boolean = false;
   isViewConnectedUsers: boolean = false;
   constructor(
@@ -66,27 +65,6 @@ export class GroupsComponent implements OnInit {
 
   async ngOnInit() {
     this.isViewConnectedUsers = false;
-    this.apiService.getAllGroupsNoProjects().subscribe(async x => {
-      const tempGroups = x as Group[];
-      for (const group of tempGroups) {
-        group.totalProjectCount =
-          group.slokkerProjectList?.length + group.projectList?.length;
-        group.haCount = group.projectList?.length;
-        group.kolkCount = group.slokkerProjectList?.length;
-        group.createdDate = new Date(group.created);
-      }
-      tempGroups.sort(
-        (a, b) => b.createdDate.getTime() - a.createdDate.getTime(),
-      );
-      while(this.apiService.thisCompany == null){
-        await this.delay(50)
-      }
-      this.groups = tempGroups;
-      this.searchedGroups = tempGroups;
-      Pace.stop();
-
-      this.isLoaded = true;
-    })
     if(!this.apiService.isMobileUser){
       this.apiService.getAllGroups().subscribe( async (x) => {
         const tempGroups = x as Group[];
@@ -106,6 +84,7 @@ export class GroupsComponent implements OnInit {
         this.isAdmin = this.apiService.isAdmin;
 
         this.company = this.apiService.thisCompany;
+
         if (this.company.P0 != null || this.company.prijsPerHA != null) {
           let i = 0;
           for (const group of tempGroups) {
@@ -130,7 +109,9 @@ export class GroupsComponent implements OnInit {
         }
         this.groups = tempGroups;
         this.searchedGroups = tempGroups;
-        this.isLoaded2 = true;
+        Pace.stop();
+
+        this.isLoaded = true;
         this.formService.previousIndex = null;
         this.formService.previousStreet = null;
         this.formService.previousFilter = null;

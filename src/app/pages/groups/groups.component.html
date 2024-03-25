@@ -39,8 +39,8 @@
         <th style='padding-right: 15px;'>Projectnaam</th>
         <th>Details</th>
         <th style='max-width: 210px'>Naam rioolbeheerder</th>
-        <th class='maxWidth100'>Aantal aansluitingen</th>
-        <th class='maxWidth100' *ngIf="company?.P0 != null || company?.prijsPerHA != null">Betaald</th>
+        <th class='maxWidth120'>Aantal aansluitingen</th>
+        <th class='maxWidth80' *ngIf="company?.P0 != null || company?.prijsPerHA != null">Betaald</th>
       </tr>
       <ng-container *ngFor="let group of searchedGroups; let i = index">
       <tr class="item-box2 scroll">
@@ -58,15 +58,13 @@
           </div>
         </td>
         <td style='max-width: 210px'>{{group.rbNaam}}</td>
-        <td class='maxWidth100'>
+        <td class='maxWidth120'>
           <div  class='detailsColumn'>
             <p class='detailsText'><span class='smallBijText smaller'>HA: </span>{{group.haCount}}</p>
             <p class='detailsText'><span class='smallBijText smaller'>Kolk: </span>{{group.kolkCount}}</p>
           </div>
         </td>
-        <td class='maxWidth100' *ngIf="!isLoaded2">0</td>
-        <td class='maxWidth100' *ngIf="(company?.P0 != null || company?.prijsPerHA != null) && isLoaded2">{{ paidGroup[i]  + '/' + (paidGroup[i] + unPaidGroup[i]) }}</td>
-        <td class='maxWidth100' *ngIf="(company?.P0 != null || company?.prijsPerHA != null) && !isLoaded2">0</td>
+        <td class='maxWidth80' *ngIf="(company?.P0 != null || company?.prijsPerHA != null)">{{ paidGroup[i]  + '/' + (paidGroup[i] + unPaidGroup[i]) }}</td>
       </tr>
       <tr class="item-box-connected-users" *ngIf="isViewConnectedUsers">
         <td colspan="2" style="max-width:210px;" class="connectedText"><b style="text-decoration: underline">Gekoppelde gebruikers</b></td>

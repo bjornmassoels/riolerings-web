@@ -541,7 +541,6 @@ export class ApiService {
   }
 
   makePdf(pdfIds: SendPdfID, groupId: string, pdfBenaming: string) {
-  console.log(pdfIds);
     let header = new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: this._token,

@@ -394,8 +394,12 @@ text-decoration: none;
 .smallCol{
 max-width: 100px !important;
 }
+.smallestCol{
+  max-width: 65px !important;
+}
 .bigCol{
-max-width:200px !important;
+  max-width: 230px !important;
+  min-width: 150px !important;
 }
 .normalCol{
 max-width:200px !important;
