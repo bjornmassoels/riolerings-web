@@ -23,6 +23,7 @@
   margin-right: 10px;
   justify-content: space-between;
   align-items: center;
+  padding: 0 20px;
 }
 .rower2 {
   height: 80px;
@@ -53,11 +54,11 @@
   text-decoration: underline;
 }
 .voorwaarden2{
-   margin-left: 15px;
-   margin-top: 20px;
-   margin-bottom: 20px;
-    cursor: pointer;
- }
+  margin-left: 15px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  cursor: pointer;
+}
 .outerDiv{
   height: 80px;
 }
@@ -74,6 +75,8 @@
   margin-top: 10px;
   text-align: center;
   margin-bottom: 15px;
+  font-weight: bold;
+  text-decoration: underline;
 }
 .whiteHack{
   height: 10px;
@@ -82,7 +85,7 @@
 }
 .goBackButton{
   display: block;
-  margin:20px auto 0 auto;
+  margin:30px auto 0 auto;
   width: 70%;
   height: 40px;
   font-size: 20px;
@@ -140,6 +143,7 @@
     margin-right: 10px;
     justify-content: space-between;
     align-items: center;
+    padding: 0 20px;
   }
   .rower2 {
     height: 50px;
@@ -196,4 +200,13 @@
     max-height: 95%;
     background-color: #f6f8fa;
   }
+}
+.buttonDiv {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  height: 120px;
+  width: 100%;
+  margin-top: 20px;
 }
