@@ -4,10 +4,12 @@
 
 <div *ngIf="isCompanyAdmin && hasLoaded" class="topRow">
   <h4 style=' text-decoration: underline; width:fit-content; margin-bottom: 0px; margin-top:-10px;'>Gebruikers</h4>
+
   <div class="outerDivFlexRow">
-    <p style="margin-bottom: 0px !important; font-size: 16px">Zoek op gebruiker <i class="fa-solid fa-arrow-right"></i></p>
     <div class="colFlex">
-        <input #autoInput
+      <mat-label class='sortText'>Zoek een gebruiker <i class="fa-solid fa-arrow-down"></i></mat-label>
+
+      <input #autoInput
                nbInput
                type="text"
                (input)="onChange()"
@@ -23,13 +25,23 @@
       clear
     </button>
   </div>
-  <button style="" color="primary" mat-raised-button
-          class="form-button-black" (click)="updateUserDetails()">Bewerk gebruikergegevens</button>
+  <button *ngIf="!isUserCreate" [disabled]="selectedUser == null" color="primary" mat-raised-button class="form-button-black" (click)="updateUserDetails()">
+    <mat-icon>edit</mat-icon>
+    Bewerk<br>gebruikergegevens
+  </button>
+  <button *ngIf="!isUserCreate" (click)="toggleUserCreate()" nbButton class="addUserButton" status="primary">
+    <i class="fas fa-user-plus"></i> Gebruiker Toevoegen
+  </button>
+  <button *ngIf="isUserCreate" mat-raised-button class="form-button-close" (click)="toggleUserCreate()">Toevoegen sluiten</button>
 </div>
 
-<div  *ngIf="hasLoaded && selectedUser != null"  class='secondRow'>
+
+<user-create (outputEvent)="onAddUser()"  *ngIf="isUserCreate"></user-create>
+
+
+<div  *ngIf="hasLoaded && selectedUser != null && !isUserCreate"  class='secondRow'>
   <button color="primary" mat-raised-button
-          class="form-button3" (click)="updateUser()">Update toegewezen projecten </button>
+          class="form-button3" (click)="updateUser()">Update toegewezen<br> projecten </button>
   <div style='display:flex;flex-direction: column'>
     <div class="userInfo">
       <p class="infoText">Gebruikersnaam : <b>{{selectedUser.gebruikersnaam}}</b> </p>
@@ -41,7 +53,7 @@
 </div>
 
 
-<div  *ngIf="hasLoaded && isCompanyAdmin" cdkScrollable class="scroll-table">
+<div  *ngIf="hasLoaded && isCompanyAdmin && !isUserCreate" cdkScrollable class="scroll-table">
   <table cdkDropList class="item-list">
     <tr class="item-box">
       <th style='max-width: 100px;'>Selecteer</th>
@@ -57,10 +69,10 @@
           status="primary"></nb-checkbox>
       </td>
       <td [ngStyle]="{'color': group.isInUser ? 'blue' : 'inherit'}" style='padding-right: 15px;'>{{group.rbProjectNaam}}</td>
-      <td>{{group.rbGemeente}}</td>
-      <td  style='max-width: 160px'>{{group.aannemerProjectNr}}</td>
-      <td >{{group.rbNaam}}</td>
-      <td  style='max-width: 160px'>{{group.createdDate.getDate()}}/{{group.createdDate.getMonth() + 1}}/{{group.createdDate.getFullYear()}}</td>
+      <td [ngStyle]="{'color': group.isInUser ? 'blue' : 'inherit'}">{{group.rbGemeente}}</td>
+      <td [ngStyle]="{'color': group.isInUser ? 'blue' : 'inherit'}"  style='max-width: 160px'>{{group.aannemerProjectNr}}</td>
+      <td [ngStyle]="{'color': group.isInUser ? 'blue' : 'inherit'}" >{{group.rbNaam}}</td>
+      <td [ngStyle]="{'color': group.isInUser ? 'blue' : 'inherit'}" style='max-width: 160px'>{{group.createdDate.getDate()}}/{{group.createdDate.getMonth() + 1}}/{{group.createdDate.getFullYear()}}</td>
 
     </tr>
   </table>

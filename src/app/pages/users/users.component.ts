@@ -28,6 +28,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
   hasLoaded: boolean = false;
   filterItemsNaam: User[] = [];
   observableFilteredItems$: Observable<string[]>;
+  isUserCreate: boolean = false;
   constructor(
     private apiService: ApiService,
     private formBuilder: UntypedFormBuilder,
@@ -69,7 +70,7 @@ async ngOnInit(): Promise<void> {
 }
 async ngAfterViewInit() {
     await this.delay(300);
-  if(this.formService.selectedUser != null){
+  if(this.formService.selectedUser != null && this.users.find(x => x._id === this.formService.selectedUser._id) != null){
     this.userr = this.formService.selectedUser._id;
     this.input.nativeElement.value = this.formService.selectedUser.name;
     if(this.input.nativeElement.value != null && this.input.nativeElement.value !== ''){
@@ -185,6 +186,14 @@ async ngAfterViewInit() {
   private filter(value: string): string[] {
     const filterValue = value.toLowerCase();
     return this.filterItemsNaam.filter(optionValue => optionValue.name.toLowerCase().includes(filterValue)).map(optionValue => optionValue.name);
+  }
+
+  toggleUserCreate() {
+    this.isUserCreate = !this.isUserCreate;
+  }
+
+  onAddUser() {
+    this.ngOnInit();
   }
 }
 

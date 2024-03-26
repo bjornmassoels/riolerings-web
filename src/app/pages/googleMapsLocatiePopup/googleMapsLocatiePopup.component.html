@@ -1,5 +1,8 @@
-<div style='display: flex; flex-direction: row; justify-content: space-between; align-items: center; margin-bottom: 14px;padding:16px 50px 16px 16px'>
-<h5 style='margin-bottom: 0px' mat-dialog-title>Locatie van de eerste foto van {{data.soort}}</h5>
+<div style='display: flex; flex-direction: row; justify-content: space-between; align-items: center; margin-bottom: 10px;padding:16px 50px 0px 16px'>
+  <div style="display:flex;flex-direction: column">
+    <h5 style='margin-bottom: 0px' mat-dialog-title>Locatie van de eerste foto van {{data.soort}}</h5>
+    <p style="font-weight: 500 !important;font-size:16px;text-align:center;margin-bottom: 0"><small >(Mobiele GPS is tot 4.5 meter accuraat)</small></p>
+  </div>
   <button style='border: 1px solid black' nbButton *ngIf='geschatteLocatie === ""'(click)="getEstimatedLocation()">Geschatte locatie ophalen</button>
   <p style='margin-bottom: 0px' *ngIf='geschatteLocatie !== ""'><span style='text-decoration: underline'>Geschatte gps locatie</span><br><b>{{geschatteLocatie}}</b></p>
 </div>

@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {UsersRoutingModule} from "./users.routing.module";
 import {UsersComponent} from "./users.component";
-import {NbAutocompleteModule, NbCheckboxModule, NbInputModule, NbSelectModule, NbTabsetModule} from "@nebular/theme";
+import { NbAutocompleteModule, NbButtonModule, NbCheckboxModule, NbInputModule, NbSelectModule, NbTabsetModule } from '@nebular/theme';
 import { DeleteDialogUser, UserEditComponent } from './user-edit/user-edit.component';
 import {UserCreateComponent} from "./user-create/user-create.component";
 import {MatButtonModule} from "@angular/material/button";
@@ -19,7 +19,7 @@ import { MatIconModule } from '@angular/material/icon';
     UsersRoutingModule,
     CommonModule,
     FormsModule,
-    RouterModule.forChild([{path: '', component: UsersComponent}]),
+    RouterModule.forChild([{ path: '', component: UsersComponent }]),
     ReactiveFormsModule,
     MatButtonModule,
     MatCardModule,
@@ -32,7 +32,8 @@ import { MatIconModule } from '@angular/material/icon';
     MatDialogActions,
     MatDialogContent,
     MatDialogTitle,
-    MatIconModule
+    MatIconModule,
+    NbButtonModule,
   ],
   declarations: [UsersComponent, UserCreateComponent,  UserEditComponent,  DeleteDialogUser, UserDeleteDialogComponent],
 })
