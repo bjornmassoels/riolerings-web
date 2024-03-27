@@ -7,6 +7,7 @@ import { FormService } from '../../../../services/form.service';
 import { ApiService } from '../../../../services/api.service';
 import { Company } from '../../../../models/company';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { HasChangedPopupComponent } from '../../has-changed-popup/has-changed-popup.component';
 
 @Component({
   selector: 'ngx-users-edit',
@@ -104,11 +105,25 @@ export class UserEditComponent implements OnInit {
       taal: this.user.taal
     });
     this.isLoaded = true;
+    this.editForm.valueChanges.subscribe(x => {
+      this.hasChangedValue = true;
+    });
   }
   delay(timeInMillis: number): Promise<void> {
     return new Promise((resolve) => setTimeout(() => resolve(), timeInMillis));
   }
-
+  checkChangedValue(route: string){
+    if(this.hasChangedValue){
+      this.formService.previousRoute = route;
+      const dialogRef = this.dialog.open(HasChangedPopupComponent, {
+        width:'450px',
+        height:'200px',
+        panelClass: 'mat-dialog-padding'
+      });
+    } else {
+      this.router.navigate([route]);
+    }
+  }
   onSubmit(groupData: User) {
     this.isVoornaamInvalid = false;
     this.isAchterNaamInvalid = false;
@@ -202,7 +217,7 @@ export class UserEditComponent implements OnInit {
     this.toastrService.warning(text, 'Oops!');
   }
   goBack(){
-    this.router.navigate(['/pages/users'])
+    this.checkChangedValue('/pages/users');
   }
   onDeleteClick() {
     const dialogRef = this.dialog.open(DeleteDialogUser, {

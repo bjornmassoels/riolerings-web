@@ -12,6 +12,7 @@ import {
 import { MatDialog } from '@angular/material/dialog';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { HasChangedPopupComponent } from '../../has-changed-popup/has-changed-popup.component';
 
 @Component({
   selector: 'ngx-categories-add',
@@ -345,6 +346,7 @@ export class GroupsEditComponent implements OnInit {
   thirdMogOn: boolean = false;
   private selectedGemeenteIndex: number;
   filteredGemeentes$: Observable<string[]>;
+  hasChangedValue: boolean = false;
 
   constructor(
     private formBuilder: UntypedFormBuilder,
@@ -359,7 +361,7 @@ export class GroupsEditComponent implements OnInit {
 
     route.params.subscribe((val) => {
       this._id = this.route.snapshot.paramMap.get('id');
-
+      this.hasChangedValue = false;
       this.apiService.getUsers().subscribe((x) => {
         this.allUsers = x as User[];
         this.allUsers = this.allUsers
@@ -401,10 +403,11 @@ export class GroupsEditComponent implements OnInit {
       if(a.name > b.name) return 1;
     });
   }
-  public buildForm() {
+  public async buildForm() {
     this.secondMogOn = this.group.secondMogOn;
     this.thirdMogOn = this.group.thirdMogOn;
     if(this.group.possibleKolkStreets == null) this.group.possibleKolkStreets = [];
+    let possibleKolkStreets = this.formBuilder.array(this.group.possibleKolkStreets.map(x => this.formBuilder.control(x)));
     this.addForm = this.formBuilder.group({
       //Rioolbeheerder
       rbNaam: this.group.rbNaam,
@@ -441,9 +444,17 @@ export class GroupsEditComponent implements OnInit {
       yStukMult: this.group.yStukMult == null ? 0.5 : this.group.yStukMult,
       bochtMult: this.group.bochtMult == null ? 0.3 : this.group.bochtMult,
       mofMult: this.group.mofMult == null ? 0.15 : this.group.mofMult,
-      possibleKolkStreets: this.formBuilder.array(this.group.possibleKolkStreets.map(x => this.formBuilder.control(x)))
+      possibleKolkStreets: possibleKolkStreets
     });
     this.isLoaded = true;
+    await this.delay(500);
+    this.addForm.valueChanges.subscribe(x => {
+      console.log(x)
+      this.hasChangedValue = true;
+    });
+  }
+  delay(timeInMillis: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(() => resolve(), timeInMillis));
   }
 
   async ngOnInit() {}
@@ -457,9 +468,6 @@ export class GroupsEditComponent implements OnInit {
     });
   }
 
-  compareCategoryObjects(object1: any, object2: any) {
-    return object1 && object2 && object1.id == object2.id;
-  }
   onSubmit(groupData: Group) {
     groupData._id = this.group._id;
     groupData.secondMogOn = this.secondMogOn;
@@ -527,6 +535,7 @@ export class GroupsEditComponent implements OnInit {
       'Succes!',
     );
     this.apiService.updateGroup(groupData).subscribe((x) => {
+      this.hasChangedValue = false;
       this.router.navigate(['/pages/groupview'  , this.group._id]);
     });
   }
@@ -561,9 +570,20 @@ export class GroupsEditComponent implements OnInit {
   toastBadForm() {
     this.toastrService.warning('Probeer het opnieuw', 'Oops!');
   }
-
+  checkChangedValue(route: string){
+    if(this.hasChangedValue){
+      this.formService.previousRoute = route;
+      const dialogRef = this.dialog.open(HasChangedPopupComponent, {
+        width:'450px',
+        height:'200px',
+        panelClass: 'mat-dialog-padding'
+      });
+    } else {
+      this.router.navigate([route]);
+    }
+  }
   goToPrevious() {
-    this.router.navigate(['/pages/groupview'  , this.group._id]);
+    this.checkChangedValue('/pages/groupview/'  +  this.group._id);
   }
 
   private filter(value: string): string[] {

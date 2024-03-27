@@ -11,6 +11,8 @@ import { SlokkerPostnumbers } from 'models/slokker-postnumbers';
 import { slokkerSettings } from 'models/slokkerSettings';
 import { ApiService } from 'services/api.service';
 import { FormService } from 'services/form.service';
+import { HasChangedPopupComponent } from '../../has-changed-popup/has-changed-popup.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'settings-variable',
@@ -43,7 +45,8 @@ export class SettingsVariableComponent implements OnInit {
     private route: ActivatedRoute,
     private toastrService: NbToastrService,
     private formService: FormService,
-    private router: Router
+    private router: Router,
+    private dialog: MatDialog
   ) {
     route.params.subscribe((val) => {
       this._id = this.route.snapshot.paramMap.get('id');
@@ -217,7 +220,7 @@ export class SettingsVariableComponent implements OnInit {
     });
   }
   goToPrevious() {
-    this.router.navigate(['/pages/groupview', this._id]);
+    this.checkChangedValue('/pages/groupview/' + this._id);
   }
   buildEmptyFormDWA() {
     this.dwaForm = this.formBuilder.group({
@@ -255,7 +258,18 @@ export class SettingsVariableComponent implements OnInit {
       tPutje: true,
     });
   }
-
+  checkChangedValue(route: string){
+    if(this.dwaValueChanged || this.rwaValueChanged || this.slokkerValueChanged){
+      this.formService.previousRoute = route;
+      const dialogRef = this.dialog.open(HasChangedPopupComponent, {
+        width:'450px',
+        height:'200px',
+        panelClass: 'mat-dialog-padding'
+      });
+    } else {
+      this.router.navigate([route]);
+    }
+  }
 
   changeGroupVariableSettings($event: any) {
     this.tempSelectedGroup = this.groupsWithSettings.find(x => x.rbProjectNaam === $event);

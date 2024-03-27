@@ -108,7 +108,7 @@
         </tr>
         <tr>
           <td></td>
-          <td>  <div class='nameFlex'><span *ngFor='let user of addForm.value.users' class='user'>{{convertIdToNameString(user)}}</span></div></td>
+          <td>  <div class='nameFlex'><span *ngFor='let user of addForm.get("users").value' class='user'>{{convertIdToNameString(user)}}</span></div></td>
         </tr>
         <tr>
           <mat-card-title class="title2">Werkt met ploegen/fases ?</mat-card-title>

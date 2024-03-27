@@ -23,7 +23,7 @@
    <div class='floatingContainer'>
      <div class='bochtenDiv'>
        <p style='margin-bottom: 0px;margin-top: -5px;font-size: 15px'><b>Bochten in graden? Zo ja, vink aan -></b></p>
-       <nb-checkbox [(ngModel)]='bochtenInGraden' type="checkbox" ></nb-checkbox>
+       <nb-checkbox (checkedChange)="dwaValueChanged = true" [(ngModel)]='bochtenInGraden' type="checkbox" ></nb-checkbox>
      </div>
      <span class='floating-text'>* NIEUW</span>
    </div>
