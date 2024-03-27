@@ -42,6 +42,7 @@ export class ProjectViewComponent implements OnInit,OnDestroy {
   public group: Group;
   public totalProjectCount: number;
   public isFirst: boolean = false;
+  days: string[] = ['Zondag','Maandag','Dinsdag','Woensdag','Donderdag','Vrijdag','Zaterdag'];
   public isLast: boolean = false;
   private lastProjects: Project[] = [];
   heeftPloegen: boolean;
@@ -131,6 +132,10 @@ export class ProjectViewComponent implements OnInit,OnDestroy {
       if(this.currentProject.afgewerktDatum != null){
         this.currentProject.afgewerktDatum = new Date(this.currentProject.afgewerktDatum);
       }
+      if(this.currentProject.created != null) this.currentProject.createdDate = new Date(this.currentProject.created);
+      if(this.currentProject.updated != null) this.currentProject.updated = new Date(this.currentProject.updated);
+      if(this.currentProject.lastWorkerDate != null) this.currentProject.lastWorkerDate = new Date(this.currentProject.lastWorkerDate);
+      console.log(this.currentProject)
       this.group = this.currentProject.group_id;
 
       this.heeftPloegen = this.group.heeftPloegen;
@@ -286,6 +291,9 @@ export class ProjectViewComponent implements OnInit,OnDestroy {
       height: '98vh',
       width: '50vw',
     });
+  }
+  dateToDateString(date: Date){
+    return this.days[date.getDay()].substring(0,3) + ' ' +('0' + date.getDate()).slice(-2) + '/' + ('0' + (date.getMonth() + 1)).slice(-2) + '/' + ('0' + date.getFullYear()).slice(-2);
   }
 
   ngOnDestroy(){

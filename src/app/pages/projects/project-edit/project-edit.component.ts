@@ -36,6 +36,7 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
   public index: number;
   public group: Group;
   public imagePath;
+  days: string[] = ['Zondag','Maandag','Dinsdag','Woensdag','Donderdag','Vrijdag','Zaterdag'];
 
   selectedPhoto2 = false;
   imageChangedEvent2: any = '';
@@ -113,12 +114,6 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
   async ngOnInit(): Promise<void> {
   }
 
-  Date(created: string) {
-    return new Date(created).toLocaleDateString();
-  }
-
-  onCloseClick() {
-  }
 
   onPreviousClick() {
     const index = this.lastProjects.findIndex((x) => x._id === this._id);
@@ -169,15 +164,16 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
       this.company = this.apiService.thisCompany;
       this.companyId = this.company._id;
       if (this.currentProject.lastWorkerDate != null) {
-        let timeBetweenLastEdit = Math.floor((new Date().getTime() - new Date(this.currentProject.lastWorkerDate).getTime()) / (1000 * 60 * 60));
+        this.currentProject.lastWorkerDate = new Date(this.currentProject.lastWorkerDate);
+        let timeBetweenLastEdit = Math.floor((new Date().getTime() - this.currentProject.lastWorkerDate.getTime()) / (1000 * 60 * 60));
         if (timeBetweenLastEdit < 8) {
           this.formService.workerHours = timeBetweenLastEdit;
           this.formService.workerName = this.currentProject.lastWorker.name;
           this.projectEditedByGronwderker = true;
         }
-
       }
-
+      if(this.currentProject.created != null) this.currentProject.createdDate = new Date(this.currentProject.created);
+      if(this.currentProject.updated != null)this.currentProject.updated = new Date(this.currentProject.updated);
       this.gietIjzerDWA = this.currentProject.droogWaterAfvoer.gietijzer;
       this.gietIjzerRWA = this.currentProject.regenWaterAfvoer.gietijzer;
 
@@ -437,6 +433,9 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
     } else {
       return number;
     }
+  }
+  dateToDateString(date: Date){
+    return this.days[date.getDay()].substring(0,3) + ' ' +('0' + date.getDate()).slice(-2) + '/' + ('0' + (date.getMonth() + 1)).slice(-2) + '/' + ('0' + date.getFullYear()).slice(-2);
   }
 
   async onSubmitInfo() {

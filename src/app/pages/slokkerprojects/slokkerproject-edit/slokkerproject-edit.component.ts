@@ -53,6 +53,7 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
   usersWhoEdited: string = '';
   chosenImageListIndex: number [] = [];
   group: Group;
+  days: string[] = ['Zondag','Maandag','Dinsdag','Woensdag','Donderdag','Vrijdag','Zaterdag'];
 
   public company: Company;
   public companyId;
@@ -150,13 +151,16 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
       }
 
       if(this.currentProject.lastWorkerDate != null){
-        let timeBetweenLastEdit = Math.floor((new Date().getTime() - new Date(this.currentProject.lastWorkerDate).getTime()) / (1000 * 60 * 60 ));
+        this.currentProject.lastWorkerDate = new Date(this.currentProject.lastWorkerDate);
+        let timeBetweenLastEdit = Math.floor((new Date().getTime() - this.currentProject.lastWorkerDate.getTime()) / (1000 * 60 * 60 ));
         if(timeBetweenLastEdit < 8){
           this.formService.workerHours = timeBetweenLastEdit;
           this.formService.workerName = this.currentProject.lastWorker.name;
           this.projectEditedByGronwderker = true;
         }
       }
+      if(this.currentProject.created != null) this.currentProject.createdDate = new Date(this.currentProject.created);
+      if(this.currentProject.updated != null)this.currentProject.updated = new Date(this.currentProject.updated);
       this.heeftPloegen = this.group.heeftPloegen;
         this.slokkerForm = this.formBuilder.group({
           street: this.currentProject.street,
@@ -401,7 +405,9 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
     return new Promise((resolve) => setTimeout(() => resolve(), timeInMillis));
   }
 
-
+  dateToDateString(date: Date){
+    return this.days[date.getDay()].substring(0,3) + ' ' +('0' + date.getDate()).slice(-2) + '/' + ('0' + (date.getMonth() + 1)).slice(-2) + '/' + ('0' + date.getFullYear()).slice(-2);
+  }
   deleteFoto(i: number) {
     this.photos[i] = null;
     let length = this.photos.length;

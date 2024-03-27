@@ -600,3 +600,17 @@ input::-webkit-inner-spin-button {
 .global-location-button:hover {
   background-color: #007B9E !important; /* Darker shade of blue */
 }
+.info-card {
+  text-align: center;
+  padding: 3px 7px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #fff;
+  max-width:50%;
+  margin-bottom: 0;
+}
+
+
+strong {
+  color: #007bff;
+}

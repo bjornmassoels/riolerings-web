@@ -56,6 +56,18 @@
           Bekijk locatie
         </button>
       </div>
+      <div  style='justify-content: center !important;align-items: center; gap:4px;margin-top: -6px;' class="data-container">
+        <p class="info-card">
+          Aangemaakt<br><strong>{{dateToDateString(currentProject.createdDate)}}</strong>
+        </p>
+        <p *ngIf="currentProject.createdDate.getTime() !== currentProject.updated.getTime()" class="info-card">
+          Laatst gewijzigd<br><strong>{{dateToDateString(currentProject.updated)}}</strong>
+        </p>
+        <p style="flex-grow: 1" *ngIf="currentProject.lastWorkerDate != null && currentProject.lastWorker != null" class="info-card">
+          Laatste geopend mobiele app<br>
+          <strong>{{currentProject.lastWorker.name + ' - ' + dateToDateString(currentProject.lastWorkerDate)}}</strong>
+        </p>
+      </div>
     </div>
 
     <div class="column-container">

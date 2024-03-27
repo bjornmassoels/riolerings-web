@@ -32,6 +32,8 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dial
   ],
 })
 export class SlokkerprojectViewComponent implements OnInit,OnDestroy {
+  days: string[] = ['Zondag','Maandag','Dinsdag','Woensdag','Donderdag','Vrijdag','Zaterdag'];
+
   public currentProject: SlokkerProjects;
   public company: Company;
   public hasPreviousPage: boolean = false;
@@ -152,6 +154,9 @@ export class SlokkerprojectViewComponent implements OnInit,OnDestroy {
       if(this.currentProject.afgewerktDatum != null){
         this.currentProject.afgewerktDatum = new Date(this.currentProject.afgewerktDatum);
       }
+      if(this.currentProject.created != null) this.currentProject.createdDate = new Date(this.currentProject.created);
+      if(this.currentProject.updated != null)this.currentProject.updated = new Date(this.currentProject.updated);
+      if(this.currentProject.lastWorkerDate != null)this.currentProject.lastWorkerDate = new Date(this.currentProject.lastWorkerDate);
       if (this.currentProject.latitudeList != null) {
         this.latitude =
           this.currentProject.latitudeList[
@@ -358,7 +363,9 @@ export class SlokkerprojectViewComponent implements OnInit,OnDestroy {
   deleteFoto(i: number) {
     this.currentProject[i] = null;
   }
-
+  dateToDateString(date: Date){
+    return this.days[date.getDay()].substring(0,3) + ' ' +('0' + date.getDate()).slice(-2) + '/' + ('0' + (date.getMonth() + 1)).slice(-2) + '/' + ('0' + date.getFullYear()).slice(-2);
+  }
   NullToZero(numberr: number) {
     if (numberr == null) {
       return 0;

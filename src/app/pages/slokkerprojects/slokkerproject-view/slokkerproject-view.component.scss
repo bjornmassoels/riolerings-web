@@ -566,3 +566,17 @@ p{
   justify-content: center;
   align-items: center;
 }
+.info-card {
+  text-align: center;
+  padding: 3px 7px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #fff;
+  max-width:50%;
+  margin-bottom: 0;
+}
+
+
+strong {
+  color: #007bff;
+}

@@ -29,6 +29,8 @@ import { MatDialog } from '@angular/material/dialog';
   ],
 })
 export class MeerwerkenEditComponent implements OnInit {
+  days: string[] = ['Zondag','Maandag','Dinsdag','Woensdag','Donderdag','Vrijdag','Zaterdag'];
+
   public currentProject: Meerwerk;
   public hasPreviousPage: boolean = false;
   public index: number;
@@ -133,13 +135,16 @@ export class MeerwerkenEditComponent implements OnInit {
       this.group = this.currentProject.group_id;
 
       if(this.currentProject.lastWorkerDate != null){
-        let timeBetweenLastEdit = Math.floor((new Date().getTime() - new Date(this.currentProject.lastWorkerDate).getTime()) / (1000 * 60 * 60 ));
+        this.currentProject.lastWorkerDate = new Date(this.currentProject.lastWorkerDate);
+        let timeBetweenLastEdit = Math.floor((new Date().getTime() - this.currentProject.lastWorkerDate.getTime()) / (1000 * 60 * 60 ));
         if(timeBetweenLastEdit < 8){
           this.formService.workerHours = timeBetweenLastEdit;
           this.formService.workerName = this.currentProject.lastWorker.name;
           this.projectEditedByGronwderker = true;
         }
       }
+      if(this.currentProject.created != null) this.currentProject.createdDate = new Date(this.currentProject.created);
+      if(this.currentProject.updated != null)this.currentProject.updated = new Date(this.currentProject.updated);
         this.meerwerkForm = this.formBuilder.group({
           postNumber: this.currentProject.postNumber,
           street: this.currentProject.street,
@@ -180,7 +185,9 @@ export class MeerwerkenEditComponent implements OnInit {
   goToPrevious() {
     this.router.navigate(['/pages/groupview', this.group._id]);
   }
-
+  dateToDateString(date: Date){
+    return this.days[date.getDay()].substring(0,3) + ' ' +('0' + date.getDate()).slice(-2) + '/' + ('0' + (date.getMonth() + 1)).slice(-2) + '/' + ('0' + date.getFullYear()).slice(-2);
+  }
   async onSubmitForm() {
     let meerwerk = this.meerwerkForm.value;
 

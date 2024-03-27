@@ -31,6 +31,8 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dial
   ],
 })
 export class MeerwerkenViewComponent implements OnInit {
+  days: string[] = ['Zondag','Maandag','Dinsdag','Woensdag','Donderdag','Vrijdag','Zaterdag'];
+
   public currentProject: Meerwerk;
   public company: Company;
   public hasPreviousPage: boolean = false;
@@ -141,7 +143,9 @@ export class MeerwerkenViewComponent implements OnInit {
       } else {
         this.currentProject.startDate = null;
       }
-
+      if(this.currentProject.created != null) this.currentProject.createdDate = new Date(this.currentProject.created);
+      if(this.currentProject.updated != null)this.currentProject.updated = new Date(this.currentProject.updated);
+      if(this.currentProject.lastWorkerDate != null)this.currentProject.lastWorkerDate = new Date(this.currentProject.lastWorkerDate);
       this.formService.deleteMeerwerk = this.currentProject;
       if (indexer === 0 || indexer === -1) {
         this.isFirst = true;
@@ -308,6 +312,9 @@ export class MeerwerkenViewComponent implements OnInit {
     this.dialog.open(GoogleMapsLocatiePopupComponent, {
       data: { xCoord, yCoord , soort},
     });
+  }
+  dateToDateString(date: Date){
+    return this.days[date.getDay()].substring(0,3) + ' ' +('0' + date.getDate()).slice(-2) + '/' + ('0' + (date.getMonth() + 1)).slice(-2) + '/' + ('0' + date.getFullYear()).slice(-2);
   }
 }
 @Component({
