@@ -18,6 +18,7 @@ import { GoogleMapsLocatiePopupComponent } from '../../googleMapsLocatiePopup/go
 import {AngularFireStorage} from "@angular/fire/compat/storage";
 import { MatDialog } from '@angular/material/dialog';
 import moment from 'moment/moment';
+import { HasChangedPopupComponent } from '../../has-changed-popup/has-changed-popup.component';
 
 
 @Component({
@@ -59,6 +60,7 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
   public companyId;
   projectEditedByGronwderker: boolean;
   heeftPloegen: boolean;
+  hasChangedValue: boolean = false;
   constructor(
     private formBuilder: UntypedFormBuilder,
     private apiService: ApiService,
@@ -99,12 +101,12 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
       const project = this.lastProjects[index - 1];
       if(!project.isMeerwerk){
         if(project.isSlokker == null || project.isSlokker === false){
-          this.router.navigate(['/pages/projectedit', project._id]);
+          this.checkChangedValue('/pages/projectedit/' + project._id);
         } else {
-          this.router.navigate(['/pages/slokkerprojectedit', project._id]);
+          this.checkChangedValue('/pages/slokkerprojectedit/' + project._id);
         }
       } else {
-        this.router.navigate(['/pages/meerwerkedit', project._id]);
+        this.checkChangedValue('/pages/meerwerkedit/' + project._id);
       }
     }
   }
@@ -115,12 +117,12 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
       const project = this.lastProjects[index + 1];
       if(!project.isMeerwerk){
         if(project.isSlokker == null || project.isSlokker === false){
-          this.router.navigate(['/pages/projectedit', project._id]);
+          this.checkChangedValue('/pages/projectedit/' +  project._id);
         } else {
-          this.router.navigate(['/pages/slokkerprojectedit', project._id]);
+          this.checkChangedValue('/pages/slokkerprojectedit/' + project._id);
         }
       } else {
-        this.router.navigate(['/pages/meerwerkedit', project._id]);
+        this.checkChangedValue('/pages/meerwerkedit/' + project._id);
       }
       }
     }
@@ -129,6 +131,7 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
   private loadData() {
     this.lastProjects = this.formService.lastProjects;
     this.projectEditedByGronwderker = false;
+    this.hasChangedValue = false;
     this.apiService.getSlokkerProjectById(this._id).subscribe(async(x) => {
       this.currentProject = x as SlokkerProjects;
       while(this.apiService.thisCompany == null){
@@ -240,6 +243,9 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
       } else {
         this.isLast = false;
       }
+      this.slokkerForm.valueChanges.subscribe(x => {
+        this.hasChangedValue = true;
+      });
       this.isLoaded = true;
     });
   }
@@ -248,7 +254,7 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
   }
   goToPrevious() {
     this.formService.previousIndex = this.index;
-    this.router.navigate(['/pages/groupview', this.group._id]);
+    this.checkChangedValue('/pages/groupview/' + this.group._id);
   }
   async onSubmitForm() {
     if(this.currentProject._id == null){
@@ -340,6 +346,7 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
             dialogRef.afterClosed().subscribe(() => {
               if (this.formService.isUpdated) {
                 this.chosenImageList = [];
+                this.hasChangedValue = false;
                 this.chosenImageListIndex = [];
                 if(this.newDate != null){
                   this.currentProject.startDate = realSlokkerProject.startDate;
@@ -355,6 +362,7 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
               if(this.newDate != null){
                 this.currentProject.startDate = realSlokkerProject.startDate;
               }
+              this.hasChangedValue = false;
               this.newDate = null;
             });
           }
@@ -366,6 +374,7 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
             if(this.newDate != null){
               this.currentProject.startDate = realSlokkerProject.startDate;
             }
+            this.hasChangedValue = false;
             this.newDate = null;
           });
         }
@@ -394,6 +403,7 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
     this.imagePath = file;
     reader.readAsDataURL(file);
     reader.onload = (_event) => {
+      this.hasChangedValue = true;
       this.chosenImageList.push(reader.result);
       this.chosenImageListIndex.push(i);
       if(this.currentProject.photos != null && i > 2 && this.currentProject.photos.length < 6){
@@ -422,7 +432,7 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
     if(this.currentProject.photos != null && this.currentProject.photos.length >= 3 && this.currentProject.photos.length < 6){
       this.currentProject.photos[this.currentProject.photos.length] = null;
     }
-
+    this.hasChangedValue = true;
   }
   async uploadImages() {
     const fileToUpload = this.uploadForm.get('file').value;
@@ -463,6 +473,7 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
                         dialogRef.afterClosed().subscribe(() => {
                           if (this.formService.isUpdated) {
                             this.newDate = null;
+                            this.hasChangedValue = false;
                             this.chosenImageList = [];
                             this.chosenImageListIndex = [];
                           }
@@ -473,6 +484,7 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
                           this.chosenImageList = [];
                           this.chosenImageListIndex = [];
                           this.currentProject = null;
+                          this.hasChangedValue = false;
                           this.isLoaded = false;
                           await this.delay(1000);
                           this.loadData();
@@ -484,6 +496,7 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
                         this.chosenImageList = [];
                         this.chosenImageListIndex = [];
                         this.currentProject = null;
+                        this.hasChangedValue = false;
                         this.isLoaded = false;
                         await this.delay(1000);
                         this.loadData();
@@ -510,7 +523,7 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
     this.formService.previousIndex = this.index;
   }
   goToView() {
-    this.router.navigate(['/pages/slokkerprojectview', this._id]);
+    this.checkChangedValue('/pages/slokkerprojectview/' + this._id);
   }
   changeAfgewerkt($event: boolean) {
     if($event === true){
@@ -526,7 +539,18 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
       width: '37vw',
     });
   }
-
+  checkChangedValue(route: string){
+    if(this.hasChangedValue){
+      this.formService.previousRoute = route;
+      const dialogRef = this.dialog.open(HasChangedPopupComponent, {
+        width:'450px',
+        height:'200px',
+        panelClass: 'mat-dialog-padding'
+      });
+    } else {
+      this.router.navigate([route]);
+    }
+  }
   clearAfgewerktDate() {
     this.slokkerForm.controls['afgewerktDatum'].setValue(null);
   }

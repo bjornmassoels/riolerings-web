@@ -15,6 +15,7 @@ import { GoogleMapsLocatiePopupComponent } from '../../googleMapsLocatiePopup/go
 import {AngularFireStorage} from "@angular/fire/compat/storage";
 import { MatDialog } from '@angular/material/dialog';
 import moment from 'moment';
+import { HasChangedPopupComponent } from '../../has-changed-popup/has-changed-popup.component';
 
 
 
@@ -87,6 +88,7 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
   isAndereDiameterRWA: boolean = false;
   isAndereDiameterDWAAchter: boolean = false;
   isAndereDiameterRWAAchter: boolean = false;
+  hasChangedValue: boolean = false;
 
   constructor(
     private formBuilder: UntypedFormBuilder,
@@ -121,12 +123,12 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
       const project = this.lastProjects[index - 1];
       if (!project.isMeerwerk) {
         if (project.isSlokker == null || project.isSlokker === false) {
-          this.router.navigate(['/pages/projectedit', project._id]);
+          this.checkChangedValue('/pages/projectedit/' + project._id);
         } else {
-          this.router.navigate(['/pages/slokkerprojectedit', project._id]);
+          this.checkChangedValue('/pages/slokkerprojectedit/' + project._id);
         }
       } else {
-        this.router.navigate(['/pages/meerwerkedit', project._id]);
+        this.checkChangedValue('/pages/meerwerkedit/' + project._id);
       }
     }
   }
@@ -137,12 +139,12 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
       const project = this.lastProjects[index + 1];
       if (!project.isMeerwerk) {
         if (project.isSlokker == null || project.isSlokker === false) {
-          this.router.navigate(['/pages/projectedit', project._id]);
+          this.checkChangedValue('/pages/projectedit/' + project._id);
         } else {
-          this.router.navigate(['/pages/slokkerprojectedit', project._id]);
+          this.checkChangedValue('/pages/slokkerprojectedit/' + project._id);
         }
       } else {
-        this.router.navigate(['/pages/meerwerkedit', project._id]);
+        this.checkChangedValue('/pages/meerwerkedit/' + project._id);
       }
     }
   }
@@ -155,6 +157,7 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
     this.chosenImageList2 = [];
     this.chosenImageListIndex = [];
     this.chosenImageList2Index = [];
+    this.hasChangedValue = false;
     this.apiService.getProjectById(this._id).subscribe(async (x) => {
       this.currentProject = x as Project;
       this.ploegBazen = this.currentProject.usersWhoEdited;
@@ -418,13 +421,22 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
       } else {
         this.isLast = false;
       }
+      this.infoForm.valueChanges.subscribe(x => {
+        this.hasChangedValue = true;
+      })
+      this.dwaForm.valueChanges.subscribe(x => {
+        this.hasChangedValue = true;
+      })
+      this.rwaForm.valueChanges.subscribe(x => {
+        this.hasChangedValue = true;
+      })
       this.isLoaded = true;
     });
   }
 
   goToPrevious() {
     this.formService.previousIndex = this.index;
-    this.router.navigate(['/pages/groupview', this.group._id]);
+    this.checkChangedValue('/pages/groupview/' +  this.group._id);
   }
 
   NullToZero(number) {
@@ -437,7 +449,18 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
   dateToDateString(date: Date){
     return this.days[date.getDay()].substring(0,3) + ' ' +('0' + date.getDate()).slice(-2) + '/' + ('0' + (date.getMonth() + 1)).slice(-2) + '/' + ('0' + date.getFullYear()).slice(-2);
   }
-
+  checkChangedValue(route: string){
+    if(this.hasChangedValue){
+      this.formService.previousRoute = route;
+      const dialogRef = this.dialog.open(HasChangedPopupComponent, {
+        width:'450px',
+        height:'200px',
+        panelClass: 'mat-dialog-padding'
+      });
+    } else {
+      this.router.navigate([route]);
+    }
+  }
   async onSubmitInfo() {
     const infoForm = this.infoForm.value as Project;
     this.currentProject.street = infoForm.street;
@@ -645,6 +668,7 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
             dialogRef.afterClosed().subscribe(() => {
               if (this.formService.isUpdated) {
                 this.chosenImageList = [];
+                this.hasChangedValue = false;
                 this.chosenImageList2 = [];
                 this.chosenImageListIndex = [];
                 this.chosenImageList2Index = [];
@@ -656,6 +680,7 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
           } else {
             await this.apiService.updateProject(this.currentProject).subscribe(async () => {
               this.toastrService.success('De aansluiting is gewijzigd', 'Succes!');
+              this.hasChangedValue = false;
               this.chosenImageList = [];
               this.chosenImageList2 = [];
               this.chosenImageListIndex = [];
@@ -668,6 +693,7 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
         } else {
           await this.apiService.updateProject(this.currentProject).subscribe(async () => {
             this.toastrService.success('De aansluiting is gewijzigd', 'Succes!');
+            this.hasChangedValue = false;
             this.chosenImageList = [];
             this.chosenImageList2 = [];
             this.chosenImageListIndex = [];
@@ -718,6 +744,7 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
       if (this.currentProject.photosRWA != null && i > 4 && this.currentProject.photosRWA.length < 7) {
         this.currentProject.photosRWA[this.currentProject.photosRWA.length] = null;
       }
+      this.hasChangedValue = true;
       this.isFotoRWA = true;
     };
   }
@@ -740,6 +767,7 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
       if (this.currentProject.photosDWA != null && i > 4 && this.currentProject.photosDWA.length < 7) {
         this.currentProject.photosDWA[this.currentProject.photosDWA.length] = null;
       }
+      this.hasChangedValue = true;
       this.isFotoDWA = true;
     };
   }
@@ -785,6 +813,7 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
                               this.newDate = null;
                               this.chosenImageList = [];
                               this.chosenImageList2 = [];
+                              this.hasChangedValue = false;
                               this.chosenImageListIndex = [];
                               this.chosenImageList2Index = [];
                             }
@@ -800,6 +829,7 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
                             this.isLoaded = false;
                             this.usersWhoEdited = '';
                             this.newDate = null;
+                            this.hasChangedValue = false;
                             this.toastrService.success('De aansluiting is gewijzigd', 'Succes!');
                             await this.delay(1000);
                             this.loadData();
@@ -816,6 +846,7 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
                           this.newDate = null;
                           this.usersWhoEdited = '';
                           this.isLoaded = false;
+                          this.hasChangedValue = false;
                           this.toastrService.success('De aansluiting is gewijzigd', 'Succes!');
                           await this.delay(1000);
                           this.loadData();
@@ -863,6 +894,7 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
                           dialogRef.afterClosed().subscribe(() => {
                             if (this.formService.isUpdated) {
                               this.newDate = null;
+                              this.hasChangedValue = false;
                               this.chosenImageList = [];
                               this.chosenImageList2 = [];
                               this.chosenImageListIndex = [];
@@ -881,6 +913,7 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
                             this.isLoaded = false;
                             this.newDate = null;
                             this.usersWhoEdited = '';
+                            this.hasChangedValue = false;
                             this.toastrService.success('De aansluiting is gewijzigd', 'Succes!');
                             await this.delay(1000);
                             this.loadData();
@@ -897,6 +930,7 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
                           this.newDate = null;
                           this.usersWhoEdited = '';
                           this.isLoaded = false;
+                          this.hasChangedValue = false;
                           this.toastrService.success('De aansluiting is gewijzigd', 'Succes!');
                           await this.delay(1000);
                           this.loadData();
@@ -962,6 +996,7 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
                                         });
                                         dialogRef.afterClosed().subscribe(() => {
                                           if (this.formService.isUpdated) {
+                                            this.hasChangedValue = false;
                                             this.newDate = null;
                                             this.chosenImageList = [];
                                             this.chosenImageList2 = [];
@@ -979,6 +1014,7 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
                                           this.isLoaded = false;
                                           this.newDate = null;
                                           this.usersWhoEdited = '';
+                                          this.hasChangedValue = false;
                                           this.toastrService.success('De aansluiting is gewijzigd', 'Succes!');
                                           await this.delay(1000);
                                           this.loadData();
@@ -994,6 +1030,7 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
                                         this.isLoaded = false;
                                         this.newDate = null;
                                         this.usersWhoEdited = '';
+                                        this.hasChangedValue = false;
 
                                         this.toastrService.success('De aansluiting is gewijzigd', 'Succes!');
                                         await this.delay(1000);
@@ -1028,7 +1065,7 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
   }
 
   goToView() {
-    this.router.navigate(['/pages/projectview', this._id]);
+    this.checkChangedValue('/pages/projectview/' + this._id);
   }
 
   editGietijzerDWA() {
@@ -1081,6 +1118,7 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
     if (this.currentProject.photosDWA != null && this.currentProject.photosDWA.length >= 5 && this.currentProject.photosDWA.length < 7) {
       this.currentProject.photosDWA[this.currentProject.photosDWA.length] = null;
     }
+    this.hasChangedValue = true;
   }
   clearDate() {
     this.infoForm.controls['startDate'].setValue(null);
@@ -1098,6 +1136,7 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
     if (this.currentProject.photosRWA != null && this.currentProject.photosRWA.length >= 5 && this.currentProject.photosRWA.length < 7) {
       this.currentProject.photosRWA[this.currentProject.photosRWA.length] = null;
     }
+    this.hasChangedValue = true;
   }
 
   setDate(event) {

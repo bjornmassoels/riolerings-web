@@ -215,7 +215,7 @@ export class ProjectViewComponent implements OnInit,OnDestroy {
   async onDeleteProject() {
     let dialogRef = this.dialog.open(ProjectViewDeleteDialogComponent, {
       height: '19vh',
-      width: '27vw',
+      width: '29vw',
     });
 
     // this.formService._allProjects = this.formService._allProjects.filter(project => (

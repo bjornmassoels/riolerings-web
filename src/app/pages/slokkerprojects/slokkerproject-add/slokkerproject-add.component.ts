@@ -11,6 +11,8 @@ import { Company } from 'models/company';
 import {Group} from "../../../../models/groups";
 import { User } from 'models/user';
 import {AngularFireStorage} from "@angular/fire/compat/storage";
+import { HasChangedPopupComponent } from '../../has-changed-popup/has-changed-popup.component';
+import { MatDialog } from '@angular/material/dialog';
 
 
 @Component({
@@ -51,6 +53,7 @@ export class SlokkerprojectAddComponent implements OnInit {
 
   public company: Company;
   public companyId;
+  hasChangedValue: boolean = false;
 
   constructor(
     private formBuilder: UntypedFormBuilder,
@@ -59,7 +62,8 @@ export class SlokkerprojectAddComponent implements OnInit {
     private router: Router,
     private formService: FormService,
     private toastrService: NbToastrService,
-    private storage: AngularFireStorage
+    private storage: AngularFireStorage,
+    private dialog: MatDialog
   ) {
     route.params.subscribe((val) => {
       this.isLoaded = false;
@@ -87,6 +91,7 @@ export class SlokkerprojectAddComponent implements OnInit {
     return (typeof value === 'number' || (typeof value === 'string' && value.trim() !== '')) && !isNaN(value as any) && isFinite(value as any);
   }
   private loadData() {
+    this.hasChangedValue = false;
     this.apiService.getGroupById(this._id).subscribe( async x => {
       this.group = x as Group;
       this.lastSlokkerIndexFound = Math.max.apply(Math, this.group.slokkerProjectList.map(
@@ -156,14 +161,28 @@ export class SlokkerprojectAddComponent implements OnInit {
         this.uploadForm = this.formBuilder.group({
           file: ['']
         });
+        this.slokkerForm.valueChanges.subscribe(x => {
+          this.hasChangedValue = true;
+        });
         this.isLoaded = true;
       });
   }
 
   goToPrevious() {
-    this.router.navigate(['/pages/groupview/' + this._id]);
+    this.checkChangedValue('/pages/groupview/' + this._id);
   }
-
+  checkChangedValue(route: string){
+    if(this.hasChangedValue){
+      this.formService.previousRoute = route;
+      const dialogRef = this.dialog.open(HasChangedPopupComponent, {
+        width:'450px',
+        height:'200px',
+        panelClass: 'mat-dialog-padding'
+      });
+    } else {
+      this.router.navigate([route]);
+    }
+  }
   onSubmitForm() {
     let slokkerProject = this.slokkerForm.value;
 
@@ -223,6 +242,7 @@ export class SlokkerprojectAddComponent implements OnInit {
     if(this.chosenImageList == null || this.chosenImageList.length === 0){
       this.apiService.createSlokkerProject(this.slokkerProjectSend, this._id).subscribe(x => {
         this.currentProject = null;
+        this.hasChangedValue = false;
         this.chosenImageList = [];
         this.chosenImageListIndex = [];
         this.isLoaded = false;
@@ -314,6 +334,7 @@ export class SlokkerprojectAddComponent implements OnInit {
                     this.currentProject = null;
                     this.chosenImageList = [];
                     this.chosenImageListIndex = [];
+                    this.hasChangedValue = false;
                     this.isLoaded = false;
                     this.loadData();
                   });
@@ -329,14 +350,5 @@ export class SlokkerprojectAddComponent implements OnInit {
   onSubmit(value: any) {
 
   }
-  changeAfgewerkt($event: boolean) {
-    if($event === true){
-      this.currentProject.afgewerktDatum = new Date();
-    } else {
-      this.currentProject.afgewerktDatum = null;
-    }
-  }
-  goToView() {
-    this.router.navigate(['/pages/slokkerprojectview', this._id]);
-  }
+
 }

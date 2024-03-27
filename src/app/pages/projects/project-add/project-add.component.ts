@@ -11,6 +11,8 @@ import {Group} from "../../../../models/groups";
 import {Waterafvoer} from "../../../../models/waterafvoer";
 import {NbAuthService} from "@nebular/auth";
 import {AngularFireStorage} from "@angular/fire/compat/storage";
+import { HasChangedPopupComponent } from '../../has-changed-popup/has-changed-popup.component';
+import { MatDialog } from '@angular/material/dialog';
 
 
 @Component({
@@ -69,6 +71,7 @@ export class ProjectAddComponent implements OnInit {
   isAndereDiameterRWA: boolean = false;
   isAndereDiameterDWAAchter: boolean = false;
   isAndereDiameterRWAAchter: boolean = false;
+  hasChangedValue: boolean = false;
   constructor(
     private formBuilder: UntypedFormBuilder,
     private apiService: ApiService,
@@ -77,7 +80,8 @@ export class ProjectAddComponent implements OnInit {
     private formService: FormService,
     private toastrService: NbToastrService,
     private storage: AngularFireStorage,
-    private authService: NbAuthService
+    private authService: NbAuthService,
+    private dialog: MatDialog
   ) {
     router.events.subscribe((event) => {
       if(event instanceof NavigationEnd) {
@@ -92,6 +96,7 @@ export class ProjectAddComponent implements OnInit {
   }
 
   private loadData() {
+      this.hasChangedValue = false;
       this.isAnderPutjeDWA = false;
       this.isAnderPutjeRWA = false;
       this.isAndereDiameterDWA = false;
@@ -270,12 +275,21 @@ export class ProjectAddComponent implements OnInit {
             diameterAchterAndere: this.currentProject.regenWaterAfvoer.diameterAchterAndere,
             tPutje: this.currentProject.regenWaterAfvoer.tPutje
           });
+          this.infoForm.valueChanges.subscribe(x => {
+            this.hasChangedValue = true;
+          });
+          this.dwaForm.valueChanges.subscribe(x => {
+            this.hasChangedValue = true;
+          });
+          this.rwaForm.valueChanges.subscribe(x => {
+            this.hasChangedValue = true;
+          });
         this.isLoaded = true;
       });
 }
 
   goToPrevious() {
-    this.router.navigate(['/pages/groupview', this._id]);
+    this.checkChangedValue('/pages/groupview/' + this._id);
   }
 
 
@@ -478,6 +492,7 @@ export class ProjectAddComponent implements OnInit {
         await this.apiService.updateProject(this.currentProject).subscribe(x=> {
           this.toastrService.success( 'De aansluiting is aangemaakt', 'Succes!');
           this.currentProject = null;
+          this.hasChangedValue = false;
           this.isLoaded = false;
           this.loadData();
         });
@@ -493,7 +508,18 @@ export class ProjectAddComponent implements OnInit {
     return name;
   }
 
-
+  checkChangedValue(route: string){
+    if(this.hasChangedValue){
+      this.formService.previousRoute = route;
+      const dialogRef = this.dialog.open(HasChangedPopupComponent, {
+        width:'450px',
+        height:'200px',
+        panelClass: 'mat-dialog-padding'
+      });
+    } else {
+      this.router.navigate([route]);
+    }
+  }
   onFileSelect2(event, i:number) {          //RWA
     let file2;
 

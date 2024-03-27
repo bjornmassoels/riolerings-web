@@ -14,6 +14,7 @@ export class FormService {
   filterTussenDateEndString: string;
   previousDateSorteer: string;
   previousSorteer: string;
+  previousRoute: string;
 
   get currentSlokkerProjects(): SlokkerProjects[] {
     return this._currentSlokkerProjects;
