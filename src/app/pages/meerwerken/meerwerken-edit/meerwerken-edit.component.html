@@ -25,16 +25,13 @@
   <div class="row-container">
     <div class="column-container">
       <div class="data-container">
-        <p class="label-text">Start datum</p>
-        <div class="startDiv">
-          <p class="startText">Wijzig startdatum -></p>
-          <input [nbDatepicker]="datepicker">
-          <nb-datepicker (dateChange)="setDate($event)" #datepicker></nb-datepicker>
+        <div style="min-height: 50px;margin-top: -8px" class="largeInsideRow">
+          <p style="margin-bottom: 0;min-width: 135px" class="label-text">Start datum </p>
+
+          <input class="selectBox" nbInput placeholder="Kies een datum" formControlName="startDate" [nbDatepicker]="datePicker">
+          <nb-datepicker  #datePicker></nb-datepicker>
+          <button (click)="clearDate()" class="clear-button">Clear</button>
         </div>
-        <p class="data-text" *ngIf="currentProject.startDate == null;else dateTekst">Nog niet gestart</p>
-        <ng-template #dateTekst>
-          <p class="data-text">{{currentProject.startDate == null ? '' : currentProject.startDate | date: 'dd/MM/yyyy'}}</p>
-        </ng-template>
       </div>
       <div class="data-container">
         <p class="label-text">Plaats/straat</p>
@@ -48,7 +45,7 @@
         <p class="label-text">Postnummer (optioneel)</p>
         <input class="normalInput" nbInput type="text" formControlName="postNumber" />
       </div>
-      <div style='margin-top: 15px;' class='data-container'>
+      <div style='margin-top: 15px;margin-bottom: 15px;' class='data-container'>
         <button *ngIf='currentProject.xCoordGeoLocationFirsPhoto != null || currentProject.yCoordGeoLocationFirsPhoto != null'
                 nbButton
                 class="global-location-button"

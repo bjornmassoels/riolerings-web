@@ -17,6 +17,8 @@ import {
 import { GoogleMapsLocatiePopupComponent } from '../../googleMapsLocatiePopup/googleMapsLocatiePopup.component';
 import {AngularFireStorage} from "@angular/fire/compat/storage";
 import { MatDialog } from '@angular/material/dialog';
+import { HasChangedPopupComponent } from '../../has-changed-popup/has-changed-popup.component';
+import moment from 'moment';
 
 
 
@@ -58,6 +60,7 @@ export class MeerwerkenEditComponent implements OnInit {
   public companyId;
   projectEditedByGronwderker: boolean;
   heeftPloegen: boolean;
+  hasChangedValue: boolean = false;
   constructor(
     private formBuilder: UntypedFormBuilder,
     private apiService: ApiService,
@@ -84,13 +87,6 @@ export class MeerwerkenEditComponent implements OnInit {
   async ngOnInit(): Promise<void> {
   }
 
-  Date(created: string) {
-    return new Date(created).toLocaleDateString();
-  }
-
-
-  onCloseClick() {
-  }
 
   onPreviousClick() {
     const index = this.lastProjects.findIndex(x => x._id === this._id);
@@ -98,12 +94,12 @@ export class MeerwerkenEditComponent implements OnInit {
       const project = this.lastProjects[index - 1];
       if(!project.isMeerwerk){
         if(project.isSlokker == null || project.isSlokker === false){
-          this.router.navigate(['/pages/projectedit', project._id]);
+          this.checkChangedValue('/pages/projectedit/' + project._id);
         } else {
-          this.router.navigate(['/pages/slokkerprojectedit', project._id]);
+          this.checkChangedValue('/pages/slokkerprojectedit/' + project._id);
         }
       } else {
-        this.router.navigate(['/pages/meerwerkedit', project._id]);
+        this.checkChangedValue('/pages/meerwerkedit/' +  project._id);
       }
     }
   }
@@ -114,23 +110,23 @@ export class MeerwerkenEditComponent implements OnInit {
       const project = this.lastProjects[index + 1];
       if(!project.isMeerwerk){
         if(project.isSlokker == null || project.isSlokker === false){
-          this.router.navigate(['/pages/projectedit', project._id]);
+          this.checkChangedValue('/pages/projectedit/' + project._id);
         } else {
-          this.router.navigate(['/pages/slokkerprojectedit', project._id]);
+          this.checkChangedValue('/pages/slokkerprojectedit/' + project._id);
         }
       } else {
-        this.router.navigate(['/pages/meerwerkedit', project._id]);
+        this.checkChangedValue('/pages/meerwerkedit/' + project._id);
       }
       }
     }
 
 
   private loadData() {
+    this.hasChangedValue = false;
     this.lastProjects = this.formService.lastProjects;
     this.projectEditedByGronwderker = false;
     this.apiService.getMeerwerkById(this._id).subscribe(async (x) => {
       this.currentProject = x as Meerwerk;
-      this.newDate = null;
 
       this.group = this.currentProject.group_id;
 
@@ -151,7 +147,8 @@ export class MeerwerkenEditComponent implements OnInit {
           huisNr: this.currentProject.huisNr,
           minutesWorked: this.currentProject.minutesWorked != null ? this.currentProject.minutesWorked.toString() : '',
           opmerking: this.currentProject.opmerking,
-          countEmployees: this.currentProject.countEmployees != null ? this.currentProject.countEmployees.toString() : '1'
+          countEmployees: this.currentProject.countEmployees != null ? this.currentProject.countEmployees.toString() : '1',
+          startDate: this.currentProject.startDate != null ? moment(this.currentProject.startDate) : ''
         });
 
       this.uploadForm = this.formBuilder.group({
@@ -179,11 +176,14 @@ export class MeerwerkenEditComponent implements OnInit {
       this.company = this.apiService.thisCompany;
       this.companyId = this.company._id;
       this.isLoaded = true;
+      this.meerwerkForm.valueChanges.subscribe(x => {
+        this.hasChangedValue = true;
+      });
     });
   }
 
   goToPrevious() {
-    this.router.navigate(['/pages/groupview', this.group._id]);
+    this.checkChangedValue('/pages/groupview/' + this.group._id);
   }
   dateToDateString(date: Date){
     return this.days[date.getDay()].substring(0,3) + ' ' +('0' + date.getDate()).slice(-2) + '/' + ('0' + (date.getMonth() + 1)).slice(-2) + '/' + ('0' + date.getFullYear()).slice(-2);
@@ -191,9 +191,6 @@ export class MeerwerkenEditComponent implements OnInit {
   async onSubmitForm() {
     let meerwerk = this.meerwerkForm.value;
 
-    if(this.newDate != null){
-      meerwerk.startDate = this.newDate;
-    }
     if(this.currentProject._id == null){
       meerwerk._id = this.currentProject.id;
     } else{
@@ -217,6 +214,7 @@ export class MeerwerkenEditComponent implements OnInit {
             dialogRef.afterClosed().subscribe(() => {
               if (this.formService.isUpdated) {
                 this.newDate = null;
+                this.hasChangedValue = false;
                 this.chosenImageList = [];
                 this.chosenImageListIndex = [];
               }
@@ -227,8 +225,9 @@ export class MeerwerkenEditComponent implements OnInit {
               this.chosenImageList = [];
               this.chosenImageListIndex = [];
               this.currentProject = null;
+              this.hasChangedValue = false;
               this.isLoaded = false;
-              await this.delay(1000);
+              await this.delay(100);
               this.loadData();
             });
           }
@@ -239,7 +238,8 @@ export class MeerwerkenEditComponent implements OnInit {
             this.chosenImageListIndex = [];
             this.currentProject = null;
             this.isLoaded = false;
-            await this.delay(1000);
+            this.hasChangedValue = false;
+            await this.delay(100);
             this.loadData();
           });
         }
@@ -270,7 +270,8 @@ export class MeerwerkenEditComponent implements OnInit {
     reader.onload = (_event) => {
       this.chosenImageList.push(reader.result);
       this.chosenImageListIndex.push(i);
-    }
+      this.hasChangedValue = true;
+    };
   }
   delay(timeInMillis: number): Promise<void> {
     return new Promise((resolve) => setTimeout(() => resolve(), timeInMillis));
@@ -283,8 +284,24 @@ export class MeerwerkenEditComponent implements OnInit {
       width: '37vw',
     });
   }
+  checkChangedValue(route: string){
+    if(this.hasChangedValue){
+      this.formService.previousRoute = route;
+      const dialogRef = this.dialog.open(HasChangedPopupComponent, {
+        width:'450px',
+        height:'200px',
+        panelClass: 'mat-dialog-padding'
+      });
+    } else {
+      this.router.navigate([route]);
+    }
+  }
+  clearDate() {
+    this.meerwerkForm.controls['startDate'].setValue(null);
+  }
   deleteFoto(i: number) {
     this.photos[i] = null;
+    this.hasChangedValue = true;
   }
   async uploadImages() {
     const fileToUpload = this.uploadForm.get('file').value;
@@ -325,6 +342,7 @@ export class MeerwerkenEditComponent implements OnInit {
                         dialogRef.afterClosed().subscribe(() => {
                           if (this.formService.isUpdated) {
                             this.newDate = null;
+                            this.hasChangedValue = false;
                             this.chosenImageList = [];
                             this.chosenImageListIndex = [];
                           }
@@ -335,8 +353,9 @@ export class MeerwerkenEditComponent implements OnInit {
                           this.chosenImageList = [];
                           this.chosenImageListIndex = [];
                           this.currentProject = null;
+                          this.hasChangedValue = false;
                           this.isLoaded = false;
-                          await this.delay(1000);
+                          await this.delay(100);
                           this.loadData();
                         });
                       }
@@ -346,8 +365,9 @@ export class MeerwerkenEditComponent implements OnInit {
                         this.chosenImageList = [];
                         this.chosenImageListIndex = [];
                         this.currentProject = null;
+                        this.hasChangedValue = false;
                         this.isLoaded = false;
-                        await this.delay(1000);
+                        await this.delay(100);
                         this.loadData();
                       });
                     }
@@ -370,7 +390,7 @@ export class MeerwerkenEditComponent implements OnInit {
     });
   }
   goToView() {
-    this.router.navigate(['/pages/meerwerkview', this._id]);
+    this.checkChangedValue('/pages/meerwerkview/' + this._id);
   }
   setDate(event) {
     if(event !== ''){

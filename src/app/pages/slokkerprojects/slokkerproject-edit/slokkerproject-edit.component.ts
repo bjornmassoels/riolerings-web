@@ -486,7 +486,7 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
                           this.currentProject = null;
                           this.hasChangedValue = false;
                           this.isLoaded = false;
-                          await this.delay(1000);
+                          await this.delay(100);
                           this.loadData();
                         });
                       }
@@ -498,7 +498,7 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
                         this.currentProject = null;
                         this.hasChangedValue = false;
                         this.isLoaded = false;
-                        await this.delay(1000);
+                        await this.delay(100);
                         this.loadData();
                       });
                     }
