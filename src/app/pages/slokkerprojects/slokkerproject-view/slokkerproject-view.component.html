@@ -2,10 +2,10 @@
   <button  mat-raised-button class="form-button" (click)="goToPrevious()">
     Terug
   </button>
-  <button *ngIf="!isFirst" mat-raised-button class="form-button" (click)="onPreviousClick()">
+  <button *ngIf="index !== -1" [disabled]="isFirst" mat-raised-button class="form-button" (click)="onPreviousClick()">
     Vorige
   </button>
-  <button *ngIf="!isLast" mat-raised-button class="form-button" (click)="onNextClick()">
+  <button *ngIf="index !== -1" [disabled]="isLast" mat-raised-button class="form-button" (click)="onNextClick()">
     Volgende
   </button>
   <button mat-raised-button class="form-button-blue" (click)="goToEdit()">
@@ -273,10 +273,10 @@
   <button mat-raised-button class="form-button" (click)="goToPrevious()">
     Terug
   </button>
-  <button *ngIf="!isFirst" mat-raised-button class="form-button" (click)="onPreviousClick()">
+  <button *ngIf="index !== -1" [disabled]="isFirst" mat-raised-button class="form-button" (click)="onPreviousClick()">
     Vorige
   </button>
-  <button *ngIf="!isLast" mat-raised-button class="form-button" (click)="onNextClick()">
+  <button *ngIf="index !== -1" [disabled]="isLast" mat-raised-button class="form-button" (click)="onNextClick()">
     Volgende
   </button>
   <button mat-raised-button class="form-button-blue" (click)="goToEdit()">
