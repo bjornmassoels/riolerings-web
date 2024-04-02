@@ -33,7 +33,6 @@ export class RegisterPageComponent implements OnInit {
       gebruikersnaam:  ['',Validators.required],
       password:  ['',Validators.required],
       password2:  ['',Validators.required],
-      bedrijfsnaam:  ['',Validators.required],
       code:  ['',Validators.required],
       email:  ['',Validators.required]
     });
