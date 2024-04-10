@@ -5,7 +5,7 @@
  */
 export const environment = {
   production: true,
-  apiURL: 'https://selux-backend.herokuapp.com/api',
+  apiURL: 'https://selux-riolering-test.herokuapp.com/api',
 
   firebaseConfig: {
     apiKey: "AIzaSyB-453yQHdTshJuNbfQEAoOa1S4FlOs1V4",
