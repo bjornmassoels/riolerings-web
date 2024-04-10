@@ -886,7 +886,7 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
       if (this.socket == null) {
 
         try {
-          this.socket = io('https://selux-backend.herokuapp.com',
+          this.socket = io(' https://selux-riolering-test.herokuapp.com',
             {
               transports: ['websocket'],
               reconnection: true,
