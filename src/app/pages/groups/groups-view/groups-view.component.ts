@@ -901,6 +901,8 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
 
           this.socket.on('progress', (data: number) => {
             this.progress = data;
+            console.log(this.progress)
+            console.log(this.pdfProgressBlocksPer4)
             //fix voor laatste, is niet altijd per 2
             if(this.pdfProgressBlocksPer4.length === 1){
               this.pdfProgressBlocksPer4 = [];
