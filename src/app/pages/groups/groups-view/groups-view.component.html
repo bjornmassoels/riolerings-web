@@ -68,9 +68,6 @@
     <p *ngIf='!isDownloading && pdfProgressBlocks != null && pdfProgressBlocks.length !== 0' style="font-size: 16px; font-weight: 600; padding-left: 10px;padding-right: 10px; text-align:center;margin:5px 0"> We zijn bezig met het genereren van de fiches in PDF. Gelieve even te wachten...<br>
     </p>
     <br>
-    <p *ngIf='!isDownloading && moreThan50PDFs' style="font-size: 17px; font-weight: 600; padding-left: 10px;padding-right: 10px; text-align:center; color:orange;margin:5px 0"> Opmerking: U heeft meer dan 70 aansluitingen gekozen om te downloaden.<br>
-      Wij verzoeken u dit niet te frequent te doen om overbelasting van onze server te voorkomen.
-    </p>
     <p *ngIf='!isDownloading && pdfProgressBlocks != null &&  pdfProgressBlocks.length === 0' style="font-size: 17px; font-weight: 600; padding-left: 10px;padding-right: 10px;  text-align:center;margin:5px 0">De fiches worden momenteel in een zip bestand geplaatst. Even geduld aub...<br>
     </p>
     <p *ngIf='isDownloading'  style="font-size: 17px; font-weight: 600; padding-left: 10px;padding-right: 10px;margin:5px 0">De fiches worden momenteel gedownload...Even geduld aub</p>
