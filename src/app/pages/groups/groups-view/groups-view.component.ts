@@ -925,6 +925,15 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
             console.log('Connection error:', error);
             reject(error);
           });
+          this.socket.on('fatal_error', (error) => {
+            console.log('Fatal error:', error);
+            this.toastrService.warning(
+              'Er is een fout opgetreden bij het genereren van de PDF. Probeer het later opnieuw.',
+              'Error',
+              { duration: 4000 },
+            );
+            reject(error);
+          });
         } catch (e) {
           console.log(e)
         }
