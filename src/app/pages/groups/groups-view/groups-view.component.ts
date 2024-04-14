@@ -839,7 +839,7 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
               );
 
               this.pdfProgressBlocks = [];
-              for(let i = 0; i < this.totalProjectCount; i+=+){
+              for(let i = 0; i < this.totalProjectCount; i++){
                 this.pdfProgressBlocks.push(i);
               }
               await this.initSocket();
