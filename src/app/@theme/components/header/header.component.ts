@@ -113,7 +113,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
   openUpdateWindow() {
     const dialogRef = this.dialog.open(UpdatePopupDialogComponent, {
-      height: '435px',
+      height: '465px',
       width: '750px',
 
     });
