@@ -449,7 +449,6 @@ export class GroupsEditComponent implements OnInit {
     this.isLoaded = true;
     await this.delay(500);
     this.addForm.valueChanges.subscribe(x => {
-      console.log(x)
       this.hasChangedValue = true;
     });
   }

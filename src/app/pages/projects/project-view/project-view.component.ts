@@ -135,7 +135,7 @@ export class ProjectViewComponent implements OnInit,OnDestroy {
       if(this.currentProject.created != null) this.currentProject.createdDate = new Date(this.currentProject.created);
       if(this.currentProject.updated != null) this.currentProject.updated = new Date(this.currentProject.updated);
       if(this.currentProject.lastWorkerDate != null) this.currentProject.lastWorkerDate = new Date(this.currentProject.lastWorkerDate);
-      console.log(this.currentProject)
+
       this.group = this.currentProject.group_id;
 
       this.heeftPloegen = this.group.heeftPloegen;

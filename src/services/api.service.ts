@@ -549,7 +549,7 @@ export class ApiService {
       userid: this.userId,
       pdfBenaming: pdfBenaming
     });
-    console.log(pdfIds)
+
     return this.http.post(
       this.apiURL + '/makePDF',
       JSON.stringify(pdfIds),

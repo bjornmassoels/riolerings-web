@@ -74,7 +74,6 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
   totalProjectCount: number;
   isDownloading: boolean = false;
   isGeneratingPDF: boolean;
-  moreThan50PDFs: boolean;
   filterStraatText: string = '';
   dateSorteer: string;
   pdfProgressBlocks: number[];
@@ -131,7 +130,6 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
     this.filterStraatText = '';
     this.isDownloading = false;
     this.selectEverything = false;
-    this.moreThan50PDFs = false;
     this.dateSorteer = 'Afwerkingsdatum';
     this.apiService.getGroupByIdLighterVersion(groupId).subscribe(async (x) => {
       this.group = x as unknown as Group;
@@ -823,11 +821,7 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
                 this.isDownloading = false;
                 return;
               }
-              if(this.totalProjectCount > 70){
-                this.moreThan50PDFs = true;
-              } else {
-                this.moreThan50PDFs = false;
-              }
+
               this.isLoadingBar = true;
               this.pdfProgress = '';
               this.isDownloading = false;
@@ -901,9 +895,6 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
 
           this.socket.on('progress', (data: number) => {
             this.progress = data;
-            console.log(this.progress)
-            console.log(this.pdfProgressBlocks)
-
             this.pdfProgressBlocks = this.pdfProgressBlocks.filter(x => x !== data);
           });
 
