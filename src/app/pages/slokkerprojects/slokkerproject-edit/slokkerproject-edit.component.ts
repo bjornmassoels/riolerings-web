@@ -415,6 +415,15 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
     return new Promise((resolve) => setTimeout(() => resolve(), timeInMillis));
   }
 
+  getCorrespondingTemporaryImage(i: number) {
+    let index = this.chosenImageListIndex.indexOf(i);
+    if(index !== -1){
+      return this.chosenImageList[index];
+    } else {
+      return false;
+    }
+  }
+
   dateToDateString(date: Date){
     return this.days[date.getDay()].substring(0,3) + ' ' +('0' + date.getDate()).slice(-2) + '/' + ('0' + (date.getMonth() + 1)).slice(-2) + '/' + ('0' + date.getFullYear()).slice(-2);
   }

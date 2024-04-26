@@ -316,7 +316,7 @@
     </div>
 
     <div *ngFor="let photo of photos; let i = index">
-      <div [ngClass]="photo == null ? 'smallFotoColumn' : ''" *ngIf="photos.length < 7" class="fotoColumn">
+      <div [ngClass]="photo == null && !getCorrespondingTemporaryImage(i) ? 'smallFotoColumn' : ''" *ngIf="photos.length < 7" class="fotoColumn">
         <div  class="innerColumn">
         <input *ngIf="photo != null" (click)="deleteFoto(i)" type="button" value="Verwijder" class="deleteButton">
         <p class="fotoText" *ngIf="i === 0">1. boring of opening van aansluiting op hoofdriool</p>
@@ -324,26 +324,19 @@
           niet alle hulpstukken te zien zijn, eventueel ook foto vanuit omgekeerd standpunt</p>
         <p class="fotoText" *ngIf="i === 2">3. zelfde als foto 2, maar met omhulling</p>
         <p class="fotoText" *ngIf="i > 2">{{i + 1}}. extra foto (optioneel)</p>
-        <img *ngIf="photo != null" src="{{photo}}" (click)="imagePopUp(photo)" class="photo" name="photo" >
-          <p *ngIf="photo == null" style="margin-top: 30px;font-size: 18px;font-weight: 600" >Geen foto</p>
-        </div>
-        <div class="upload-container">
-          <input class="" *ngIf="photo == null" type="file" name="file" (change)="onFileSelect($event,i)"
-          accept=".png,.jpg,.jpeg,.tiff" class="uploadButton" />
-        </div>
+          <img *ngIf="photo" [src]="photo" (click)="imagePopUp(photo)" class="photo" name="photo">
+          <img *ngIf="photo == null && getCorrespondingTemporaryImage(i)" [src]="getCorrespondingTemporaryImage(i)" (click)="imagePopUp(getCorrespondingTemporaryImage(i))" class="photo" name="photo">
 
+          <p *ngIf="!photo && !getCorrespondingTemporaryImage(i)" style="margin-top: 30px;font-size: 18px;font-weight: 600">Geen foto</p>
+          <div *ngIf="photo == null && !getCorrespondingTemporaryImage(i)" class="upload-container-empty">
+            <h3 style="font: 400 16px / 28px Roboto, sans-serif;">Voeg foto toe</h3>
+            <input type="file" name="file" (change)="onFileSelect($event,i)"
+                   accept=".png,.jpg,.jpeg,.tiff" class="uploadButton" />
+          </div>
+        </div>
+        <p style="width:100%;text-align:center;margin-top:12px;font-size:17px;font-weight:600" *ngIf="photo == null && getCorrespondingTemporaryImage(i)">Klaar om op te slaan</p>
       </div>
     </div>
-
-
-    <p class="fotoTextBig" *ngIf="chosenImageList != null && chosenImageList.length != 0">Foto's om up te loaden :</p>
-    <div *ngIf="chosenImageList != null && chosenImageList.length != 0"  class="uploadable-images-container">
-      <div *ngFor="let image of chosenImageList; let i = index">
-        <p class="fotoText">Foto {{chosenImageListIndex[i] + 1}}:</p>
-        <img [src]="image" (click)="imagePopUp(image)" class="photo" />
-      </div>
-    </div>
-
 
     <!-- <img [src]="chosenImage" height="200" *ngIf="chosenImage" class="photo"> -->
 
