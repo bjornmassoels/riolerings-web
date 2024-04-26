@@ -19,6 +19,7 @@ import {AngularFireStorage} from "@angular/fire/compat/storage";
 import { MatDialog } from '@angular/material/dialog';
 import moment from 'moment/moment';
 import { HasChangedPopupComponent } from '../../has-changed-popup/has-changed-popup.component';
+import { CdkDragDrop, CdkDragEnd, CdkDragEnter, CdkDragStart, moveItemInArray } from '@angular/cdk/drag-drop';
 
 
 @Component({
@@ -329,7 +330,17 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
     if(this.photos[this.photos.length - 1] == null && this.photos.length > 3){
       this.photos.splice(this.photos.length - 1,1);
     }
-    if(this.chosenImageList == null || this.chosenImageList.length === 0){
+    this.chosenImageList = [];
+    this.chosenImageListIndex = [];
+    if(this.photos.filter(x => x != null && x.substring(0,5) !== 'https') != null && this.photos.filter(x => x != null && x.substring(0,5) !== 'https').length > 0){
+      for(let i = 0; i < this.photos.length; i++){
+        if(this.photos[i] != null && this.photos[i].substring(0,5) !== 'https'){
+          this.chosenImageListIndex.push(i);
+          this.chosenImageList.push(this.photos[i]);
+        }
+      }
+    }
+    if(this.chosenImageList.length === 0){
       this.slokkerProjectSend.photos = this.photos;
       this.apiService.getSlokkerProjectById(this._id).subscribe(async (x) => {
         const tempProject = x as SlokkerProjects;
@@ -404,8 +415,7 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
     reader.readAsDataURL(file);
     reader.onload = (_event) => {
       this.hasChangedValue = true;
-      this.chosenImageList.push(reader.result);
-      this.chosenImageListIndex.push(i);
+      this.currentProject.photos[i] = reader.result as string;
       if(this.currentProject.photos != null && i > 2 && this.currentProject.photos.length < 6){
         this.currentProject.photos[this.currentProject.photos.length] = null;
       }
@@ -419,6 +429,33 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
     let index = this.chosenImageListIndex.indexOf(i);
     if(index !== -1){
       return this.chosenImageList[index];
+    } else {
+      return false;
+    }
+  }
+
+  entered(event: CdkDragEnter<number>): void {
+    const previousIndex = event.item.data; // Index of the dragged item
+    const currentIndex = event.container.data; // Index of the current container
+
+    this.swapItems(previousIndex, currentIndex);
+  }
+
+  swapItems(prevIndex: number, currIndex: number): void {
+    if (prevIndex !== currIndex) {
+      // Temporarily store the item at the current index
+      let temp = this.photos[currIndex];
+      // Swap the items
+      this.photos[currIndex] = this.photos[prevIndex];
+      this.photos[prevIndex] = temp;
+    }
+  }
+  checkIfIsTemporaryImage(i: number) {
+    if(this.photos[i] == null){
+      return;
+    }
+    if(this.photos[i].substring(0,5) !== 'https'){
+      return true;
     } else {
       return false;
     }
@@ -445,11 +482,9 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
   }
   async uploadImages() {
     const fileToUpload = this.uploadForm.get('file').value;
-
-    // this.toastrService.show('Foto is aan het uploaden.', 'Even geduld!');
     let counter = 0;
-
-    for(let i=0 ; i<this.chosenImageList.length; i++){
+    // this.toastrService.show('Foto is aan het uploaden.', 'Even geduld!');
+    for(let i= 0 ; i < this.chosenImageList.length; i++){
       const fileRef = this.storage.ref(this.generateRandomName());
       const task = fileRef.putString(this.chosenImageList[i], 'data_url');
 
@@ -462,10 +497,10 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
                 if(this.photos == null){
                   this.photos = [];
                 }
-                counter++;
                 let index = this.chosenImageListIndex[i];
                 this.photos[index] = url;
-                if(counter === this.chosenImageList.length){
+                counter++;
+                if(this.chosenImageList.length === counter){
                   this.slokkerProjectSend.photos = this.photos;
                   this.apiService.getSlokkerProjectById(this._id).subscribe(async (x) => {
                     const tempProject = x as SlokkerProjects;
@@ -541,11 +576,12 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
       this.slokkerForm.controls['afgewerktDatum'].setValue(null);
     }
   }
+
   imagePopUp(photo: string) {
     this.formService._chosenPhoto = photo;
     let dialogRef = this.dialog.open(ProjectViewDialogComponent, {
-      height: '98vh',
-      width: '37vw',
+      height: '94vh',
+      width: '50vw',
     });
   }
   checkChangedValue(route: string){

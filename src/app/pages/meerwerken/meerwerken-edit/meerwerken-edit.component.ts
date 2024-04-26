@@ -280,8 +280,8 @@ export class MeerwerkenEditComponent implements OnInit {
   imagePopUp(photo: string) {
     this.formService._chosenPhoto = photo;
     let dialogRef = this.dialog.open(ProjectViewDialogComponent, {
-      height: '98vh',
-      width: '37vw',
+      height: '94vh',
+      width: '50vw',
     });
   }
   checkChangedValue(route: string){

@@ -135,7 +135,7 @@ import { HasChangedPopupComponent } from './has-changed-popup/has-changed-popup.
     NbFormFieldModule,
     NbPopoverModule,
     NbButtonGroupModule,
-    NbDatepickerModule,
+    NbDatepickerModule
   ],
   declarations: [
     PagesComponent,

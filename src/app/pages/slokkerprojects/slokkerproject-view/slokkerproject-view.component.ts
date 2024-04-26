@@ -126,8 +126,8 @@ export class SlokkerprojectViewComponent implements OnInit,OnDestroy {
   imagePopUp(photo: string) {
     this.formService._chosenPhoto = photo;
     let dialogRef = this.dialog.open(SlokkerprojectViewDialogComponent, {
-      height: '98vh',
-      width: '37vw',
+      height: '94vh',
+      width: '50vw',
     });
   }
 
