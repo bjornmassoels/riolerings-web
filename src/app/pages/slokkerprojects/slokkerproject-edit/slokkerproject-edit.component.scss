@@ -98,7 +98,7 @@
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
-  align-items: center;
+  align-items: flex-start;
   flex-wrap: wrap;
   width:100%;
   gap:12px 5px;
@@ -214,7 +214,7 @@
   border-radius: 10px;
   margin-left: 6px;
   margin-right: 6px;
-  width: 246px;
+  width: 265px;
   padding-bottom: 10px;
 }
 .innerColumn {
@@ -481,7 +481,7 @@ input::-webkit-inner-spin-button {
   height: 20rem;
   width: 15rem;
   border-radius: 10px;
-  margin: 1rem;
+  margin:2px 1rem 1rem 1rem;
   box-shadow: 0px 0px 2px lightgrey;
   cursor: move;
 }
@@ -628,7 +628,7 @@ strong {
 .upload-container-empty{
   padding:6px;
   margin-top:15px;
-  width: 137px;
+  width: 139px;
   height: 76px;
   display: flex;
   flex-direction: column;

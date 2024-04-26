@@ -16,6 +16,7 @@ import {AngularFireStorage} from "@angular/fire/compat/storage";
 import { MatDialog } from '@angular/material/dialog';
 import moment from 'moment';
 import { HasChangedPopupComponent } from '../../has-changed-popup/has-changed-popup.component';
+import { CdkDragEnter } from '@angular/cdk/drag-drop';
 
 
 
@@ -654,6 +655,26 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
     }
     this.apiService.getProjectById(this._id).subscribe(async (x) => {
       const tempProject = x as Project;
+      this.chosenImageList = [];
+      this.chosenImageListIndex = [];
+      if(this.currentProject.photosDWA.filter(x => x != null && x.substring(0,5) !== 'https') != null && this.currentProject.photosDWA.filter(x => x != null && x.substring(0,5) !== 'https').length > 0){
+        for(let i = 0; i < this.currentProject.photosDWA.length; i++){
+          if(this.currentProject.photosDWA[i] != null && this.currentProject.photosDWA[i].substring(0,5) !== 'https'){
+            this.chosenImageListIndex.push(i);
+            this.chosenImageList.push(this.currentProject.photosDWA[i]);
+          }
+        }
+      }
+      this.chosenImageList2 = [];
+      this.chosenImageList2Index = [];
+      if(this.currentProject.photosRWA.filter(x => x != null && x.substring(0,5) !== 'https') != null && this.currentProject.photosRWA.filter(x => x != null && x.substring(0,5) !== 'https').length > 0){
+        for(let i = 0; i < this.currentProject.photosRWA.length; i++){
+          if(this.currentProject.photosRWA[i] != null && this.currentProject.photosRWA[i].substring(0,5) !== 'https'){
+            this.chosenImageList2Index.push(i);
+            this.chosenImageList2.push(this.currentProject.photosRWA[i]);
+          }
+        }
+      }
       if (this.chosenImageList.length === 0 && this.chosenImageList2.length === 0) {
         if (tempProject.lastWorkerDate != null) {
           let timeBetweenLastEdit = Math.floor((new Date().getTime() - new Date(tempProject.lastWorkerDate).getTime()) / (1000 * 60 * 60));
@@ -704,7 +725,7 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
           });
         }
       } else {
-        await this.uploadImages();
+        await this.uploadImages(tempProject);
       }
     });
 
@@ -739,8 +760,7 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
     this.imagePath2 = file2;
     reader2.readAsDataURL(file2);
     reader2.onload = (_event) => {
-      this.chosenImageList2.push(reader2.result);
-      this.chosenImageList2Index.push(i);
+      this.currentProject.photosRWA[i] = reader2.result as string;
       if (this.currentProject.photosRWA != null && i > 4 && this.currentProject.photosRWA.length < 7) {
         this.currentProject.photosRWA[this.currentProject.photosRWA.length] = null;
       }
@@ -762,8 +782,7 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
     this.imagePath = file;
     reader.readAsDataURL(file);
     reader.onload = (_event) => {
-      this.chosenImageList.push(reader.result);
-      this.chosenImageListIndex.push(i);
+      this.currentProject.photosDWA[i] = reader.result as string;
       if (this.currentProject.photosDWA != null && i > 4 && this.currentProject.photosDWA.length < 7) {
         this.currentProject.photosDWA[this.currentProject.photosDWA.length] = null;
       }
@@ -772,7 +791,7 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
     };
   }
 
-  async uploadImages() {
+  async uploadImages(tempProject) {
 
     const fileToUpload = this.uploadForm.get('file').value;
 
@@ -796,8 +815,6 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
                   this.currentProject.photosRWA[index] = url;
                   counter++;
                   if (counter === this.chosenImageList2.length) {
-                    this.apiService.getProjectById(this._id).subscribe(async (x) => {
-                      const tempProject = x as Project;
                       if (tempProject.lastWorkerDate != null) {
                         let timeBetweenLastEdit = Math.floor((new Date().getTime() - new Date(tempProject.lastWorkerDate).getTime()) / (1000 * 60 * 60));
                         if (timeBetweenLastEdit < 8) {
@@ -852,7 +869,6 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
                           this.loadData();
                         });
                       }
-                    });
                   }
                 }
               });
@@ -1239,6 +1255,72 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
 
   clearAfgewerktDate() {
     this.infoForm.controls['afgewerktDatum'].setValue(null);
+  }
+
+  getCorrespondingTemporaryImageDWA(i: number) {
+    let index = this.chosenImageListIndex.indexOf(i);
+    if(index !== -1){
+      return this.chosenImageList[index];
+    } else {
+      return false;
+    }
+  }
+
+  enteredDWA(event: CdkDragEnter<number>): void {
+    const previousIndex = event.item.data; // Index of the dragged item
+    const currentIndex = event.container.data; // Index of the current container
+
+    if (previousIndex !== currentIndex) {
+      // Temporarily store the item at the current index
+      let temp = this.currentProject.photosDWA[currentIndex];
+      // Swap the items
+      this.currentProject.photosDWA[currentIndex] = this.currentProject.photosDWA[previousIndex];
+      this.currentProject.photosDWA[previousIndex] = temp;
+    }
+  }
+
+  checkIfIsTemporaryImageDWA(i: number) {
+    if(this.currentProject.photosDWA[i] == null){
+      return;
+    }
+    if(this.currentProject.photosDWA[i].substring(0,5) !== 'https'){
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  getCorrespondingTemporaryImageRWA(i: number) {
+    let index = this.chosenImageList2Index.indexOf(i);
+    if(index !== -1){
+      return this.chosenImageList2[index];
+    } else {
+      return false;
+    }
+  }
+
+  enteredRWA(event: CdkDragEnter<number>): void {
+    const previousIndex = event.item.data; // Index of the dragged item
+    const currentIndex = event.container.data; // Index of the current container
+
+    if (previousIndex !== currentIndex) {
+      // Temporarily store the item at the current index
+      let temp = this.currentProject.photosRWA[currentIndex];
+      // Swap the items
+      this.currentProject.photosRWA[currentIndex] = this.currentProject.photosRWA[previousIndex];
+      this.currentProject.photosRWA[previousIndex] = temp;
+    }
+  }
+
+  checkIfIsTemporaryImageRWA(i: number) {
+    if(this.currentProject.photosRWA[i] == null){
+      return;
+    }
+    if(this.currentProject.photosRWA[i].substring(0,5) !== 'https'){
+      return true;
+    } else {
+      return false;
+    }
   }
 }
 

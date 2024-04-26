@@ -172,18 +172,24 @@
   margin-left: 6px;
   margin-right: 6px;
   padding:3px;
-  height: 520px;
   width: 280px;
+  height: auto;
+  min-height: 300px !important;
 }
 .smallFotoColumn {
   border: 2px solid lightskyblue;
   border-radius: 10px;
   margin-left: 6px;
   margin-right: 6px;
-  height: 280px;
-  width: 252px;
+  width: 265px;
   padding-bottom: 10px;
-
+}
+.innerColumn {
+  margin-top: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
 }
 .addpicture-container {
   text-align: center;
@@ -193,15 +199,19 @@
 }
 .infoText {
   font-size: 15px;
-  margin-top:4px;
   text-align: center;
+  padding:0 10px;
+  margin-bottom: 0px;
+  height: 60px !important;
 }
-.infoText3 {
-  margin-top: 8px;
-  margin-bottom: -10px;
+.infoText5 {
   font-size: 13px;
   width: 250px;
   text-align: center;
+  padding: 0 0px;
+  margin-bottom: 0px;
+  height: 60px !important;
+  overflow-y: auto;
 }
 .fotoTextBig {
   width: 90%;
@@ -211,19 +221,21 @@
   margin-bottom: -12px;
 }
 .deleteButton {
-  margin-top: 9px;
-  width: 190px;
-  height: 40px;
-  font-size: 16px;
+  margin-top: 2px;
+  margin-bottom: 6px;
+  width: 160px;
+  height: 20px;
+  font-size: 13px;
   background-color: red;
   border-radius: 10px;
   border: 1px solid black;
 }
 .fotoText {
-  font-size: 16px;
-  margin-top: 15px;
-  margin-bottom: -7px;
-  margin-left: 30px;
+  font-size: 15px;
+  text-align: center;
+  padding:0 10px;
+  margin-bottom: 0px;
+  height: 60px !important;
 }
 .startDiv {
   display: flex;
@@ -243,13 +255,6 @@
 }
 .upload-container {
   padding-top: 5rem;
-}
-.innerColumn {
-  height: 40%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
 }
 
 .save-button {
@@ -584,8 +589,7 @@ input[type=number] {
 }
 
 .uploadButton {
-  width: 90%;
-  margin-left: 7%;
+  width: 100%;
 }
 
 .uploadable-images-container {
@@ -599,15 +603,17 @@ input[type=number] {
   margin-top: 2rem;
   margin-bottom: 2rem;
 }
-
+.upload-container {
+  padding: 2.3rem;
+}
 .photo {
-  margin-left: 25px;
   max-height: 33vh;
   height: 20rem;
   width: 15rem;
   border-radius: 10px;
-  margin: 1rem;
+  margin:2px 1rem 1rem 1rem;
   box-shadow: 0px 0px 2px lightgrey;
+  cursor:move;
 }
 .photo2 {
   height: 25rem;
@@ -687,4 +693,33 @@ input[type=number] {
 
 strong {
   color: #007bff;
+}
+.upload-container-empty{
+  padding:6px;
+  margin-top:15px;
+  width: 139px;
+  height: 76px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 2px dashed lightgrey;
+}
+.cdk-drag-placeholder {
+  display: none !important;
+  width:100% !important;
+  height:100% !important;
+}
+
+.cdk-drag-preview {
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+.photos-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  width:100%;
+  gap:12px 5px;
 }

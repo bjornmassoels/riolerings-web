@@ -19,7 +19,7 @@
 
 <mat-card id="content" *ngIf="isLoaded" class="project-card">
   <h3 class="page-title">Kolk bewerken <small style='font-size:15px; margin-top:-5px'>   {{group.rbProjectNaam}} | {{group.rbGemeente}} | {{group.aannemerProjectNr}}</small></h3>
-  <p *ngIf="projectEditedByGronwderker" style="font-weight: bold;margin-left: 25px; color:red;margin-top:15px !important;margin-bottom:-10px">Attentie ! Deze kolk is {{formService.workerHours}} uur geleden geopend door grondwerker {{formService.workerName }}.<br> U kan best niet op dezelfde dag deze kolk bewerken
+  <p *ngIf="projectEditedByGronwderker" style="font-weight: bold;margin-left: 25px; color:red;margin-top:15px !important;margin-bottom:0px">Attentie ! Deze kolk is {{formService.workerHours}} uur geleden geopend door grondwerker {{formService.workerName }}.<br> U kan best niet op dezelfde dag deze kolk bewerken
     omdat er een risico is dat u aanpassingen kan verwijderen.</p>
   <form *ngIf="isLoaded" [formGroup]="slokkerForm" (ngSubmit)="onSubmit(slokkerForm.value)" class="add-form">
     <div class="row-container">
@@ -310,6 +310,8 @@
   </div>
 
   <div  class="image-container">
+    <p style="font-size: 14px;font-weight:600;width:fit-content;position: relative;top:-8px;left:20px;margin-bottom: -12px">*Het is nu mogelijk om foto's te verslepen
+      en van plaats te veranderen</p>
     <div style='margin-bottom:7px' class="image-header">
       <p class="section-title">Foto's kolk</p>
 

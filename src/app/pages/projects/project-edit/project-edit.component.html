@@ -19,7 +19,7 @@
 
 <mat-card #content id="content" *ngIf="isLoaded" class="project-card">
   <h3 class="page-title">Aansluiting Bewerken <small style='font-size:15px; margin-top:-5px'>   {{group.rbProjectNaam}} | {{group.rbGemeente}} | {{group.aannemerProjectNr}}</small></h3>
-  <p *ngIf="projectEditedByGronwderker" style="font-weight: bold;margin-left: 25px; color:red;margin-top:15px !important;">Attentie ! Deze aansluiting is {{formService.workerHours}} uur geleden geopend door grondwerker {{formService.workerName }}.<br> U kan het best niet op hetzelfde tijdstip de aansluiting bewerken
+  <p *ngIf="projectEditedByGronwderker" style="font-weight: bold;margin-left: 25px; color:red;margin-top:15px !important;margin-bottom: 0">Attentie ! Deze aansluiting is {{formService.workerHours}} uur geleden geopend door grondwerker {{formService.workerName }}.<br> U kan het best niet op hetzelfde tijdstip de aansluiting bewerken
     omdat er een risico is dat u aanpassingen kan verwijderen.</p>
   <form *ngIf="isLoaded" [formGroup]="infoForm" class="add-form">
 
@@ -1149,88 +1149,71 @@
     </form>
   </div>
   <div class="image-container">
+    <p style="font-size: 14px;font-weight:600;width:fit-content;position: relative;top:-8px;left:20px;margin-bottom: -12px">*Het is nu mogelijk om foto's te verslepen
+      en van plaats te veranderen</p>
     <div class="image-header">
       <label class="section-title">Foto's DWA/GEM</label>
-
     </div>
-    <div *ngFor="let photo of currentProject.photosDWA; let i = index">
-      <div *ngIf="i < 7">
+    <div cdkDropListGroup class="photos-container">
+      <div cdkDropList [cdkDropListData]="i"  *ngFor="let photo of currentProject.photosDWA; let i = index" [ngClass]="photo == null && !getCorrespondingTemporaryImageDWA(i) ? 'smallFotoColumn' : 'fotoColumn'" >
+        <ng-container *ngIf="i < 8">
+            <div class="innerColumn">
+              <input *ngIf="photo != null" (click)="deleteFotoDwa(i)" type="button" value="Verwijder"
+                class="deleteButton">
 
-        <div [ngClass]="photo == null ? 'smallFotoColumn' : ''" class="fotoColumn">
-          <div class="innerColumn">
-            <input *ngIf="photo != null" (click)="deleteFotoDwa(i)" type="button" value="Verwijder"
-              class="deleteButton">
+              <p class="infoText" *ngIf="i === 0">1. boring of opening van aansluiting op hoofdriool</p>
+              <p class="infoText5" *ngIf="i === 1">2. na plaatsing fundering, buizen, hulpstukken en HA-putje, vanaf de
+                aansluitopening richting putje, indien niet alle hulpstukken te zien zijn ook foto vanuit omgekeerd standpunt</p>
+              <p class="infoText" *ngIf="i === 2">2.2 vervolg foto (optioneel)</p>
+              <p class="infoText" *ngIf="i === 3">3. verbinding tss HAputje en bestaande privé-riool</p>
+              <p class="infoText" *ngIf="i === 4">4. zelfde als foto 2, maar met omhulling</p>
+              <p class="infoText" *ngIf="i > 4">{{i}}. Extra foto (optioneel)</p>
+              <img  cdkDrag [cdkDragData]="i" (cdkDragDropped)="enteredDWA($event)" *ngIf="photo != null" src="{{photo}}" (click)="imagePopUp(photo)" class="photo" name="photo" >
+              <p *ngIf="!photo && !getCorrespondingTemporaryImageDWA(i)" style="margin-top: 30px;font-size: 18px;font-weight: 600">Geen foto</p>
+              <div cdkDrag [cdkDragData]="i" (cdkDragDropped)="enteredDWA($event)" *ngIf="photo == null && !getCorrespondingTemporaryImageDWA(i)" class="upload-container-empty">
+                <h3 style="font: 400 16px / 28px Roboto, sans-serif;">Voeg foto toe</h3>
+                <input type="file" name="file" (change)="onFileSelect($event,i)"
+                       accept=".png,.jpg,.jpeg,.tiff" class="uploadButton" />
+              </div>
+            </div>
 
-            <p class="infoText" *ngIf="i === 0">1. boring of opening van aansluiting op hoofdriool</p>
-            <p class="infoText3" *ngIf="i === 1">2. na plaatsing fundering, buizen, hulpstukken en HA-putje, vanaf de
-              aansluitopening richting putje, indien niet alle hulpstukken te zien zijn ook foto vanuit omgekeerd standpunt</p>
-            <p class="infoText" *ngIf="i === 2">2.2 vervolg foto (optioneel)</p>
-            <p class="infoText" *ngIf="i === 3">3. verbinding tss HAputje en bestaande privé-riool</p>
-            <p class="infoText" *ngIf="i === 4">4. zelfde als foto 2, maar met omhulling</p>
-            <p class="infoText" *ngIf="i > 4">{{i}}. Extra foto (optioneel)</p>
-            <img *ngIf="photo != null" src="{{photo}}" (click)="imagePopUp(photo)" class="photo" name="photo" >
-          <p style="margin-top: 30px;font-size: 18px;font-weight: 600" *ngIf="photo == null">Geen foto</p>
-          </div>
-          <div class="upload-container">
-            <input class="" *ngIf="photo == null" type="file" name="file" (change)="onFileSelect($event,i)"
-              accept=".png,.jpg,.jpeg,.tiff" class="uploadButton" />
-          </div>
-        </div>
-
-
-      </div>
-    </div>
-    <p class="fotoTextBig" *ngIf="chosenImageList != null && chosenImageList.length != 0">Foto's om up te loaden van
-      DWA:</p>
-    <div *ngIf="chosenImageList != null && chosenImageList.length != 0" class="uploadable-images-container">
-      <div *ngFor="let image of chosenImageList; let i = index">
-        <p class="fotoText">Foto op plaats {{chosenImageListIndex[i] + 1}}:</p>
-        <img [src]="image" (click)="imagePopUp(image)" class="photo" />
+        <p style="width:100%;text-align:center;margin-top:12px;font-size:17px;font-weight:600" *ngIf="checkIfIsTemporaryImageDWA(i)">Klaar om op te slaan</p>
+        </ng-container>
       </div>
     </div>
   </div>
 
   <div class="image-container">
+    <p style="font-size: 14px;font-weight:600;width:fit-content;position: relative;top:-8px;left:20px;margin-bottom: -12px">*Het is nu mogelijk om foto's te verslepen
+    en van plaats te veranderen</p>
     <div class="image-header">
       <label class="section-title">Foto's RWA</label>
-
     </div>
-    <div *ngFor="let photo of currentProject.photosRWA; let i = index">
-      <div *ngIf="i < 7">
-        <div [ngClass]="photo == null ? 'smallFotoColumn' : ''" class="fotoColumn">
+    <div cdkDropListGroup class="photos-container">
+      <div cdkDropList [cdkDropListData]="i"  *ngFor="let photo of currentProject.photosRWA; let i = index" [ngClass]="photo == null && !getCorrespondingTemporaryImageRWA(i) ? 'smallFotoColumn' : 'fotoColumn'" >
+        <ng-container *ngIf="i < 8">
           <div class="innerColumn">
             <input *ngIf="photo != null" (click)="deleteFotoRwa(i)" type="button" value="Verwijder"
-              class="deleteButton">
+                   class="deleteButton">
+
             <p class="infoText" *ngIf="i === 0">1. boring of opening van aansluiting op hoofdriool</p>
-            <p class="infoText3" *ngIf="i === 1">2. na plaatsing fundering, buizen, hulpstukken en HA-putje, vanaf de
-              aansluitopening richting putje,indien niet alle hulpstukken te zien zijn,
-              eventueel ook foto vanuit omgekeerd standpunt</p>
+            <p class="infoText5" *ngIf="i === 1">2. na plaatsing fundering, buizen, hulpstukken en HA-putje, vanaf de
+              aansluitopening richting putje, indien niet alle hulpstukken te zien zijn ook foto vanuit omgekeerd standpunt</p>
             <p class="infoText" *ngIf="i === 2">2.2 vervolg foto (optioneel)</p>
             <p class="infoText" *ngIf="i === 3">3. verbinding tss HAputje en bestaande privé-riool</p>
             <p class="infoText" *ngIf="i === 4">4. zelfde als foto 2, maar met omhulling</p>
-            <p class="infoText" *ngIf="i > 4">{{i}}. extra foto (optioneel)</p>
-            <img *ngIf="photo != null" src="{{photo}}" (click)="imagePopUp(photo)" class="photo" name="photo" >
-            <p  *ngIf="photo == null " style="margin-top:30px;font-size: 18px;font-weight: 600" >Geen foto</p>
+            <p class="infoText" *ngIf="i > 4">{{i}}. Extra foto (optioneel)</p>
+            <img  cdkDrag [cdkDragData]="i" (cdkDragDropped)="enteredRWA($event)" *ngIf="photo != null" src="{{photo}}" (click)="imagePopUp(photo)" class="photo" name="photo" >
+            <p *ngIf="!photo && !getCorrespondingTemporaryImageRWA(i)" style="margin-top: 30px;font-size: 18px;font-weight: 600">Geen foto</p>
+            <div cdkDrag [cdkDragData]="i" (cdkDragDropped)="enteredRWA($event)" *ngIf="photo == null && !getCorrespondingTemporaryImageRWA(i)" class="upload-container-empty">
+              <h3 style="font: 400 16px / 28px Roboto, sans-serif;">Voeg foto toe</h3>
+              <input type="file" name="file" (change)="onFileSelect2($event,i)"
+                     accept=".png,.jpg,.jpeg,.tiff" class="uploadButton" />
+            </div>
           </div>
 
-
-          <div class="upload-container">
-            <input class="" *ngIf="photo == null" type="file" name="file" (change)="onFileSelect2($event,i)"
-              accept=".png,.jpg,.jpeg,.tiff" class="uploadButton" />
-          </div>
-
-        </div>
-
-      </div>
-      <!-- <img [src]="chosenImage" height="200" *ngIf="chosenImage" class="photo"> -->
-    </div>
-    <p class="fotoTextBig" *ngIf="chosenImageList2 != null && chosenImageList2.length != 0">Foto's om up te loaden van
-      RWA:</p>
-    <div *ngIf="chosenImageList2 != null && chosenImageList2.length != 0 && isFotoRWA === true"
-      class="uploadable-images-container">
-      <div *ngFor="let image of chosenImageList2; let i = index">
-        <p class="fotoText">Foto op plaats {{chosenImageList2Index[i] + 1}} :</p>
-        <img [src]="image" (click)="imagePopUp(image)" class="photo" />
+          <p style="width:100%;text-align:center;margin-top:12px;font-size:17px;font-weight:600" *ngIf="checkIfIsTemporaryImageRWA(i)">Klaar om op te slaan</p>
+        </ng-container>
       </div>
     </div>
   </div>
