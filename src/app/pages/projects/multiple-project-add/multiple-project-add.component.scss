@@ -58,13 +58,7 @@
   width: 130px;
   height: 40px;
 }
-.save-button{
-  font-size: 20px !important;
-  font-weight: 600 !important;
-  margin-left: 30px !important;
-  width: 150px !important;
-  height: 42px !important;
-}
+
 .input-container {
   width: 55%;
   display: flex;
@@ -200,6 +194,30 @@
   height: 40px;
   min-width: 128px;
 }
+.save-button2 {
+  font-size: 20px;
+  font-weight: 600;
+  background-color: dodgerblue !important;
+  color: white !important;
+  border: 1px solid dodgerblue;
+  border-radius: 5px;
+  margin-left: 120px;
+  height: 48px;
+  min-width: 128px;
+  padding: 10px;
+}
+.prev-next-button {
+  font-size: 20px;
+  font-weight: 600;
+  background-color: #39a8ff !important;
+  color: white !important;
+  border: 1px solid #39a8ff;
+  border-radius: 5px;
+  margin-left: 120px;
+  height: 48px;
+  min-width: 128px;
+  padding: 10px;
+}
 .red-button {
   font-size: 20px;
   font-weight: 600;
@@ -210,9 +228,8 @@
   width: auto !important;
   margin-top: 50px;
   margin-left: 25px;
-  height: 40px;
-  min-width: 440px;
-  max-width: 440px;
+  height: 46px;
+  max-width: 300px;
 }
 .bottomButtons {
   margin-top: 25px;

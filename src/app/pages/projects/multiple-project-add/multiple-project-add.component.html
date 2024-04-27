@@ -2,12 +2,16 @@
   <button mat-raised-button class="form-button" (click)="goToPrevious()">
     Terug
   </button>
+
   <button *ngIf="setVariables === false" (click)="onSubmitInfo()" mat-raised-button class="form-button4" color="primary" type="submit">
     Stel de resterende waardes in
   </button>
   <!--<button (click)="goToView()"  mat-raised-button class="form-button" color="primary" >
     Ga naar view
   </button> -->
+  <button *ngIf="setVariables" (click)="afterVariableOnSubmit()" mat-raised-button class="save-button2" color="primary" type="submit">
+    Alle aansluitingen genereren<br>zonder equipmentnummers ->
+  </button>
 </div>
 <div *ngIf="isLoadingBar" class="loadingBar">
   <p style="font-size: 17px; font-weight: 600">De aansluitingen worden aangemaakt.. Even geduld.</p>
@@ -25,10 +29,10 @@
     </div>
     <div class="data-container-buttons">
       <div *ngIf="firstOfArray" style="height:5px;width:5px"></div>
-    <button *ngIf="!firstOfArray" (click)="previousVariables()" mat-raised-button class="save-button" color="primary" type="submit">
+    <button *ngIf="!firstOfArray" (click)="previousVariables()" mat-raised-button class="prev-next-button" color="primary" type="submit">
       Vorige
     </button>
-    <button *ngIf="lastOfArray === false" (click)="nextVariables()" mat-raised-button class="save-button" color="primary" type="submit">
+    <button *ngIf="lastOfArray === false" (click)="nextVariables()" mat-raised-button class="prev-next-button" color="primary" type="submit">
       Volgende
     </button>
       <button *ngIf="setVariables && lastOfArray" (click)="afterVariableOnSubmit()" mat-raised-button class="save-button" color="primary" type="submit">
@@ -36,7 +40,7 @@
       </button>
     </div>
     <button (click)="deleteHuisnummer()" mat-raised-button class="red-button" color="danger" type="submit">
-      Sla huisnummer over (wordt niet aangemaakt)
+      Huisnummer overslaan<br>(wordt niet aangemaakt)
     </button>
   </div>
 </div>

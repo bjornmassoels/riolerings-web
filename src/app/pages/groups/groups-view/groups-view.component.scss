@@ -716,6 +716,9 @@ width: 270px;
   justify-content:center;
   align-items: flex-start;
 }
+.hideButton{
+  visibility: hidden;
+}
 .my-form-field .mat-mdc-text-field-wrapper{
   background-color: white !important;
   padding-bottom: 0px !important;

@@ -144,19 +144,32 @@
         </nb-select>
       </div>
 
-      <div  class='colFlex'>
-        <mat-label class='sortText'>Filter op straat</mat-label>
-        <input  style='width:170px !important;border: 1px solid #88a7da'  class="search-box" #categoryInput nbInput type="text" matInput [formControl]="searchForm" #searchInput
-               type="text" (keyup)="onSearchInput(searchInput.value)" placeholder="Zoek op straat..." />
-        <mat-autocomplete #auto="matAutocomplete">
-          <mat-option *ngFor="let project of filteredProjects | async" [value]="project.street"
-                      (click)="onSearch(project._id)">
-            {{ project.street }}
-          </mat-option>
-        </mat-autocomplete>
-      </div>
+    <div class='colFlex'>
+      <mat-label class='sortText'>Filter op straat</mat-label>
+      <div style="display: flex; align-items: center;">
 
-      <div  class='colFlex'>
+      <input nbInput
+             [nbAutocomplete]="auto"
+             style='width:170px !important; border: 1px solid #88a7da'
+             class="search-box"
+             [formControl]="searchForm"
+             type="text"
+             placeholder="Zoek op straat..."
+             #searchInput>
+        <button [ngClass]="searchForm.value == null || searchForm.value === '' ? 'hideButton' : ''"
+                nbButton status="info" (click)="clearSearch()" style="margin-left: 8px;">
+          <nb-icon icon="close-outline"></nb-icon>
+        </button>
+      </div>
+      <nb-autocomplete  #auto>
+        <nb-option *ngFor="let street of filteredStreets | async" [value]="street" (click)="filterOnStreetAutoComplete(street)">
+          {{ street }}
+        </nb-option>
+      </nb-autocomplete>
+    </div>
+
+
+    <div  class='colFlex'>
         <nb-button-group status="info" size="tiny">
           <button nbButtonToggle (click)="changeFilterStartDatum('Afwerkingsdatum')" [pressed]="dateSorteer === 'Afwerkingsdatum'">Afwerkingsdatum</button>
           <button nbButtonToggle (click)="changeFilterStartDatum('Startdatum')"  [pressed]="dateSorteer === 'Startdatum'" >Startdatum</button>

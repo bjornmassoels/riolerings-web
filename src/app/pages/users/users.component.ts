@@ -12,7 +12,7 @@ import { map } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 
 @Component({
-  selector: 'ngx-multiple-project-add',
+  selector: 'ngx-users-list',
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.scss', '../styles/item-table.scss'],
 })

@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NbToastrService } from '@nebular/theme';
 import { delay, Observable } from 'rxjs';
-import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import { FormControl, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { startWith, map, timeout } from 'rxjs/operators';
 import { ApiService } from '../../../../services/api.service';
 import { FormService } from '../../../../services/form.service';
@@ -51,8 +51,8 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
   public company: Company;
   public isArchived: boolean = false;
   public selectEverything: boolean = false;
-  searchForm = new UntypedFormControl();
-  filteredProjects: Observable<Project[]>;
+  searchForm = new FormControl();
+  filteredStreets: Observable<string[]>;
   isLoadingBar: boolean = false;
   pdfProgress: string;
   startDate: Date;
@@ -79,6 +79,7 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
   pdfProgressBlocks: number[];
   filterTussenDateStartString: string;
   filterTussenDateEndString: string;
+  allStreetNames: string[] = [];
   constructor(
     private apiService: ApiService,
     private router: Router,
@@ -131,6 +132,7 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
     this.isDownloading = false;
     this.selectEverything = false;
     this.dateSorteer = 'Afwerkingsdatum';
+    this.allStreetNames = [];
     this.apiService.getGroupByIdLighterVersion(groupId).subscribe(async (x) => {
       this.group = x as unknown as Group;
       if (this.group._id == null) {
@@ -160,7 +162,9 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
              project.afgewerktDatum = new Date(project.afgewerktDatum);
           }
           if(project.updated != null)project.updated = new Date(project.updated);
-
+          if(project.street != null && project.street !== '' && this.allStreetNames.indexOf(project.street.trim()) === -1){
+            this.allStreetNames.push(project.street.trim());
+          }
           project.isSlokker = false;
           project.isMeerwerk = false;
           project.isSelected = false;
@@ -178,6 +182,9 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
             slokker.afgewerktDatum = new Date(slokker.afgewerktDatum);
           }
           if(slokker.updated != null)slokker.updated = new Date(slokker.updated);
+          if(slokker.street != null && slokker.street !== '' && this.allStreetNames.indexOf(slokker.street.trim()) === -1){
+            this.allStreetNames.push(slokker.street.trim());
+          }
           slokker.isMeerwerk = false;
           slokker.isSlokker = true;
           slokker.isSelected = false;
@@ -192,12 +199,10 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
           if (meerwerk.startDate != null) {
             meerwerk.startDate = new Date(meerwerk.startDate);
           }
-
           meerwerk.isMeerwerk = true;
           meerwerk.isSelected = false;
           this.allProjects.push(meerwerk);
         }
-
       }
       this.searchAllProjectsList = this.allProjects;
       this.formService.lastProjects = this.allProjects;
@@ -206,10 +211,12 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
       this.currentProject.isSlokker = false;
       this.currentProject.isWachtAansluiting = false;
       this.currentProject.isMeerwerk = false;
-      this.filteredProjects = this.searchForm.valueChanges.pipe(
+
+      this.allStreetNames.sort( (a, b) => { return a.localeCompare(b); });
+      this.filteredStreets = this.searchForm.valueChanges.pipe(
         startWith(''),
-        map((value) => (typeof value === 'string' ? value : value.street)),
-        map((name) => (name ? this._filter(name) : this.projects.slice())),
+        map(value => typeof value === 'string' ? value.toLowerCase() : value.street.toLowerCase()),
+        map(name => name ? this.filterStreets(name) : this.allStreetNames.slice())
       );
 
       while (this.apiService.thisCompany == null) {
@@ -270,10 +277,11 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
     this.filterAndSort();
   }
   async filterAndSort(){
+    console.log('in sort')
     let filteredProjects = this.allProjects;
     if(this.filterStraatText.trim() !== ''){
-      filteredProjects = this.filterStraatText.trim()
-        ? filteredProjects.filter(project => project.street?.toLowerCase().includes(this.filterStraatText.toLowerCase()))
+      filteredProjects = this.filterStraatText?.trim()
+        ? filteredProjects.filter(project => project.street?.toLowerCase().includes(this.filterStraatText?.toLowerCase()))
         : filteredProjects;
     }
     if(this.filterTussenDateStartString != null && this.filterTussenDateEndString != null){
@@ -456,10 +464,9 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
     this.searchAllProjectsList.sort(this.sortIndex);
   }
 
-  private _filter(street: string): Project[] {
-    return this.projects.filter((item) =>
-      item.street?.toString().includes(street),
-    );
+  _filter(name: string): any[] {
+    const filterValue = name.toLowerCase();
+    return this.projects.filter(project => project.street?.toLowerCase().includes(filterValue));
   }
 
   onSearch(_id: string) {
@@ -488,7 +495,18 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
       );
     }
   }
+  filterStreets(filter: string): string[] {
+    filter = filter.toLowerCase();
+    return this.projects
+      .map(project => project.street?.trim())
+      .filter((street, index, streets) => street?.toLowerCase().includes(filter) && streets.indexOf(street) === index);
+  }
 
+  uniqueStreets(): string[] {
+    return this.projects
+      .map(project => project.street)
+      .filter((street, index, streets) => streets.indexOf(street) === index);
+  }
 
   async dateChanged() {
     await this.delay(50)
@@ -497,16 +515,6 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
     this.filterAndSort();
   }
 
-  onSearchEnter(input: string) {
-    this.searchAllProjectsList = [];
-    for (const r of this.allProjects) {
-      if (r.street != null || r.street != undefined) {
-        if (r.street.toLowerCase().includes(input.toLowerCase())) {
-          this.searchAllProjectsList.push(r);
-        }
-      }
-    }
-  }
 
   Date(created: string) {
     return new Date(created).toLocaleDateString();
@@ -1268,6 +1276,21 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
 
   changeFilterStartDatum($event) {
     this.formService.previousDateSorteer = $event;
+    this.filterAndSort();
+  }
+
+  filterOnStreetAutoComplete(street) {
+    console.log(street)
+     this.searchForm.setValue(street);
+    this.formService.previousStreet = street;
+    this.filterStraatText = street;
+    this.filterAndSort();
+  }
+
+  clearSearch() {
+    this.searchForm.setValue('');
+    this.formService.previousStreet = '';
+    this.filterStraatText = '';
     this.filterAndSort();
   }
 }
