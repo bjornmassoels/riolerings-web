@@ -19,7 +19,6 @@
   align-items: center;
   width: 1100px !important;
   height: 50px;
-  margin-top: -27px;
   gap: 36px 8px;
 }
 .scroll-table::-webkit-scrollbar,
@@ -29,6 +28,12 @@
   border-radius: 13px;
   background-clip: padding-box;
   border: 10px solid transparent;
+}
+.closeButton{
+  width: 28px;
+  height: 28px;
+  margin-left: 8px;
+  padding: 0px 4px !important;
 }
   .sorteerSelect {
   max-height:400px !important;

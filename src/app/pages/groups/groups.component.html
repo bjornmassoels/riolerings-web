@@ -9,22 +9,22 @@
   <div class="innerRow">
     <div class="colFlexer">
       <p style='min-width: 65px; margin-bottom: 0px !important;font-size: 15px; text-decoration: underline;margin-left: 3px;'>Zoek op</p>
-      <nb-select [(ngModel)]="searchSelect" id="extras">
+      <nb-select  [(ngModel)]="searchSelect" id="extras">
         <nb-option (selectionChange)="selectItem(item)" type="checkbox" *ngFor="let item of searchItems"
                    value="{{ item }}">
           {{ item }}</nb-option>
       </nb-select>
     </div>
     <form *ngIf="searchItem === 'Project nr.'" class="search-form">
-      <input style='width: 200px; margin-right: 10px'     class="search-box" #categoryInput nbInput type="text" matInput [formControl]="searchForm"
+      <input style='width: 200px; margin-right: 10px;height:46px !important;'     class="search-box" #categoryInput nbInput type="text" matInput [formControl]="searchForm"
       #searchInput  type="text" (keyup)="onSearchInput(searchInput.value)" placeholder="Zoeken..." />
     </form>
     <form *ngIf="searchItem === 'Projectnaam'" class="search-form">
-      <input style='width: 200px; margin-right: 10px'   class="search-box" #categoryInput nbInput type="text" matInput [formControl]="searchForm"
+      <input style='width: 200px; margin-right: 10px;height:46px !important;'   class="search-box" #categoryInput nbInput type="text" matInput [formControl]="searchForm"
         #searchInput  type="text" (keyup)="onSearchInput(searchInput.value)" placeholder="Zoeken..." />
     </form>
     <form *ngIf="searchItem === 'Gemeente'" class="search-form">
-      <input style='width: 200px; margin-right: 10px'   class="search-box" #categoryInput nbInput type="text" matInput [formControl]="searchForm"
+      <input style='width: 200px; margin-right: 10px;height:46px !important;'   class="search-box" #categoryInput nbInput type="text" matInput [formControl]="searchForm"
         #searchInput  type="text" (keyup)="onSearchInput(searchInput.value)" placeholder="Zoeken..." />
     </form>
   </div>
@@ -68,7 +68,7 @@
       </tr>
       <tr class="item-box-connected-users" *ngIf="isViewConnectedUsers">
         <td colspan="2" style="max-width:210px;" class="connectedText"><b style="text-decoration: underline">Gekoppelde gebruikers</b></td>
-        <td colspan="3" style="width:100%" class="connectedText"> <div class='nameFlex'><span *ngFor='let user of group.users' class='user'>{{user.name}}</span></div></td>
+        <td colspan="3" style="width:100%" class="connectedText"> <div class='nameFlex'><span *ngFor='let user of group.users' class='user'>{{user.name}} {{user.versionNumber != null ? '(V' + user.versionNumber + ')' : ''}}</span></div></td>
       </tr>
       </ng-container>
     </table>

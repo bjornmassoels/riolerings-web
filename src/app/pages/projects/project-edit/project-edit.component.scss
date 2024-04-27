@@ -3,12 +3,26 @@
   flex-direction: column;
   border-radius: 15px;
   background-color: white;
-  flex-wrap: wrap;
-  margin-top: 5px;
-  max-width:1300px;
+  max-width:1320px;
   box-shadow: #00000030 0 10px 20px, #0000003b 0 6px 6px;
   padding:14px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: calc(100vh - 120px);
 }
+.project-card::-webkit-scrollbar,
+.project-card::-webkit-scrollbar-thumb {
+  width: 35px !important;
+  height: 100px !important;
+  border-radius: 13px;
+  background-clip: padding-box;
+  border: 10px solid transparent;
+  color: gray;
+}
+.project-card::-webkit-scrollbar-thumb {
+  box-shadow: inset 0 0 0 10px;
+}
+
 .form-button {
   margin-top: -30px;
   font-weight: 500;
@@ -494,8 +508,12 @@ input[type=number] {
   justify-content: flex-start;
   align-items: center;
   width: 80vw;
-  margin-top: -26px;
-  position: static !important;
+  position: sticky;
+  top:0px; /* Aligns the bar to the top of the viewport */
+  z-index: 1000; /* Ensures it stays on top of other content */
+}
+button:disabled {
+  opacity: 0.5;
 }
 .boldText {
   font-weight: 600;

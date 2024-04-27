@@ -3,11 +3,24 @@
   flex-direction: column;
   border-radius: 15px;
   background-color: white;
-  flex-wrap: wrap;
-  margin-top: 5px;
-  max-width:1300px;
+  max-width:1320px;
   box-shadow: #00000030 0 10px 20px, #0000003b 0 6px 6px;
   padding:14px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: calc(100vh - 120px);
+}
+.project-card::-webkit-scrollbar,
+.project-card::-webkit-scrollbar-thumb {
+  width: 35px !important;
+  height: 100px !important;
+  border-radius: 13px;
+  background-clip: padding-box;
+  border: 10px solid transparent;
+  color: gray;
+}
+.project-card::-webkit-scrollbar-thumb {
+  box-shadow: inset 0 0 0 10px;
 }
 p{
   font-size:15px ;
@@ -25,8 +38,10 @@ p{
   margin-top: -3px;
   margin-left: 7px;
 }
+button:disabled {
+  opacity: 0.5;
+}
 .form-button {
-  margin-top: -30px;
   font-size: 17px;
   font-weight: 600;
   background-color: black !important;
@@ -34,7 +49,7 @@ p{
   border: 1px solid black;
   border-radius: 5px;
   width: 124px !important;
-  height: 40px;
+  height: 36px;
 }
 .form-button-blue {
   margin-left: 5px;
@@ -164,13 +179,15 @@ p{
   margin-right: 10px;
 }
 .topRow {
+  margin-left: 10px;
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
-  width: 88vw;
-  margin-top: -26px;
-  margin-left: 10px;
+  width: 80vw;
+  position: sticky;
+  top:0px; /* Aligns the bar to the top of the viewport */
+  z-index: 1000; /* Ensures it stays on top of other content */
 }
 .topDiv {
   display: flex;

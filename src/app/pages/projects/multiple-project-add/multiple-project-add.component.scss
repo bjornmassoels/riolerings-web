@@ -12,9 +12,10 @@
   border-radius: 15px;
   background-color: white;
   flex-wrap: wrap;
-  margin-top: 10px;
+  margin-top: 1px;
   box-shadow: #00000030 0 10px 20px, #0000003b 0 6px 6px;
   padding:14px;
+  max-width:1350px;
 }
 .loadingBar{
   display: flex;
@@ -93,7 +94,6 @@
   border-radius: 15px;
   background-color: white;
   flex-wrap: wrap;
-  margin-top: 10px;
 }
 .form-button {
   margin-top: -30px;
@@ -396,7 +396,7 @@ input::-webkit-inner-spin-button {
   justify-content: flex-start;
   align-items: center;
   width: 80vw;
-  margin-top: -20px;
+  margin-top: 7px;
 }
 .boldText {
   margin-top: 11px;

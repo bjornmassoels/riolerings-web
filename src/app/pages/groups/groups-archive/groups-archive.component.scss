@@ -6,9 +6,10 @@
   align-items: center;
   margin-right: 40px;
   margin-left: 10px;
-  margin-top: -22px;
   margin-bottom: 10px;
+  margin-top: 6px;
   justify-content: space-between;
+  max-width: 1200px;
 }
 .secondRow {
   display: flex;
@@ -64,7 +65,7 @@
   box-shadow: 0 0 15px -10px rgba(0, 0, 0, 0.75);
 }
 .scroll-table {
-  height: 81vh !important;
+  height: calc(100vh - 138px) !important;
   overflow: auto;
   width: 100%;
   border-radius: 15px;

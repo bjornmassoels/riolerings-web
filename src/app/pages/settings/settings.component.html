@@ -1,5 +1,5 @@
 
-<h3 *ngIf="isLoaded && (company.logo != null || company.logo != '')"> Huidige logo:</h3>
+<h3 style="margin-top: 20px;" *ngIf="isLoaded && (company.logo != null || company.logo != '')"> Huidige logo:</h3>
 <img *ngIf="isLoaded && (company.logo != null || company.logo != '')" class="photo" src="{{company.logo}}">
 <mat-card style="max-width:750px!important;" class="add-card">
   <mat-card-title class="title">Logo instellen voor op Excel</mat-card-title>

@@ -949,24 +949,3 @@
   </div>
 
 </mat-card>
-
-<div  class="bottomRow" *ngIf="isLoaded">
-  <button mat-raised-button class="form-button" (click)="goToPrevious()">
-    Terug
-  </button>
-  <button *ngIf="index !== -1" [disabled]="isFirst" mat-raised-button class="form-button" (click)="onPreviousClick()">
-    Vorige
-  </button>
-  <button *ngIf="index !== -1" [disabled]="isLast" mat-raised-button class="form-button" (click)="onNextClick()">
-    Volgende
-  </button>
-  <button mat-raised-button class="form-button-blue" (click)="goToEdit()">
-    Bewerken
-  </button>
-  <p class="boldText" *ngIf="index !== -1">{{index + 1}}/{{totalProjectCount}}</p>
-  <button style="width: auto" mat-raised-button class="form-button2" (click)="generatePDF()">PDF 	<mat-icon class="downloadImage">cloud_download</mat-icon></button>
-  <button style="width: auto" mat-raised-button class="form-button2" (click)="downloadPhotos()">Foto's
-    <mat-icon class="downloadImage">cloud_download</mat-icon></button>
-  <button style="width: auto" mat-raised-button color="warn" class="form-button3"
-          (click)="onDeleteProject()">Aansluiting verwijderen</button>
-</div>

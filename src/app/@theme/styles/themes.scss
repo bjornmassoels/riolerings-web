@@ -7,7 +7,7 @@
 
 $nb-themes: nb-register-theme(
   (
-    layout-padding-top: 2.25rem,
+    layout-padding: 0.1rem 0.3rem 0.3rem 0.3rem!important,
     menu-item-icon-margin: 0 0.5rem 0 0,
     card-height-tiny: 13.5rem,
     card-height-small: 21.1875rem,
@@ -21,7 +21,7 @@ $nb-themes: nb-register-theme(
     slide-out-background: #f7f9fc,
     slide-out-shadow-color: 0 4px 14px 0 #8f9bb3,
     slide-out-shadow-color-rtl: 0 4px 14px 0 #8f9bb3,
-    header-height: 64px
+    header-height: 60px,
   ),
   default,
   default

@@ -23,7 +23,7 @@
   display: flex !important;
   justify-content: space-between;
   align-items: center;
-  margin-top: -40px;
+  max-width:1240px !important;
 }
 .scroll-table::-webkit-scrollbar,
 .scroll-table::-webkit-scrollbar-thumb {

@@ -156,8 +156,8 @@
              type="text"
              placeholder="Zoek op straat..."
              #searchInput>
-        <button [ngClass]="searchForm.value == null || searchForm.value === '' ? 'hideButton' : ''"
-                nbButton status="info" (click)="clearSearch()" style="margin-left: 8px;">
+        <button class="closeButton" [ngClass]="searchForm.value == null || searchForm.value === '' ? 'hideButton' : ''"
+                nbButton status="warning" (click)="clearSearch()">
           <nb-icon icon="close-outline"></nb-icon>
         </button>
       </div>

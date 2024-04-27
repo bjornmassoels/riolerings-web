@@ -16,7 +16,7 @@ import {AngularFireStorage} from "@angular/fire/compat/storage";
 import { MatDialog } from '@angular/material/dialog';
 import moment from 'moment';
 import { HasChangedPopupComponent } from '../../has-changed-popup/has-changed-popup.component';
-import { CdkDragEnter } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, CdkDragEnter, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 
 
 
@@ -1321,6 +1321,23 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
     } else {
       return false;
     }
+  }
+  drop(event: CdkDragDrop<string[]>): void {
+    if (event.previousContainer === event.container) {
+      // Same list: Swap items
+      const temp = event.container.data[event.previousIndex];
+      event.container.data[event.previousIndex] = event.container.data[event.currentIndex];
+      event.container.data[event.currentIndex] = temp;
+    } else {
+      // Cross list: Transfer item
+      transferArrayItem(event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex);
+    }
+  }
+  trackByIdx(index: number, item: any): any {
+    return index; // or a unique property of the item if available
   }
 }
 
