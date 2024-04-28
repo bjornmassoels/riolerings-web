@@ -614,4 +614,15 @@ export class ApiService {
     };
     return this.http.get(this.apiURL + '/groups.getConnectedUsersOfGroups', headers);
   }
+
+  makeMeerwerkPdf(_id: string) {
+    let headers = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: this._token,
+        _id: _id
+      },
+    };
+    return this.http.get(this.apiURL + '/meerwerken.makeMeerwerkPdf', headers);
+  }
 }

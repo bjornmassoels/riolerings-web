@@ -59,56 +59,37 @@
     <h5 style="margin-left: 44px;margin-top: 20px">Opmerking: </h5>
     <p class="opmerkingText">{{currentProject.opmerking}}</p>
   </div>
-  <div [ngClass]="currentProject.photos[5] != null ? 'page-break' : ''" class="photo-container page">
-    <p  *ngIf='currentProject.photos[5] != null' class="page-number">2/2</p>
+  <div class="photo-container">
     <p class="pdf-title">Foto's</p>
-
-    <div class="table-container">
-      <table>
-        <thead>
-        <th class="w-50" style="border: 1px solid black; text-align: center;"></th>
-        <th class="w-50" style="border: 1px solid black; text-align: center;"></th>
-        </thead>
-        <tbody>
-        <tr>
-          <td class="w-50">Foto 1</td>
-          <td class="w-50">Foto 2</td>
-        </tr>
-        <tr>
-          <td class="h-20"><img class="h-20 w-auto quality" src="{{currentProject.photos[0]}}"
-                                *ngIf="currentProject.photos != null && currentProject.photos[0] != null && currentProject.photos[0].length > 0">
-          </td>
-          <td class="h-20"><img class="h-20 w-auto quality" src="{{currentProject.photos[1]}}"
-                                *ngIf="currentProject.photos != null && currentProject.photos[1] != null && currentProject.photos[1].length > 0">
-          </td>
-        </tr>
-        <tr>
-          <td class="w-50">Foto 3</td>
-          <td class="w-50">Foto 4</td>
-        </tr>
-        <tr>
-          <td class="h-20"><img class="h-20 w-auto quality" src="{{currentProject.photos[2]}}"
-                                *ngIf="currentProject.photos != null && currentProject.photos[2] != null && currentProject.photos[2].length > 0">
-          </td>
-          <td class="h-20"><img class="h-20 w-auto quality" src="{{currentProject.photos[3]}}"
-                                *ngIf="currentProject.photos != null && currentProject.photos[3] != null && currentProject.photos[3].length > 0">
-          </td>
-        </tr>
-        <tr *ngIf='currentProject.photos[5] != null'>
-          <td class="w-50">Foto 5</td>
-          <td class="w-50">Foto 6</td>
-        </tr>
-        <tr  *ngIf='currentProject.photos[5] != null '>
-          <td class="h-20"><img class="h-20 w-auto quality" src="{{currentProject.photos[4]}}"
-                                *ngIf="currentProject.photos != null && currentProject.photos[4] != null && currentProject.photos[4].length > 0">
-          </td>
-          <td class="h-20"><img class="h-20 w-auto quality" src="{{currentProject.photos[5]}}"
-                                *ngIf="currentProject.photos != null && currentProject.photos[5] != null && currentProject.photos[5].length > 0">
-          </td>
-        </tr>
-
-        </tbody>
-      </table>
+    <div class="two-photo-div">
+      <div *ngIf="currentProject.photos != null && currentProject.photos[0] != null && currentProject.photos[0].length > 0" class="imageColumn">
+        <p class="fotoText">Foto 1</p>
+        <img class="imageKolk" src="{{currentProject.photos[0]}}">
+      </div>
+      <div *ngIf="currentProject.photos != null && currentProject.photos[1] != null && currentProject.photos[1].length > 0" class="imageColumn">
+        <p class="fotoText">Foto 2</p>
+        <img class="imageKolk" src="{{currentProject.photos[1]}}">
+      </div>
+    </div>
+    <div class="two-photo-div">
+      <div *ngIf="currentProject.photos != null && currentProject.photos[2] != null && currentProject.photos[2].length > 0" class="imageColumn">
+        <p class="fotoText">Foto 3</p>
+        <img class="imageKolk" src="{{currentProject.photos[2]}}">
+      </div>
+      <div *ngIf="currentProject.photos != null && currentProject.photos[3] != null && currentProject.photos[3].length > 0" class="imageColumn">
+        <div class="fotoText">Foto 4</div>
+        <img class="imageKolk" src="{{currentProject.photos[3]}}">
+      </div>
+    </div>
+    <div class="two-photo-div">
+       <div *ngIf="currentProject.photos != null && currentProject.photos[4] != null && currentProject.photos[4].length > 0" class="imageColumn">
+        <p class="fotoText">Foto 5</p>
+        <img class="imageKolk" src="{{currentProject.photos[4]}}">
+      </div>
+      <div *ngIf="currentProject.photos != null && currentProject.photos[5] != null && currentProject.photos[5].length > 0" class="imageColumn">
+        <p class="fotoText">Foto 6</p>
+        <img class="imageKolk" src="{{currentProject.photos[5]}}">
+      </div>
     </div>
   </div>
 </div>

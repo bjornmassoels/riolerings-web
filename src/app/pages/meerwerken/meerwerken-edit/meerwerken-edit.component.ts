@@ -197,7 +197,17 @@ export class MeerwerkenEditComponent implements OnInit {
       meerwerk._id = this.currentProject._id;
     }
     this.meerwerkSend = meerwerk;
-    if(this.chosenImageList == null || this.chosenImageList.length === 0){
+    this.chosenImageList = [];
+    this.chosenImageListIndex = [];
+    if(this.photos.filter(x => x != null && x.substring(0,5) !== 'https') != null && this.photos.filter(x => x != null && x.substring(0,5) !== 'https').length > 0){
+      for(let i = 0; i < this.photos.length; i++){
+        if(this.photos[i] != null && this.photos[i].substring(0,5) !== 'https'){
+          this.chosenImageListIndex.push(i);
+          this.chosenImageList.push(this.photos[i]);
+        }
+      }
+    }
+    if(this.chosenImageList.length === 0){
       this.meerwerkSend.photos = this.photos;
       this.apiService.getMeerwerkById(this._id).subscribe(async (x) => {
         const tempProject = x as Meerwerk;
@@ -255,7 +265,24 @@ export class MeerwerkenEditComponent implements OnInit {
     const name = 'fotos/' + this.companyId + '/' + random;
     return name;
   }
-
+  getCorrespondingTemporaryImage(i: number) {
+    let index = this.chosenImageListIndex.indexOf(i);
+    if(index !== -1){
+      return this.chosenImageList[index];
+    } else {
+      return false;
+    }
+  }
+  checkIfIsTemporaryImage(i: number) {
+    if(this.photos[i] == null){
+      return;
+    }
+    if(this.photos[i].substring(0,5) !== 'https'){
+      return true;
+    } else {
+      return false;
+    }
+  }
   onFileSelect(event, i: number) {
     var file;
     this.selectedPhoto = true;
@@ -268,8 +295,7 @@ export class MeerwerkenEditComponent implements OnInit {
     this.imagePath = file;
     reader.readAsDataURL(file);
     reader.onload = (_event) => {
-      this.chosenImageList.push(reader.result);
-      this.chosenImageListIndex.push(i);
+      this.photos[i] = reader.result as string;
       this.hasChangedValue = true;
     };
   }

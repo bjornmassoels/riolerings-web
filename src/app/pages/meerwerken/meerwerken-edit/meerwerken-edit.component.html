@@ -125,33 +125,22 @@
 
     </div>
 
-    <div *ngFor="let photo of photos; let i = index">
-      <div  class="fotoColumn">
+    <div class="photos-container" >
+      <div *ngFor="let photo of photos; let i = index"  [ngClass]="photo == null && !getCorrespondingTemporaryImage(i) ? 'smallFotoColumn' : ''" class="fotoColumn">
         <div class="innerColumn">
-        <input *ngIf="photo != null" (click)="deleteFoto(i)" type="button" value="Verwijder" class="deleteButton">
-        <p class="fotoText" >Foto {{i+1}}:</p>
-        <img *ngIf="photo != null" src="{{photo}}" (click)="imagePopUp(photo)" class="photo" name="photo" >
-          <p *ngIf="photo == null" style="margin-bottom: 30%;font-size: 18px;font-weight: 600" >Geen foto</p>
+          <input *ngIf="photo != null" (click)="deleteFoto(i)" type="button" value="Verwijder" class="deleteButton">
+          <p class="fotoText" >Foto {{i+1}}:</p>
+          <img *ngIf="photo != null" src="{{photo}}" (click)="imagePopUp(photo)" class="photo" name="photo" >
+            <p *ngIf="!photo && !getCorrespondingTemporaryImage(i)" style="margin-bottom: 30%;font-size: 18px;font-weight: 600" >Geen foto</p>
+            <div *ngIf="photo == null && !getCorrespondingTemporaryImage(i)" class="upload-container-empty">
+              <h3 style="font: 400 16px / 28px Roboto, sans-serif;">Voeg foto toe</h3>
+              <input type="file" name="file" (change)="onFileSelect($event,i)"
+                     accept=".png,.jpg,.jpeg,.tiff" class="uploadButton" />
+            </div>
         </div>
-        <div class="upload-container">
-          <input class="" *ngIf="photo == null" type="file" name="file" (change)="onFileSelect($event,i)"
-          accept=".png,.jpg,.jpeg,.tiff" class="uploadButton" />
-        </div>
-
+        <p style="width:100%;text-align:center;margin-top:12px;font-size:17px;font-weight:600" *ngIf="checkIfIsTemporaryImage(i)">Klaar om op te slaan</p>
       </div>
     </div>
-
-
-    <p class="fotoTextBig" *ngIf="chosenImageList != null && chosenImageList.length != 0">Foto's om up te loaden :</p>
-    <div *ngIf="chosenImageList != null && chosenImageList.length != 0"  class="uploadable-images-container">
-      <div *ngFor="let image of chosenImageList; let i = index">
-        <p class="fotoText">Foto {{chosenImageListIndex[i] + 1}}:</p>
-        <img [src]="image" (click)="imagePopUp(image)" class="photo"  alt="Foto"/>
-      </div>
-    </div>
-
-
-    <!-- <img [src]="chosenImage" height="200" *ngIf="chosenImage" class="photo"> -->
 
   </div>
 

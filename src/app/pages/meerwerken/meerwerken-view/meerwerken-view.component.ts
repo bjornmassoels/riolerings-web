@@ -188,23 +188,25 @@ export class MeerwerkenViewComponent implements OnInit {
       title = result;
       if (this.variablesService.cancelDownload === false) {
         this.toastrService.success('DE PDF IS AAN HET DOWNLOADEN.');
-        this.toggleDisplay();
-        const options = {
-          filename: title + '.pdf',
-          image: { type: 'png' },
-          html2canvas: { useCORS: true },
-          jsPDF: { orientation: 'portrait', format: 'a4'},
-          margin: [2, 2, 2, 2],
-          pagebreak: { before: '.page-break' },
-        };
+        this.apiService.makeMeerwerkPdf(this.currentProject._id).subscribe((data:  Data) => {
+          const { pdf: base64PDF } = data;
 
-        let element = document.getElementById('printContainer');
+          // Convert base64 to a blob
+          fetch(`data:application/pdf;base64,${base64PDF}`)
+            .then(res => res.blob())
+            .then(blob => {
+              // Create a link element
+              const url = window.URL.createObjectURL(blob);
+              const link = document.createElement('a');
+              link.href = url;
+              link.setAttribute('download', title + '.pdf'); // or any other filename
 
-        await html2pdf().from(element).set(options).save();
-        this.isLoaded = false;
-        await this.delay(10);
-        this.isLoaded = true;
-        this.toggleDisplay();
+              // Automatically download the file
+              document.body.appendChild(link);
+              link.click();
+              link.parentNode.removeChild(link);
+            });
+        });
       }
       this.variablesService.cancelDownload = false;
     });
@@ -338,4 +340,8 @@ export class DialogOverviewExampleDialog3 {
   onOpslaanClick() {
     this.variableService.cancelDownload = false;
   }
+}
+interface Data {
+  pdf: any;  // use a more specific type if possible
+  // add other properties if needed
 }
