@@ -19,7 +19,7 @@
 </nb-select>
 <h2 *ngIf="!isLoaded">Laden...</h2>
 <h3 *ngIf="isLoaded">{{'Betaalbedrag tot nu toe: (excl. BTW)€' + totaalPrijs.toFixed(2) + '  (incl. BTW)€' + (totaalPrijs * 1.21).toFixed(2)}}</h3>
-<div cdkScrol *ngIf="isAdmin" lable class="scroll-table">
+<div cdkScrollable *ngIf="isAdmin" style="max-width: 1320px !important;"  class="scroll-table">
   <table cdkDropList class="item-list">
     <tr class="item-box">
       <th></th>
@@ -28,10 +28,12 @@
       <th>Totaal incl BTW</th>
       <th>HA BET</th>
       <th>HA ONBET</th>
-      <th>HA VERWIJDERD</th>
+      <th>HA VERWIJDERD<br>
+      <small>Laatste 6 maand, met foto en niet betaald</small></th>
       <th>Kolk BET</th>
       <th>Kolk ONBET</th>
-      <th>Kolk VERWIJDERD</th>
+      <th>Kolk VERWIJDERD<br>
+        <small>Laatste 6 maand, met foto en niet betaald</small></th>
       <th>Aantal maanden in contract</th>
     </tr>
     <tr class="item-box" *ngFor="let company of companyList">
