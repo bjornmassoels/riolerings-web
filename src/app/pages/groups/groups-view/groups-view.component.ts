@@ -221,14 +221,15 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
       this.currentProject.isMeerwerk = false;
 
       this.allStreetNames.sort( (a, b) => { return a.localeCompare(b); });
+
       this.filteredStreets = this.searchForm.valueChanges.pipe(
         startWith(''),
         map(value => typeof value === 'string' ? value.toLowerCase() : value.street.toLowerCase()),
         tap(straat => {this.formService.previousStreet = straat;
-                                    this.filterStraatText = straat;}),
+          this.filterStraatText = straat;}),
         map(name => name ? this.filterStreets(name) : this.allStreetNames.slice()),
         tap(() => this.filterAndSort())
-    );
+      );
 
       while (this.apiService.thisCompany == null) {
         await this.delay(50)
@@ -236,7 +237,7 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
       this.company = this.apiService.thisCompany
       this.isOn = true;
       Pace.stop();
-      await this.filterAndSort();
+
       await this.delay(50);
       if (this.formService.previousIndex != null) {
         let behavior: string = 'auto';
@@ -345,32 +346,36 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
         let tempProject = this.populatedProjects.find(x => x._id === selectedProject._id);
         tempSelectedPopulatedProjects.push(tempProject);
       }
-      this.selectedHuisaansluitingen = tempSelectedPopulatedProjects.filter(x => x.droogWaterAfvoer != null
+      this.selectedHuisaansluitingen = tempSelectedPopulatedProjects.filter(x => x?.droogWaterAfvoer != null
         && ((x.isWachtAansluiting == null || !x.isWachtAansluiting) &&
           (x.droogWaterAfvoer?.isWachtaansluiting == null || !x.droogWaterAfvoer.isWachtaansluiting) &&
           (x.regenWaterAfvoer?.isWachtaansluiting == null || !x.regenWaterAfvoer.isWachtaansluiting))).length;
-      this.selectedWachtaansluitingen = tempSelectedPopulatedProjects.filter(x =>  x.droogWaterAfvoer != null && ((x.isWachtAansluiting != null && x.isWachtAansluiting) ||
+      this.selectedWachtaansluitingen = tempSelectedPopulatedProjects.filter(x =>  x?.droogWaterAfvoer != null && ((x.isWachtAansluiting != null && x.isWachtAansluiting) ||
         (x.droogWaterAfvoer?.isWachtaansluiting != null && x.droogWaterAfvoer.isWachtaansluiting) ||
         (x.regenWaterAfvoer?.isWachtaansluiting != null && x.regenWaterAfvoer.isWachtaansluiting))).length;
-      this.selectedKolken = tempSelectedPopulatedProjects.filter(x => x.slokker != null).length;
-      this.selectedHuisaansluitingenWithValue = tempSelectedPopulatedProjects.filter(x => (this.checkHasAfvoer(x.droogWaterAfvoer) || this.checkHasAfvoer(x.regenWaterAfvoer))
+      this.selectedKolken = tempSelectedPopulatedProjects.filter(x => x?.slokker != null).length;
+      this.selectedHuisaansluitingenWithValue = tempSelectedPopulatedProjects.filter(x => (this.checkHasAfvoer(x?.droogWaterAfvoer) || this.checkHasAfvoer(x?.regenWaterAfvoer))
         && ((x.isWachtAansluiting == null || !x.isWachtAansluiting) &&
           (x.droogWaterAfvoer?.isWachtaansluiting == null || !x.droogWaterAfvoer.isWachtaansluiting) &&
           (x.regenWaterAfvoer?.isWachtaansluiting == null || !x.regenWaterAfvoer.isWachtaansluiting))).length;
-      this.selectedWachtaansluitingenWithValue = tempSelectedPopulatedProjects.filter(x =>  (this.checkHasAfvoer(x.droogWaterAfvoer) || this.checkHasAfvoer(x.regenWaterAfvoer))
+      this.selectedWachtaansluitingenWithValue = tempSelectedPopulatedProjects.filter(x =>  (this.checkHasAfvoer(x?.droogWaterAfvoer) || this.checkHasAfvoer(x?.regenWaterAfvoer))
         && (x.isWachtAansluiting || x.droogWaterAfvoer.isWachtaansluiting || x.regenWaterAfvoer.isWachtaansluiting)).length;
-      this.selectedKolkenWithValue = tempSelectedPopulatedProjects.filter(x => x.slokker != null && this.checkHasKolk(x.slokker)).length;
+      this.selectedKolkenWithValue = tempSelectedPopulatedProjects.filter(x => x?.slokker != null && this.checkHasKolk(x.slokker)).length;
 
       this.popover.show();
     } else {
       this.selectedHuisaansluitingen = null;
       this.selectedWachtaansluitingen = null;
       this.selectedKolken = null;
-      this.popover.hide();
+      if(this.popover){
+        this.popover.hide();
+      }
     }
   }
 
-
+  checkIfHasSelected(){
+      return this.selectedHuisaansluitingen || this.selectedWachtaansluitingen || this.selectedKolken;
+  }
 
   async sortByStreet() {
     this.projects.sort(this.sortIndex);
@@ -1066,9 +1071,12 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
       }
     } else {
       this.selectEverything = false;
-      for (let project2 of this.searchAllProjectsList) {
-        project2.isSelected = false;
-      }
+      this.searchAllProjectsList.forEach((x) => {
+        x.isSelected = false;
+      });
+      this.allProjects.forEach((x) => {
+        x.isSelected = false;
+      });
     }
     this.checkIfSelectedAansluitingen();
   }
@@ -1337,16 +1345,14 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
 
   filterOnStreetAutoComplete(street) {
     console.log(street)
-     this.searchForm.setValue(street);
     this.formService.previousStreet = street;
     this.filterStraatText = street;
-    this.filterAndSort();
+    this.checkIfSelectedAansluitingen();
   }
 
   clearSearch() {
     this.searchForm.setValue('');
     this.formService.previousStreet = '';
     this.filterStraatText = '';
-    this.filterAndSort();
   }
 }

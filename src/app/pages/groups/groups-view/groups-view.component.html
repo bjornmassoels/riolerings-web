@@ -1,12 +1,12 @@
 <div class="topRow">
-  <button style="width: 95px;  margin-left: 0px !important; font-size: 16px" mat-raised-button class="form-button2" (click)="goToPrevious()" [disabled]="selectedHuisaansluitingen" [ngClass]="selectedHuisaansluitingen ? 'halfOpacity': ''">
+  <button style="width: 95px;  margin-left: 0px !important; font-size: 16px" mat-raised-button class="form-button2" (click)="goToPrevious()" [disabled]="checkIfHasSelected()" [ngClass]="checkIfHasSelected() ? 'halfOpacity': ''">
     Terug
   </button>
-  <button style="width: 90px;" *ngIf="isArchived === false"  mat-raised-button class="form-button2" [disabled]="selectedHuisaansluitingen" [ngClass]="selectedHuisaansluitingen ? 'halfOpacity': ''"
+  <button style="width: 90px;" *ngIf="isArchived === false"  mat-raised-button class="form-button2" [disabled]="checkIfHasSelected() " [ngClass]="checkIfHasSelected()  ? 'halfOpacity': ''"
     (click)="archiveGroup()">Archiveren</button>
-  <button  style="width: 148px;" *ngIf="isArchived === true" mat-raised-button class="form-button2" [disabled]="selectedHuisaansluitingen" [ngClass]="selectedHuisaansluitingen ? 'halfOpacity': ''"
+  <button  style="width: 148px;" *ngIf="isArchived === true" mat-raised-button class="form-button2" [disabled]="checkIfHasSelected() " [ngClass]="checkIfHasSelected()  ? 'halfOpacity': ''"
     (click)="unArchiveGroup()">Haal uit archief</button>
-  <button  style="width: 112px;" mat-raised-button class="form-button2" [disabled]="selectedHuisaansluitingen" [ngClass]="selectedHuisaansluitingen ? 'halfOpacity': ''"
+  <button  style="width: 112px;" mat-raised-button class="form-button2" [disabled]="checkIfHasSelected() " [ngClass]="checkIfHasSelected()  ? 'halfOpacity': ''"
     (click)="goToPostnummers()">Postnummers</button>
   <button style="width: 114px;" mat-raised-button class="form-button2" (click)="generatePDF()"><div class="divInsideButton">PDF fiche<mat-icon class="downloadImage">cloud_download</mat-icon></div></button>
   <button mat-raised-button class="form-button-green2" (click)="downloadExcelClientData()">
@@ -15,23 +15,23 @@
   <button mat-raised-button class="form-button-green" (click)="downloadExcelClientDataMeetstaat()">
     <div class="divInsideButton">Excel meetstaat 	<mat-icon class="downloadImage">cloud_download</mat-icon></div>
   </button>
-  <button mat-raised-button class="form-button4" (click)="setupVariables()" [disabled]="selectedHuisaansluitingen" [ngClass]="selectedHuisaansluitingen ? 'halfOpacity': ''">Zet invulvelden uit</button>
-  <button style="width: 112px;" mat-raised-button class="form-button2" [disabled]="!selectedHuisaansluitingen" [ngClass]="selectedHuisaansluitingen ? 'halfOpacity': ''"
+  <button mat-raised-button class="form-button4" (click)="setupVariables()" [disabled]="checkIfHasSelected() " [ngClass]="checkIfHasSelected()  ? 'halfOpacity': ''">Zet invulvelden uit</button>
+  <button style="width: 112px;" mat-raised-button class="form-button2" [disabled]="checkIfHasSelected() " [ngClass]="checkIfHasSelected()  ? 'halfOpacity': ''"
           (click)="readLambertExcel()">Lambertcoord.</button>
 </div>
 
 <div class="page-header">
     <h2 style="margin:0px 10px 0px 0">Project</h2>
-    <button class='add-button' mat-raised-button color="primary" (click)="goToEdit()" [disabled]="selectedHuisaansluitingen" [ngClass]="selectedHuisaansluitingen ? 'halfOpacity': ''"
+    <button class='add-button' mat-raised-button color="primary" (click)="goToEdit()" [disabled]="checkIfHasSelected()" [ngClass]="checkIfHasSelected()? 'halfOpacity': ''"
       style=" min-width:auto; width: 95px !important; background-color:#3f51b5!important;">
       Project bewerken</button>
-    <button mat-raised-button (click)="goToAddProject()" class="add-button" [disabled]="selectedHuisaansluitingen" [ngClass]="selectedHuisaansluitingen ? 'halfOpacity': ''"
+    <button mat-raised-button (click)="goToAddProject()" class="add-button" [disabled]="checkIfHasSelected()" [ngClass]="checkIfHasSelected()? 'halfOpacity': ''"
     >Creëer HA</button>
-    <button mat-raised-button (click)="goToMultipleAddProject()" class="add-button" [disabled]="selectedHuisaansluitingen" [ngClass]="selectedHuisaansluitingen ? 'halfOpacity': ''"
+    <button mat-raised-button (click)="goToMultipleAddProject()" class="add-button" [disabled]="checkIfHasSelected()" [ngClass]="checkIfHasSelected()? 'halfOpacity': ''"
     >Creëer meerdere HA's</button>
-    <button mat-raised-button (click)="createSlokker()"  class="add-button3" [disabled]="selectedHuisaansluitingen" [ngClass]="selectedHuisaansluitingen ? 'halfOpacity': ''">
+    <button mat-raised-button (click)="createSlokker()"  class="add-button3" [disabled]="checkIfHasSelected()" [ngClass]="checkIfHasSelected()? 'halfOpacity': ''">
       Creëer kolk</button>
-  <button mat-raised-button (click)="createMeerwerk()" class="add-button4" [disabled]="selectedHuisaansluitingen" [ngClass]="selectedHuisaansluitingen ? 'halfOpacity': ''">
+  <button mat-raised-button (click)="createMeerwerk()" class="add-button4" [disabled]="checkIfHasSelected()" [ngClass]="checkIfHasSelected()? 'halfOpacity': ''">
     Creëer OW</button>
 
     <div class="rowFlex">
@@ -81,7 +81,7 @@
     <ngx-loading-bar style='margin-bottom: 40px; margin-top: 30px;' diameter="40px" includeBar="false" fixed="false" color="blue" value="2"></ngx-loading-bar>
   </div>
 </div>
-<button *ngIf='isOn && !isLoadingBar' (click)="toggleProjectDetails()" class="btn btn-info" [disabled]="selectedHuisaansluitingen" [ngClass]="selectedHuisaansluitingen ? 'halfOpacity': ''">
+<button *ngIf='isOn && !isLoadingBar' (click)="toggleProjectDetails()" class="btn btn-info" [disabled]="checkIfHasSelected()" [ngClass]="checkIfHasSelected()? 'halfOpacity': ''">
   <i style='margin-right: 8px' [class]="showProjectDetails ? 'fa fa-angle-up' : 'fa fa-angle-down'"></i>
   <b style="font-size: 15px !important;">{{ showProjectDetails ? 'Verberg Projectgegevens' :group?.rbGemeente + ' - ' + group?.aannemerProjectNr + ' - ' + group?.rbProjectNaam }}</b>
 </button>
@@ -240,10 +240,10 @@
       *ngFor="let project of searchAllProjectsList">
       <td style="max-width:170px !important;min-width:170px !important; max-height:40px !important;margin-left:15px">
         <div class="buttonsRow">
-          <input type="button" (click)="openProject(project)" value="BEKIJK" class="openButton" [disabled]="selectedHuisaansluitingen"
-                 [ngClass]="selectedHuisaansluitingen ? 'halfOpacity': ''">
-          <input type="button" (click)="editProject(project)" value="BEWERK" class="openButton" [disabled]="selectedHuisaansluitingen"
-                 [ngClass]="selectedHuisaansluitingen ? 'halfOpacity': ''">
+          <input type="button" (click)="openProject(project)" value="BEKIJK" class="openButton" [disabled]="checkIfHasSelected()"
+                 [ngClass]="checkIfHasSelected()? 'halfOpacity': ''">
+          <input type="button" (click)="editProject(project)" value="BEWERK" class="openButton" [disabled]="checkIfHasSelected()"
+                 [ngClass]="checkIfHasSelected()? 'halfOpacity': ''">
         </div>
       </td>
       <td style="padding-left: 35px;max-width:150px;"><nb-toggle class="checkBox" [checked]="project.isSelected" (checkedChange)="selectProject(project._id)"
