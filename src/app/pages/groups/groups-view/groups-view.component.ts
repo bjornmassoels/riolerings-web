@@ -1,9 +1,9 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NbToastrService } from '@nebular/theme';
+import { NbPopoverDirective, NbToastrService } from '@nebular/theme';
 import { delay, Observable } from 'rxjs';
 import { FormControl, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
-import { startWith, map, timeout } from 'rxjs/operators';
+import { startWith, map, timeout, tap } from 'rxjs/operators';
 import { ApiService } from '../../../../services/api.service';
 import { FormService } from '../../../../services/form.service';
 import { Project } from '../../../../models/project';
@@ -24,6 +24,7 @@ import { Waterafvoer } from '../../../../models/waterafvoer';
 import { Slokkers } from '../../../../models/slokkers';
 import { GroupsViewPdfDownloadDialogComponent } from './groups-view-pdf-download-dialog/groups-view-pdf-download-dialog.component';
 import moment from 'moment';
+import { MatMenuTrigger } from '@angular/material/menu';
 
 declare var Pace: any;
 
@@ -33,7 +34,7 @@ declare var Pace: any;
   styleUrls: ['./groups-view.component.scss'],
 })
 export class GroupsViewComponent implements OnInit, OnDestroy {
-
+  @ViewChild('popoverDirective') popover: NbPopoverDirective;
   protected readonly Math = Math;
   showProjectDetails: boolean = false;
   public projectItem: Project = new Project();
@@ -80,6 +81,13 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
   filterTussenDateStartString: string;
   filterTussenDateEndString: string;
   allStreetNames: string[] = [];
+  selectedHuisaansluitingen: number;
+  selectedWachtaansluitingen: number;
+  selectedKolken: number;
+  selectedHuisaansluitingenWithValue: number;
+  selectedWachtaansluitingenWithValue: number;
+  selectedKolkenWithValue: number;
+  populatedProjects: Project[];
   constructor(
     private apiService: ApiService,
     private router: Router,
@@ -216,8 +224,11 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
       this.filteredStreets = this.searchForm.valueChanges.pipe(
         startWith(''),
         map(value => typeof value === 'string' ? value.toLowerCase() : value.street.toLowerCase()),
-        map(name => name ? this.filterStreets(name) : this.allStreetNames.slice())
-      );
+        tap(straat => {this.formService.previousStreet = straat;
+                                    this.filterStraatText = straat;}),
+        map(name => name ? this.filterStreets(name) : this.allStreetNames.slice()),
+        tap(() => this.filterAndSort())
+    );
 
       while (this.apiService.thisCompany == null) {
         await this.delay(50)
@@ -317,7 +328,50 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
     } else {
       await this.sortByStreet();
     }
+    await this.checkIfSelectedAansluitingen();
   }
+
+  async checkIfSelectedAansluitingen(){
+    if(this.searchAllProjectsList.filter(x => x.isSelected).length > 0){
+      let selectedProjects = this.searchAllProjectsList.filter(x => x.isSelected);
+      if(this.populatedProjects == null){
+       let populatedGroup = await this.apiService.getGroupByIdWithoutSubscribe(this._id) as Group;
+        this.populatedProjects = populatedGroup.projectList as Project[];
+        let populatedSlokkerProjects = populatedGroup.slokkerProjectList as Project[];
+        this.populatedProjects =  [...this.populatedProjects, ...populatedSlokkerProjects];
+      }
+      let tempSelectedPopulatedProjects = [];
+      for(let selectedProject of selectedProjects){
+        let tempProject = this.populatedProjects.find(x => x._id === selectedProject._id);
+        tempSelectedPopulatedProjects.push(tempProject);
+      }
+      this.selectedHuisaansluitingen = tempSelectedPopulatedProjects.filter(x => x.droogWaterAfvoer != null
+        && ((x.isWachtAansluiting == null || !x.isWachtAansluiting) &&
+          (x.droogWaterAfvoer?.isWachtaansluiting == null || !x.droogWaterAfvoer.isWachtaansluiting) &&
+          (x.regenWaterAfvoer?.isWachtaansluiting == null || !x.regenWaterAfvoer.isWachtaansluiting))).length;
+      this.selectedWachtaansluitingen = tempSelectedPopulatedProjects.filter(x =>  x.droogWaterAfvoer != null && ((x.isWachtAansluiting != null && x.isWachtAansluiting) ||
+        (x.droogWaterAfvoer?.isWachtaansluiting != null && x.droogWaterAfvoer.isWachtaansluiting) ||
+        (x.regenWaterAfvoer?.isWachtaansluiting != null && x.regenWaterAfvoer.isWachtaansluiting))).length;
+      this.selectedKolken = tempSelectedPopulatedProjects.filter(x => x.slokker != null).length;
+      this.selectedHuisaansluitingenWithValue = tempSelectedPopulatedProjects.filter(x => (this.checkHasAfvoer(x.droogWaterAfvoer) || this.checkHasAfvoer(x.regenWaterAfvoer))
+        && ((x.isWachtAansluiting == null || !x.isWachtAansluiting) &&
+          (x.droogWaterAfvoer?.isWachtaansluiting == null || !x.droogWaterAfvoer.isWachtaansluiting) &&
+          (x.regenWaterAfvoer?.isWachtaansluiting == null || !x.regenWaterAfvoer.isWachtaansluiting))).length;
+      this.selectedWachtaansluitingenWithValue = tempSelectedPopulatedProjects.filter(x =>  (this.checkHasAfvoer(x.droogWaterAfvoer) || this.checkHasAfvoer(x.regenWaterAfvoer))
+        && (x.isWachtAansluiting || x.droogWaterAfvoer.isWachtaansluiting || x.regenWaterAfvoer.isWachtaansluiting)).length;
+      this.selectedKolkenWithValue = tempSelectedPopulatedProjects.filter(x => x.slokker != null && this.checkHasKolk(x.slokker)).length;
+
+      this.popover.show();
+    } else {
+      this.selectedHuisaansluitingen = null;
+      this.selectedWachtaansluitingen = null;
+      this.selectedKolken = null;
+      this.popover.hide();
+    }
+  }
+
+
+
   async sortByStreet() {
     this.projects.sort(this.sortIndex);
     this.searchAllProjectsList.sort(this.sortIndex);
@@ -992,15 +1046,16 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
   }
 
   selectProject(projectId: string) {
-    const index = this.allProjects.findIndex((x) => x._id === projectId);
+    const index = this.searchAllProjectsList.findIndex((x) => x._id === projectId);
     if (
-      this.allProjects[index].isSelected == null ||
-      this.allProjects[index].isSelected === false
+      this.searchAllProjectsList[index].isSelected == null ||
+      this.searchAllProjectsList[index].isSelected === false
     ) {
-      this.allProjects[index].isSelected = true;
+      this.searchAllProjectsList[index].isSelected = true;
     } else {
-      this.allProjects[index].isSelected = false;
+      this.searchAllProjectsList[index].isSelected = false;
     }
+    this.checkIfSelectedAansluitingen();
   }
 
   selectAll() {
@@ -1015,6 +1070,7 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
         project2.isSelected = false;
       }
     }
+    this.checkIfSelectedAansluitingen();
   }
 
   goToMultipleAddProject() {
@@ -1168,7 +1224,7 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
   }
 
   checkHasAfvoer(dwa: Waterafvoer) {
-    if ((dwa.buisVoorHor == null || dwa.buisVoorHor === 0 || dwa.buisVoorHor.toString() === '')
+    if (dwa == null || ((dwa.buisVoorHor == null || dwa.buisVoorHor === 0 || dwa.buisVoorHor.toString() === '')
       && (dwa.buisVoorVert == null || dwa.buisVoorVert === 0 || dwa.buisVoorVert.toString() === '')
       && (dwa.bochtVoor == null || dwa.bochtVoor === 0 || dwa.bochtVoor.toString() === '')
       && (dwa.reductieVoor == null || dwa.reductieVoor === 0 || dwa.reductieVoor.toString() === '')
@@ -1185,7 +1241,7 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
       (!dwa.gradenBocht2Voor45 || dwa.gradenBocht2Voor45 === 0 || dwa.gradenBocht2Voor45.toString() === '') &&
       (!dwa.gradenBocht2Voor90 || dwa.gradenBocht2Voor90 === 0 || dwa.gradenBocht2Voor90.toString() === '') &&
       (!dwa.gradenBochtAchter45 || dwa.gradenBochtAchter45 === 0 || dwa.gradenBochtAchter45.toString() === '') &&
-      (!dwa.gradenBochtAchter90 || dwa.gradenBochtAchter90 === 0 || dwa.gradenBochtAchter90.toString() === '')) {
+      (!dwa.gradenBochtAchter90 || dwa.gradenBochtAchter90 === 0 || dwa.gradenBochtAchter90.toString() === ''))) {
       return false;
     } else {
       return true;
@@ -1193,7 +1249,7 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
   }
 
   checkHasKolk(kolk: Slokkers) {
-    if ((kolk.buis == null || kolk.buis === 0 || kolk.buis.toString() === '') &&
+    if (kolk == null || ((kolk.buis == null || kolk.buis === 0 || kolk.buis.toString() === '') &&
       (kolk.buis2 == null || kolk.buis2 === 0 || kolk.buis2.toString() === '') &&
       (kolk.bocht == null || kolk.bocht === 0 || kolk.bocht.toString() === '') &&
       (kolk.bocht2 == null || kolk.bocht2 === 0 || kolk.bocht2.toString() === '') &&
@@ -1202,7 +1258,7 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
       (kolk.gradenBocht45Fase2 == null || kolk.gradenBocht45Fase2 === 0 || kolk.gradenBocht45Fase2.toString() === '') &&
       (kolk.gradenBocht90Fase2 == null || kolk.gradenBocht90Fase2 === 0 || kolk.gradenBocht90Fase2.toString() === '') &&
       (kolk.reductie == null || kolk.reductie === 0 || kolk.reductie.toString() === '') &&
-      (kolk.stop == null || kolk.stop === 0 || kolk.stop.toString() === '')) {
+      (kolk.stop == null || kolk.stop === 0 || kolk.stop.toString() === ''))) {
       return false;
     } else {
       return true;

@@ -94,6 +94,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { UsersModule } from './users/users.module';
 import {  NbMomentDateService } from '@nebular/moment';
 import { HasChangedPopupComponent } from './has-changed-popup/has-changed-popup.component';
+import { MatTooltip } from '@angular/material/tooltip';
 
 @NgModule({
   imports: [
@@ -135,7 +136,8 @@ import { HasChangedPopupComponent } from './has-changed-popup/has-changed-popup.
     NbFormFieldModule,
     NbPopoverModule,
     NbButtonGroupModule,
-    NbDatepickerModule
+    NbDatepickerModule,
+    MatTooltip,
   ],
   declarations: [
     PagesComponent,

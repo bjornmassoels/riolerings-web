@@ -1,12 +1,12 @@
 <div class="topRow">
-  <button style="width: 95px;  margin-left: 0px !important; font-size: 16px" mat-raised-button class="form-button2" (click)="goToPrevious()">
+  <button style="width: 95px;  margin-left: 0px !important; font-size: 16px" mat-raised-button class="form-button2" (click)="goToPrevious()" [disabled]="selectedHuisaansluitingen" [ngClass]="selectedHuisaansluitingen ? 'halfOpacity': ''">
     Terug
   </button>
-  <button style="width: 90px;" *ngIf="isArchived === false"  mat-raised-button class="form-button2"
+  <button style="width: 90px;" *ngIf="isArchived === false"  mat-raised-button class="form-button2" [disabled]="selectedHuisaansluitingen" [ngClass]="selectedHuisaansluitingen ? 'halfOpacity': ''"
     (click)="archiveGroup()">Archiveren</button>
-  <button  style="width: 148px;" *ngIf="isArchived === true" mat-raised-button class="form-button2"
+  <button  style="width: 148px;" *ngIf="isArchived === true" mat-raised-button class="form-button2" [disabled]="selectedHuisaansluitingen" [ngClass]="selectedHuisaansluitingen ? 'halfOpacity': ''"
     (click)="unArchiveGroup()">Haal uit archief</button>
-  <button  style="width: 112px;" mat-raised-button class="form-button2"
+  <button  style="width: 112px;" mat-raised-button class="form-button2" [disabled]="selectedHuisaansluitingen" [ngClass]="selectedHuisaansluitingen ? 'halfOpacity': ''"
     (click)="goToPostnummers()">Postnummers</button>
   <button style="width: 114px;" mat-raised-button class="form-button2" (click)="generatePDF()"><div class="divInsideButton">PDF fiche<mat-icon class="downloadImage">cloud_download</mat-icon></div></button>
   <button mat-raised-button class="form-button-green2" (click)="downloadExcelClientData()">
@@ -15,20 +15,25 @@
   <button mat-raised-button class="form-button-green" (click)="downloadExcelClientDataMeetstaat()">
     <div class="divInsideButton">Excel meetstaat 	<mat-icon class="downloadImage">cloud_download</mat-icon></div>
   </button>
-  <button mat-raised-button class="form-button4" (click)="setupVariables()">Zet invulvelden uit</button>
-  <button style="width: 112px;" mat-raised-button class="form-button2"
+  <button mat-raised-button class="form-button4" (click)="setupVariables()" [disabled]="selectedHuisaansluitingen" [ngClass]="selectedHuisaansluitingen ? 'halfOpacity': ''">Zet invulvelden uit</button>
+  <button style="width: 112px;" mat-raised-button class="form-button2" [disabled]="!selectedHuisaansluitingen" [ngClass]="selectedHuisaansluitingen ? 'halfOpacity': ''"
           (click)="readLambertExcel()">Lambertcoord.</button>
 </div>
 
 <div class="page-header">
     <h2 style="margin:0px 10px 0px 0">Project</h2>
-    <button class='add-button' mat-raised-button color="primary" (click)="goToEdit()"
+    <button class='add-button' mat-raised-button color="primary" (click)="goToEdit()" [disabled]="selectedHuisaansluitingen" [ngClass]="selectedHuisaansluitingen ? 'halfOpacity': ''"
       style=" min-width:auto; width: 95px !important; background-color:#3f51b5!important;">
       Project bewerken</button>
-    <button mat-raised-button (click)="goToAddProject()" class="add-button">Creëer HA</button>
-    <button mat-raised-button (click)="goToMultipleAddProject()" class="add-button">Creëer meerdere HA's</button>
-    <button mat-raised-button (click)="createSlokker()" class="add-button3">Creëer kolk</button>
-    <button mat-raised-button (click)="createMeerwerk()" class="add-button4">Creëer OW</button>
+    <button mat-raised-button (click)="goToAddProject()" class="add-button" [disabled]="selectedHuisaansluitingen" [ngClass]="selectedHuisaansluitingen ? 'halfOpacity': ''"
+    >Creëer HA</button>
+    <button mat-raised-button (click)="goToMultipleAddProject()" class="add-button" [disabled]="selectedHuisaansluitingen" [ngClass]="selectedHuisaansluitingen ? 'halfOpacity': ''"
+    >Creëer meerdere HA's</button>
+    <button mat-raised-button (click)="createSlokker()"  class="add-button3" [disabled]="selectedHuisaansluitingen" [ngClass]="selectedHuisaansluitingen ? 'halfOpacity': ''">
+      Creëer kolk</button>
+  <button mat-raised-button (click)="createMeerwerk()" class="add-button4" [disabled]="selectedHuisaansluitingen" [ngClass]="selectedHuisaansluitingen ? 'halfOpacity': ''">
+    Creëer OW</button>
+
     <div class="rowFlex">
       <p class="normalText">Kleurencode:</p>
 
@@ -76,11 +81,10 @@
     <ngx-loading-bar style='margin-bottom: 40px; margin-top: 30px;' diameter="40px" includeBar="false" fixed="false" color="blue" value="2"></ngx-loading-bar>
   </div>
 </div>
-<button *ngIf='isOn && !isLoadingBar' (click)="toggleProjectDetails()" class="btn btn-info">
+<button *ngIf='isOn && !isLoadingBar' (click)="toggleProjectDetails()" class="btn btn-info" [disabled]="selectedHuisaansluitingen" [ngClass]="selectedHuisaansluitingen ? 'halfOpacity': ''">
   <i style='margin-right: 8px' [class]="showProjectDetails ? 'fa fa-angle-up' : 'fa fa-angle-down'"></i>
   <b style="font-size: 15px !important;">{{ showProjectDetails ? 'Verberg Projectgegevens' :group?.rbGemeente + ' - ' + group?.aannemerProjectNr + ' - ' + group?.rbProjectNaam }}</b>
 </button>
-
 <div *ngIf="isOn" [hidden]='isLoadingBar' class="infoFlex">
   <div *ngIf="group?.rbProjectNaam && showProjectDetails" class="info-row">
     <div class="info-section">
@@ -113,6 +117,8 @@
       </div>
     </div>
   </div>
+
+
   <div class="row3">
     <div style="padding-bottom: 5px;" class="rowFlex">
       <p class="normalText">Selecteer alles<br> voor downloads</p>
@@ -137,11 +143,19 @@
 
       <div class='colFlex'>
         <mat-label class='sortText'>Filter</mat-label>
-        <nb-select class="nbSelectBorder"  style="width: 190px;border: 1px solid #88a7da; border-radius: 5px;" [optionsListClass]="'soortFilter'" [(ngModel)]="filterSelect" id="extras" >
+        <nb-select  nbPopoverTrigger="noop"  #popoverDirective="nbPopover" nbPopoverPlacement="top-start" [nbPopover]="templateRef"
+                    class="nbSelectBorder"  style="width: 190px;border: 1px solid #88a7da; border-radius: 5px;" [optionsListClass]="'soortFilter'" [(ngModel)]="filterSelect" id="extras" >
           <nb-option style='border-bottom:1px solid lightgray'  (selectionChange)="selectFilter(filter)" type="checkbox" *ngFor="let filter of filterItems"
                      value="{{ filter }}">
             {{ filter }}</nb-option>
         </nb-select>
+        <!--SELECTEDPOPOVER-->
+        <ng-template #templateRef>
+          <span  *ngIf="selectedHuisaansluitingen != null || selectedWachtaansluitingen != null || selectedKolken != null">
+            <h3 style="line-height: 2 !important;" class="selectedTitle">Geselecteerd:  <span><b>{{selectedHuisaansluitingen}}</b> HA   <b>{{selectedWachtaansluitingen}}</b> WA     <b>{{selectedKolken}}</b> Kolk</span></h3>
+            <h3 class="selectedTitle">Ingevuld en geselecteerd:  <span style="color:blue"><b>{{selectedHuisaansluitingenWithValue}}</b> HA   <b>{{selectedWachtaansluitingenWithValue}}</b> WA     <b>{{selectedKolkenWithValue}}</b> Kolk</span></h3>
+          </span>
+        </ng-template>
       </div>
 
     <div class='colFlex'>
@@ -226,8 +240,10 @@
       *ngFor="let project of searchAllProjectsList">
       <td style="max-width:170px !important;min-width:170px !important; max-height:40px !important;margin-left:15px">
         <div class="buttonsRow">
-          <input type="button" (click)="openProject(project)" value="BEKIJK" class="openButton">
-          <input type="button" (click)="editProject(project)" value="BEWERK" class="openButton">
+          <input type="button" (click)="openProject(project)" value="BEKIJK" class="openButton" [disabled]="selectedHuisaansluitingen"
+                 [ngClass]="selectedHuisaansluitingen ? 'halfOpacity': ''">
+          <input type="button" (click)="editProject(project)" value="BEWERK" class="openButton" [disabled]="selectedHuisaansluitingen"
+                 [ngClass]="selectedHuisaansluitingen ? 'halfOpacity': ''">
         </div>
       </td>
       <td style="padding-left: 35px;max-width:150px;"><nb-toggle class="checkBox" [checked]="project.isSelected" (checkedChange)="selectProject(project._id)"

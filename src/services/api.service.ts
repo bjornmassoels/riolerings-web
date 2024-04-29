@@ -14,6 +14,7 @@ import {Meerwerk} from "../models/meerwerk";
 import {Router} from "@angular/router";
 import { SendPdfID } from '../models/sendPdfID';
 import { saveAs } from 'file-saver';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -133,6 +134,16 @@ export class ApiService {
     return this.http.get(this.apiURL + '/groups.id ', {
       headers: headers,
     });
+  }
+  public async getGroupByIdWithoutSubscribe(groupId: string) {
+    let headers = {
+      'Content-Type': 'application/json',
+      Authorization: this._token,
+      userid: this.userId,
+      _id: groupId,  // Note: This might be incorrect usage for headers. Typically, '_id' wouldn't be passed as a header.
+    };
+    const response = await firstValueFrom(this.http.get(this.apiURL + '/groups.id ', { headers: headers }));
+    return response;
   }
   public getGroupByIdLighterVersion(groupId: string) {
     let headers = {
