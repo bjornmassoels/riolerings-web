@@ -223,7 +223,7 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
       this.allStreetNames.sort( (a, b) => { return a.localeCompare(b); });
 
       this.filteredStreets = this.searchForm.valueChanges.pipe(
-        startWith(''),
+        startWith(this.formService.previousStreet ? this.formService.previousStreet : ''),
         map(value => typeof value === 'string' ? value.toLowerCase() : value.street.toLowerCase()),
         tap(straat => {this.formService.previousStreet = straat;
           this.filterStraatText = straat;}),
