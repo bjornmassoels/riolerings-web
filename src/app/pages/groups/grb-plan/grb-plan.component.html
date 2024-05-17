@@ -1,0 +1,10 @@
+
+<div class="layer-selector">
+  <div *ngFor="let key of Object.keys(layersConfig)" class="layer-option">
+    <nb-checkbox type="checkbox" [checked]="layersConfig[key].visible" (change)="toggleLayer(key)"></nb-checkbox>
+    <label>{{ layersConfig[key].benaming }}</label>
+  </div>
+</div>
+
+<div id="map" class="map-container"></div>
+

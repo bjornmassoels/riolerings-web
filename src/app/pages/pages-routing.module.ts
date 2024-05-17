@@ -26,6 +26,7 @@ import {ReadExcelLambertComponent} from "./groups/read-excel-lambert/read-excel-
 import {MeerwerkenViewComponent} from "./meerwerken/meerwerken-view/meerwerken-view.component";
 import {MeerwerkenEditComponent} from "./meerwerken/meerwerken-edit/meerwerken-edit.component";
 import {MeerwerkenAddComponent} from "./meerwerken/meerwerken-add/meerwerken-add.component";
+import { GrbPlanComponent } from './groups/grb-plan/grb-plan.component';
 
 const routes: Routes = [{
   path: '',
@@ -110,6 +111,10 @@ const routes: Routes = [{
     {
       path: 'project-add/:id',
       component: ProjectAddComponent
+    },
+    {
+      path: 'grb-plan/:id',
+      component: GrbPlanComponent
     },
     {
       path: 'users',

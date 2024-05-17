@@ -1355,4 +1355,11 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
     this.formService.previousStreet = '';
     this.filterStraatText = '';
   }
+
+  openGrbPlan() {
+    this.apiService.getGroupById(this._id).subscribe((x) => {
+      this.formService.currentGroup = x as Group;
+      this.router.navigate(['/pages/grb-plan', this.group._id]);
+    });
+  }
 }

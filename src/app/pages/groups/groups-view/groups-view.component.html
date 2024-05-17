@@ -18,6 +18,7 @@
   <button mat-raised-button class="form-button4" (click)="setupVariables()" [disabled]="checkIfHasSelected() " [ngClass]="checkIfHasSelected()  ? 'halfOpacity': ''">Zet invulvelden uit</button>
   <button style="width: 112px;" mat-raised-button class="form-button2" [disabled]="checkIfHasSelected() " [ngClass]="checkIfHasSelected()  ? 'halfOpacity': ''"
           (click)="readLambertExcel()">Lambertcoord.</button>
+  <button (click)="openGrbPlan()" >OPEN GRBPLAN</button>
 </div>
 
 <div class="page-header">
