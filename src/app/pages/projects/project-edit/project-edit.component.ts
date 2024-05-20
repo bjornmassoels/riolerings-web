@@ -108,6 +108,7 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
       } else {
         this.hasPreviousPage = true;
       }
+      console.log(this.currentProject.droogWaterAfvoer)
       this.usersWhoEdited = '';
       this._id = this.route.snapshot.paramMap.get('id');
       this.loadData();
