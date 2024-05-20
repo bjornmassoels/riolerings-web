@@ -65,7 +65,9 @@ export class ProjectViewComponent implements OnInit,OnDestroy {
       } else {
         this.hasPreviousPage = true;
       }
-          this._id = this.route.snapshot.paramMap.get('id');
+      console.log(this.currentProject.droogWaterAfvoer)
+
+      this._id = this.route.snapshot.paramMap.get('id');
           this.usersWhoEdited = '';
           this.loadData();
     });

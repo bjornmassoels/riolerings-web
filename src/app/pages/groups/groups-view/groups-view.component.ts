@@ -289,7 +289,6 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
     this.filterAndSort();
   }
   async filterAndSort(){
-    console.log('in sort')
     let filteredProjects = this.allProjects;
     if(this.filterStraatText.trim() !== ''){
       filteredProjects = this.filterStraatText?.trim()
