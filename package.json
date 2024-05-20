@@ -16,8 +16,8 @@
     "ng": "ng",
     "conventional-changelog": "conventional-changelog",
     "start": "ng serve",
-    "build": "ng build",
-    "build:prod": "ng build --configuration=production",
+    "build": "ng build && npm run sentry:sourcemaps",
+    "build:prod": "ng build --configuration=production  && npm run sentry:sourcemaps",
     "test": "ng test",
     "test:coverage": "rimraf coverage && npm run test -- --code-coverage",
     "lint": "ng lint",
@@ -28,7 +28,8 @@
     "e2e": "ng e2e",
     "docs": "compodoc -p src/tsconfig.app.json -d docs",
     "docs:serve": "compodoc -p src/tsconfig.app.json -d docs -s",
-    "release:changelog": "npm run conventional-changelog -- -p angular -i CHANGELOG.md -s"
+    "release:changelog": "npm run conventional-changelog -- -p angular -i CHANGELOG.md -s",
+    "sentry:sourcemaps": "sentry-cli sourcemaps inject --org selux-werftools-b5 --project riolering-web ./dist && sentry-cli sourcemaps upload --org selux-werftools-b5 --project riolering-web ./dist"
   },
   "dependencies": {
     "@angular/animations": "^17.2.3",
@@ -51,6 +52,8 @@
     "@nebular/security": "^13.0.0",
     "@nebular/theme": "^13.0.0",
     "@ngx-loading-bar/core": "^6.0.2",
+    "@sentry/angular": "^8.2.1",
+    "@sentry/cli": "^2.31.2",
     "@swimlane/ngx-charts": "^20.5.0",
     "@types/node": "^20.11.24",
     "@types/ws": "^8.5.4",

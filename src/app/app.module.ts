@@ -5,7 +5,7 @@
  */
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { LOCALE_ID, NgModule } from '@angular/core';
+import { APP_INITIALIZER, ErrorHandler, LOCALE_ID, NgModule } from '@angular/core';
 import { HttpClientModule, HttpResponse } from '@angular/common/http';
 import { CoreModule } from './@core/core.module';
 import { ThemeModule } from './@theme/theme.module';
@@ -35,6 +35,8 @@ import { getStorage, provideStorage } from '@angular/fire/storage';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireStorageModule } from '@angular/fire/compat/storage';
 import { NbMomentDateModule } from '@nebular/moment';
+import { Router } from '@angular/router';
+import * as Sentry from "@sentry/angular";
 
 registerLocaleData(localeNl);
 
@@ -94,7 +96,22 @@ registerLocaleData(localeNl);
       forms: {},
     }),
   ],
-  providers: [  { provide: LOCALE_ID, useValue: 'nl-NL' }],
+  providers: [  { provide: LOCALE_ID, useValue: 'nl-NL' },
+    {
+      provide: ErrorHandler,
+      useValue: Sentry.createErrorHandler({
+        showDialog: true,
+      }),
+    }, {
+      provide: Sentry.TraceService,
+      deps: [Router],
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: () => () => {},
+      deps: [Sentry.TraceService],
+      multi: true,
+    }],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
