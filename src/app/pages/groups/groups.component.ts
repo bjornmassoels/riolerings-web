@@ -119,6 +119,7 @@ export class GroupsComponent implements OnInit {
         this.formService.filterTussenDateStartString = null;
         this.formService.filterTussenDateEndString = null;
         this.formService._allGroups = this.groups;
+        throw new Error();
         if (this.formService.previousGroupIndex != null) {
           let behavior: string = 'auto';
           const rows = document.getElementsByClassName("scroll");
