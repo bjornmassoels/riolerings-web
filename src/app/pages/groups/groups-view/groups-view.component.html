@@ -8,7 +8,9 @@
     (click)="unArchiveGroup()">Haal uit archief</button>
   <button  style="width: 112px;" mat-raised-button class="form-button2" [disabled]="checkIfHasSelected() " [ngClass]="checkIfHasSelected()  ? 'halfOpacity': ''"
     (click)="goToPostnummers()">Postnummers</button>
-  <button style="width: 114px;" mat-raised-button class="form-button2" (click)="generatePDF()"><div class="divInsideButton">PDF fiche<mat-icon class="downloadImage">cloud_download</mat-icon></div></button>
+  <button style="width: 114px;"  mat-raised-button class="form-button2" (click)="generatePDF()"><div class="divInsideButton">PDF fiche<mat-icon class="downloadImage">cloud_download</mat-icon></div></button>
+
+
   <button mat-raised-button class="form-button-green2" (click)="downloadExcelClientData()">
     <div class="divInsideButton">Excel Vlario 	<mat-icon class="downloadImage">cloud_download</mat-icon></div>
   </button>
@@ -21,7 +23,15 @@
 </div>
 
 <div class="page-header">
-    <h2 style="margin:0px 10px 0px 0">Project</h2>
+    <h2  nbPopoverTrigger="noop"  #popoverDirective="nbPopover" nbPopoverPlacement="end-bottom" [nbPopover]="templateRef"
+         style="margin:0px 10px 0px 0">Project</h2>
+  <!--SELECTEDPOPOVER-->
+  <ng-template #templateRef>
+          <span  *ngIf="selectedHuisaansluitingen != null || selectedWachtaansluitingen != null || selectedKolken != null">
+            <h3 style="line-height: 2 !important;" class="selectedTitle">Geselecteerd:  <span><b>{{selectedHuisaansluitingen}}</b> HA   <b>{{selectedWachtaansluitingen}}</b> WA     <b>{{selectedKolken}}</b> Kolk</span></h3>
+            <h3 class="selectedTitle">Ingevuld en geselecteerd:  <span style="color:blue"><b>{{selectedHuisaansluitingenWithValue}}</b> HA   <b>{{selectedWachtaansluitingenWithValue}}</b> WA     <b>{{selectedKolkenWithValue}}</b> Kolk</span></h3>
+          </span>
+  </ng-template>
     <button class='add-button' mat-raised-button color="primary" (click)="goToEdit()" [disabled]="checkIfHasSelected()" [ngClass]="checkIfHasSelected()? 'halfOpacity': ''"
       style=" min-width:auto; width: 95px !important; background-color:#3f51b5!important;">
       Project bewerken</button>
@@ -143,19 +153,12 @@
 
       <div class='colFlex'>
         <mat-label class='sortText'>Filter</mat-label>
-        <nb-select  nbPopoverTrigger="noop"  #popoverDirective="nbPopover" nbPopoverPlacement="top-start" [nbPopover]="templateRef"
-                    class="nbSelectBorder"  style="width: 190px;border: 1px solid #88a7da; border-radius: 5px;" [optionsListClass]="'soortFilter'" [(ngModel)]="filterSelect" id="extras" >
+        <nb-select class="nbSelectBorder"  style="width: 190px;border: 1px solid #88a7da; border-radius: 5px;" [optionsListClass]="'soortFilter'" [(ngModel)]="filterSelect" id="extras" >
           <nb-option style='border-bottom:1px solid lightgray'  (selectionChange)="selectFilter(filter)" type="checkbox" *ngFor="let filter of filterItems"
                      value="{{ filter }}">
             {{ filter }}</nb-option>
         </nb-select>
-        <!--SELECTEDPOPOVER-->
-        <ng-template #templateRef>
-          <span  *ngIf="selectedHuisaansluitingen != null || selectedWachtaansluitingen != null || selectedKolken != null">
-            <h3 style="line-height: 2 !important;" class="selectedTitle">Geselecteerd:  <span><b>{{selectedHuisaansluitingen}}</b> HA   <b>{{selectedWachtaansluitingen}}</b> WA     <b>{{selectedKolken}}</b> Kolk</span></h3>
-            <h3 class="selectedTitle">Ingevuld en geselecteerd:  <span style="color:blue"><b>{{selectedHuisaansluitingenWithValue}}</b> HA   <b>{{selectedWachtaansluitingenWithValue}}</b> WA     <b>{{selectedKolkenWithValue}}</b> Kolk</span></h3>
-          </span>
-        </ng-template>
+
       </div>
 
     <div class='colFlex'>

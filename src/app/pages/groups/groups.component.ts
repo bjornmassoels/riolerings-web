@@ -120,7 +120,7 @@ export class GroupsComponent implements OnInit {
         this.formService.filterTussenDateEndString = null;
         this.formService._allGroups = this.groups;
         if (this.formService.previousGroupIndex != null) {
-          let behavior: string = 'smooth';
+          let behavior: string = 'auto';
           const rows = document.getElementsByClassName("scroll");
           setTimeout(() => {
             rows[this.formService.previousGroupIndex].scrollIntoView({

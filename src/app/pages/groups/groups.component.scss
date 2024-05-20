@@ -144,7 +144,7 @@
   border-radius: 15px;
   padding: 15px;
   background-color: white;
-  color: white;
+  color: rgba(0, 0, 0, 0.3) !important;
 }
 
 .scroll-table td {
@@ -162,9 +162,6 @@
   box-shadow: inset 0 0 0 10px;
 }
 
-.scroll-table:hover {
-  color: rgba(0, 0, 0, 0.3);
-}
 .detailsColumn {
   display: flex;
   flex-direction: column;
