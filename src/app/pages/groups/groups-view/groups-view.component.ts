@@ -243,12 +243,13 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
         let behavior: string = 'auto';
         const rows = document.getElementsByClassName("scroll");
         setTimeout(() => {
-          rows[this.formService.previousIndex].scrollIntoView({
-            behavior: <ScrollBehavior>behavior.toString(),
-            block: 'center'
-          });
-          this.formService.previousIndex = null;
-
+          if(rows[this.formService.previousIndex] != null){
+            rows[this.formService.previousIndex].scrollIntoView({
+              behavior: <ScrollBehavior>behavior.toString(),
+              block: 'center'
+            });
+            this.formService.previousIndex = null;
+          }
         }, 10);
       }
       this.formService._allProjects = this.allProjects;
