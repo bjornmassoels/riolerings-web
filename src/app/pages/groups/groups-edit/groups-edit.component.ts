@@ -363,8 +363,8 @@ export class GroupsEditComponent implements OnInit {
       this._id = this.route.snapshot.paramMap.get('id');
       this.hasChangedValue = false;
       this.apiService.getUsers().subscribe((x) => {
-        this.allUsers = x as User[];
-        this.allUsers = this.allUsers
+        let users = x as User[];
+        users = users
           .filter(user => user.name !== 'bjorn programmeur selux')
           .map(user => {
             if (!user.name) {
@@ -374,6 +374,7 @@ export class GroupsEditComponent implements OnInit {
             }
             return user;
           })
+        this.allUsers = users;
         this.sortUsers();
       });
         this.apiService.getGroupById(this._id).subscribe((y) => {
@@ -446,6 +447,9 @@ export class GroupsEditComponent implements OnInit {
       mofMult: this.group.mofMult == null ? 0.15 : this.group.mofMult,
       possibleKolkStreets: possibleKolkStreets
     });
+    while(this.allUsers == null){
+      await this.delay(50);
+    }
     this.isLoaded = true;
     await this.delay(500);
     this.addForm.valueChanges.subscribe(x => {
@@ -586,7 +590,7 @@ export class GroupsEditComponent implements OnInit {
   }
 
   private filter(value: string): string[] {
-    const filterValue = value.toLowerCase();
+    const filterValue = value?.toLowerCase();
     return this.gemeentes.filter(optionValue => optionValue.toLowerCase().includes(filterValue));
   }
 

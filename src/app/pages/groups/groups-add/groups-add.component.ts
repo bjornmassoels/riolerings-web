@@ -533,7 +533,7 @@ export class GroupsAddComponent implements OnInit {
 
 
   private filter(value: string): string[] {
-    const filterValue = value.toLowerCase();
+    const filterValue = value?.toLowerCase();
     return this.gemeentes.filter(optionValue => optionValue.toLowerCase().includes(filterValue));
   }
 
