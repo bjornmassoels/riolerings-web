@@ -78,6 +78,7 @@ async ngAfterViewInit() {
         this.changeUser(this.selectedUser._id);
     }
   } else {
+    await this.delay(100);
     this.input.nativeElement.focus();
   }
 }
