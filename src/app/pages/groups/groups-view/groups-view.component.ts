@@ -162,6 +162,7 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
       this.projects = this.group.projectList;
       if (this.projects != null) {
         for (let project of this.projects) {
+
           project.createdDate = new Date(project.created);
           if (project.startDate != null) {
             project.startDate = new Date(project.startDate);
@@ -237,7 +238,6 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
       this.company = this.apiService.thisCompany
       this.isOn = true;
       Pace.stop();
-
       await this.delay(50);
       if (this.formService.previousIndex != null) {
         let behavior: string = 'auto';

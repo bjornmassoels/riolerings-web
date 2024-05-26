@@ -172,7 +172,7 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
         let timeBetweenLastEdit = Math.floor((new Date().getTime() - this.currentProject.lastWorkerDate.getTime()) / (1000 * 60 * 60));
         if (timeBetweenLastEdit < 8) {
           this.formService.workerHours = timeBetweenLastEdit;
-          this.formService.workerName = this.currentProject.lastWorker.name;
+          this.formService.workerName = this.currentProject.lastWorker?.name;
           this.projectEditedByGronwderker = true;
         }
       }
