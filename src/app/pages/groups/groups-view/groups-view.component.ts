@@ -760,16 +760,16 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
     if (this.group._id == null || this.group._id === '') {
       this.group._id = this.group.id;
     }
-    this.formService.previousPage.push('/pages/groupview/' + this.group._id);
-    this.router.navigate(['/pages/project-add', this.group._id]);
+    this.formService.previousPage.push('/pages/groupview/' + this._id);
+    this.router.navigate(['/pages/project-add', this._id]);
   }
 
   goToPostnummers() {
     if (this.group._id == null || this.group._id === '') {
       this.group._id = this.group.id;
     }
-    this.formService.previousPage.push('/pages/groupview/' + this.group._id);
-    this.router.navigate(['/pages/postnummer-settings', this.group._id]);
+    this.formService.previousPage.push('/pages/groupview/' + this._id);
+    this.router.navigate(['/pages/postnummer-settings', this._id]);
   }
 
   downloadExcelClientData() {
@@ -1085,16 +1085,16 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
     if (this.group._id == null || this.group._id === '') {
       this.group._id = this.group.id;
     }
-    this.formService.previousPage.push('/pages/groupview/' + this.group._id);
-    this.router.navigate(['/pages/multiple-project-add', this.group._id]);
+    this.formService.previousPage.push('/pages/groupview/' + this._id);
+    this.router.navigate(['/pages/multiple-project-add', this._id]);
   }
 
   goToEdit() {
     if (this.group._id == null || this.group._id === '') {
       this.group._id = this.group.id;
     }
-    this.formService.previousPage.push('/pages/groupview/' + this.group._id);
-    this.router.navigate(['/pages/group-edit/', this.group._id]);
+    this.formService.previousPage.push('/pages/groupview/' + this._id);
+    this.router.navigate(['/pages/group-edit/', this._id]);
   }
 
   unArchiveGroup() {
@@ -1105,7 +1105,7 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
       'Even geduld!',
     );
     this.apiService.archiveGroup(this.group, false).subscribe((x) => {
-      this.router.navigate(['/pages/groupview' + this.group._id]);
+      this.router.navigate(['/pages/groupview' + this._id]);
     });
   }
 
@@ -1210,25 +1210,25 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
 
   setupVariables() {
     this.formService.isComingFromCreateGroup = false;
-    this.formService.previousPage.push('/pages/groupview/' + this.group._id);
-    this.router.navigate(['/pages/settings-variable', this.group._id]);
+    this.formService.previousPage.push('/pages/groupview/' + this._id);
+    this.router.navigate(['/pages/settings-variable', this._id]);
   }
 
   createSlokker() {
-    this.formService.previousPage.push('/pages/groupview/' + this.group._id);
-    this.router.navigate(['/pages/slokkerproject-add', this.group._id]);
+    this.formService.previousPage.push('/pages/groupview/' + this._id);
+    this.router.navigate(['/pages/slokkerproject-add', this._id]);
   }
 
   readLambertExcel() {
-    this.formService.previousPage.push('/pages/groupview/' + this.group._id);
+    this.formService.previousPage.push('/pages/groupview/' + this._id);
     this.formService.currentGroup = this.group;
-    this.router.navigate(['/pages/read-excel-lambert', this.group._id]);
+    this.router.navigate(['/pages/read-excel-lambert', this._id]);
   }
 
 
   createMeerwerk() {
-    this.formService.previousPage.push('/pages/groupview/' + this.group._id);
-    this.router.navigate(['/pages/meerwerk-add', this.group._id]);
+    this.formService.previousPage.push('/pages/groupview/' + this._id);
+    this.router.navigate(['/pages/meerwerk-add', this._id]);
   }
 
   checkHasAfvoer(dwa: Waterafvoer) {
