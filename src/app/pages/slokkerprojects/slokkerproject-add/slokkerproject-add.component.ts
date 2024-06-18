@@ -13,6 +13,7 @@ import { User } from 'models/user';
 import {AngularFireStorage} from "@angular/fire/compat/storage";
 import { HasChangedPopupComponent } from '../../has-changed-popup/has-changed-popup.component';
 import { MatDialog } from '@angular/material/dialog';
+import { Waterafvoer } from '../../../../models/waterafvoer';
 
 
 @Component({
@@ -156,7 +157,10 @@ export class SlokkerprojectAddComponent implements OnInit {
           aansluitingOpengracht: this.currentProject.slokker.aansluitingOpengracht,
           plaatsAansluiting: this.currentProject.slokker.plaatsAansluiting,
           diameter: this.currentProject.slokker.diameter,
-          tBuisStuk: this.currentProject.slokker.tBuisStuk
+          tBuisStuk: this.currentProject.slokker.tBuisStuk,
+          xCoord: this.currentProject.slokker.xCoord,
+          yCoord: this.currentProject.slokker.yCoord,
+          zCoord: this.currentProject.slokker.zCoord,
         });
         this.uploadForm = this.formBuilder.group({
           file: ['']
@@ -213,6 +217,9 @@ export class SlokkerprojectAddComponent implements OnInit {
       slokker.aansluitingOpengracht = slokkerProject.aansluitingOpengracht;
       slokker.plaatsAansluiting = slokkerProject.plaatsAansluiting;
       slokker.tBuisStuk = slokkerProject.tBuisStuk;
+      slokker.xCoord = slokkerProject.xCoord;
+      slokker.yCoord = slokkerProject.yCoord;
+      slokker.zCoord = slokkerProject.zCoord;
       slokker._id = this.currentProject.slokker._id;
 
       //project init

@@ -423,3 +423,39 @@ input::-webkit-inner-spin-button {
   justify-content: center;
   align-items: center;
 }
+
+.insideRow2{
+  display:flex;
+  flex-direction:row;
+  justify-content:space-between;
+  align-items:center;
+  width:100%;
+  max-width:50%;
+  padding: 5px 12px 5px 6px;
+  .label-text {
+    letter-spacing: 0.9pt;
+    margin-bottom: 0px !important;
+  }
+  .texter{
+    margin-top:0 !important;
+    margin-bottom: 0 !important;
+  }
+}
+
+.flexWrapper{
+  display:flex;
+  flex-direction:row;
+  justify-content:flex-start;
+  margin-top:3px;
+  align-items:center;
+  width:100%;
+  flex-wrap: wrap;
+}
+.lambertTitle{
+  width: 100%;
+  font-weight: 700;
+  letter-spacing: 1.4pt;
+  margin-bottom: 0px !important;
+  font-size: 16px;
+  text-align: start;
+}

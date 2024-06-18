@@ -360,6 +360,13 @@ export class SlokkerprojectViewComponent implements OnInit,OnDestroy {
       return true;
     }
   }
+  checkIfHasCoords(slokker: Slokkers) {
+    if((slokker.xCoord != null && slokker.xCoord !== '') || (slokker.yCoord != null && slokker.yCoord !== '') || (slokker.zCoord != null && slokker.zCoord !== '')){
+      return true;
+    } else {
+      return false;
+    }
+  }
   deleteFoto(i: number) {
     this.currentProject[i] = null;
   }

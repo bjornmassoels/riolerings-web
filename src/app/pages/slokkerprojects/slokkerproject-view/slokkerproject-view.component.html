@@ -247,6 +247,30 @@
         <p *ngIf="currentProject.slokker.aansluitingOpengracht" class="data-text">Ja</p>
       </div>
 
+      <p style='font-size: 15px; font-weight: 600; margin-top: 15px; margin-left:20px' *ngIf='!checkIfHasCoords(currentProject.slokker)'>Heeft geen lambertcoördinaten</p>
+      <div style='margin-bottom: 10px; margin-top:10px;' *ngIf='checkIfHasCoords(currentProject.slokker)'>
+        <p class="lambertTitle">Lambert coordinaten <small>(Alleen verplicht projecten voor AWV)</small></p>
+        <div class='flexWrapper'>
+          <div class="insideRow2">
+            <p class="label-text">X-coordinaat</p>
+            <p class="data-text">
+              {{currentProject.slokker.xCoord}}
+            </p>
+          </div>
+          <div class="insideRow2">
+            <p class="label-text">Y-coordinaat</p>
+            <p class="data-text">
+              {{currentProject.slokker.yCoord}}
+            </p>
+          </div>
+          <div class="insideRow2">
+            <p class="label-text">Z-coordinaat</p>
+            <p class="data-text">
+              {{currentProject.slokker.zCoord}}
+            </p>
+          </div>
+        </div>
+      </div>
 
     </div>
   </div>

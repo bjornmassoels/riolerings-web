@@ -445,7 +445,7 @@ export class ExcelService {
     infoRow.getCell('K').alignment = { vertical: 'middle', horizontal: 'center' };
 
     let headers = ['Straat','Huisnr','Equipmentnr. riolering','aard water\n (RWA/DWA/\nGEM)', 'soort\n(HA,WA)', 'diameter\n(mm)', 'materiaal',
-      'X coördinaat', 'Y coördinaat', 'Z coördinaat', 'Mof\n(st)', 'Buis\n(m)', 'Bocht\n(st)', 'Y/T-stuk\n(st)', 'Krimpmof\n(st)', 'Koppelstuk\n(st)', 'Reductie\n(st)',
+      'X-coördinaat', 'Y-coördinaat', 'Z-coördinaat', 'Mof\n(st)', 'Buis\n(m)', 'Bocht\n(st)', 'Y/T-stuk\n(st)', 'Krimpmof\n(st)', 'Koppelstuk\n(st)', 'Reductie\n(st)',
       'Stop\n(st)', 'Andere', 'diameter\nHA-putje of\nT-stuk\n(mm)', 'Terugslag-\nklep in HA-\nputje', 'naamgeving fiche'];
 
     //Add Header Row
@@ -1799,7 +1799,7 @@ export class ExcelService {
     infoRow2.getCell('K').alignment = { vertical: 'middle', horizontal: 'center' };
 
     let headers2 = ['Straat\n( + eventueel huisnummer)','Volgnr.','Equipmentnr. riolering','aard water\n (RWA/DWA/\nGEM)', 'soort\n(HA,WA)', 'diameter\n(mm)', 'materiaal',
-      'X coördinaat', 'Y coördinaat', 'Z coördinaat', 'Mof\n(st)', 'Buis\n(m)', 'Bocht\n(st)', 'Y/T-stuk\n(st)', 'Krimpmof\n(st)', 'Koppelstuk\n(st)', 'Reductie\n(st)',
+      'X-coördinaat', 'Y-coördinaat', 'Z-coördinaat', 'Mof\n(st)', 'Buis\n(m)', 'Bocht\n(st)', 'Y/T-stuk\n(st)', 'Krimpmof\n(st)', 'Koppelstuk\n(st)', 'Reductie\n(st)',
       'Stop\n(st)', 'Andere', 'diameter\nHA-putje of\nT-stuk\n(mm)', 'Terugslag-\nklep in HA-\nputje', 'naamgeving fiche'];
 
     //Add Header Row
@@ -3107,6 +3107,11 @@ export class ExcelService {
     gemRow2.alignment = {vertical: 'middle', horizontal: 'center'};
 
 
+
+
+
+
+
     //page project kolk
 
     let worksheet4 = workbook.addWorksheet('Project Kolk', {
@@ -3125,9 +3130,8 @@ export class ExcelService {
     worksheet4.mergeCells('A1:C1');
     let emptyRow7 = worksheet4.addRow([""]);
     let infoRow3 = worksheet4.addRow([""]);
-
-    worksheet4.mergeCells('H3:P3');
-    infoRow3.getCell('H').value = "HOEVEELHEDEN aansluiting";
+    worksheet4.mergeCells('H3:J3');
+    infoRow3.getCell('H').value = "Lambert coördinaten";
     infoRow3.getCell('H').border = {
       top: { style: 'medium' },
       left: { style: 'medium' },
@@ -3136,9 +3140,19 @@ export class ExcelService {
     };
     infoRow3.getCell('H').font = { name: 'Arial', family: 4, size: 11, bold: true};
     infoRow3.getCell('H').alignment = { vertical: 'middle', horizontal: 'center' };
+    worksheet4.mergeCells('K3:S3');
+    infoRow3.getCell('K').value = "HOEVEELHEDEN aansluiting";
+    infoRow3.getCell('K').border = {
+      top: { style: 'medium' },
+      left: { style: 'medium' },
+      bottom: { style: 'medium' },
+      right: { style: 'medium' },
+    };
+    infoRow3.getCell('K').font = { name: 'Arial', family: 4, size: 11, bold: true};
+    infoRow3.getCell('K').alignment = { vertical: 'middle', horizontal: 'center' };
 
     let headers3 = ['Straat\n( + eventueel huisnummer)','Volgnr.','Equipmentnr. riolering','aard water\n (RWA/DWA/\nGEM)', 'soort', 'diameter\n(mm)', 'materiaal',
-       'Mof\n(st)', 'Buis\n(m)', 'Bocht\n(st)', 'Y/T-stuk\n(st)', 'Krimpmof\n(st)', 'Koppelstuk\n(st)', 'Reductie\n(st)',
+       'X-coördinaat','Y-coördinaat', 'Z-coördinaat', 'Mof\n(st)', 'Buis\n(m)', 'Bocht\n(st)', 'Y/T-stuk\n(st)', 'Krimpmof\n(st)', 'Koppelstuk\n(st)', 'Reductie\n(st)',
       'Stop\n(st)', 'Andere','naamgeving fiche'];
 
     //Add Header Row
@@ -3180,10 +3194,12 @@ export class ExcelService {
         column.width = 11;
       } else if(i === 3 ){
         column.width = 15;
-      } else if( i === 16 ){
+      } else if( i === 19 ){
         column.width = 110;
-      } else if(  i === 7 || i === 8 || i === 9 || i === 14 ){
+      } else if(  i === 10 || i === 11 || i === 12 || i === 17 ){
         column.width = 9;
+      } else if( i === 7 || i === 8 || i === 9){
+        column.width = 14;
       } else if(i === 2){
         column.width = 35;
       } else {
@@ -3243,6 +3259,9 @@ export class ExcelService {
           "kolk",
           this.NullToZero(+project.slokker.diameter),
           this.NullToString(project.slokker.buisType),
+          this.NullToString(project.slokker.xCoord),
+          this.NullToString(project.slokker.yCoord),
+          this.NullToString(project.slokker.zCoord),
           this.NullToZero(mof),
           this.NullToZero(project.slokker.buis) + this.NullToZero(project.slokker.buis2),
           bochtenCount,
@@ -3255,7 +3274,7 @@ export class ExcelService {
           this.NullToString(project.naamFiche)
         ]);
         dataRow2.alignment = {vertical: 'middle', horizontal: 'center'};
-        dataRow2.getCell('Q').value = 'GEM=' + dataList.gemeenteCode + ' projectnr=' + dataList.rbProjectNr +
+        dataRow2.getCell('T').value = 'GEM=' + dataList.gemeenteCode + ' projectnr=' + dataList.rbProjectNr +
           ' adres=' + project.street + ' ko=' + dataList.rbProjectNr + '-kolknr' +  project.index + ' AB-kolk-fiche';
         dataRow2.getCell('C').value = dataList.rbProjectNr + '-kolknr' +  project.index;
         dataRow2.eachCell({includeEmpty: true}, (cell, number) => {
@@ -3350,9 +3369,27 @@ export class ExcelService {
           fgColor: {argb: 'fbf8e6'},
           bgColor: {argb: 'fbf8e6'},
         };
+        dataRow2.getCell('Q').fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: {argb: 'fbf8e6'},
+          bgColor: {argb: 'fbf8e6'},
+        };
+        dataRow2.getCell('R').fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: {argb: 'fbf8e6'},
+          bgColor: {argb: 'fbf8e6'},
+        };
+        dataRow2.getCell('S').fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: {argb: 'fbf8e6'},
+          bgColor: {argb: 'fbf8e6'},
+        };
       }
     }
-    let rwaRow3 = worksheet4.addRow([ 'Totale hoeveelheden' , 'RWA' , '', '', '', '', '',
+    let rwaRow3 = worksheet4.addRow([ 'Totale hoeveelheden' , 'RWA' , '', '', '', '', '','','','',
       mofCountRWA,buisCountRWA.toFixed(2),bochtCountRWA,yStukCountRWA,krimpmofCountRWA,koppelstukCountRWA,reductieCountRWA,stopCountRWA
     ]);
     rwaRow3.eachCell((cell, number) => {

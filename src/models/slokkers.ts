@@ -29,8 +29,12 @@ export class Slokkers {
     plaatsAansluiting: string;
     diameter: string;
     tBuisStuk: string;
-  xCoordGeoLocationFirsPhoto: number;
-  yCoordGeoLocationFirsPhoto: number;
+    xCoordGeoLocationFirsPhoto: number;
+    yCoordGeoLocationFirsPhoto: number;
+    //AWV toevoegingen
+    xCoord: string;
+    yCoord: string;
+    zCoord: string;
     constructor() {
     }
 }

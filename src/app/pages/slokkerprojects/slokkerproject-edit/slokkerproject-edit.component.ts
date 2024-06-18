@@ -201,7 +201,10 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
           diameter: this.currentProject.slokker.diameter,
           tBuisStuk: this.currentProject.slokker.tBuisStuk,
           startDate:  this.currentProject.startDate != null ? moment(this.currentProject.startDate) : null,
-          afgewerktDatum: this.currentProject.afgewerktDatum != null ? moment(this.currentProject.afgewerktDatum): null
+          afgewerktDatum: this.currentProject.afgewerktDatum != null ? moment(this.currentProject.afgewerktDatum): null,
+          xCoord: this.currentProject.slokker.xCoord,
+          yCoord: this.currentProject.slokker.yCoord,
+          zCoord: this.currentProject.slokker.zCoord,
         });
 
       this.uploadForm = this.formBuilder.group({
@@ -298,6 +301,9 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
       slokker.aansluitingOpengracht = slokkerProject.aansluitingOpengracht;
       slokker.plaatsAansluiting = slokkerProject.plaatsAansluiting;
       slokker.tBuisStuk = slokkerProject.tBuisStuk;
+      slokker.xCoord = slokkerProject.xCoord;
+      slokker.yCoord = slokkerProject.yCoord;
+      slokker.zCoord = slokkerProject.zCoord;
       slokker._id = this.currentProject.slokker._id;
 
       //project init
