@@ -137,6 +137,7 @@ export class SlokkerprojectAddComponent implements OnInit {
           opmerking: this.currentProject.opmerking,
           index: this.currentProject.index,
           buis: this.currentProject.slokker.buis,
+          buisVert: this.currentProject.slokker.buisVert,
           bocht: this.group.bochtenInGraden? null : this.currentProject.slokker.bocht,
           gradenBocht45: !this.group.bochtenInGraden ? null : this.currentProject.slokker.gradenBocht45,
           gradenBocht90: !this.group.bochtenInGraden ? null : this.currentProject.slokker.gradenBocht90,
@@ -160,7 +161,7 @@ export class SlokkerprojectAddComponent implements OnInit {
           tBuisStuk: this.currentProject.slokker.tBuisStuk,
           xCoord: this.currentProject.slokker.xCoord,
           yCoord: this.currentProject.slokker.yCoord,
-          zCoord: this.currentProject.slokker.zCoord,
+          zCoord: this.currentProject.slokker.zCoord
         });
         this.uploadForm = this.formBuilder.group({
           file: ['']
@@ -194,6 +195,7 @@ export class SlokkerprojectAddComponent implements OnInit {
       let slokker = new Slokkers();
       slokker.diameter = slokkerProject.diameter;
       slokker.buis = slokkerProject.buis;
+      slokker.buisVert = slokkerProject.buisVert;
       if(!this.group.bochtenInGraden){
         slokker.bocht = slokkerProject.bocht;
       } else {

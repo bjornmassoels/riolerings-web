@@ -114,21 +114,30 @@
 
       <div class='flexWrapper'>
         <div class="insideRow2">
+          <p *ngIf="heeftPloegen != null && heeftPloegen === true" class="section-title2">Fase 1 & Fase 2</p>
         </div>
         <div class="insideRow2">
-          <p *ngIf="heeftPloegen != null && heeftPloegen === true" class="section-title2">Fase 1 & Fase 2</p>
+        </div>
+          <div *ngIf="heeftPloegen == null || heeftPloegen === false" class="insideRow2">
+            <p class="label-text">Buis hor.</p>
+            <p class="data-text">{{addMeterString(currentProject.slokker.buis)}}</p>
+          </div>
+        <div *ngIf="heeftPloegen != null && heeftPloegen === true" class="insideRow2">
+          <p class="label-text">Buis hor.</p>
+          <p style='min-height: 20px;min-width: 20px;'  class="data-text">{{NullToZero(currentProject.slokker.buis)}} | {{NullToZero(currentProject.slokker.buis2)}}</p>
+          <p class="margL">meter</p>
         </div>
         <div class="insideRow2">
           <p class="label-text">Diameter buis</p>
           <p class="data-text">{{currentProject.slokker.diameter}} mm</p>
         </div>
-          <div *ngIf="heeftPloegen == null || heeftPloegen === false" class="insideRow2">
-            <p class="label-text">Buizen</p>
-            <p class="data-text">{{addMeterString(currentProject.slokker.buis)}}</p>
-          </div>
+        <div *ngIf="heeftPloegen == null || heeftPloegen === false" class="insideRow2">
+          <p class="label-text">Buis vert.</p>
+          <p class="data-text">{{addMeterString(currentProject.slokker.buisVert)}}</p>
+        </div>
         <div *ngIf="heeftPloegen != null && heeftPloegen === true" class="insideRow2">
-          <p class="label-text">Buizen</p>
-          <p style='min-height: 20px;min-width: 20px;'  class="data-text">{{NullToZero(currentProject.slokker.buis)}} | {{NullToZero(currentProject.slokker.buis2)}}</p>
+          <p class="label-text">Buis vert.</p>
+          <p style='min-height: 20px;min-width: 20px;'  class="data-text">{{NullToZero(currentProject.slokker.buisVert)}} | {{NullToZero(currentProject.slokker.buisVert2)}}</p>
           <p class="margL">meter</p>
         </div>
         <div class="insideRow2">

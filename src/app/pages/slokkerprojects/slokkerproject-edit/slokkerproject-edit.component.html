@@ -116,9 +116,16 @@
       <div class='flexWrapper'>
       <div style='width:50%' *ngIf="heeftPloegen == null || !heeftPloegen ">
         <div class="data-container4">
-          <p style='padding-left: 5px !important;' class="label-text">Buizen</p>
+          <p style='padding-left: 5px !important;' class="label-text">Buis hor.</p>
           <div class="smallRow">
             <input nbInput class="smallInput2 margT" type="number" formControlName="buis" />
+            <p style='margin-left:4px !important;' class="data-text margL">meter</p>
+          </div>
+        </div>
+        <div class="data-container4">
+          <p style='padding-left: 5px !important;' class="label-text">Buis vert.</p>
+          <div class="smallRow">
+            <input nbInput class="smallInput2 margT" type="number" formControlName="buisVert" />
             <p style='margin-left:4px !important;' class="data-text margL">meter</p>
           </div>
         </div>
@@ -147,10 +154,19 @@
       <div  style='width:50%; margin-top:-5px;' *ngIf="heeftPloegen != null && heeftPloegen ">
         <p class="section-title3">Fase 1 & Fase 2</p>
         <div class="data-container4">
-          <p style='padding-left: 5px !important;' class="label-text">Buizen</p>
+          <p style='padding-left: 5px !important;' class="label-text">Buis hor.</p>
           <div class="smallRow">
             <input nbInput class="smallInput3 margT" type="number" formControlName="buis" />
             <input nbInput class="smallInput3 margT" type="number" formControlName="buis2" />
+            <p style='margin-left:4px !important;' class="data-text margL">meter</p>
+          </div>
+        </div>
+
+        <div class="data-container4">
+          <p style='padding-left: 5px !important;' class="label-text">Buis vert.</p>
+          <div class="smallRow">
+            <input nbInput class="smallInput3 margT" type="number" formControlName="buisVert" />
+            <input nbInput class="smallInput3 margT" type="number" formControlName="buisVert2" />
             <p style='margin-left:4px !important;' class="data-text margL">meter</p>
           </div>
         </div>

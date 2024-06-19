@@ -4,6 +4,8 @@ export class Slokkers {
     id: string;
     buis: number;
     buis2: number;
+    buisVert: number;
+    buisVert2: number;
     bocht2: number;
     bocht: number;
     gradenBocht45: number;

@@ -179,6 +179,8 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
           equipNrRiolering: this.currentProject.equipNrRiolering,
           buis: this.currentProject.slokker.buis,
           buis2: this.currentProject.slokker.buis2,
+          buisVert: this.currentProject.slokker.buisVert,
+          buisVert2: this.currentProject.slokker.buisVert2,
           bocht: this.group.bochtenInGraden? null : this.currentProject.slokker.bocht,
           bocht2:  this.group.bochtenInGraden? null :this.currentProject.slokker.bocht2,
           gradenBocht45: !this.group.bochtenInGraden? null : this.currentProject.slokker.gradenBocht45,
@@ -282,10 +284,6 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
 
       // slokker initialisatie
       let slokker = new Slokkers();
-      slokker.diameter = slokkerProject.diameter;
-      slokker.inDrukMof = slokkerProject.inDrukMof;
-      slokker.buis2 = slokkerProject.buis2;
-
       if(!this.group.bochtenInGraden){
         slokker.bocht = slokkerProject.bocht;
         slokker.bocht2 = slokkerProject.bocht2;
@@ -296,6 +294,11 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
         slokker.gradenBocht90Fase2 = slokkerProject.gradenBocht90Fase2;
       }
       slokker.buis = slokkerProject.buis;
+      slokker.diameter = slokkerProject.diameter;
+      slokker.inDrukMof = slokkerProject.inDrukMof;
+      slokker.buis2 = slokkerProject.buis2;
+      slokker.buisVert = slokkerProject.buisVert;
+      slokker.buisVert2 = slokkerProject.buisVert2;
       slokker.reductie = slokkerProject.reductie;
       slokker.Y = slokkerProject.Y;
       slokker.tussenIPLinks = slokkerProject.tussenIPLinks;
