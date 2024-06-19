@@ -72,12 +72,10 @@ export class MultipleProjectAddComponent implements OnInit {
     private toastrService: NbToastrService,
     private storage: AngularFireStorage,
   ) {
-    router.events.subscribe((event) => {
-      if (event instanceof NavigationEnd) {
+    route.params.subscribe((event) => {
         this.isLoaded = false;
         this._id = this.route.snapshot.paramMap.get('id');
         this.loadData();
-      }
     });
   }
 

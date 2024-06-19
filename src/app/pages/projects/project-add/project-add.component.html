@@ -30,10 +30,6 @@
         <p class="label-text">Wachtaansluiting (DWA & RWA)</p>
         <nb-toggle (checkedChange)="setVolgnummer($event)"  formControlName="isWachtAansluiting" status="primary"></nb-toggle>
       </div>
-      <div *ngIf="currentProject.isWachtAansluiting || currentProject.droogWaterAfvoer.isWachtaansluiting || currentProject.regenWaterAfvoer.isWachtaansluiting" class="data-container">
-        <p class="label-text">Volgnummer</p>
-        <input class="normalInput" nbInput type="text" formControlName="index" />
-      </div>
       <div class="data-container">
         <p class="label-text">Gemengd</p>
         <nb-toggle  formControlName="isGemengd" status="primary"></nb-toggle>
@@ -53,6 +49,10 @@
       <div class="data-container">
         <p class="label-text"><b>Huisnummer</b></p>
         <input class="normalInput" nbInput type="text" formControlName="huisNr" />
+      </div>
+      <div *ngIf="currentProject.isWachtAansluiting || currentProject.droogWaterAfvoer.isWachtaansluiting || currentProject.regenWaterAfvoer.isWachtaansluiting" class="data-container">
+        <p class="label-text"><b>Volgnummer</b></p>
+        <input class="normalInput" nbInput type="text" formControlName="index" />
       </div>
       <div class="data-container">
         <p class="label-text">Opmerking</p>
