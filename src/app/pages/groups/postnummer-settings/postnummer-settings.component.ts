@@ -141,6 +141,7 @@ export class PostnummerSettingsComponent implements OnInit {
       ytStuk: this.group.slokkerPostNumbers.ytStuk,
       flexAan: this.group.slokkerPostNumbers.flexAan,
       buis: this.group.slokkerPostNumbers.buis,
+      buisVert: this.group.slokkerPostNumbers.buisVert,
       bocht: this.group.slokkerPostNumbers.bocht,
       reductie: this.group.slokkerPostNumbers.reductie,
       funOmh: this.group.slokkerPostNumbers.funOmh,

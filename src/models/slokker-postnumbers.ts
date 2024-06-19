@@ -7,6 +7,7 @@ export class SlokkerPostnumbers {
   ytStuk: string;
   flexAan: string;
   buis: string;
+  buisVert: string;
 
   bocht: string;
   bocht45: string;
