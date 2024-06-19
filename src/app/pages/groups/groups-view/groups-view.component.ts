@@ -1266,7 +1266,8 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
       (kolk.gradenBocht45Fase2 == null || kolk.gradenBocht45Fase2 === 0 || kolk.gradenBocht45Fase2.toString() === '') &&
       (kolk.gradenBocht90Fase2 == null || kolk.gradenBocht90Fase2 === 0 || kolk.gradenBocht90Fase2.toString() === '') &&
       (kolk.reductie == null || kolk.reductie === 0 || kolk.reductie.toString() === '') &&
-      (kolk.stop == null || kolk.stop === 0 || kolk.stop.toString() === ''))) {
+      (kolk.stop == null || kolk.stop === 0 || kolk.stop.toString() === '') &&
+      (kolk.infiltratieKlok == null || kolk.infiltratieKlok === false))) {
       return false;
     } else {
       return true;

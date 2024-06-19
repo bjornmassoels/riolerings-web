@@ -45,6 +45,7 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
   public slokkerProjectSend: SlokkerProjects;
   private lastProjects: SlokkerProjects[] = [];
   public photos: string[];
+  schetsPhotos: string[];
   public imagePath;
   public currentUser: User;
   newDate: Date;
@@ -52,8 +53,10 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
   imageChangedEvent: any = '';
   selectedPhoto = false;
   chosenImageList: any[] = [];
-  usersWhoEdited: string = '';
   chosenImageListIndex: number [] = [];
+  schetsChosenImageList: any[] = [];
+  schetsChosenImageListIndex: number [] = [];
+  usersWhoEdited: string = '';
   group: Group;
   days: string[] = ['Zondag','Maandag','Dinsdag','Woensdag','Donderdag','Vrijdag','Zaterdag'];
 
@@ -208,12 +211,20 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
         });
 
       this.uploadForm = this.formBuilder.group({
-        file: ['']
+        file: [''],
+        fileSchets: ['']
       });
+      if(this.currentProject.schetsPhotos == null || this.currentProject.schetsPhotos.length === 0){
+        this.currentProject.schetsPhotos = [null, null];
+      }
+
       if(this.currentProject.photos != null && this.currentProject.photos.length !== 6){
         this.currentProject.photos[this.currentProject.photos.length] = null;
       }
+
+      this.schetsPhotos = this.currentProject.schetsPhotos;
       this.photos = this.currentProject.photos;
+
       this.usersWhoEdited = '';
       for (let i = 0; i < this.currentProject.usersWhoEdited.length; i++) {
         if (i === this.currentProject.usersWhoEdited.length - 1) {
@@ -274,6 +285,7 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
       slokker.diameter = slokkerProject.diameter;
       slokker.inDrukMof = slokkerProject.inDrukMof;
       slokker.buis2 = slokkerProject.buis2;
+
       if(!this.group.bochtenInGraden){
         slokker.bocht = slokkerProject.bocht;
         slokker.bocht2 = slokkerProject.bocht2;
@@ -346,61 +358,77 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
         }
       }
     }
-    if(this.chosenImageList.length === 0){
+    this.schetsChosenImageList = [];
+    this.schetsChosenImageListIndex = [];
+    if(this.schetsPhotos.filter(x => x != null && x.substring(0,5) !== 'https') != null && this.schetsPhotos.filter(x => x != null && x.substring(0,5) !== 'https').length > 0){
+      for(let i = 0; i < this.schetsPhotos.length; i++){
+        if(this.schetsPhotos[i] != null && this.schetsPhotos[i].substring(0,5) !== 'https'){
+          this.schetsChosenImageListIndex.push(i);
+          this.schetsChosenImageList.push(this.schetsPhotos[i]);
+        }
+      }
+    }
+
+    if(this.chosenImageList.length === 0 && this.schetsChosenImageList.length === 0){
       this.slokkerProjectSend.photos = this.photos;
-      this.apiService.getSlokkerProjectById(this._id).subscribe(async (x) => {
-        const tempProject = x as SlokkerProjects;
-        if (tempProject.lastWorkerDate != null) {
-          let timeBetweenLastEdit = Math.floor((new Date().getTime() - new Date(tempProject.lastWorkerDate).getTime()) / (1000 * 60 * 60));
-          if (timeBetweenLastEdit < 8) {
-            this.formService.workerHours = timeBetweenLastEdit;
-            this.formService.workerName = tempProject.lastWorker.name;
-            this.formService.currentSlokkerProject =  this.slokkerProjectSend ;
-            let dialogRef = this.dialog.open(SlokkerprojectLastworkerDialogConfirmComponent, {
-              height: '220px',
-              width: '37vw',
-            });
-            dialogRef.afterClosed().subscribe(() => {
-              if (this.formService.isUpdated) {
-                this.chosenImageList = [];
-                this.hasChangedValue = false;
-                this.chosenImageListIndex = [];
-                if(this.newDate != null){
-                  this.currentProject.startDate = realSlokkerProject.startDate;
-                }
-                this.newDate = null;
-              }
-            });
-          } else {
-            await this.apiService.updateSlokkerProject(this.slokkerProjectSend).subscribe(async () => {
-              this.toastrService.success(slokkerProject.street + ' slokker is opgeslagen', 'Succes!');
+      this.slokkerProjectSend.schetsPhotos = this.schetsPhotos;
+      const tempProject = await this.apiService.getLastWorkerDateOfSlokker(this._id) as SlokkerProjects;
+      let timeBetweenLastEdit;
+      if(tempProject.lastWorkerDate != null){
+        timeBetweenLastEdit = Math.floor((new Date().getTime() - new Date(tempProject.lastWorkerDate).getTime()) / (1000 * 60 * 60));
+      }
+      if (timeBetweenLastEdit != null && timeBetweenLastEdit < 8) {
+          this.formService.workerHours = timeBetweenLastEdit;
+          this.formService.workerName = tempProject.lastWorker.name;
+          this.formService.currentSlokkerProject = this.slokkerProjectSend;
+          let dialogRef = this.dialog.open(SlokkerprojectLastworkerDialogConfirmComponent, {
+            height: '220px',
+            width: '37vw',
+          });
+          dialogRef.afterClosed().subscribe(() => {
+            if (this.formService.isUpdated) {
               this.chosenImageList = [];
+              this.schetsChosenImageList = [];
+              this.hasChangedValue = false;
               this.chosenImageListIndex = [];
-              if(this.newDate != null){
+              this.schetsChosenImageListIndex = [];
+              if (this.newDate != null) {
                 this.currentProject.startDate = realSlokkerProject.startDate;
               }
-              this.hasChangedValue = false;
+              this.currentProject.createdDate = new Date(this.currentProject.created);
+              if(this.photos.length < 6){
+                this.photos.push(null);
+              }
               this.newDate = null;
-            });
-          }
-        } else {
-          await this.apiService.updateSlokkerProject(this.slokkerProjectSend).subscribe(async () => {
-            this.toastrService.success(slokkerProject.street + ' slokker is opgeslagen', 'Succes!');
-            this.chosenImageList = [];
-            this.chosenImageListIndex = [];
-            if(this.newDate != null){
-              this.currentProject.startDate = realSlokkerProject.startDate;
             }
-            this.hasChangedValue = false;
-            this.newDate = null;
           });
-        }
-      });
+      } else {
+        this.saveSlokkerProject();
+      }
     } else {
+      this.slokkerProjectSend = realSlokkerProject;
       this.uploadImages();
     }
   }
 
+  saveSlokkerProject(){
+    this.apiService.updateSlokkerProject(this.slokkerProjectSend).subscribe(async () => {
+      this.toastrService.success(this.slokkerProjectSend.street + ' slokker is opgeslagen', 'Succes!');
+      if(this.photos.length < 6){
+        this.photos.push(null);
+      }
+      this.chosenImageList = [];
+      this.schetsChosenImageList = [];
+      this.hasChangedValue = false;
+      this.chosenImageListIndex = [];
+      this.schetsChosenImageListIndex = [];
+      if(this.newDate != null){
+        this.currentProject.startDate = this.newDate;
+      }
+      this.hasChangedValue = false;
+      this.newDate = null;
+    });
+  }
 
   generateRandomName(): string {
     const random = Math.floor(100000000 + Math.random() * 900000);
@@ -421,9 +449,9 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
     reader.readAsDataURL(file);
     reader.onload = (_event) => {
       this.hasChangedValue = true;
-      this.currentProject.photos[i] = reader.result as string;
-      if(this.currentProject.photos != null && i > 2 && this.currentProject.photos.length < 6){
-        this.currentProject.photos[this.currentProject.photos.length] = null;
+      this.photos[i] = reader.result as string;
+      if(this.photos != null && i > 2 && this.photos.length < 6){
+        this.photos.push(null);
       }
     }
   }
@@ -439,7 +467,14 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
       return false;
     }
   }
-
+  getCorrespondingTemporaryImageSchets(i: number) {
+    let index = this.schetsChosenImageListIndex.indexOf(i);
+    if(index !== -1){
+      return this.schetsChosenImageList[index];
+    } else {
+      return false;
+    }
+  }
   entered(event: CdkDragEnter<number>): void {
     const previousIndex = event.item.data; // Index of the dragged item
     const currentIndex = event.container.data; // Index of the current container
@@ -466,7 +501,35 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
       return false;
     }
   }
-
+  checkIfIsTemporaryImageSchets(i: number) {
+    if(this.schetsPhotos[i] == null){
+      return;
+    }
+    if(this.schetsPhotos[i].substring(0,5) !== 'https'){
+      return true;
+    } else {
+      return false;
+    }
+  }
+  onFileSelectSchets(event, i: number) {
+    var file;
+    this.selectedPhoto = true;
+    this.imageChangedEvent = event;
+    if (event.target.files.length > 0) {
+      file = event.target.files[0];
+      this.uploadForm.get('fileSchets').setValue(file);
+    }
+    var reader = new FileReader();
+    this.imagePath = file;
+    reader.readAsDataURL(file);
+    reader.onload = (_event) => {
+      this.hasChangedValue = true;
+      this.schetsPhotos[i] = reader.result as string;
+      if(this.schetsPhotos != null && this.schetsPhotos.length < 2){
+        this.schetsPhotos.push(null);
+      }
+    }
+  }
   dateToDateString(date: Date){
     return this.days[date.getDay()].substring(0,3) + ' ' +('0' + date.getDate()).slice(-2) + '/' + ('0' + (date.getMonth() + 1)).slice(-2) + '/' + ('0' + date.getFullYear()).slice(-2);
   }
@@ -486,10 +549,13 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
     }
     this.hasChangedValue = true;
   }
+  deleteFotoSchets(i: number) {
+    this.schetsPhotos[i] = null;
+    this.hasChangedValue = true;
+  }
   async uploadImages() {
-    const fileToUpload = this.uploadForm.get('file').value;
     let counter = 0;
-    // this.toastrService.show('Foto is aan het uploaden.', 'Even geduld!');
+
     for(let i= 0 ; i < this.chosenImageList.length; i++){
       const fileRef = this.storage.ref(this.generateRandomName());
       const task = fileRef.putString(this.chosenImageList[i], 'data_url');
@@ -506,45 +572,30 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
                 let index = this.chosenImageListIndex[i];
                 this.photos[index] = url;
                 counter++;
-                if(this.chosenImageList.length === counter){
+                if((this.chosenImageList.length + this.schetsChosenImageList.length) === counter){
                   this.slokkerProjectSend.photos = this.photos;
-                  this.apiService.getSlokkerProjectById(this._id).subscribe(async (x) => {
-                    const tempProject = x as SlokkerProjects;
-                    if (tempProject.lastWorkerDate != null) {
-                      let timeBetweenLastEdit = Math.floor((new Date().getTime() - new Date(tempProject.lastWorkerDate).getTime()) / (1000 * 60 * 60));
-                      if (timeBetweenLastEdit < 8) {
-                        this.formService.workerHours = timeBetweenLastEdit;
-                        this.formService.workerName = tempProject.lastWorker.name;
-                        this.formService.currentSlokkerProject =  this.slokkerProjectSend ;
-                        let dialogRef = this.dialog.open(SlokkerprojectLastworkerDialogConfirmComponent, {
-                          height: '220px',
-                          width: '37vw',
-                        });
-                        dialogRef.afterClosed().subscribe(() => {
-                          if (this.formService.isUpdated) {
-                            this.newDate = null;
-                            this.hasChangedValue = false;
-                            this.chosenImageList = [];
-                            this.chosenImageListIndex = [];
-                          }
-                        });
-                      } else {
-                        await this.apiService.updateSlokkerProject(this.slokkerProjectSend).subscribe(async () => {
-                          this.toastrService.success(this.slokkerProjectSend.street + ' slokker is opgeslagen', 'Succes!');
-                          this.chosenImageList = [];
-                          this.chosenImageListIndex = [];
-                          this.currentProject = null;
-                          this.hasChangedValue = false;
-                          this.isLoaded = false;
-                          await this.delay(100);
-                          this.loadData();
-                        });
+                  this.slokkerProjectSend.schetsPhotos = this.schetsPhotos;
+                  const tempProject = await this.apiService.getLastWorkerDateOfSlokker(this._id) as SlokkerProjects;
+                  let timeBetweenLastEdit;
+                  if(tempProject.lastWorkerDate != null){
+                    timeBetweenLastEdit = Math.floor((new Date().getTime() - new Date(tempProject.lastWorkerDate).getTime()) / (1000 * 60 * 60));
+                  }
+                  if (timeBetweenLastEdit != null && timeBetweenLastEdit < 8) {
+                    this.formService.workerHours = timeBetweenLastEdit;
+                    this.formService.workerName = tempProject.lastWorker.name;
+                    this.formService.currentSlokkerProject = this.slokkerProjectSend;
+                    let dialogRef = this.dialog.open(SlokkerprojectLastworkerDialogConfirmComponent, {
+                      height: '220px',
+                      width: '37vw',
+                    });
+                    dialogRef.afterClosed().subscribe(async () => {
+                      if (this.formService.isUpdated) {
+                        this.loadData();
                       }
-                    } else {
-                      await this.apiService.updateSlokkerProject(this.slokkerProjectSend).subscribe(async () => {
+                    });
+                  } else {
+                      this.apiService.updateSlokkerProject(this.slokkerProjectSend).subscribe(async () => {
                         this.toastrService.success(this.slokkerProjectSend.street + ' slokker is opgeslagen', 'Succes!');
-                        this.chosenImageList = [];
-                        this.chosenImageListIndex = [];
                         this.currentProject = null;
                         this.hasChangedValue = false;
                         this.isLoaded = false;
@@ -552,7 +603,61 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
                         this.loadData();
                       });
                     }
-                  });
+                }
+              }
+            });
+          })
+        )
+        .subscribe();
+    }
+
+    for(let i= 0 ; i < this.schetsChosenImageList.length; i++){
+      const fileRef = this.storage.ref(this.generateRandomName());
+      const task = fileRef.putString(this.schetsChosenImageList[i], 'data_url');
+
+      task
+        .snapshotChanges()
+        .pipe(
+          finalize(() => {
+            fileRef.getDownloadURL().subscribe(async (url) => {
+              if (url) {
+                if(this.schetsPhotos == null){
+                  this.schetsPhotos = [];
+                }
+                let index = this.schetsChosenImageListIndex[i];
+                this.schetsPhotos[index] = url;
+                counter++;
+                if((this.chosenImageList.length + this.schetsChosenImageList.length) === counter){
+                  this.slokkerProjectSend.photos = this.photos;
+                  this.slokkerProjectSend.schetsPhotos = this.schetsPhotos;
+                  const tempProject = await this.apiService.getLastWorkerDateOfSlokker(this._id) as SlokkerProjects;
+                  let timeBetweenLastEdit;
+                  if(tempProject.lastWorkerDate != null){
+                    timeBetweenLastEdit = Math.floor((new Date().getTime() - new Date(tempProject.lastWorkerDate).getTime()) / (1000 * 60 * 60));
+                  }
+                  if (timeBetweenLastEdit != null && timeBetweenLastEdit < 8) {
+                    this.formService.workerHours = timeBetweenLastEdit;
+                    this.formService.workerName = tempProject.lastWorker.name;
+                    this.formService.currentSlokkerProject = this.slokkerProjectSend;
+                    let dialogRef = this.dialog.open(SlokkerprojectLastworkerDialogConfirmComponent, {
+                      height: '220px',
+                      width: '37vw',
+                    });
+                    dialogRef.afterClosed().subscribe(async () => {
+                      if (this.formService.isUpdated) {
+                        this.loadData();
+                      }
+                    });
+                  } else {
+                    this.apiService.updateSlokkerProject(this.slokkerProjectSend).subscribe(async () => {
+                      this.toastrService.success(this.slokkerProjectSend.street + ' slokker is opgeslagen', 'Succes!');
+                      this.newDate = null;
+                      this.isLoaded = false;
+                      this.currentProject = null;
+                      await this.delay(100);
+                      this.loadData();
+                    });
+                  }
                 }
               }
             });
@@ -604,5 +709,21 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
   }
   clearAfgewerktDate() {
     this.slokkerForm.controls['afgewerktDatum'].setValue(null);
+  }
+  enteredSchets(event: CdkDragEnter<number>): void {
+    const previousIndex = event.item.data; // Index of the dragged item
+    const currentIndex = event.container.data; // Index of the current container
+
+    this.swapItemsSchets(previousIndex, currentIndex);
+  }
+
+  swapItemsSchets(prevIndex: number, currIndex: number): void {
+    if (prevIndex !== currIndex) {
+      // Temporarily store the item at the current index
+      let temp = this.schetsPhotos[currIndex];
+      // Swap the items
+      this.schetsPhotos[currIndex] = this.schetsPhotos[prevIndex];
+      this.schetsPhotos[prevIndex] = temp;
+    }
   }
 }

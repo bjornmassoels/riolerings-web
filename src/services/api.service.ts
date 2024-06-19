@@ -636,4 +636,15 @@ export class ApiService {
     };
     return this.http.get(this.apiURL + '/meerwerken.makeMeerwerkPdf', headers);
   }
+
+  getLastWorkerDateOfSlokker(_id: string): Promise<any> {
+    let headers = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: this._token,
+        _id: _id
+      },
+    };
+    return firstValueFrom(this.http.get(this.apiURL + '/slokkerprojects.getLastWorkerDate', headers));
+  }
 }

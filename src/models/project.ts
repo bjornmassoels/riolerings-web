@@ -57,10 +57,12 @@ export class Project {
   public postNumber: string;
   public countEmployees: number;
   bestandNaam: string;
-
+  //kolk
   //tempvar voor overkoepling met project
   xCoordGeoLocationFirsPhoto: number;
   yCoordGeoLocationFirsPhoto: number;
+  public schetsPhotos: string[];
+
   updated: Date;
   constructor() {}
 }

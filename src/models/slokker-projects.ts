@@ -18,6 +18,7 @@ export class SlokkerProjects {
   public opmerking: string;
   public slokker: Slokkers;
   public photos: string[];
+  public schetsPhotos: string[];
   public finished: boolean;
   public created: string;
   public group_id: Group;

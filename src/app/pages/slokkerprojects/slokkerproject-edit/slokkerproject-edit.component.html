@@ -327,17 +327,13 @@
   </div>
 
   <div  class="image-container">
-    <p style="font-size: 14px;font-weight:600;width:fit-content;position: relative;top:-8px;left:20px;margin-bottom: -12px">*Het is nu mogelijk om foto's te verslepen
-      en op een andere plaats zetten</p>
-    <div style='margin-bottom:7px' class="image-header">
       <p class="section-title">Foto's kolk</p>
-
-    </div>
     <div cdkDropListGroup class="photos-container">
       <div  cdkDropList [cdkDropListData]="i"  *ngFor="let photo of photos; let i = index" [ngClass]="photo == null && !getCorrespondingTemporaryImage(i) ? 'smallFotoColumn' : ''" class="fotoColumn">
         <ng-container *ngIf="photos.length < 7">
         <div  class="innerColumn">
-        <input *ngIf="photo != null" (click)="deleteFoto(i)" type="button" value="Verwijder" class="deleteButton">
+          <button *ngIf="photo != null"  (click)="deleteFoto(i)" type="button"
+                  class="deleteButton2"><i style="color:white;padding-left: 2px;" class="fa-solid fa-trash-can"></i></button>
         <p class="fotoText" *ngIf="i === 0">1. boring of opening van aansluiting op hoofdriool</p>
         <p class="fotoText5" *ngIf="i === 1">2. na plaatsing fundering, buizen, hulpstukken en HA-putje, vanaf de aansluitopening richting putje,indien
           niet alle hulpstukken te zien zijn, eventueel ook foto vanuit omgekeerd standpunt</p>
@@ -357,7 +353,31 @@
       </div>
     </div>
   </div>
+    <div style="width:920px !important;"  class="image-container">
+      <p class="section-title">Schematische voorstelling kolk (schets)</p>
+      <div cdkDropListGroup class="photos-container">
+        <div  cdkDropList [cdkDropListData]="i"  *ngFor="let photo of schetsPhotos; let i = index" [ngClass]="photo == null && !getCorrespondingTemporaryImageSchets(i) ? 'smallFotoColumnSchets' : ''" class="fotoColumnSchets">
+          <ng-container *ngIf="i < 3">
+            <div  class="innerColumn">
+              <button *ngIf="photo != null"  (click)="deleteFotoSchets(i)" type="button"
+                      class="deleteButton2"><i style="color:white;padding-left: 2px;" class="fa-solid fa-trash-can"></i></button>
+              <p class="fotoText6" *ngIf="i === 0">1. Dwarsdoorsnede met aanduiding van referentiepunt (boordstenen/woning/greppel/FP/VP/rijweg….) + bochten in graden, lengtes,... incl. aansluitpunt</p>
+              <p class="fotoText6" *ngIf="i === 1">2. Bovenaanzicht met aanduiding van referentiepunt (boordstenen/woning/greppel/FP/VP/rijweg….) + bochten in graden, lengtes,... incl. aansluitpunt</p>
 
+              <img  cdkDrag [cdkDragData]="i" (cdkDragDropped)="enteredSchets($event)" *ngIf="photo" [src]="photo" (click)="imagePopUp(photo)" class="photo" name="photo">
+
+              <p *ngIf="!photo && !getCorrespondingTemporaryImageSchets(i)" style="margin-top: 30px;font-size: 18px;font-weight: 600">Geen foto</p>
+              <div cdkDrag [cdkDragData]="i" (cdkDragDropped)="entered($event)" *ngIf="photo == null && !getCorrespondingTemporaryImageSchets(i)" class="upload-container-empty">
+                <h3 style="font: 400 16px / 28px Roboto, sans-serif;">Voeg foto toe</h3>
+                <input type="file" name="file" (change)="onFileSelectSchets($event,i)"
+                       accept=".png,.jpg,.jpeg,.tiff" class="uploadButton" />
+              </div>
+            </div>
+            <p style="width:100%;text-align:center;margin-top:12px;font-size:17px;font-weight:600" *ngIf="checkIfIsTemporaryImageSchets(i)">Klaar om op te slaan</p>
+          </ng-container>
+        </div>
+      </div>
+    </div>
 
 
   </form>

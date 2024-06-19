@@ -209,6 +209,15 @@ button:disabled {
   height: 60px !important;
   overflow-y: auto;
 }
+.fotoText6 {
+  font-size: 13px;
+  width: 400px;
+  text-align: center;
+  padding: 0 0px;
+  margin-bottom: 0px;
+  height: 60px !important;
+  overflow-y: auto;
+}
 .fotoText2 {
   font-size: 14px;
   width: 250px;
@@ -224,12 +233,30 @@ button:disabled {
   height: auto;
   min-height: 300px !important;
 }
+.fotoColumnSchets {
+  border: 2px solid lightskyblue;
+  border-radius: 10px;
+  margin-left: 6px;
+  margin-right: 6px;
+  padding:3px;
+  width: 420px;
+  height: auto;
+  min-height: 300px !important;
+}
 .smallFotoColumn {
   border: 2px solid lightskyblue;
   border-radius: 10px;
   margin-left: 6px;
   margin-right: 6px;
   width: 265px;
+  padding-bottom: 10px;
+}
+.smallFotoColumnSchets {
+  border: 2px solid lightskyblue;
+  border-radius: 10px;
+  margin-left: 6px;
+  margin-right: 6px;
+  width: 420px;
   padding-bottom: 10px;
 }
 .innerColumn {
@@ -460,6 +487,7 @@ input::-webkit-inner-spin-button {
   font-size: 1.2rem;
   margin-top:3px;
   margin-bottom: 5px !important;
+  width:100%;
 }
 .lambertTitle{
   width: 100%;
@@ -509,10 +537,7 @@ input::-webkit-inner-spin-button {
   box-shadow: 0px 0px 2px lightgrey;
   cursor: move;
 }
-.photo2 {
-  height: 25rem;
-  width: 75%;
-}
+
 .image-container {
   display: flex;
   flex-direction: row;
@@ -697,4 +722,14 @@ strong {
   align-items:center;
   width:100%;
   flex-wrap: wrap;
+}
+.deleteButton2 {
+  border:1px solid darkred;
+  border-radius: 15px;
+  font-weight: 600;
+  letter-spacing: 1.4pt;
+  font-size: 15px;
+  background-color: red;
+  width:50px;
+  min-height:28px;
 }

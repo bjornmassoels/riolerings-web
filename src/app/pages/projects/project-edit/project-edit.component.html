@@ -1158,9 +1158,8 @@
       <div cdkDropList [cdkDropListData]="i"  *ngFor="let photo of currentProject.photosDWA; let i = index" [ngClass]="photo == null && !getCorrespondingTemporaryImageDWA(i) ? 'smallFotoColumn' : 'fotoColumn'" >
         <ng-container *ngIf="i < 8">
             <div class="innerColumn">
-              <input *ngIf="photo != null" (click)="deleteFotoDwa(i)" type="button" value="Verwijder"
-                class="deleteButton">
-
+              <button *ngIf="photo != null"  (click)="deleteFotoDwa(i)" type="button"
+                      class="deleteButton2"><i style="color:white;padding-left: 2px;" class="fa-solid fa-trash-can"></i></button>
               <p class="infoText" *ngIf="i === 0">1. boring of opening van aansluiting op hoofdriool</p>
               <p class="infoText5" *ngIf="i === 1">2. na plaatsing fundering, buizen, hulpstukken en HA-putje, vanaf de
                 aansluitopening richting putje, indien niet alle hulpstukken te zien zijn ook foto vanuit omgekeerd standpunt</p>
@@ -1193,8 +1192,8 @@
       <div cdkDropList [cdkDropListData]="i"  *ngFor="let photo of currentProject.photosRWA; let i = index" [ngClass]="photo == null && !getCorrespondingTemporaryImageRWA(i) ? 'smallFotoColumn' : 'fotoColumn'" >
         <ng-container *ngIf="i < 8">
           <div class="innerColumn">
-            <input *ngIf="photo != null" (click)="deleteFotoRwa(i)" type="button" value="Verwijder"
-                   class="deleteButton">
+            <button *ngIf="photo != null"  (click)="deleteFotoRwa(i)" type="button"
+                    class="deleteButton2"><i style="color:white;padding-left: 2px;" class="fa-solid fa-trash-can"></i></button>
 
             <p class="infoText" *ngIf="i === 0">1. boring of opening van aansluiting op hoofdriool</p>
             <p class="infoText5" *ngIf="i === 1">2. na plaatsing fundering, buizen, hulpstukken en HA-putje, vanaf de
