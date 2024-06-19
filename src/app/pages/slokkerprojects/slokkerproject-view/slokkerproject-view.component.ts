@@ -154,6 +154,9 @@ export class SlokkerprojectViewComponent implements OnInit,OnDestroy {
       if(this.currentProject.afgewerktDatum != null){
         this.currentProject.afgewerktDatum = new Date(this.currentProject.afgewerktDatum);
       }
+      if(this.currentProject.schetsPhotos == null){
+        this.currentProject.schetsPhotos = [null, null];
+      }
       if(this.currentProject.created != null) this.currentProject.createdDate = new Date(this.currentProject.created);
       if(this.currentProject.updated != null)this.currentProject.updated = new Date(this.currentProject.updated);
       if(this.currentProject.lastWorkerDate != null)this.currentProject.lastWorkerDate = new Date(this.currentProject.lastWorkerDate);

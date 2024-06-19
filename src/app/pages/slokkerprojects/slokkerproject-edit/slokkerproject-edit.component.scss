@@ -215,7 +215,7 @@ button:disabled {
   text-align: center;
   padding: 0 0px;
   margin-bottom: 0px;
-  height: 60px !important;
+  height: 65px !important;
   overflow-y: auto;
 }
 .fotoText2 {
@@ -233,6 +233,15 @@ button:disabled {
   height: auto;
   min-height: 300px !important;
 }
+
+.smallFotoColumn {
+  border: 2px solid lightskyblue;
+  border-radius: 10px;
+  margin-left: 6px;
+  margin-right: 6px;
+  width: 265px;
+  padding-bottom: 10px;
+}
 .fotoColumnSchets {
   border: 2px solid lightskyblue;
   border-radius: 10px;
@@ -242,14 +251,6 @@ button:disabled {
   width: 420px;
   height: auto;
   min-height: 300px !important;
-}
-.smallFotoColumn {
-  border: 2px solid lightskyblue;
-  border-radius: 10px;
-  margin-left: 6px;
-  margin-right: 6px;
-  width: 265px;
-  padding-bottom: 10px;
 }
 .smallFotoColumnSchets {
   border: 2px solid lightskyblue;

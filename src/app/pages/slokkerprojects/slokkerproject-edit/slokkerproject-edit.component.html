@@ -354,7 +354,7 @@
     </div>
   </div>
     <div style="width:920px !important;"  class="image-container">
-      <p class="section-title">Schematische voorstelling kolk (schets)</p>
+      <p class="section-title">Schematische voorstelling kolk (schets) <small>(Alleen verplicht projecten voor AWV)</small></p>
       <div cdkDropListGroup class="photos-container">
         <div  cdkDropList [cdkDropListData]="i"  *ngFor="let photo of schetsPhotos; let i = index" [ngClass]="photo == null && !getCorrespondingTemporaryImageSchets(i) ? 'smallFotoColumnSchets' : ''" class="fotoColumnSchets">
           <ng-container *ngIf="i < 3">

@@ -289,6 +289,17 @@
         <p style="margin-bottom: 100%;font-size: 18px;font-weight: 600" *ngIf="photo == null">Geen foto</p>
       </div>
   </div>
+  <div class="image-container">
+    <p class="section-title">Schematische voorstelling kolk (schets) <small>(Alleen verplicht projecten voor AWV)</small></p>
+    <div *ngFor="let photo of currentProject.schetsPhotos; let i = index"  [ngClass]="photo == null? 'smallFotoColumnSchets' : ''" class="fotoColumnSchets">
+      <div class="innerColumn">
+        <p class="fotoText6" *ngIf="i === 0">1. Dwarsdoorsnede met aanduiding van referentiepunt (boordstenen/woning/greppel/FP/VP/rijweg….) + bochten in graden, lengtes,... incl. aansluitpunt</p>
+        <p class="fotoText6" *ngIf="i === 1">2. Bovenaanzicht met aanduiding van referentiepunt (boordstenen/woning/greppel/FP/VP/rijweg….) + bochten in graden, lengtes,... incl. aansluitpunt</p>
 
+        <img [ngClass]="i === 1 ? 'marginTopMin' : '' " *ngIf="photo != null" src="{{photo}}" class="photo" name="photo" (click)="imagePopUp(photo)">
+        <p style="margin-top: 30px;font-size: 18px;font-weight: 600" *ngIf="photo == null">Geen foto</p>
+      </div>
+    </div>
+  </div>
 
 </mat-card>

@@ -551,6 +551,8 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
   }
   deleteFotoSchets(i: number) {
     this.schetsPhotos[i] = null;
+    this.schetsChosenImageList.splice(i,1);
+    this.schetsChosenImageListIndex.splice(i,1);
     this.hasChangedValue = true;
   }
   async uploadImages() {
