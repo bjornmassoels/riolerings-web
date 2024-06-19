@@ -793,285 +793,116 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
 
   async uploadImages(tempProject) {
 
-    const fileToUpload = this.uploadForm.get('file').value;
+    let counter = 0;
+    //DWA fotos
+    for (let j = 0; j < this.chosenImageList.length; j++) {
+      const fileRef = this.storage.ref(this.generateRandomName());
+      const task = fileRef.putString(this.chosenImageList[j], 'data_url');
 
-    // this.toastrService.show('Foto is aan het uploaden.', 'Even geduld!');
-    if (this.chosenImageList.length === 0 && this.chosenImageList2.length !== 0) {  //RWA
-      let counter = 0;
-      for (let j = 0; j < this.chosenImageList2.length; j++) {
-        const fileRef2 = this.storage.ref(this.generateRandomName());
-        const task2 = fileRef2.putString(this.chosenImageList2[j], 'data_url');
-
-        task2
-          .snapshotChanges()
-          .pipe(
-            finalize(() => {
-              fileRef2.getDownloadURL().subscribe(async (url) => {
-                if (url) {
-                  if (this.currentProject.photosRWA == null) {
-                    this.currentProject.photosRWA = [];
-                  }
-                  let index = this.chosenImageList2Index[j];
-                  this.currentProject.photosRWA[index] = url;
-                  counter++;
-                  if (counter === this.chosenImageList2.length) {
-                      if (tempProject.lastWorkerDate != null) {
-                        let timeBetweenLastEdit = Math.floor((new Date().getTime() - new Date(tempProject.lastWorkerDate).getTime()) / (1000 * 60 * 60));
-                        if (timeBetweenLastEdit < 8) {
-                          this.formService.workerHours = timeBetweenLastEdit;
-                          this.formService.workerName = tempProject.lastWorker.name;
-                          this.formService.currentProject = this.currentProject;
-                          let dialogRef = this.dialog.open(ProjectLastworkerDialogConfirmComponent, {
-                            height: '220px',
-                            width: '37vw',
-                          });
-                          dialogRef.afterClosed().subscribe(() => {
-                            if (this.formService.isUpdated) {
-                              this.newDate = null;
-                              this.chosenImageList = [];
-                              this.chosenImageList2 = [];
-                              this.hasChangedValue = false;
-                              this.chosenImageListIndex = [];
-                              this.chosenImageList2Index = [];
-                            }
-                          });
-                        } else {
-                          await this.apiService.updateProject(this.currentProject).subscribe(async x => {
-                            this.currentProject = null;
-                            this.chosenImageList = [];
-                            this.chosenImageList2 = [];
-                            this.chosenImageListIndex = [];
-                            this.chosenImageList2Index = [];
-                            this.isFotoRWA = false;
-                            this.isLoaded = false;
-                            this.usersWhoEdited = '';
-                            this.newDate = null;
-                            this.hasChangedValue = false;
-                            this.toastrService.success('De aansluiting is gewijzigd', 'Succes!');
-                            await this.delay(1000);
-                            this.loadData();
-                          });
-                        }
-                      } else {
-                        await this.apiService.updateProject(this.currentProject).subscribe(async x => {
-                          this.currentProject = null;
-                          this.chosenImageList = [];
-                          this.chosenImageList2 = [];
-                          this.chosenImageListIndex = [];
-                          this.chosenImageList2Index = [];
-                          this.isFotoRWA = false;
-                          this.newDate = null;
-                          this.usersWhoEdited = '';
-                          this.isLoaded = false;
-                          this.hasChangedValue = false;
-                          this.toastrService.success('De aansluiting is gewijzigd', 'Succes!');
-                          await this.delay(1000);
-                          this.loadData();
-                        });
-                      }
-                  }
+      task
+        .snapshotChanges()
+        .pipe(
+          finalize(() => {
+            fileRef.getDownloadURL().subscribe(async (url) => {
+              if (url) {
+                if (this.currentProject.photosDWA == null) {
+                  this.currentProject.photosDWA = [];
                 }
-              });
-            })
-          )
-          .subscribe();
-      }
-    } else if (this.chosenImageList2.length === 0 && this.chosenImageList.length !== 0) {  //DWA
-      let counter = 0;
-      for (let j = 0; j < this.chosenImageList.length; j++) {
-        const fileRef2 = this.storage.ref(this.generateRandomName());
-        const task2 = fileRef2.putString(this.chosenImageList[j], 'data_url');
+                let index = this.chosenImageListIndex[j];
+                this.currentProject.photosDWA[index] = url;
+                counter++;
+                this.checkIfUploadedAllPhotosAndSave(counter, tempProject);
+              }
+            });
+          })
+        )
+        .subscribe();
+    }
 
-        task2
-          .snapshotChanges()
-          .pipe(
-            finalize(() => {
-              fileRef2.getDownloadURL().subscribe(async (url2) => {
-                if (url2) {
-                  if (this.currentProject.photosDWA == null) {
-                    this.currentProject.photosDWA = [];
-                  }
-                  let index = this.chosenImageListIndex[j];
-                  this.currentProject.photosDWA[index] = url2;
-                  counter++;
-                  if (counter === this.chosenImageList.length) {
-                    this.apiService.getProjectById(this._id).subscribe(async (x) => {
-                      const tempProject = x as Project;
-                      if (tempProject.lastWorkerDate != null) {
-                        let timeBetweenLastEdit = Math.floor((new Date().getTime() - new Date(tempProject.lastWorkerDate).getTime()) / (1000 * 60 * 60));
-                        if (timeBetweenLastEdit < 8) {
-                          this.formService.workerHours = timeBetweenLastEdit;
-                          this.formService.workerName = tempProject.lastWorker.name;
-                          this.formService.currentProject = this.currentProject;
-                          let dialogRef = this.dialog.open(ProjectLastworkerDialogConfirmComponent, {
-                            height: '220px',
-                            width: '37vw',
-                          });
-                          dialogRef.afterClosed().subscribe(() => {
-                            if (this.formService.isUpdated) {
-                              this.newDate = null;
-                              this.hasChangedValue = false;
-                              this.chosenImageList = [];
-                              this.chosenImageList2 = [];
-                              this.chosenImageListIndex = [];
-                              this.chosenImageList2Index = [];
-                              this.newDate = null;
-                            }
-                          });
-                        } else {
-                          await this.apiService.updateProject(this.currentProject).subscribe(async () => {
-                            this.currentProject = null;
-                            this.chosenImageList = [];
-                            this.chosenImageList2 = [];
-                            this.chosenImageListIndex = [];
-                            this.chosenImageList2Index = [];
-                            this.isFotoDWA = false;
-                            this.isLoaded = false;
-                            this.newDate = null;
-                            this.usersWhoEdited = '';
-                            this.hasChangedValue = false;
-                            this.toastrService.success('De aansluiting is gewijzigd', 'Succes!');
-                            await this.delay(1000);
-                            this.loadData();
-                          });
-                        }
-                      } else {
-                        await this.apiService.updateProject(this.currentProject).subscribe(async () => {
-                          this.currentProject = null;
-                          this.chosenImageList = [];
-                          this.chosenImageList2 = [];
-                          this.chosenImageListIndex = [];
-                          this.chosenImageList2Index = [];
-                          this.isFotoDWA = false;
-                          this.newDate = null;
-                          this.usersWhoEdited = '';
-                          this.isLoaded = false;
-                          this.hasChangedValue = false;
-                          this.toastrService.success('De aansluiting is gewijzigd', 'Succes!');
-                          await this.delay(1000);
-                          this.loadData();
-                        });
-                      }
-                    });
-                  }
+    //RWA fotos
+    for (let j = 0; j < this.chosenImageList2.length; j++) {
+      const fileRef2 = this.storage.ref(this.generateRandomName());
+      const task2 = fileRef2.putString(this.chosenImageList2[j], 'data_url');
+
+      task2
+        .snapshotChanges()
+        .pipe(
+          finalize(() => {
+            fileRef2.getDownloadURL().subscribe(async (url) => {
+              if (url) {
+                if (this.currentProject.photosRWA == null) {
+                  this.currentProject.photosRWA = [];
                 }
-              });
-            })
-          )
-          .subscribe();
+                let index = this.chosenImageList2Index[j];
+                this.currentProject.photosRWA[index] = url;
+                counter++;
+                this.checkIfUploadedAllPhotosAndSave(counter, tempProject);
+              }
+            });
+          })
+        )
+        .subscribe();
+    }
 
-      }
-    } else {       //DWA & RWA
-
-      let counter1 = 0;
-      for (let j = 0; j < this.chosenImageList.length; j++) {
-        let fileRef = this.storage.ref(this.generateRandomName());
-        let task = fileRef.putString(this.chosenImageList[j], 'data_url');
-
-        task
-          .snapshotChanges()
-          .subscribe(() => {
-              fileRef.getDownloadURL().subscribe(async (url) => {
-                if (url) {
-                  if (this.currentProject.photosDWA == null) {
-                    this.currentProject.photosDWA = [];
-                  }
-                  let index = this.chosenImageListIndex[j];
-                  this.currentProject.photosDWA[index] = url;
-                  counter1++;
-                  if (counter1 === this.chosenImageList.length) {
-                    let counter2 = 0;
-                    for (let k = 0; k < this.chosenImageList2.length; k++) {
-                      let fileRef2 = this.storage.ref(this.generateRandomName());
-                      let task2 = fileRef2.putString(this.chosenImageList2[k], 'data_url');
-
-                      task2
-                        .snapshotChanges()
-                        .pipe(
-                          finalize(() => {
-                            fileRef2.getDownloadURL().subscribe(async (url2) => {
-                              if (url2) {
-                                if (this.currentProject.photosRWA == null) {
-                                  this.currentProject.photosRWA = [];
-                                }
-                                let index2 = this.chosenImageList2Index[k];
-                                this.currentProject.photosRWA[index2] = url2;
-                                counter2++;
-                                if (counter2 === this.chosenImageList2.length && this.chosenImageList.length === counter1) {
-                                  this.apiService.getProjectById(this._id).subscribe(async (x) => {
-                                    const tempProject = x as Project;
-                                    if (tempProject.lastWorkerDate != null) {
-                                      let timeBetweenLastEdit = Math.floor((new Date().getTime() - new Date(tempProject.lastWorkerDate).getTime()) / (1000 * 60 * 60));
-                                      if (timeBetweenLastEdit < 8) {
-                                        this.formService.workerHours = timeBetweenLastEdit;
-                                        this.formService.workerName = tempProject.lastWorker.name;
-                                        this.formService.currentProject = this.currentProject;
-                                        let dialogRef = this.dialog.open(ProjectLastworkerDialogConfirmComponent, {
-                                          height: '220px',
-                                          width: '37vw',
-                                        });
-                                        dialogRef.afterClosed().subscribe(() => {
-                                          if (this.formService.isUpdated) {
-                                            this.hasChangedValue = false;
-                                            this.newDate = null;
-                                            this.chosenImageList = [];
-                                            this.chosenImageList2 = [];
-                                            this.chosenImageListIndex = [];
-                                            this.chosenImageList2Index = [];
-                                          }
-                                        });
-                                      } else {
-                                        await this.apiService.updateProject(this.currentProject).subscribe(async x => {
-                                          this.currentProject = null;
-                                          this.chosenImageList = [];
-                                          this.chosenImageList2 = [];
-                                          this.isFotoDWA = false;
-                                          this.isFotoRWA = false;
-                                          this.isLoaded = false;
-                                          this.newDate = null;
-                                          this.usersWhoEdited = '';
-                                          this.hasChangedValue = false;
-                                          this.toastrService.success('De aansluiting is gewijzigd', 'Succes!');
-                                          await this.delay(1000);
-                                          this.loadData();
-                                        });
-                                      }
-                                    } else {
-                                      await this.apiService.updateProject(this.currentProject).subscribe(async x => {
-                                        this.currentProject = null;
-                                        this.chosenImageList = [];
-                                        this.chosenImageList2 = [];
-                                        this.isFotoDWA = false;
-                                        this.isFotoRWA = false;
-                                        this.isLoaded = false;
-                                        this.newDate = null;
-                                        this.usersWhoEdited = '';
-                                        this.hasChangedValue = false;
-
-                                        this.toastrService.success('De aansluiting is gewijzigd', 'Succes!');
-                                        await this.delay(1000);
-                                        this.loadData();
-                                      });
-                                    }
-                                  });
-                                }
-                              }
-                            });
-                          })
-                        )
-                        .subscribe();
-                    }
-                  }
-                }
-              });
+  }
+  private checkIfUploadedAllPhotosAndSave(counter, tempProject) {
+    if (counter === this.chosenImageList.length + this.chosenImageList2.length) {
+      if (tempProject.lastWorkerDate != null) {
+        let timeBetweenLastEdit = Math.floor((new Date().getTime() - new Date(tempProject.lastWorkerDate).getTime()) / (1000 * 60 * 60));
+        if (timeBetweenLastEdit < 8) {
+          this.formService.workerHours = timeBetweenLastEdit;
+          this.formService.workerName = tempProject.lastWorker.name;
+          this.formService.currentProject = this.currentProject;
+          let dialogRef = this.dialog.open(ProjectLastworkerDialogConfirmComponent, {
+            height: '220px',
+            width: '37vw',
+          });
+          dialogRef.afterClosed().subscribe(() => {
+            if (this.formService.isUpdated) {
+              this.newDate = null;
+              this.chosenImageList = [];
+              this.chosenImageList2 = [];
+              this.hasChangedValue = false;
+              this.chosenImageListIndex = [];
+              this.chosenImageList2Index = [];
             }
-          )
+          });
+        } else {
+          this.apiService.updateProject(this.currentProject).subscribe(async x => {
+            this.currentProject = null;
+            this.chosenImageList = [];
+            this.chosenImageList2 = [];
+            this.chosenImageListIndex = [];
+            this.chosenImageList2Index = [];
+            this.isFotoRWA = false;
+            this.isLoaded = false;
+            this.usersWhoEdited = '';
+            this.newDate = null;
+            this.hasChangedValue = false;
+            this.toastrService.success('De aansluiting is gewijzigd', 'Succes!');
+            await this.delay(1000);
+            this.loadData();
+          });
+        }
+      } else {
+        this.apiService.updateProject(this.currentProject).subscribe(async x => {
+          this.currentProject = null;
+          this.chosenImageList = [];
+          this.chosenImageList2 = [];
+          this.chosenImageListIndex = [];
+          this.chosenImageList2Index = [];
+          this.isFotoRWA = false;
+          this.newDate = null;
+          this.usersWhoEdited = '';
+          this.isLoaded = false;
+          this.hasChangedValue = false;
+          this.toastrService.success('De aansluiting is gewijzigd', 'Succes!');
+          await this.delay(1000);
+          this.loadData();
+        });
       }
-
-
     }
   }
-
   imagePopUp(photo: string) {
     this.formService._chosenPhoto = photo;
     let dialogRef = this.dialog.open(ProjectViewDialogComponent, {
@@ -1339,5 +1170,7 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
   trackByIdx(index: number, item: any): any {
     return index; // or a unique property of the item if available
   }
+
+
 }
 
