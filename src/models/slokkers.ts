@@ -1,3 +1,7 @@
+enum TypeKolkEnum {
+  Beton = 'Beton',
+  Gietijzer = 'Gietijzer'
+}
 
 export class Slokkers {
     public _id: string;
@@ -37,6 +41,7 @@ export class Slokkers {
     xCoord: string;
     yCoord: string;
     zCoord: string;
+    typeKolk: TypeKolkEnum;
     constructor() {
     }
 }

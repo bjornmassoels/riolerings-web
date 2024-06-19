@@ -130,7 +130,7 @@
         <div class="innerColumn">
           <button *ngIf="photo != null"  (click)="deleteFoto(i)" type="button"
                   class="deleteButton2"><i style="color:white;padding-left: 2px;" class="fa-solid fa-trash-can"></i></button>
-          <p class="fotoText" >Foto {{i+1}}:</p>
+          <p class="fotoText" >Foto {{i+1}}</p>
           <img *ngIf="photo != null" src="{{photo}}" (click)="imagePopUp(photo)" class="photo" name="photo" >
             <p *ngIf="!photo && !getCorrespondingTemporaryImage(i)" style="margin-bottom: 30%;font-size: 18px;font-weight: 600" >Geen foto</p>
             <div *ngIf="photo == null && !getCorrespondingTemporaryImage(i)" class="upload-container-empty">

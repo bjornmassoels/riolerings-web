@@ -50,7 +50,7 @@ export class SlokkerprojectAddComponent implements OnInit {
   selectedPhoto = false;
   chosenImageList: any[] = [];
   chosenImageListIndex: number [] = [];
-  private group: Group;
+  group: Group;
 
   public company: Company;
   public companyId;
@@ -138,7 +138,8 @@ export class SlokkerprojectAddComponent implements OnInit {
           index: this.currentProject.index,
           buis: this.currentProject.slokker.buis,
           buisVert: this.currentProject.slokker.buisVert,
-          bocht: this.group.bochtenInGraden? null : this.currentProject.slokker.bocht,
+          typeKolk: this.currentProject.slokker.typeKolk,
+          bocht: this.group.bochtenInGraden ? null : this.currentProject.slokker.bocht,
           gradenBocht45: !this.group.bochtenInGraden ? null : this.currentProject.slokker.gradenBocht45,
           gradenBocht90: !this.group.bochtenInGraden ? null : this.currentProject.slokker.gradenBocht90,
           reductie: this.currentProject.slokker.reductie,

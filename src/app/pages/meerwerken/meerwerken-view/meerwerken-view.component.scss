@@ -79,7 +79,6 @@ button:disabled {
 }
 .IPtext {
   font-weight: 700;
-  letter-spacing: 1.2pt;
   margin-left: 10px;
   margin-right: 10px;
 }
@@ -91,7 +90,7 @@ button:disabled {
 }
 .page-title {
   font-weight: 700;
-  letter-spacing: 1.6pt;
+  letter-spacing: 1.4pt;
   margin-left: 26px;
   height:35px !important;
   margin-top:-10px !important;
@@ -200,27 +199,22 @@ button:disabled {
   justify-content: space-between;
 
   .label-text {
-    letter-spacing: 1.2pt;
   }
   .data-text {
     font-weight: 700;
-    letter-spacing: 1.1pt;
   }
   .data-text2 {
     width: 75%;
     font-weight: 700;
-    letter-spacing: 1.1pt;
   }
   .data-text-opmerking{
     font-weight: 700;
     width: 75%;
-    letter-spacing: 1.1pt;
     white-space: pre-wrap;
   }
   .data-text-opmerking2{
     font-weight: 700;
     width: 75%;
-    letter-spacing: 1.1pt;
     white-space: pre-wrap;
   }
 }
@@ -235,20 +229,17 @@ button:disabled {
   justify-content: space-between;
 
   .label-text {
-    letter-spacing: 1.2pt;
   }
 
   .data-text {
     font-weight: 700;
-
-    letter-spacing: 1.1pt;
   }
 }
 .section-title {
   width: 100%;
   font-weight: 800;
   text-align: center;
-  letter-spacing: 1.4pt;
+  letter-spacing: 1.2pt;
   font-size: 1.2rem;
 }
 .putRow {
@@ -286,12 +277,10 @@ button:disabled {
   justify-content: space-between;
 
   .label-text {
-    letter-spacing: 1.2pt;
   }
 
   .data-text {
     font-weight: 700;
-    letter-spacing: 1.1pt;
   }
 }
 .image-container {
@@ -471,7 +460,6 @@ button:disabled {
   width:100%;
   max-width:40%;
   .label-text {
-    letter-spacing: 0.9pt;
   }
 }
 .insideRow2{
@@ -483,7 +471,6 @@ button:disabled {
   max-width:42%;
   margin: 7px 4%;
   .label-text {
-    letter-spacing: 0.9pt;
     margin-bottom: 0px !important;
   }
   .data-text{
@@ -505,7 +492,6 @@ button:disabled {
   max-width:50%;
   margin: 10px 0%;
   .label-text {
-    letter-spacing: 0.9pt;
     margin-bottom: 0px !important;
     max-width: 70%;
   }

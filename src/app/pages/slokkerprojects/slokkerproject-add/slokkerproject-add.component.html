@@ -28,15 +28,15 @@
 
     <div class="column-container">
       <div class="data-container">
-        <p class="label-text">Straat</p>
+        <p class="label-text"><b>Straat</b></p>
         <input nbInput class="normalInput" type="text" formControlName="street" />
       </div>
       <div class="data-container">
-        <p class="label-text">Huisnummer</p>
+        <p class="label-text"><b>Huisnummer</b></p>
         <input class="normalInput" nbInput type="text" formControlName="huisNr" />
       </div>
       <div class="data-container">
-        <p class="label-text">Kolk nummer</p>
+        <p class="label-text"><b>Kolk nummer</b></p>
         <input class="normalInput" nbInput type="text" formControlName="index" />
       </div>
       <div class="data-container">
@@ -46,188 +46,195 @@
     </div>
   </div>
 
-  <div class="row-container">
-    <div class="column-container">
-      <p class="section-title">
-        Kolk
-      </p>
+    <div class="row-container">
+      <div class="column-container">
+          <p class="section-title">
+            Kolk
+          </p>
 
-      <div class="data-container4">
-        <p class="label-text">Buis hor.</p>
-        <div class="smallRow">
-          <input nbInput class="smallInput2 margT" type="number" formControlName="buis" />
-          <p class="data-text margL">meter</p>
-        </div>
-      </div>
-      <div class="data-container4">
-        <p class="label-text">Buis vert.</p>
-        <div class="smallRow">
-          <input nbInput class="smallInput2 margT" type="number" formControlName="buisVert" />
-          <p class="data-text margL">meter</p>
-        </div>
-      </div>
-      <div *ngIf='!group.bochtenInGraden' class="data-container4">
-        <p class="label-text">Bocht</p>
-        <div class="smallRow">
-          <input nbInput class="smallInput2 margT" type="number" formControlName="bocht" />
-          <p class="data-text margL">stuks</p>
-        </div>
-      </div>
-      <div *ngIf='group.bochtenInGraden' class="data-container4">
-        <p class="label-text">Bocht 45°</p>
-        <div class="smallRow">
-          <input nbInput class="smallInput2 margT" type="number" formControlName="gradenBocht45" />
-          <p class="data-text margL">stuks</p>
-        </div>
-      </div>
-      <div *ngIf='group.bochtenInGraden' class="data-container4">
-        <p class="label-text">Bocht 90°</p>
-        <div class="smallRow">
-          <input nbInput class="smallInput2 margT" type="number" formControlName="gradenBocht90" />
-          <p class="data-text margL">stuks</p>
-        </div>
-      </div>
-      <div class="data-container4">
-        <p class="label-text">Reductie</p>
-        <div class="smallRow">
-          <input nbInput class="smallInput2 margT" type="number" formControlName="reductie" />
-          <p class="data-text margL">stuks</p>
-        </div>
-      </div>
-      <div class="data-container4">
-        <p class="label-text">Extra y-stuks</p>
-        <div class="smallRow">
-          <input nbInput class="smallInput2 margT" type="number" formControlName="Y" />
-          <p class="data-text margL">stuks</p>
-        </div>
-      </div>
-      <div class="data-container4" *ngIf="this.group.slokkerSettings.mof">
-        <p class="label-text">Mof</p>
-        <div class="smallRow">
-          <input nbInput class="smallInput2 margT" type="number" formControlName="mof" />
-          <p class="data-text margL">stuks</p>
-        </div>
-      </div>
-      <div class="data-container4" *ngIf="this.group.slokkerSettings.krimpmof">
-        <p class="label-text">Krimpmof</p>
-        <div class="smallRow">
-          <input nbInput class="smallInput2 margT" type="number" formControlName="krimpmof" />
-          <p class="data-text margL">stuks</p>
-        </div>
-      </div>
-      <div class="data-container4" *ngIf="this.group.slokkerSettings.koppelstuk">
-        <p class="label-text">Koppelstuk</p>
-        <div class="smallRow">
-          <input nbInput class="smallInput2 margT" type="number" formControlName="koppelstuk" />
-          <p class="data-text margL">stuks</p>
-        </div>
-      </div>
-      <div class="data-container4" *ngIf="this.group.slokkerSettings.stop">
-        <p class="label-text">Stop</p>
-        <div class="smallRow">
-          <input nbInput class="smallInput2 margT" type="number" formControlName="stop" />
-          <p class="data-text margL">stuks</p>
-        </div>
-      </div>
-      <div class="data-container4" *ngIf="this.group.slokkerSettings.andere">
-        <p class="label-text">Andere</p>
-          <input nbInput class="normalInput" type="text" formControlName="andere" />
-      </div>
-    </div>
-    <div class="column-container">
-      <div class="data-container4">
-        <p class="label-text">Type aansluiting op hoofdbuis</p>
-        <nb-select style='width: 300px !important;' class="normalInput" formControlName="tBuisStuk" id="type">
-          <nb-option  value="onbekend" >Onbekend</nb-option>
-          <nb-option  value="T-Buis" >T-Buis</nb-option>
-          <nb-option  value="T-Stuk" >T-Stuk</nb-option>
-          <nb-option  value="Y-Stuk" >Y-Stuk</nb-option>
-          <nb-option  value="flexAan" >Flexibele aansluiting</nb-option>
-          <nb-option  value="aanboring" >Aanboring</nb-option>
-          <nb-option  value="Herbruik van bestaande aansluiting" >Herbruik van bestaande aansluiting</nb-option>
-          <nb-option  value="Niet van toepassing" >Niet van toepassing</nb-option>
-        </nb-select>
-      </div>
-      <div class="data-container4">
-        <p class="label-text">Diameter buis</p>
-        <div class="smallRow">
-          <input nbInput class="smallInput2 margT" type="number" formControlName="diameter" />
-          <p class="data-text margL">mm</p>
-        </div>
-      </div>
-      <div class="data-container4" *ngIf="this.group.slokkerSettings.afstandPutMof == null || this.group.slokkerSettings.afstandPutMof">
-        <p class="label-text">Afstand midden stroomafwaartse put tot mof</p>
-        <div class="smallRow">
-          <input nbInput class="smallInput2 margT" type="number" formControlName="afstandPutMof" />
-          <p class="data-text margL">meter</p>
-        </div>
-      </div>
-      <div class="data-container4" *ngIf="this.group.slokkerSettings.diepteAansluitingMv">
-        <p class="label-text">Diepte aansluiting tov MV</p>
-        <div class="smallRow">
-          <input nbInput class="smallInput2 margT" type="number" formControlName="diepteAansluitingMv" />
-          <p class="data-text margL">meter</p>
-        </div>
-      </div>
-      <div class="data-container4" *ngIf="this.group.slokkerSettings.diepteAanboringRiool">
-        <p class="label-text">Diepte aanboring op riool tov MV<br>(op bestaande riolering)</p>
-        <div class="smallRow">
-          <input nbInput class="smallInput2 margT" type="number" formControlName="diepteAanboringRiool" />
-          <p class="data-text margL">meter</p>
-        </div>
-      </div>
-      <div class="data-containerBig">
-        <p class="label-text">Gelegen tussen volgende IP:</p>
-        <div class="smallRow">
-          <input nbInput class="smallInput2 margF" type="text" formControlName="tussenIPLinks" /><p class="label-text"> - </p>
-          <input nbInput class="smallInput2 margF" type="text" formControlName="tussenIPRechts" />
-        </div>
-      </div>
-      <div class="data-container4" *ngIf="this.group.slokkerSettings.infiltratieKlok">
-        <p class="label-text">Infiltratiekolk</p>
-        <nb-toggle class="toggleButton" formControlName="infiltratieKlok" status="primary"></nb-toggle>
-      </div>
-      <div class="data-container4" *ngIf="this.group.slokkerSettings.aansluitingOpengracht">
-        <p class="label-text">Kolk aansluiting op opengracht</p>
-        <nb-toggle class="toggleButton" formControlName="aansluitingOpengracht" status="primary"></nb-toggle>
-      </div>
-      <div class="borderBlack" *ngIf="this.group.slokkerSettings.plaatsAansluiting">
-        <img class="rioolImage" src="assets/images/gradenOpRiool.png">
-        <div class="data-container8">
-          <p class="label-text">Plaats aansluiting op riool tov van stroomafw. naar stroomopw.:</p>
-          <div class="leftRow">
-            <nb-select class="smallInput" formControlName="plaatsAansluiting" id="type">
-              <nb-option value="onbekend">Onbekend</nb-option>
-              <nb-option value="90">90</nb-option>
-              <nb-option value="135">135</nb-option>
-              <nb-option value="180">180</nb-option>
-              <nb-option value="225">225</nb-option>
-              <nb-option value="270">270</nb-option>
-            </nb-select>
-            <p class="texter">graden</p>
+        <div class='flexWrapper'>
+          <div style='width:50%'>
+            <div class="data-container4">
+              <p style='padding-left: 5px !important;' class="label-text">Buis hor.</p>
+              <div class="smallRow">
+                <input nbInput class="smallInput2 margT" type="number" formControlName="buis" />
+                <p style='margin-left:4px !important;' class="data-text margL">meter</p>
+              </div>
+            </div>
+            <div class="data-container4">
+              <p style='padding-left: 5px !important;' class="label-text">Buis vert.</p>
+              <div class="smallRow">
+                <input nbInput class="smallInput2 margT" type="number" formControlName="buisVert" />
+                <p style='margin-left:4px !important;' class="data-text margL">meter</p>
+              </div>
+            </div>
+            <div *ngIf='!group.bochtenInGraden' class="data-container4">
+              <p style='padding-left: 5px !important;' class="label-text">Bocht</p>
+              <div class="smallRow">
+                <input nbInput class="smallInput2 margT" type="number" formControlName="bocht" />
+                <p class="data-text margL">stuks</p>
+              </div>
+            </div>
+            <div *ngIf='group.bochtenInGraden' class="data-container4">
+              <p style='padding-left: 5px !important;' class="label-text">Bocht 45°</p>
+              <div class="smallRow">
+                <input nbInput class="smallInput2 margT" type="number" formControlName="gradenBocht45" />
+                <p class="data-text margL">stuks</p>
+              </div>
+            </div>
+            <div *ngIf='group.bochtenInGraden' class="data-container4">
+              <p style='padding-left: 5px !important;' class="label-text">Bocht 90°</p>
+              <div class="smallRow">
+                <input nbInput class="smallInput2 margT" type="number" formControlName="gradenBocht90" />
+                <p class="data-text margL">stuks</p>
+              </div>
+            </div>
+          </div>
+          <div style='width:47%;padding-left: 35px;margin-top:20px;' class="insideRow2">
+            <p class="label-text">Diameter buis</p>
+            <div class="smallRow">
+              <input nbInput class="smallInput2" type="number" formControlName="diameter" />
+              <p class="data-text margL">mm</p>
+            </div>
           </div>
         </div>
+        <div style='margin:5px 0;' class="largeInsideRow">
+          <p class="text">Type aansluiting op hoofdbuis</p>
+          <nb-select style='width: 300px !important;' class="normalInput" formControlName="tBuisStuk" id="type">
+            <nb-option  value="onbekend" >Onbekend</nb-option>
+            <nb-option  value="T-Buis" >T-Buis</nb-option>
+            <nb-option  value="T-Stuk" >T-Stuk</nb-option>
+            <nb-option  value="Y-Stuk" >Y-Stuk</nb-option>
+            <nb-option  value="flexAan" >Flexibele aansluiting</nb-option>
+            <nb-option  value="aanboring" >Aanboring</nb-option>
+            <nb-option  value="Herbruik van bestaande aansluiting" >Herbruik van bestaande aansluiting</nb-option>
+            <nb-option  value="Niet van toepassing" >Niet van toepassing</nb-option>
+          </nb-select>
+        </div>
+        <div class='flexWrapper'>
+          <div class="insideRow2">
+            <p class="label-text">Reductie</p>
+            <div class="smallRow">
+              <input nbInput class="smallInput2" type="number" formControlName="reductie" />
+              <p class="data-text margL">stuks</p>
+            </div>
+          </div>
+          <div class="insideRow2">
+            <p class="label-text">Extra y-stuks</p>
+            <div class="smallRow">
+              <input nbInput class="smallInput2" type="number" formControlName="Y" />
+              <p class="data-text margL">stuks</p>
+            </div>
+          </div>
+          <div *ngIf="this.group.slokkerSettings.mof" class="insideRow2">
+            <p class="label-text">Mof</p>
+            <div class="smallRow">
+              <input nbInput class="smallInput2" type="number" formControlName="mof" />
+              <p class="data-text margL">stuks</p>
+            </div>
+          </div>
+          <div *ngIf="this.group.slokkerSettings.krimpmof" class="insideRow2">
+            <p class="label-text">Krimpmof</p>
+            <div class="smallRow">
+              <input nbInput class="smallInput2" type="number" formControlName="krimpmof" />
+              <p class="data-text margL">stuks</p>
+            </div>
+          </div>
+          <div *ngIf="this.group.slokkerSettings.koppelstuk" class="insideRow2">
+            <p class="label-text">Koppelstuk</p>
+            <div class="smallRow">
+              <input nbInput class="smallInput2" type="number" formControlName="koppelstuk" />
+              <p class="data-text margL">stuks</p>
+            </div>
+          </div>
+          <div *ngIf="this.group.slokkerSettings.stop" class="insideRow2">
+            <p class="label-text">Stop</p>
+            <div class="smallRow">
+              <input nbInput class="smallInput2" type="number" formControlName="stop" />
+              <p class="data-text margL">stuks</p>
+            </div>
+          </div>
+          <div *ngIf="this.group.slokkerSettings.andere" class="insideRow2">
+            <p class="label-text">Andere</p>
+            <input nbInput class="normalInput" type="text" formControlName="andere" />
+          </div>
+        </div>
+        <div class="data-containerBig">
+          <p class="label-text">Gelegen tussen volgende IP:</p>
+          <div class="smallRow">
+            <input nbInput class="smallInput2 margF" type="text" formControlName="tussenIPLinks" /><p class="label-text"> - </p>
+            <input nbInput class="smallInput2 margF" type="text" formControlName="tussenIPRechts" />
+          </div>
+        </div>
+      </div>
+      <div class="column-container">
 
+
+        <div class="data-container4">
+          <p class="label-text">Afstand midden stroomafwaartse put tot mof</p>
+          <div class="smallRow">
+            <input nbInput class="smallInput2 margT" type="number" formControlName="afstandPutMof" />
+            <p class="data-text margL">meter</p>
+          </div>
+        </div>
+        <div class="data-container4" *ngIf="this.group.slokkerSettings.diepteAansluitingMv">
+          <p class="label-text">Diepte aansluiting tov MV</p>
+          <div class="smallRow">
+            <input nbInput class="smallInput2 margT" type="number" formControlName="diepteAansluitingMv" />
+            <p class="data-text margL">meter</p>
+          </div>
+        </div>
+        <div class="data-container4" *ngIf="this.group.slokkerSettings.diepteAanboringRiool">
+          <p class="label-text">Diepte aanboring op riool tov MV<br>(op bestaande riolering)</p>
+          <div class="smallRow">
+            <input nbInput class="smallInput2 margT" type="number" formControlName="diepteAanboringRiool" />
+            <p class="data-text margL">meter</p>
+          </div>
+        </div>
+        <div class="data-container4" *ngIf="this.group.slokkerSettings.infiltratieKlok">
+          <p class="label-text">Infiltratiekolk</p>
+          <nb-toggle class='toggle' formControlName="infiltratieKlok" status="primary"></nb-toggle>
+        </div>
+        <div class="data-container4" *ngIf="this.group.slokkerSettings.aansluitingOpengracht">
+          <p class="label-text">Kolk aansluiting op opengracht</p>
+          <nb-toggle class='toggle' formControlName="aansluitingOpengracht" status="primary"></nb-toggle>
+        </div>
+        <div class="borderBlack" *ngIf="this.group.slokkerSettings.plaatsAansluiting">
+          <img class="rioolImage" src="assets/images/gradenOpRiool.png">
+          <div class="data-container8">
+            <p class="label-text">Plaats aansluiting op riool tov van stroomafw. naar stroomopw.:</p>
+            <div class="leftRow">
+              <nb-select class="smallInput" formControlName="plaatsAansluiting" id="type">
+                <nb-option value="onbekend">Onbekend</nb-option>
+                <nb-option value="90">90</nb-option>
+                <nb-option value="135">135</nb-option>
+                <nb-option value="180">180</nb-option>
+                <nb-option value="225">225</nb-option>
+                <nb-option value="270">270</nb-option>
+              </nb-select>
+              <p class="texter">graden</p>
+            </div>
+          </div>
+        </div>
+        <div style='margin-top:5px;' class='flexWrapper'>
+          <div class='insideRow2'>
+            <p class="lambertTitle">Lambert coördinaten <small>(Alleen verplicht projecten voor AWV)</small></p>
+          </div>
+          <div class="insideRow2">
+            <p class="label-text">X-coord</p>
+            <input class="lambertInput" nbInput type="text" formControlName="xCoord" />
+          </div>
+          <div class="insideRow2">
+            <p class="label-text">Y-coord</p>
+            <input class="lambertInput" nbInput type="text" formControlName="yCoord" />
+          </div>
+          <div class="insideRow2">
+            <p class="label-text">Z-coord</p>
+            <input class="lambertInput" nbInput type="text" formControlName="zCoord" />
+          </div>
+        </div>
       </div>
 
-      <div style='margin-top:5px;' class='flexWrapper'>
-        <div class='insideRow2'>
-          <p class="lambertTitle">Lambert coördinaten <small>(Alleen verplicht projecten voor AWV)</small></p>
-        </div>
-        <div class="insideRow2">
-          <p class="label-text">X-coord</p>
-          <input class="lambertInput" nbInput type="text" formControlName="xCoord" />
-        </div>
-        <div class="insideRow2">
-          <p class="label-text">Y-coord</p>
-          <input class="lambertInput" nbInput type="text" formControlName="yCoord" />
-        </div>
-        <div class="insideRow2">
-          <p class="label-text">Z-coord</p>
-          <input class="lambertInput" nbInput type="text" formControlName="zCoord" />
-        </div>
-      </div>
-    </div>
     </div>
 
 

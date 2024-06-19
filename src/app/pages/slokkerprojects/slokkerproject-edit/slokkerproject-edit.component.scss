@@ -589,7 +589,6 @@ input::-webkit-inner-spin-button {
   max-width:50%;
   padding: 5px 12px 5px 6px;
   .label-text {
-    letter-spacing: 0.9pt;
     margin-bottom: 0px !important;
   }
   .texter{
@@ -622,6 +621,9 @@ input::-webkit-inner-spin-button {
   font-size:15px;
   margin:0 13px 0px 7px !important;
   letter-spacing: 1pt;
+}
+.lambertInput {
+  width:180px !important;
 }
 .clear-button {
   background-color: grey; /* Green */

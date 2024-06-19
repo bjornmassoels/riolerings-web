@@ -3830,7 +3830,7 @@ export class NieuweExcelService {
     if(!dataList.slokkerSettings.infiltratieKlok){
       notUsedVariableCount++;
     }
-    kolommen = ['I','J','K', 'L', 'M', 'N', 'O','P', 'Q'];
+    kolommen = ['J','K', 'L', 'M', 'N', 'O','P', 'Q', 'R', 'S'];
     let indexEindStukken = 6 - notUsedVariableCount;
     let eindStukken = kolommen[indexEindStukken];
     let funOmhKolom = kolommen[indexEindStukken + 2];
@@ -3873,7 +3873,7 @@ export class NieuweExcelService {
     console.log(notUsedVariableCount)
 */
 
-    postenRow = worksheet3.addRow(['Postnummers','', this.PostNumberNullToString(slokkerPostNumbers.buis),
+    postenRow = worksheet3.addRow(['Postnummers','', this.PostNumberNullToString(slokkerPostNumbers.buis), this.PostNumberNullToString(slokkerPostNumbers.buisVert),
       this.PostNumberNullToString(slokkerPostNumbers.indrukmof), this.PostNumberNullToString(slokkerPostNumbers.ytStuk), this.PostNumberNullToString(slokkerPostNumbers.tBuis), this.PostNumberNullToString(slokkerPostNumbers.flexAan),
       this.PostNumberNullToString(slokkerPostNumbers.reductie)]);
     worksheet3.mergeCells('A3:B3');
@@ -3925,7 +3925,7 @@ export class NieuweExcelService {
     });
 
 
-    stukkenRow = worksheet3.addRow(['Straat', 'Kolk nr.','Buis','Indrukmof', 'Y/T-stuk', 'T-buis', 'Flex. aansl.', 'Reductie']);
+    stukkenRow = worksheet3.addRow(['Straat', 'Kolk nr.', 'Buis hor.', 'Buis vert.' ,'Indrukmof', 'Y/T-stuk', 'T-buis', 'Flex. aansl.', 'Reductie']);
     stukkenRow.font = { name: 'Arial', family: 4, size: 13, bold: true };
     stukkenRow.alignment = {horizontal:'center'}
     indexCount = 0;
@@ -3980,7 +3980,8 @@ export class NieuweExcelService {
     });
 
 
-    let buisCount = 0;
+    let buisHorCount = 0;
+    let buisVertCount = 0;
     let bochtCount = 0;
     let bocht45Count = 0;
     let bocht90Count = 0;
@@ -4028,7 +4029,8 @@ export class NieuweExcelService {
           flexAanCount++;
           break;
       }
-      buisCount += this.NullToZero(slokker.slokker.buis) + this.NullToZero(slokker.slokker.buis2);
+      buisHorCount += this.NullToZero(slokker.slokker.buis) + this.NullToZero(slokker.slokker.buis2);
+      buisVertCount += this.NullToZero(slokker.slokker.buisVert) + this.NullToZero(slokker.slokker.buisVert2);
       if(!dataList.bochtenInGraden){
         bochtCount += this.NullToZero(slokker.slokker.bocht) + this.NullToZero(slokker.slokker.bocht2);
       } else {
@@ -4053,13 +4055,13 @@ export class NieuweExcelService {
       let funOmh = 0;
       if(!dataList.bochtenInGraden){
         funOmh =
-          (this.NullToZero(slokker.slokker.buis) + this.NullToZero(slokker.slokker.buis2)) +
+          this.NullToZero(slokker.slokker.buis) + this.NullToZero(slokker.slokker.buis2) + this.NullToZero(slokker.slokker.buisVert) + this.NullToZero(slokker.slokker.buisVert2) +
           ((this.NullToZero(slokker.slokker.bocht) + this.NullToZero(slokker.slokker.bocht2)) * bochtMult) +
             (ytStuk * yStukMult) +
             (this.NullToZero(indrukmof) * mofMult);
       } else {
         funOmh =
-          (this.NullToZero(slokker.slokker.buis) + this.NullToZero(slokker.slokker.buis2)) +
+          (this.NullToZero(slokker.slokker.buis) + this.NullToZero(slokker.slokker.buis2)) + this.NullToZero(slokker.slokker.buisVert) + this.NullToZero(slokker.slokker.buisVert2) +
           ((this.NullToZero(slokker.slokker.gradenBocht45) + this.NullToZero(slokker.slokker.gradenBocht45Fase2) +
             this.NullToZero(slokker.slokker.gradenBocht90) + this.NullToZero(slokker.slokker.gradenBocht90Fase2)) * bochtMult) +
             (ytStuk * yStukMult) +
@@ -4074,6 +4076,7 @@ export class NieuweExcelService {
         slokker.street,
         slokker.index,
         this.ConvertNumberToEmptyString(this.NullToZero(slokker.slokker.buis) + this.NullToZero(slokker.slokker.buis2)),
+        this.ConvertNumberToEmptyString(this.NullToZero(slokker.slokker.buisVert) + this.NullToZero(slokker.slokker.buisVert2)),
         this.ConvertNumberToEmptyString(indrukmof),
         this.ConvertNumberToEmptyString(ytStuk),
         this.ConvertNumberToEmptyString(tBuis),
@@ -4118,7 +4121,8 @@ export class NieuweExcelService {
       dataRow3.getCell(kolommen[indexCount]).value = funOmhString;
       indexCount++;
     }
-    buisCount = +buisCount.toFixed(2);
+    buisHorCount = +buisHorCount.toFixed(2);
+    buisVertCount = +buisVertCount.toFixed(2);
     bochtCount = +bochtCount.toFixed(2);
     bocht45Count = +bocht45Count.toFixed(2);
     bocht90Count = +bocht90Count.toFixed(2);
@@ -4144,7 +4148,7 @@ export class NieuweExcelService {
       for(let vorige of dataList.totalenMeetstaatKolk){
         counter++;
         let vorigeTotalenRow = worksheet3.addRow([(counter === dataList.totalenMeetstaatKolk.length ? 'Laatste vorige totalen' : 'Vorige totalen'),
-          new Date(vorige.date).toLocaleDateString(), vorige.buis, vorige.indrukmof,
+          new Date(vorige.date).toLocaleDateString(), vorige.buis, vorige.buisVert, vorige.indrukmof,
           vorige.ytStuk, vorige.tBuis, vorige.flexAan, vorige.reductie]);
         vorigeTotalenRow.font = { name: 'Arial', family: 4, size: 13, bold: true };
         vorigeTotalenRow.height = 18;
@@ -4218,7 +4222,7 @@ export class NieuweExcelService {
     totaalKolommen = ['C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'AA', 'AB', 'AC', 'AD', 'AE', 'AF', 'AG', 'AH', 'AI','AJ', 'AK', 'AL'];
 
     if(totaalExtraPreviousTotalen > 0) {
-      let latestTotalen = dataList.totalenMeetstaatKolk[dataList.totalenMeetstaatKolk.length - 1];
+
       let verschilTotalenRow = worksheet3.addRow(['VERSCHIL totalen', '']);
       verschilTotalenRow.font = { name: 'Arial', family: 4, size: 13, bold: true };
       verschilTotalenRow.height = 18;
@@ -4226,7 +4230,7 @@ export class NieuweExcelService {
       indexCount = 0;
       let verschilRow = 5 + totaalExtraPreviousTotalen + totalRowCount;
       let column = 'C';
-      for(let i = 0; i < 6; i++){
+      for(let i = 0; i < 7; i++){
         column = totaalKolommen[i];
         verschilTotalenRow.getCell(totaalKolommen[i]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
         indexCount++;
@@ -4299,7 +4303,7 @@ export class NieuweExcelService {
     indexCount = 0;
     eindKolomNewData = 4 + totalRowCount;
     row = "C";
-    for(let i = 0; i < 6; i++){
+    for(let i = 0; i < 7; i++){
       row = totaalKolommen[i];
       totalenRow.getCell(row).value = { formula: "=SUM(" + row + "5:" + row + eindKolomNewData + ')', date1904: false };
       indexCount++;
@@ -4385,7 +4389,7 @@ export class NieuweExcelService {
       });
       column.width = maxLength < 10 ? 10 : maxLength + 4;
     });
-    stukkenRow = worksheet3.addRow(['Straat', 'Kolk nr.','Buis','Indrukmof', 'Y/T-stuk', 'T-buis', 'Flex. aansl.', 'Reductie']);
+    stukkenRow = worksheet3.addRow(['Straat', 'Kolk nr.', 'Buis hor.', 'Buis vert.', 'Indrukmof', 'Y/T-stuk', 'T-buis', 'Flex. aansl.', 'Reductie']);
     stukkenRow.font = { name: 'Arial', family: 4, size: 13, bold: true };
     stukkenRow.alignment = {horizontal:'center'}
     indexCount = 0;
@@ -4439,7 +4443,7 @@ export class NieuweExcelService {
       };
     });
 
-    postenRow = worksheet3.addRow(['Postnummers','', this.PostNumberNullToString(slokkerPostNumbers.buis),
+    postenRow = worksheet3.addRow(['Postnummers','', this.PostNumberNullToString(slokkerPostNumbers.buis), this.PostNumberNullToString(slokkerPostNumbers.buisVert),
       this.PostNumberNullToString(slokkerPostNumbers.indrukmof), this.PostNumberNullToString(slokkerPostNumbers.ytStuk), this.PostNumberNullToString(slokkerPostNumbers.tBuis), this.PostNumberNullToString(slokkerPostNumbers.flexAan),
       this.PostNumberNullToString(slokkerPostNumbers.reductie)]);
     let postenRowIndex = 8 + totaalExtraPreviousTotalen + totalRowCount;
@@ -4541,7 +4545,7 @@ export class NieuweExcelService {
 
     if(isVordering){
       //SAVE MEETSTAAT TOTALEN
-      let totalenMeetstaatKolk = new SlokkerTotaalMeetstaat(indrukmofCount,tBuisCount,ytStukCount,flexAanCount,buisCount,bochtCount,reductieCount,funOmhCount,mofCount,
+      let totalenMeetstaatKolk = new SlokkerTotaalMeetstaat(indrukmofCount,tBuisCount,ytStukCount,flexAanCount,buisHorCount, buisVertCount,bochtCount,reductieCount,funOmhCount,mofCount,
         krimpmofCount,koppelstukCount,stopCount,andereCount,infiltratieKolkCount, bocht45Count, bocht90Count);
       dataList.totalenMeetstaatDWA = [];
       dataList.totalenMeetstaatKolk = [];
