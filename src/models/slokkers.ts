@@ -42,6 +42,9 @@ export class Slokkers {
     yCoord: string;
     zCoord: string;
     typeKolk: TypeKolkEnum;
+    aangeslotenOpVrijeUitstroom: boolean;
+    aangeslotenOpVrijeUitstroomString: string;
+
     constructor() {
     }
 }

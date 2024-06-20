@@ -181,6 +181,7 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
           buis2: this.currentProject.slokker.buis2,
           buisVert: this.currentProject.slokker.buisVert,
           buisVert2: this.currentProject.slokker.buisVert2,
+          typeKolk: this.currentProject.slokker.typeKolk,
           bocht: this.group.bochtenInGraden? null : this.currentProject.slokker.bocht,
           bocht2:  this.group.bochtenInGraden? null :this.currentProject.slokker.bocht2,
           gradenBocht45: !this.group.bochtenInGraden? null : this.currentProject.slokker.gradenBocht45,
@@ -301,6 +302,7 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
       slokker.buisVert2 = slokkerProject.buisVert2;
       slokker.reductie = slokkerProject.reductie;
       slokker.Y = slokkerProject.Y;
+      slokker.typeKolk = slokkerProject.typeKolk;
       slokker.tussenIPLinks = slokkerProject.tussenIPLinks;
       slokker.tussenIPRechts = slokkerProject.tussenIPRechts;
       slokker.afstandPutMof = slokkerProject.afstandPutMof;

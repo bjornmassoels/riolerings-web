@@ -770,3 +770,33 @@ strong {
 .lambertInput {
   width:180px !important;
 }
+.custom-toggle-group {
+  display: flex;
+  justify-content: space-around;
+}
+
+.custom-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px; /* Reduced height */
+  background-color: #aeb1c0; /* Light blue background */
+  color: white;
+  margin-right: 3px;
+  &.mat-button-toggle-checked {
+    background-color: #0288d1; /* Darker blue when selected */
+    color: white;
+
+    mat-icon {
+      margin-left: 8px;
+    }
+  }
+}
+mat-icon {
+  font-size: 20px;
+  color: white;
+}
+.mat-button-toggle-group-appearance-standard {
+  border:none !important;
+  border-radius: unset;
+}

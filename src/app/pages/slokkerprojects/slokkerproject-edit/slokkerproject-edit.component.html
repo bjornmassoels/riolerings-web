@@ -195,11 +195,20 @@
           </div>
         </div>
       </div>
-        <div style='width:47%;padding-left: 35px;margin-top:20px;' class="insideRow2">
-          <p class="label-text">Diameter buis</p>
-          <div class="smallRow">
-            <input nbInput class="smallInput2" type="number" formControlName="diameter" />
-            <p class="data-text margL">mm</p>
+        <div style='width:45%; margin-left: 5%'>
+          <div class="data-container4">
+            <p style='padding-left: 5px !important;' class="label-text">Diameter buis</p>
+            <div class="smallRow">
+              <input nbInput class="smallInput2" type="number" formControlName="diameter" />
+              <p style='margin-left:4px !important;' class="data-text margL">mm</p>
+            </div>
+          </div>
+          <div class="data-container4">
+            <p style='padding-left: 5px !important;' class="label-text">Type kolk</p>
+            <mat-button-toggle-group class="custom-toggle-group" formControlName="typeKolk" >
+              <mat-button-toggle class="custom-toggle" value="Beton">Beton</mat-button-toggle>
+              <mat-button-toggle class="custom-toggle" value="Gietijzer">Gietijzer</mat-button-toggle>
+            </mat-button-toggle-group>
           </div>
         </div>
       </div>

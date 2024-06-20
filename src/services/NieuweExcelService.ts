@@ -4055,13 +4055,15 @@ export class NieuweExcelService {
       let funOmh = 0;
       if(!dataList.bochtenInGraden){
         funOmh =
-          this.NullToZero(slokker.slokker.buis) + this.NullToZero(slokker.slokker.buis2) + this.NullToZero(slokker.slokker.buisVert) + this.NullToZero(slokker.slokker.buisVert2) +
+          this.NullToZero(slokker.slokker.buis) + this.NullToZero(slokker.slokker.buis2) +
+          (this.NullToZero(slokker.slokker.buisVert) * buisVertMult) + (this.NullToZero(slokker.slokker.buisVert2) * buisVertMult) +
           ((this.NullToZero(slokker.slokker.bocht) + this.NullToZero(slokker.slokker.bocht2)) * bochtMult) +
             (ytStuk * yStukMult) +
             (this.NullToZero(indrukmof) * mofMult);
       } else {
         funOmh =
-          (this.NullToZero(slokker.slokker.buis) + this.NullToZero(slokker.slokker.buis2)) + this.NullToZero(slokker.slokker.buisVert) + this.NullToZero(slokker.slokker.buisVert2) +
+          (this.NullToZero(slokker.slokker.buis) + this.NullToZero(slokker.slokker.buis2)) +
+          (this.NullToZero(slokker.slokker.buisVert) * buisVertMult) + (this.NullToZero(slokker.slokker.buisVert2) * buisVertMult) +
           ((this.NullToZero(slokker.slokker.gradenBocht45) + this.NullToZero(slokker.slokker.gradenBocht45Fase2) +
             this.NullToZero(slokker.slokker.gradenBocht90) + this.NullToZero(slokker.slokker.gradenBocht90Fase2)) * bochtMult) +
             (ytStuk * yStukMult) +

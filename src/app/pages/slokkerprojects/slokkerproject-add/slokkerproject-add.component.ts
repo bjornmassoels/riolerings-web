@@ -223,6 +223,7 @@ export class SlokkerprojectAddComponent implements OnInit {
       slokker.xCoord = slokkerProject.xCoord;
       slokker.yCoord = slokkerProject.yCoord;
       slokker.zCoord = slokkerProject.zCoord;
+      slokker.typeKolk = slokkerProject.typeKolk;
       slokker._id = this.currentProject.slokker._id;
 
       //project init

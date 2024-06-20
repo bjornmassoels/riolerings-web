@@ -95,6 +95,7 @@ import { UsersModule } from './users/users.module';
 import {  NbMomentDateService } from '@nebular/moment';
 import { HasChangedPopupComponent } from './has-changed-popup/has-changed-popup.component';
 import { MatTooltip } from '@angular/material/tooltip';
+import { MatButtonToggle, MatButtonToggleGroup } from '@angular/material/button-toggle';
 
 @NgModule({
   imports: [
@@ -138,6 +139,8 @@ import { MatTooltip } from '@angular/material/tooltip';
     NbButtonGroupModule,
     NbDatepickerModule,
     MatTooltip,
+    MatButtonToggleGroup,
+    MatButtonToggle,
   ],
   declarations: [
     PagesComponent,

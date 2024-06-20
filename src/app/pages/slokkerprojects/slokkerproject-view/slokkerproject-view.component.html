@@ -104,7 +104,7 @@
         <p *ngIf='!currentProject.slokker.xCoordGeoLocationFirsPhoto && ! currentProject.slokker.yCoordGeoLocationFirsPhoto' style='width:130px !important;'> </p>
       </div>
       <div class="data-container-70">
-        <p style='margin-bottom: 0px' class="label-text">Type aansluiting op hoofdbuis:</p>
+        <p style='margin-bottom: 0px; margin-right: 8px;' class="label-text">Type aansluiting op hoofdbuis:</p>
         <p  style='margin-bottom: 0px' *ngIf="currentProject.slokker.tBuisStuk === 'flexAan'" class="data-text">flexibele aansluiting</p>
         <p  style='margin-bottom: 0px' *ngIf="currentProject.slokker.tBuisStuk != null && currentProject.slokker.tBuisStuk !== 'flexAan'"
            class="data-text">{{currentProject.slokker.tBuisStuk}}</p>
@@ -119,11 +119,11 @@
         <div class="insideRow2">
         </div>
           <div *ngIf="heeftPloegen == null || heeftPloegen === false" class="insideRow2">
-            <p class="label-text">Buis hor.</p>
+            <p style="min-width:69px;" class="label-text">Buis hor.</p>
             <p class="data-text">{{addMeterString(currentProject.slokker.buis)}}</p>
           </div>
         <div *ngIf="heeftPloegen != null && heeftPloegen === true" class="insideRow2">
-          <p class="label-text">Buis hor.</p>
+          <p  style="min-width:69px;" class="label-text">Buis hor.</p>
           <p style='min-height: 20px;min-width: 20px;'  class="data-text">{{NullToZero(currentProject.slokker.buis)}} | {{NullToZero(currentProject.slokker.buis2)}}</p>
           <p class="margL">meter</p>
         </div>
@@ -132,35 +132,49 @@
           <p class="data-text">{{currentProject.slokker.diameter}} mm</p>
         </div>
         <div *ngIf="heeftPloegen == null || heeftPloegen === false" class="insideRow2">
-          <p class="label-text">Buis vert.</p>
+          <p  style="min-width:69px;" class="label-text">Buis vert.</p>
           <p class="data-text">{{addMeterString(currentProject.slokker.buisVert)}}</p>
         </div>
         <div *ngIf="heeftPloegen != null && heeftPloegen === true" class="insideRow2">
-          <p class="label-text">Buis vert.</p>
+          <p  style="min-width:69px;" class="label-text">Buis vert.</p>
           <p style='min-height: 20px;min-width: 20px;'  class="data-text">{{NullToZero(currentProject.slokker.buisVert)}} | {{NullToZero(currentProject.slokker.buisVert2)}}</p>
           <p class="margL">meter</p>
+        </div>
+        <div class="insideRow2">
+          <p class="label-text">Type kolk</p>
+          <p  class="data-text">{{currentProject.slokker.typeKolk}}
+          </p>
+        </div>
+          <div *ngIf="(heeftPloegen == null || heeftPloegen === false) && !group.bochtenInGraden" class="insideRow2">
+            <p  style="min-width:69px;" class="label-text">Bocht</p>
+            <p class="data-text">{{addStuksString(currentProject.slokker.bocht)}}</p>
+          </div>
+        <div *ngIf="(heeftPloegen == null || heeftPloegen === false) && group.bochtenInGraden" class="insideRow2">
+          <p  style="min-width:69px;" class="label-text">Bocht 45°</p>
+          <p class="data-text">{{addStuksString(currentProject.slokker.gradenBocht45)}}</p>
+        </div>
+          <div *ngIf="(heeftPloegen != null && heeftPloegen === true) && !group.bochtenInGraden " class="insideRow2">
+            <p  style="min-width:69px;" class="label-text">Bocht</p>
+            <p style='min-height: 20px;min-width: 20px;' class="data-text">{{NullToZero(currentProject.slokker.bocht)}} | {{NullToZero(currentProject.slokker.bocht2)}}</p>
+            <p class="margL">stuks</p>
+          </div>
+        <div *ngIf="(heeftPloegen != null && heeftPloegen === true) && group.bochtenInGraden " class="insideRow2">
+          <p  style="min-width:69px;" class="label-text">Bocht 45°</p>
+          <p style='min-height: 20px;min-width: 20px;' class="data-text">{{NullToZero(currentProject.slokker.gradenBocht45)}} | {{NullToZero(currentProject.slokker.gradenBocht45Fase2)}}</p>
+          <p class="margL">stuks</p>
         </div>
         <div class="insideRow2">
           <p class="label-text">Reductie</p>
           <p  class="data-text">{{addStuksString(currentProject.slokker.reductie)}}
           </p>
         </div>
-          <div *ngIf="(heeftPloegen == null || heeftPloegen === false) && !group.bochtenInGraden" class="insideRow2">
-            <p class="label-text">Bocht</p>
-            <p class="data-text">{{addStuksString(currentProject.slokker.bocht)}}</p>
-          </div>
         <div *ngIf="(heeftPloegen == null || heeftPloegen === false) && group.bochtenInGraden" class="insideRow2">
-          <p class="label-text">Bocht 45°</p>
-          <p class="data-text">{{addStuksString(currentProject.slokker.gradenBocht45)}}</p>
+          <p  style="min-width:69px;" class="label-text">Bocht 90°</p>
+          <p class="data-text">{{addStuksString(currentProject.slokker.gradenBocht90)}}</p>
         </div>
-          <div *ngIf="(heeftPloegen != null && heeftPloegen === true) && !group.bochtenInGraden " class="insideRow2">
-            <p class="label-text">Bocht</p>
-            <p style='min-height: 20px;min-width: 20px;' class="data-text">{{NullToZero(currentProject.slokker.bocht)}} | {{NullToZero(currentProject.slokker.bocht2)}}</p>
-            <p class="margL">stuks</p>
-          </div>
         <div *ngIf="(heeftPloegen != null && heeftPloegen === true) && group.bochtenInGraden " class="insideRow2">
-          <p class="label-text">Bocht 45°</p>
-          <p style='min-height: 20px;min-width: 20px;' class="data-text">{{NullToZero(currentProject.slokker.gradenBocht45)}} | {{NullToZero(currentProject.slokker.gradenBocht45Fase2)}}</p>
+          <p  style="min-width:69px;" class="label-text">Bocht 90°</p>
+          <p style='min-height: 20px;min-width: 20px;' class="data-text">{{NullToZero(currentProject.slokker.gradenBocht90)}} | {{NullToZero(currentProject.slokker.gradenBocht90Fase2)}}</p>
           <p class="margL">stuks</p>
         </div>
         <div class="insideRow2">
@@ -168,16 +182,6 @@
           <p class="data-text">{{addStuksString(currentProject.slokker.Y)}}
           </p>
         </div>
-        <div *ngIf="(heeftPloegen == null || heeftPloegen === false) && group.bochtenInGraden" class="insideRow2">
-          <p class="label-text">Bocht 90°</p>
-          <p class="data-text">{{addStuksString(currentProject.slokker.gradenBocht90)}}</p>
-        </div>
-        <div *ngIf="(heeftPloegen != null && heeftPloegen === true) && group.bochtenInGraden " class="insideRow2">
-          <p class="label-text">Bocht 90°</p>
-          <p style='min-height: 20px;min-width: 20px;' class="data-text">{{NullToZero(currentProject.slokker.gradenBocht90)}} | {{NullToZero(currentProject.slokker.gradenBocht90Fase2)}}</p>
-          <p class="margL">stuks</p>
-        </div>
-
         <div class="insideRow2" *ngIf="this.group.slokkerSettings.mof">
           <p class="label-text">Mof</p>
           <p class="data-text">
