@@ -83,12 +83,10 @@ export class ProjectAddComponent implements OnInit {
     private authService: NbAuthService,
     private dialog: MatDialog
   ) {
-    router.events.subscribe((event) => {
-      if(event instanceof NavigationEnd) {
+    route.params.subscribe((event) => {
         this.isLoaded = false;
         this._id = this.route.snapshot.paramMap.get('id');
         this.loadData();
-      }
     });
   }
 
