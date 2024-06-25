@@ -90,6 +90,7 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
   isAndereDiameterDWAAchter: boolean = false;
   isAndereDiameterRWAAchter: boolean = false;
   hasChangedValue: boolean = false;
+  isSaving: boolean = false;
 
   constructor(
     private formBuilder: UntypedFormBuilder,
@@ -157,6 +158,7 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
     this.chosenImageList = [];
     this.chosenImageList2 = [];
     this.chosenImageListIndex = [];
+    this.isSaving = false;
     this.chosenImageList2Index = [];
     this.hasChangedValue = false;
     this.apiService.getProjectById(this._id).subscribe(async (x) => {
@@ -463,6 +465,8 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
     }
   }
   async onSubmitInfo() {
+    if(this.isSaving) return;
+    this.isSaving = true;
     const infoForm = this.infoForm.value as Project;
     this.currentProject.street = infoForm.street;
     this.currentProject.huisNr = infoForm.huisNr;
@@ -690,6 +694,7 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
               if (this.formService.isUpdated) {
                 this.chosenImageList = [];
                 this.hasChangedValue = false;
+                this.isSaving = false;
                 this.chosenImageList2 = [];
                 this.chosenImageListIndex = [];
                 this.chosenImageList2Index = [];
@@ -703,6 +708,7 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
               this.toastrService.success('De aansluiting is gewijzigd', 'Succes!');
               this.hasChangedValue = false;
               this.chosenImageList = [];
+              this.isSaving = false;
               this.chosenImageList2 = [];
               this.chosenImageListIndex = [];
               this.chosenImageList2Index = [];
@@ -717,6 +723,7 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
             this.hasChangedValue = false;
             this.chosenImageList = [];
             this.chosenImageList2 = [];
+            this.isSaving = false;
             this.chosenImageListIndex = [];
             this.chosenImageList2Index = [];
             if (this.newDate != null) {

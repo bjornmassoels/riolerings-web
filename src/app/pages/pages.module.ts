@@ -6,7 +6,7 @@ import {
   NbMenuModule,
   NbOptionModule, NbPopoverModule,
   NbRadioModule,
-  NbSelectModule, NbThemeModule,
+  NbSelectModule, NbSpinnerModule, NbThemeModule,
   NbToggleModule,
 } from '@nebular/theme';
 
@@ -96,6 +96,7 @@ import {  NbMomentDateService } from '@nebular/moment';
 import { HasChangedPopupComponent } from './has-changed-popup/has-changed-popup.component';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatButtonToggle, MatButtonToggleGroup } from '@angular/material/button-toggle';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 @NgModule({
   imports: [
@@ -141,6 +142,7 @@ import { MatButtonToggle, MatButtonToggleGroup } from '@angular/material/button-
     MatTooltip,
     MatButtonToggleGroup,
     MatButtonToggle,
+    NbSpinnerModule,
   ],
   declarations: [
     PagesComponent,

@@ -2,9 +2,10 @@
   <button mat-raised-button class="form-button" (click)="goToPrevious()">
     Terug
   </button>
-  <button (click)="onSubmitInfo()" mat-raised-button class="save-button" color="primary" type="submit">
+  <button *ngIf="!isSaving" (click)="onSubmitInfo()" mat-raised-button class="save-button" color="primary" type="submit">
     Opslaan
   </button>
+  <nb-spinner *ngIf="isSaving" class="spinner" size="giant" [message]="'Even geduld..'" status="info"></nb-spinner>
 </div>
 
 
@@ -808,7 +809,8 @@
   <button *ngIf="hasPreviousPage" mat-raised-button class="form-button" (click)="goToPrevious()">
     Terug
   </button>
-  <button (click)="onSubmitInfo()" mat-raised-button class="save-button" color="primary" type="submit">
+  <button *ngIf="!isSaving" (click)="onSubmitInfo()" mat-raised-button class="save-button" color="primary" type="submit">
     Opslaan
   </button>
+  <nb-spinner *ngIf="isSaving" class="spinner" size="giant" [message]="'Even geduld..'" status="info"></nb-spinner>
 </div>

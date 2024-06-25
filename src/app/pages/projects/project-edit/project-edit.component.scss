@@ -382,6 +382,24 @@ input[type=number] {
   height: 80px;
   width: 200px !important;
 }
+.spinner{
+  background-color: white;
+  font-size: 28px;
+  width:180px;
+  height:180px;
+  //poisiton center
+  position: fixed;
+  top: calc(48% - 90px);
+  left: calc(45% - 90px);
+  border-radius: 10px;
+  border:1px solid lightgray;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  white-space: pre-line;
+  line-height: 2pt;
+}
 .normalInput {
 }
 .lambertInput {

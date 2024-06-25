@@ -72,6 +72,7 @@ export class ProjectAddComponent implements OnInit {
   isAndereDiameterDWAAchter: boolean = false;
   isAndereDiameterRWAAchter: boolean = false;
   hasChangedValue: boolean = false;
+  isSaving: boolean = false;
   constructor(
     private formBuilder: UntypedFormBuilder,
     private apiService: ApiService,
@@ -108,6 +109,7 @@ export class ProjectAddComponent implements OnInit {
       this.hasChangedDiameterBuisRWA = false;
       this.hasChangedMateriaalBuisDWA = false;
       this.hasChangedMateriaalBuisRWA = false;
+      this.isSaving = false;
       this.currentProject.user_id = this.apiService.userId;
       this.currentProject.company_id = this.companyId;
       this.currentProject.droogWaterAfvoer = new Waterafvoer();
@@ -297,205 +299,212 @@ export class ProjectAddComponent implements OnInit {
       this.toastrService.warning( 'De straat moet ingevuld zijn ', 'Vul straat in');
       return;
     } else {
-      this.currentProject.street = infoForm.street;
-      this.currentProject.huisNr = infoForm.huisNr;
-      this.currentProject.opmerking = infoForm.opmerking;
-      this.currentProject.isWachtAansluiting = null;
-      this.currentProject.index = infoForm.index;
-      this.currentProject.equipNrRiolering = infoForm.equipNrRiolering;
-      this.currentProject.isGemengd = infoForm.isGemengd;
-      this.currentProject.startDate = null;
-      this.currentProject.afgewerktDatum = null;
-      if(this.currentProject.photosDWA == null || this.currentProject.photosDWA.length === 0){
-        this.currentProject.photosDWA = [null,null,null,null,null];
-      } else {
-        for(let i =0; i < 5; i++){
-          if(i + 1 > this.currentProject.photosDWA.length){
-            this.currentProject.photosDWA.push(null);
+      if(!this.isSaving){
+        this.isSaving = true;
+        this.currentProject.street = infoForm.street;
+        this.currentProject.huisNr = infoForm.huisNr;
+        this.currentProject.opmerking = infoForm.opmerking;
+        this.currentProject.isWachtAansluiting = null;
+        this.currentProject.index = infoForm.index;
+        this.currentProject.equipNrRiolering = infoForm.equipNrRiolering;
+        this.currentProject.isGemengd = infoForm.isGemengd;
+        this.currentProject.startDate = null;
+        this.currentProject.afgewerktDatum = null;
+        if(this.currentProject.photosDWA == null || this.currentProject.photosDWA.length === 0){
+          this.currentProject.photosDWA = [null,null,null,null,null];
+        } else {
+          for(let i =0; i < 5; i++){
+            if(i + 1 > this.currentProject.photosDWA.length){
+              this.currentProject.photosDWA.push(null);
+            }
           }
         }
-      }
-      if(this.currentProject.photosRWA == null || this.currentProject.photosRWA.length === 0){
-        this.currentProject.photosRWA = [null,null,null,null,null];
-      } else {
-        for(let i =0; i < 5; i++){
-          if(i + 1 > this.currentProject.photosRWA.length){
-            this.currentProject.photosRWA.push(null);
+        if(this.currentProject.photosRWA == null || this.currentProject.photosRWA.length === 0){
+          this.currentProject.photosRWA = [null,null,null,null,null];
+        } else {
+          for(let i =0; i < 5; i++){
+            if(i + 1 > this.currentProject.photosRWA.length){
+              this.currentProject.photosRWA.push(null);
+            }
           }
         }
-      }
 
-      // DWA
-      const data = this.dwaForm.value;
-      this.currentProject.droogWaterAfvoer.buisType = data.buisType;
-      this.currentProject.droogWaterAfvoer.buisVoorHor = data.buisVoorHor;
-      this.currentProject.droogWaterAfvoer.buisVoorVert = data.buisVoorVert;
-      this.currentProject.droogWaterAfvoer.buisAchter = data.buisAchter;
-      if(!this.group.bochtenInGraden){
-        this.currentProject.droogWaterAfvoer.bochtVoor = data.bochtVoor;
-        this.currentProject.droogWaterAfvoer.bochtAchter = data.bochtAchter;
-      } else {
-        this.currentProject.droogWaterAfvoer.gradenBochtVoor45 = data.gradenBochtVoor45;
-        this.currentProject.droogWaterAfvoer.gradenBochtVoor90 = data.gradenBochtVoor90;
-        this.currentProject.droogWaterAfvoer.gradenBochtAchter45 = data.gradenBochtAchter45;
-        this.currentProject.droogWaterAfvoer.gradenBochtAchter90 = data.gradenBochtAchter90;
-      }
-      this.currentProject.droogWaterAfvoer.YAchter = data.YAchter;
-      this.currentProject.droogWaterAfvoer.reductieVoor = data.reductieVoor;
-      this.currentProject.droogWaterAfvoer.reductieAchter = data.reductieAchter;
-      this.currentProject.droogWaterAfvoer.tBuisStuk = data.tBuisStuk;
-      this.currentProject.droogWaterAfvoer.ligging = data.ligging;
-      this.currentProject.droogWaterAfvoer.diameter = data.diameter;
-      this.currentProject.droogWaterAfvoer.diameterPut = data.diameterPut;
-      this.currentProject.droogWaterAfvoer.afstandPutMof = data.afstandPutMof;
-      this.currentProject.droogWaterAfvoer.terugslagklep = data.terugslagklep;
-      this.currentProject.droogWaterAfvoer.gietijzer = data.gietijzer;
-      this.currentProject.droogWaterAfvoer.betonkader = data.betonkader;
-      this.currentProject.droogWaterAfvoer.alukader = data.alukader;
-      this.currentProject.droogWaterAfvoer.diepteAansluitingWoning = data.diepteAansluitingWoning;
-      this.currentProject.droogWaterAfvoer.tussenIPLinks = data.tussenIPLinks;
-      this.currentProject.droogWaterAfvoer.tussenIPRechts = data.tussenIPRechts;
-      this.currentProject.droogWaterAfvoer.diepteRioleringHA = data.diepteRioleringHA;
-      this.currentProject.droogWaterAfvoer.plaatsAansluiting = data.plaatsAansluiting;
-      this.currentProject.droogWaterAfvoer.letterHor = data.letterHor;
-      this.currentProject.droogWaterAfvoer.putHor = data.putHor;
-      this.currentProject.droogWaterAfvoer.letterVer = data.letterVer;
-      this.currentProject.droogWaterAfvoer.putVer = data.putVer;
-      this.currentProject.droogWaterAfvoer.mof = data.mof;
-      this.currentProject.droogWaterAfvoer.krimpmof = data.krimpmof;
-      this.currentProject.droogWaterAfvoer.koppelstuk = data.koppelstuk;
-      this.currentProject.droogWaterAfvoer.stop = data.stop;
-      this.currentProject.droogWaterAfvoer.andere = data.andere;
-      this.currentProject.droogWaterAfvoer.xCoord = data.xCoord;
-      this.currentProject.droogWaterAfvoer.yCoord = data.yCoord;
-      this.currentProject.droogWaterAfvoer.zCoord = data.zCoord;
-      this.currentProject.droogWaterAfvoer.soortPutje = data.soortPutje;
-      this.currentProject.droogWaterAfvoer.isWachtaansluiting = data.isWachtaansluiting;
-      this.currentProject.droogWaterAfvoer.buisTypeAchter = data.buisTypeAchter;
-      this.currentProject.droogWaterAfvoer.diameterAchter = data.diameterAchter;
-      this.currentProject.droogWaterAfvoer.sifonPutje = data.sifonPutje;
-      this.currentProject.droogWaterAfvoer.tPutje = data.tPutje;
-      if(data.soortPutje === 'andere'){
-        this.currentProject.droogWaterAfvoer.anderPutje = data.anderPutje;
-      } else {
-        this.currentProject.droogWaterAfvoer.anderPutje = '';
-      }
-      if(data.diameter === 'andere'){
-        this.currentProject.droogWaterAfvoer.diameterAndere = data.diameterAndere;
-      } else {
-        this.currentProject.droogWaterAfvoer.diameterAndere = '';
-      }
-      if(data.ligging === 'andere'){
-        this.currentProject.droogWaterAfvoer.liggingAndere = data.liggingAndere;
-      } else {
-        this.currentProject.droogWaterAfvoer.liggingAndere = '';
-      }
-      if(this.currentProject.droogWaterAfvoer.gietijzer === true){
-        this.currentProject.droogWaterAfvoer.alukader = false;
-      }
-      if (this.currentProject.droogWaterAfvoer.diameterAchter === 'andere') {
-        this.currentProject.droogWaterAfvoer.diameterAchterAndere = data.diameterAchterAndere;
-      }
-      if(this.hasChangedMateriaalBuisDWA === true){
-        this.currentProject.droogWaterAfvoer.hasChangedMateriaalBuis = true;
-      }
-      if(this.hasChangedDiameterBuisDWA === true){
-        this.currentProject.droogWaterAfvoer.hasChangedDiameterBuis = true;
-      }
-      this.currentProject.droogWaterAfvoer.hasChangedMateriaalBuis = false;
-      this.currentProject.droogWaterAfvoer.hasChangedDiameterBuis = false;
-      // RWA
-      const data2 = this.rwaForm.value;
-      this.currentProject.regenWaterAfvoer.buisVoorHor = data2.buisVoorHor;
-      this.currentProject.regenWaterAfvoer.buisVoorVert = data2.buisVoorVert;
-      this.currentProject.regenWaterAfvoer.buisAchter = data2.buisAchter;
-      if(!this.group.bochtenInGraden){
-        this.currentProject.regenWaterAfvoer.bochtVoor = data2.bochtVoor;
-        this.currentProject.regenWaterAfvoer.bochtAchter = data2.bochtAchter;
-      } else {
-        this.currentProject.regenWaterAfvoer.gradenBochtVoor45 = data2.gradenBochtVoor45;
-        this.currentProject.regenWaterAfvoer.gradenBochtVoor90 = data2.gradenBochtVoor90;
-        this.currentProject.regenWaterAfvoer.gradenBochtAchter45 = data2.gradenBochtAchter45;
-        this.currentProject.regenWaterAfvoer.gradenBochtAchter90 = data2.gradenBochtAchter90;
-      }
-      this.currentProject.regenWaterAfvoer.YAchter = data2.YAchter;
-      this.currentProject.regenWaterAfvoer.reductieVoor = data2.reductieVoor;
-      this.currentProject.regenWaterAfvoer.reductieAchter = data2.reductieAchter;
-      this.currentProject.regenWaterAfvoer.tBuisStuk = data2.tBuisStuk;
-      this.currentProject.regenWaterAfvoer.ligging = data2.ligging;
-      this.currentProject.regenWaterAfvoer.diameter = data2.diameter;
-      this.currentProject.regenWaterAfvoer.gietijzer = data2.gietijzer;
-      this.currentProject.regenWaterAfvoer.betonkader = data2.betonkader;
-      this.currentProject.regenWaterAfvoer.alukader = data2.alukader;
-      this.currentProject.regenWaterAfvoer.afstandPutMof = data2.afstandPutMof;
-      this.currentProject.regenWaterAfvoer.terugslagklep = data2.terugslagklep;
-      this.currentProject.regenWaterAfvoer.diameterPut = data2.diameterPut;
-      this.currentProject.regenWaterAfvoer.diepteAansluitingWoning = data2.diepteAansluitingWoning;
-      this.currentProject.regenWaterAfvoer.tussenIPLinks = data2.tussenIPLinks;
-      this.currentProject.regenWaterAfvoer.tussenIPRechts = data2.tussenIPRechts;
-      this.currentProject.regenWaterAfvoer.diepteRioleringHA = data2.diepteRioleringHA;
-      this.currentProject.regenWaterAfvoer.plaatsAansluiting = data2.plaatsAansluiting;
-      this.currentProject.regenWaterAfvoer.letterHor = data2.letterHor;
-      this.currentProject.regenWaterAfvoer.putHor = data2.putHor;
-      this.currentProject.regenWaterAfvoer.letterVer = data2.letterVer;
-      this.currentProject.regenWaterAfvoer.putVer = data2.putVer;
-      this.currentProject.regenWaterAfvoer.mof = data2.mof;
-      this.currentProject.regenWaterAfvoer.krimpmof = data2.krimpmof;
-      this.currentProject.regenWaterAfvoer.koppelstuk = data2.koppelstuk;
-      this.currentProject.regenWaterAfvoer.stop = data2.stop;
-      this.currentProject.regenWaterAfvoer.andere = data2.andere;
-      this.currentProject.regenWaterAfvoer.xCoord = data2.xCoord;
-      this.currentProject.regenWaterAfvoer.yCoord = data2.yCoord;
-      this.currentProject.regenWaterAfvoer.zCoord = data2.zCoord;
-      this.currentProject.regenWaterAfvoer.infilPutje = data2.infilPutje;
-      this.currentProject.regenWaterAfvoer.aanslBovRWA = data2.aanslBovRWA;
-      this.currentProject.regenWaterAfvoer.aanslOpenRWA = data2.aanslOpenRWA;
-      this.currentProject.regenWaterAfvoer.soortPutje = data2.soortPutje;
-      this.currentProject.regenWaterAfvoer.isWachtaansluiting = data2.isWachtaansluiting;
-      this.currentProject.regenWaterAfvoer.buisTypeAchter = data2.buisTypeAchter;
-      this.currentProject.regenWaterAfvoer.diameterAchter = data2.diameterAchter;
-      this.currentProject.regenWaterAfvoer.buisType = data2.buisType;
-      this.currentProject.regenWaterAfvoer.tPutje = data2.tPutje;
-      if(data2.soortPutje === 'andere'){
-        this.currentProject.regenWaterAfvoer.anderPutje = data2.anderPutje;
-      } else {
-        this.currentProject.regenWaterAfvoer.anderPutje = '';
-      }
-      if(data2.diameter === 'andere'){
-        this.currentProject.regenWaterAfvoer.diameterAndere = data2.diameterAndere;
-      } else {
-        this.currentProject.regenWaterAfvoer.diameterAndere = '';
-      }
-      if(data2.ligging === 'andere'){
-        this.currentProject.regenWaterAfvoer.liggingAndere = data2.liggingAndere;
-      } else {
-        this.currentProject.regenWaterAfvoer.liggingAndere = '';
-      }
-      if (this.currentProject.regenWaterAfvoer.diameterAchter === 'andere') {
-        this.currentProject.regenWaterAfvoer.diameterAchterAndere= data2.diameterAchterAndere;
-      }
-      if(this.hasChangedMateriaalBuisRWA === true){
-        this.currentProject.regenWaterAfvoer.hasChangedMateriaalBuis = true;
-      }
-      if(this.hasChangedDiameterBuisRWA === true){
-        this.currentProject.regenWaterAfvoer.hasChangedDiameterBuis = true;
-      }
-      if(this.currentProject.regenWaterAfvoer.gietijzer === true){
-        this.currentProject.regenWaterAfvoer.alukader = false;
-      }
-      this.currentProject.regenWaterAfvoer.hasChangedMateriaalBuis = false;
-      this.currentProject.regenWaterAfvoer.hasChangedDiameterBuis = false;
-      this.currentStreet = this.currentProject.street;
-      if(this.chosenImageList.length === 0 && this.chosenImageList2.length === 0){
-        await this.apiService.updateProject(this.currentProject).subscribe(x=> {
-          this.toastrService.success( 'De aansluiting is aangemaakt', 'Succes!');
-          this.currentProject = null;
-          this.hasChangedValue = false;
-          this.isLoaded = false;
-          this.loadData();
-        });
-      } else {
-        await this.uploadImages();
+        // DWA
+        const data = this.dwaForm.value;
+        this.currentProject.droogWaterAfvoer.buisType = data.buisType;
+        this.currentProject.droogWaterAfvoer.buisVoorHor = data.buisVoorHor;
+        this.currentProject.droogWaterAfvoer.buisVoorVert = data.buisVoorVert;
+        this.currentProject.droogWaterAfvoer.buisAchter = data.buisAchter;
+        if(!this.group.bochtenInGraden){
+          this.currentProject.droogWaterAfvoer.bochtVoor = data.bochtVoor;
+          this.currentProject.droogWaterAfvoer.bochtAchter = data.bochtAchter;
+        } else {
+          this.currentProject.droogWaterAfvoer.gradenBochtVoor45 = data.gradenBochtVoor45;
+          this.currentProject.droogWaterAfvoer.gradenBochtVoor90 = data.gradenBochtVoor90;
+          this.currentProject.droogWaterAfvoer.gradenBochtAchter45 = data.gradenBochtAchter45;
+          this.currentProject.droogWaterAfvoer.gradenBochtAchter90 = data.gradenBochtAchter90;
+        }
+        this.currentProject.droogWaterAfvoer.YAchter = data.YAchter;
+        this.currentProject.droogWaterAfvoer.reductieVoor = data.reductieVoor;
+        this.currentProject.droogWaterAfvoer.reductieAchter = data.reductieAchter;
+        this.currentProject.droogWaterAfvoer.tBuisStuk = data.tBuisStuk;
+        this.currentProject.droogWaterAfvoer.ligging = data.ligging;
+        this.currentProject.droogWaterAfvoer.diameter = data.diameter;
+        this.currentProject.droogWaterAfvoer.diameterPut = data.diameterPut;
+        this.currentProject.droogWaterAfvoer.afstandPutMof = data.afstandPutMof;
+        this.currentProject.droogWaterAfvoer.terugslagklep = data.terugslagklep;
+        this.currentProject.droogWaterAfvoer.gietijzer = data.gietijzer;
+        this.currentProject.droogWaterAfvoer.betonkader = data.betonkader;
+        this.currentProject.droogWaterAfvoer.alukader = data.alukader;
+        this.currentProject.droogWaterAfvoer.diepteAansluitingWoning = data.diepteAansluitingWoning;
+        this.currentProject.droogWaterAfvoer.tussenIPLinks = data.tussenIPLinks;
+        this.currentProject.droogWaterAfvoer.tussenIPRechts = data.tussenIPRechts;
+        this.currentProject.droogWaterAfvoer.diepteRioleringHA = data.diepteRioleringHA;
+        this.currentProject.droogWaterAfvoer.plaatsAansluiting = data.plaatsAansluiting;
+        this.currentProject.droogWaterAfvoer.letterHor = data.letterHor;
+        this.currentProject.droogWaterAfvoer.putHor = data.putHor;
+        this.currentProject.droogWaterAfvoer.letterVer = data.letterVer;
+        this.currentProject.droogWaterAfvoer.putVer = data.putVer;
+        this.currentProject.droogWaterAfvoer.mof = data.mof;
+        this.currentProject.droogWaterAfvoer.krimpmof = data.krimpmof;
+        this.currentProject.droogWaterAfvoer.koppelstuk = data.koppelstuk;
+        this.currentProject.droogWaterAfvoer.stop = data.stop;
+        this.currentProject.droogWaterAfvoer.andere = data.andere;
+        this.currentProject.droogWaterAfvoer.xCoord = data.xCoord;
+        this.currentProject.droogWaterAfvoer.yCoord = data.yCoord;
+        this.currentProject.droogWaterAfvoer.zCoord = data.zCoord;
+        this.currentProject.droogWaterAfvoer.soortPutje = data.soortPutje;
+        this.currentProject.droogWaterAfvoer.isWachtaansluiting = data.isWachtaansluiting;
+        this.currentProject.droogWaterAfvoer.buisTypeAchter = data.buisTypeAchter;
+        this.currentProject.droogWaterAfvoer.diameterAchter = data.diameterAchter;
+        this.currentProject.droogWaterAfvoer.sifonPutje = data.sifonPutje;
+        this.currentProject.droogWaterAfvoer.tPutje = data.tPutje;
+        if(data.soortPutje === 'andere'){
+          this.currentProject.droogWaterAfvoer.anderPutje = data.anderPutje;
+        } else {
+          this.currentProject.droogWaterAfvoer.anderPutje = '';
+        }
+        if(data.diameter === 'andere'){
+          this.currentProject.droogWaterAfvoer.diameterAndere = data.diameterAndere;
+        } else {
+          this.currentProject.droogWaterAfvoer.diameterAndere = '';
+        }
+        if(data.ligging === 'andere'){
+          this.currentProject.droogWaterAfvoer.liggingAndere = data.liggingAndere;
+        } else {
+          this.currentProject.droogWaterAfvoer.liggingAndere = '';
+        }
+        if(this.currentProject.droogWaterAfvoer.gietijzer === true){
+          this.currentProject.droogWaterAfvoer.alukader = false;
+        }
+        if (this.currentProject.droogWaterAfvoer.diameterAchter === 'andere') {
+          this.currentProject.droogWaterAfvoer.diameterAchterAndere = data.diameterAchterAndere;
+        }
+        if(this.hasChangedMateriaalBuisDWA === true){
+          this.currentProject.droogWaterAfvoer.hasChangedMateriaalBuis = true;
+        }
+        if(this.hasChangedDiameterBuisDWA === true){
+          this.currentProject.droogWaterAfvoer.hasChangedDiameterBuis = true;
+        }
+        this.currentProject.droogWaterAfvoer.hasChangedMateriaalBuis = false;
+        this.currentProject.droogWaterAfvoer.hasChangedDiameterBuis = false;
+        // RWA
+        const data2 = this.rwaForm.value;
+        this.currentProject.regenWaterAfvoer.buisVoorHor = data2.buisVoorHor;
+        this.currentProject.regenWaterAfvoer.buisVoorVert = data2.buisVoorVert;
+        this.currentProject.regenWaterAfvoer.buisAchter = data2.buisAchter;
+        if(!this.group.bochtenInGraden){
+          this.currentProject.regenWaterAfvoer.bochtVoor = data2.bochtVoor;
+          this.currentProject.regenWaterAfvoer.bochtAchter = data2.bochtAchter;
+        } else {
+          this.currentProject.regenWaterAfvoer.gradenBochtVoor45 = data2.gradenBochtVoor45;
+          this.currentProject.regenWaterAfvoer.gradenBochtVoor90 = data2.gradenBochtVoor90;
+          this.currentProject.regenWaterAfvoer.gradenBochtAchter45 = data2.gradenBochtAchter45;
+          this.currentProject.regenWaterAfvoer.gradenBochtAchter90 = data2.gradenBochtAchter90;
+        }
+        this.currentProject.regenWaterAfvoer.YAchter = data2.YAchter;
+        this.currentProject.regenWaterAfvoer.reductieVoor = data2.reductieVoor;
+        this.currentProject.regenWaterAfvoer.reductieAchter = data2.reductieAchter;
+        this.currentProject.regenWaterAfvoer.tBuisStuk = data2.tBuisStuk;
+        this.currentProject.regenWaterAfvoer.ligging = data2.ligging;
+        this.currentProject.regenWaterAfvoer.diameter = data2.diameter;
+        this.currentProject.regenWaterAfvoer.gietijzer = data2.gietijzer;
+        this.currentProject.regenWaterAfvoer.betonkader = data2.betonkader;
+        this.currentProject.regenWaterAfvoer.alukader = data2.alukader;
+        this.currentProject.regenWaterAfvoer.afstandPutMof = data2.afstandPutMof;
+        this.currentProject.regenWaterAfvoer.terugslagklep = data2.terugslagklep;
+        this.currentProject.regenWaterAfvoer.diameterPut = data2.diameterPut;
+        this.currentProject.regenWaterAfvoer.diepteAansluitingWoning = data2.diepteAansluitingWoning;
+        this.currentProject.regenWaterAfvoer.tussenIPLinks = data2.tussenIPLinks;
+        this.currentProject.regenWaterAfvoer.tussenIPRechts = data2.tussenIPRechts;
+        this.currentProject.regenWaterAfvoer.diepteRioleringHA = data2.diepteRioleringHA;
+        this.currentProject.regenWaterAfvoer.plaatsAansluiting = data2.plaatsAansluiting;
+        this.currentProject.regenWaterAfvoer.letterHor = data2.letterHor;
+        this.currentProject.regenWaterAfvoer.putHor = data2.putHor;
+        this.currentProject.regenWaterAfvoer.letterVer = data2.letterVer;
+        this.currentProject.regenWaterAfvoer.putVer = data2.putVer;
+        this.currentProject.regenWaterAfvoer.mof = data2.mof;
+        this.currentProject.regenWaterAfvoer.krimpmof = data2.krimpmof;
+        this.currentProject.regenWaterAfvoer.koppelstuk = data2.koppelstuk;
+        this.currentProject.regenWaterAfvoer.stop = data2.stop;
+        this.currentProject.regenWaterAfvoer.andere = data2.andere;
+        this.currentProject.regenWaterAfvoer.xCoord = data2.xCoord;
+        this.currentProject.regenWaterAfvoer.yCoord = data2.yCoord;
+        this.currentProject.regenWaterAfvoer.zCoord = data2.zCoord;
+        this.currentProject.regenWaterAfvoer.infilPutje = data2.infilPutje;
+        this.currentProject.regenWaterAfvoer.aanslBovRWA = data2.aanslBovRWA;
+        this.currentProject.regenWaterAfvoer.aanslOpenRWA = data2.aanslOpenRWA;
+        this.currentProject.regenWaterAfvoer.soortPutje = data2.soortPutje;
+        this.currentProject.regenWaterAfvoer.isWachtaansluiting = data2.isWachtaansluiting;
+        this.currentProject.regenWaterAfvoer.buisTypeAchter = data2.buisTypeAchter;
+        this.currentProject.regenWaterAfvoer.diameterAchter = data2.diameterAchter;
+        this.currentProject.regenWaterAfvoer.buisType = data2.buisType;
+        this.currentProject.regenWaterAfvoer.tPutje = data2.tPutje;
+        if(data2.soortPutje === 'andere'){
+          this.currentProject.regenWaterAfvoer.anderPutje = data2.anderPutje;
+        } else {
+          this.currentProject.regenWaterAfvoer.anderPutje = '';
+        }
+        if(data2.diameter === 'andere'){
+          this.currentProject.regenWaterAfvoer.diameterAndere = data2.diameterAndere;
+        } else {
+          this.currentProject.regenWaterAfvoer.diameterAndere = '';
+        }
+        if(data2.ligging === 'andere'){
+          this.currentProject.regenWaterAfvoer.liggingAndere = data2.liggingAndere;
+        } else {
+          this.currentProject.regenWaterAfvoer.liggingAndere = '';
+        }
+        if (this.currentProject.regenWaterAfvoer.diameterAchter === 'andere') {
+          this.currentProject.regenWaterAfvoer.diameterAchterAndere= data2.diameterAchterAndere;
+        }
+        if(this.hasChangedMateriaalBuisRWA === true){
+          this.currentProject.regenWaterAfvoer.hasChangedMateriaalBuis = true;
+        }
+        if(this.hasChangedDiameterBuisRWA === true){
+          this.currentProject.regenWaterAfvoer.hasChangedDiameterBuis = true;
+        }
+        if(this.currentProject.regenWaterAfvoer.gietijzer === true){
+          this.currentProject.regenWaterAfvoer.alukader = false;
+        }
+        this.currentProject.regenWaterAfvoer.hasChangedMateriaalBuis = false;
+        this.currentProject.regenWaterAfvoer.hasChangedDiameterBuis = false;
+        this.currentStreet = this.currentProject.street;
+        if(this.chosenImageList.length === 0 && this.chosenImageList2.length === 0){
+          await this.apiService.updateProject(this.currentProject).subscribe(x=> {
+            this.toastrService.success( 'De aansluiting is aangemaakt', 'Succes!');
+            this.currentProject = null;
+            this.hasChangedValue = false;
+            this.isLoaded = false;
+            this.isSaving = false;
+            this.loadData();
+          }, error => {
+            this.toastrService.danger('Er is iets misgelopen', 'Fout!');
+            this.isSaving = false;
+          });
+        } else {
+          await this.uploadImages();
+        }
       }
     }
   }

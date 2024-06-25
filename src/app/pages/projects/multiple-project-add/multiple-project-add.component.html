@@ -2,14 +2,14 @@
   <button mat-raised-button class="form-button" (click)="goToPrevious()">
     Terug
   </button>
-
+  <nb-spinner *ngIf="isSaving" class="spinner" size="giant" [message]="'Even geduld..'" status="info"></nb-spinner>
   <button *ngIf="setVariables === false" (click)="onSubmitInfo()" mat-raised-button class="form-button4" color="primary" type="submit">
     Genereer aansluitingen ->
   </button>
   <!--<button (click)="goToView()"  mat-raised-button class="form-button" color="primary" >
     Ga naar view
   </button> -->
-  <button *ngIf="setVariables" (click)="afterVariableOnSubmit()" mat-raised-button class="save-button2" color="primary" type="submit">
+  <button *ngIf="setVariables && !isSaving" (click)="afterVariableOnSubmit()" mat-raised-button class="save-button2" color="primary" type="submit">
     Alle aansluitingen genereren<br>zonder equipmentnummers ->
   </button>
 </div>
@@ -35,7 +35,7 @@
     <button *ngIf="lastOfArray === false" (click)="nextVariables()" mat-raised-button class="prev-next-button" color="primary" type="submit">
       Volgende
     </button>
-      <button *ngIf="setVariables && lastOfArray" (click)="afterVariableOnSubmit()" mat-raised-button class="save-button" color="primary" type="submit">
+      <button *ngIf="setVariables && lastOfArray && !isSaving" (click)="afterVariableOnSubmit()" mat-raised-button class="save-button" color="primary" type="submit">
         Opslaan
       </button>
     </div>

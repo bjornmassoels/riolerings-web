@@ -63,6 +63,7 @@ export class MultipleProjectAddComponent implements OnInit {
   isAndereDiameterRWA: boolean = false;
   isAndereDiameterDWAAchter: boolean = false;
   isAndereDiameterRWAAchter: boolean = false;
+  isSaving: boolean;
   constructor(
     private apiService: ApiService,
     private formBuilder: UntypedFormBuilder,
@@ -91,6 +92,7 @@ export class MultipleProjectAddComponent implements OnInit {
       this.isAndereLiggingRWA = false;
       this.currentProject = new Project();
       this.currentProject.putje = true;
+      this.isSaving = false;
       this.currentProject.user_id = this.apiService.userId;
       this.currentProject.company_id = this.companyId;
       this.currentProject.droogWaterAfvoer = new Waterafvoer();
@@ -493,16 +495,24 @@ export class MultipleProjectAddComponent implements OnInit {
     }
   }
   async afterVariableOnSubmit(){
-    this.isLoadingBar = true;
-    this.equipmentArray[this.variablesCount - 1] = this.equipmentNr;
-    this.currentProject.equipMentArray = this.equipmentArray;
-    await this.apiService.createMultipleProjects(this.currentProject, this.group, this.isIncremented.toString(), this.huisNummers, this.isLot.toString()).subscribe(async () =>{
-      this.isLoadingBar = false;
-      this.setVariables = false;
-      this.toastrService.success( 'De aansluitingen zijn aangemaakt', 'Succes!');
-      await this.delay(1500)
-      this.goToPrevious();
-    });
+    if(!this.isSaving){
+      this.isSaving = true;
+      this.isLoadingBar = true;
+      this.equipmentArray[this.variablesCount - 1] = this.equipmentNr;
+      this.currentProject.equipMentArray = this.equipmentArray;
+      await this.apiService.createMultipleProjects(this.currentProject, this.group, this.isIncremented.toString(), this.huisNummers, this.isLot.toString()).subscribe(async () =>{
+        this.isLoadingBar = false;
+        this.setVariables = false;
+        this.toastrService.success( 'De aansluitingen zijn aangemaakt', 'Succes!');
+        this.isSaving = false;
+        await this.delay(1500)
+        this.goToPrevious();
+      }, error => {
+        this.isLoadingBar = false;
+        this.toastrService.danger( 'Er is iets misgelopen', 'Fout');
+        this.isSaving = false;
+      });
+    }
   }
 
   checkWachtAansluiting() {
