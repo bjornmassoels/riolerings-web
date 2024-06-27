@@ -5,6 +5,8 @@
   <button (click)='onSubmit(addForm.value)' mat-raised-button class="form-button-blue" style='margin: 0px !important' color="primary">
     Opslaan
   </button>
+  <nb-spinner *ngIf="isSaving" class="opslaan-spinner" size="giant" [message]="'Opslaan..'" status="info"></nb-spinner>
+
   <button  mat-raised-button color="warn" class="form-button3"
            (click)="onDeleteGroup()">Project verwijderen</button>
 </div>

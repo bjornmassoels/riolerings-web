@@ -38,6 +38,7 @@ export class UserEditComponent implements OnInit {
   hasChangedValue: boolean = false;
   public functies: string[] = ["Werfleider", "Grondwerker"];
   talen: string[] = ['Nederlands', 'Frans', 'Engels'];
+  isSaving: boolean = false;
 
   constructor(
     private formBuilder: UntypedFormBuilder,
@@ -65,6 +66,7 @@ export class UserEditComponent implements OnInit {
   loadData() {
     this._id = this.route.snapshot.paramMap.get('id');
     this.isChauffeur = false;
+    this.isSaving = false;
     this.hasChangedValue = false;
     this.isLoaded = false;
 
@@ -125,6 +127,8 @@ export class UserEditComponent implements OnInit {
     }
   }
   onSubmit(groupData: User) {
+    if(this.isSaving)return;
+    this.isSaving = true;
     this.isVoornaamInvalid = false;
     this.isAchterNaamInvalid = false;
     this.isGebruikersNaamInvalid = false;
@@ -204,16 +208,21 @@ export class UserEditComponent implements OnInit {
         this.failedToast('Deze gebruiker heeft een wachtwoord nodig voordat u hem deze functie kan geven!');
       }  else if(x === 'succes'){
         this.hasChangedValue = false;
+        this.isSaving = false;
         this.toastrService.success("De gebruiker " + groupData.voornaam + ' is gewijzigd', 'Succes!');
       }
+    }, error => {
+      this.failedToast('Er is iets misgegaan, probeer het opnieuw.');
     });
   }
 
   toastBadForm() {
+    this.isSaving = false;
     this.toastrService.warning('Probeer het opnieuw', 'Oops!');
   }
 
   failedToast(text: string) {
+    this.isSaving = false;
     this.toastrService.warning(text, 'Oops!');
   }
   goBack(){

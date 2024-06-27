@@ -79,3 +79,21 @@
   max-width:500px !important;
   margin-left: 45px;
 }
+.opslaan-spinner{
+  background-color: white;
+  width:160px;
+  height:170px;
+  --spinner-text-font-size:24px !important;
+  --spinner-height-giant: 5rem;
+  //poisiton center
+  position: fixed;
+  top: calc(50% - 90px);
+  left: calc(46% - 90px);
+  border-radius: 10px;
+  box-shadow:  0 0 10px 5px rgba(0, 0, 0, 0.2);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap: 40px 0;
+  align-items:center;
+}

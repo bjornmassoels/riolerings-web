@@ -55,7 +55,7 @@ export class SlokkerprojectAddComponent implements OnInit {
   public company: Company;
   public companyId;
   hasChangedValue: boolean = false;
-
+  isSaving: boolean = false;
   constructor(
     private formBuilder: UntypedFormBuilder,
     private apiService: ApiService,
@@ -68,6 +68,7 @@ export class SlokkerprojectAddComponent implements OnInit {
   ) {
     route.params.subscribe((val) => {
       this.isLoaded = false;
+      this.isSaving = false;
       this._id = this.route.snapshot.paramMap.get('id');
         this.loadData();
     });
@@ -190,6 +191,8 @@ export class SlokkerprojectAddComponent implements OnInit {
     }
   }
   onSubmitForm() {
+    if(this.isSaving)return;
+    this.isSaving = true;
     let slokkerProject = this.slokkerForm.value;
 
       // slokker initialisatie
@@ -253,12 +256,16 @@ export class SlokkerprojectAddComponent implements OnInit {
     if(this.chosenImageList == null || this.chosenImageList.length === 0){
       this.apiService.createSlokkerProject(this.slokkerProjectSend, this._id).subscribe(x => {
         this.currentProject = null;
+        this.isSaving = false;
         this.hasChangedValue = false;
         this.chosenImageList = [];
         this.chosenImageListIndex = [];
         this.isLoaded = false;
         this.toastrService.success(slokkerProject.street + '- slokker + ' + slokkerProject.index + ' is aangemaakt', 'Succes!');
         this.loadData();
+      }, error => {
+        this.isSaving = false;
+        this.toastrService.danger('Er is iets misgegaan, probeer het later opnieuw', 'Mislukt!');
       });
     } else {
       this.uploadImages();
@@ -344,6 +351,7 @@ export class SlokkerprojectAddComponent implements OnInit {
                     this.toastrService.success(this.slokkerProjectSend.street + '- slokker + ' + this.slokkerProjectSend.index + ' is aangemaakt', 'Succes!');
                     this.currentProject = null;
                     this.chosenImageList = [];
+                    this.isSaving = false;
                     this.chosenImageListIndex = [];
                     this.hasChangedValue = false;
                     this.isLoaded = false;

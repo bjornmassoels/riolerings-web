@@ -24,9 +24,11 @@ export class RegisterPageComponent implements OnInit {
   loginResponse: any;
   user: User;
   addForm;
+  isSaving: boolean = false;
   constructor(private ngZone: NgZone,
               private formBuilder: UntypedFormBuilder, private router: Router,
               private apiService: ApiService, private toastrService: NbToastrService) {
+    this.isSaving = false;
     this.addForm = this.formBuilder.group({
       achternaam: ['',Validators.required],
       voornaam:  ['',Validators.required],
@@ -42,11 +44,14 @@ export class RegisterPageComponent implements OnInit {
     this.toastrService.success('Uw account is succesvol aangemaakt', 'Succes!');
   }
   failedToast(text: string) {
+    this.isSaving = false;
     this.toastrService.warning(text, 'Oops!');
   }
   ngOnInit() {}
 
   async submit(form) {
+    if(this.isSaving)return;
+    this.isSaving = true;
     form.gebruikersnaam = form.gebruikersnaam.trim();
     form.email = form.email.trim();
     form.name = form.voornaam + ' ' + form.achternaam;

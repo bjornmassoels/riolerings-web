@@ -1,6 +1,7 @@
 <button mat-raised-button class="form-button" (click)="goToPrevious()">
   Terug
 </button>
+<nb-spinner *ngIf="isSaving" class="opslaan-spinner" size="giant" [message]="'Opslaan..'" status="info"></nb-spinner>
 
 <mat-card *ngIf="isLoaded" class='matCard'>
   <h4 style='text-decoration: underline; margin-left: 25px;margin-top: 0px;margin-bottom: 0px;'>Project toevoegen</h4>

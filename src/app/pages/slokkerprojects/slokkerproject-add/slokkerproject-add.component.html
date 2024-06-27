@@ -5,6 +5,8 @@
   <button (click)="onSubmitForm()" mat-raised-button class="save-button" color="primary" type="submit">
     Opslaan
   </button>
+  <nb-spinner *ngIf="isSaving" class="opslaan-spinner" size="giant" [message]="'Opslaan..'" status="info"></nb-spinner>
+
 </div>
 
 <mat-card id="content" *ngIf="isLoaded" class="project-card">

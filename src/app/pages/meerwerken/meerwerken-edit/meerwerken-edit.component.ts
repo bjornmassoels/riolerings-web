@@ -55,7 +55,7 @@ export class MeerwerkenEditComponent implements OnInit {
   usersWhoEdited: string = '';
   chosenImageListIndex: number [] = [];
   private group: Group;
-
+  isSaving: boolean = false;
   public company: Company;
   public companyId;
   projectEditedByGronwderker: boolean;
@@ -123,6 +123,7 @@ export class MeerwerkenEditComponent implements OnInit {
 
   private loadData() {
     this.hasChangedValue = false;
+    this.isSaving = false;
     this.lastProjects = this.formService.lastProjects;
     this.projectEditedByGronwderker = false;
     this.apiService.getMeerwerkById(this._id).subscribe(async (x) => {
@@ -189,6 +190,8 @@ export class MeerwerkenEditComponent implements OnInit {
     return this.days[date.getDay()].substring(0,3) + ' ' +('0' + date.getDate()).slice(-2) + '/' + ('0' + (date.getMonth() + 1)).slice(-2) + '/' + ('0' + date.getFullYear()).slice(-2);
   }
   async onSubmitForm() {
+    if(this.isSaving)return;
+    this.isSaving = true;
     let meerwerk = this.meerwerkForm.value;
 
     if(this.currentProject._id == null){
@@ -226,7 +229,10 @@ export class MeerwerkenEditComponent implements OnInit {
                 this.newDate = null;
                 this.hasChangedValue = false;
                 this.chosenImageList = [];
+                this.isSaving = false;
                 this.chosenImageListIndex = [];
+              } else {
+                this.isSaving = false;
               }
             });
           } else {
@@ -234,11 +240,8 @@ export class MeerwerkenEditComponent implements OnInit {
               this.toastrService.success(this.meerwerkSend.street + ' onvoorzien werk is opgeslagen', 'Succes!');
               this.chosenImageList = [];
               this.chosenImageListIndex = [];
-              this.currentProject = null;
+              this.isSaving = false;
               this.hasChangedValue = false;
-              this.isLoaded = false;
-              await this.delay(100);
-              this.loadData();
             });
           }
         } else {
@@ -246,11 +249,8 @@ export class MeerwerkenEditComponent implements OnInit {
             this.toastrService.success(this.meerwerkSend.street + ' onvoorzien werk is opgeslagen', 'Succes!');
             this.chosenImageList = [];
             this.chosenImageListIndex = [];
-            this.currentProject = null;
-            this.isLoaded = false;
+            this.isSaving = false;
             this.hasChangedValue = false;
-            await this.delay(100);
-            this.loadData();
           });
         }
       });
@@ -368,9 +368,12 @@ export class MeerwerkenEditComponent implements OnInit {
                         dialogRef.afterClosed().subscribe(() => {
                           if (this.formService.isUpdated) {
                             this.newDate = null;
+                            this.isSaving = false;
                             this.hasChangedValue = false;
                             this.chosenImageList = [];
                             this.chosenImageListIndex = [];
+                          } else {
+                            this.isSaving = false;
                           }
                         });
                       } else {
@@ -379,6 +382,7 @@ export class MeerwerkenEditComponent implements OnInit {
                           this.chosenImageList = [];
                           this.chosenImageListIndex = [];
                           this.currentProject = null;
+                          this.isSaving = false;
                           this.hasChangedValue = false;
                           this.isLoaded = false;
                           await this.delay(100);
@@ -392,6 +396,7 @@ export class MeerwerkenEditComponent implements OnInit {
                         this.chosenImageListIndex = [];
                         this.currentProject = null;
                         this.hasChangedValue = false;
+                        this.isSaving = false;
                         this.isLoaded = false;
                         await this.delay(100);
                         this.loadData();

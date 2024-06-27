@@ -20,7 +20,7 @@ export class GroupsAddComponent implements OnInit {
   public isLoaded: boolean;
   @Output() outputEvent: EventEmitter<string> = new EventEmitter();
   selectedGemeenteIndex: number;
-
+  isSaving: boolean = false;
   addForm: UntypedFormGroup;
   gemeentes: string[] = ['Aalst', 'Aalter', 'Aarschot', 'Aartselaar', 'Affligem', 'Alken', 'Alveringem', 'Antwerpen', 'Anzegem', 'Ardooie', 'Arendonk', 'As', 'Asse', 'Assenede', 'Avelgem', 'Baarle-Hertog', 'Balen', 'Beernem', 'Beerse', 'Beersel', 'Begijnendijk', 'Bekkevoort', 'Beringen', 'Berlaar', 'Berlare', 'Bertem', 'Bever', 'Beveren', 'Bierbeek', 'Bilzen', 'Blankenberge', 'Bocholt', 'Boechout', 'Bonheiden', 'Boom', 'Boortmeerbeek', 'Borgloon', 'Bornem', 'Borsbeek', 'Boutersem', 'Brakel', 'Brasschaat', 'Brecht', 'Bredene', 'Bree', 'Brugge', 'Buggenhout', 'Damme', 'De Haan', 'De Panne', 'De Pinte', 'Deerlijk', 'Deinze', 'Denderleeuw', 'Dendermonde', 'Dentergem', 'Dessel', 'Destelbergen', 'Diepenbeek', 'Diest', 'Diksmuide', 'Dilbeek', 'Dilsen-Stokkem', 'Drogenbos', 'Duffel', 'Edegem', 'Eeklo', 'Erpe-Mere', 'Essen', 'Evergem', 'Galmaarden', 'Gavere', 'Geel', 'Geetbets', 'Genk', 'Gent', 'Geraardsbergen', 'Gingelom', 'Gistel', 'Glabbeek', 'Gooik', 'Grimbergen', 'Grobbendonk', 'Haacht', 'Haaltert', 'Halen', 'Halle', 'Ham', 'Hamme', 'Hamont-Achel', 'Harelbeke', 'Hasselt', 'Hechtel-Eksel', 'Heers', 'Heist-op-den-Berg', 'Hemiksem', 'Herent', 'Herentals', 'Herenthout', 'Herk-de-Stad', 'Herne', 'Herselt', 'Herstappe', 'Herzele', 'Heusden-Zolder', 'Heuvelland', 'Hoegaarden', 'Hoeilaart', 'Hoeselt', 'Holsbeek', 'Hooglede', 'Hoogstraten', 'Horebeke', 'Houthalen-Helchteren', 'Houthulst', 'Hove', 'Huldenberg', 'Hulshout', 'Ichtegem', 'Ieper', 'Ingelmunster', 'Izegem', 'Jabbeke', 'Kalmthout', 'Kampenhout', 'Kapellen', 'Kapelle-op-den-Bos', 'Kaprijke', 'Kasterlee', 'Keerbergen', 'Kinrooi', 'Kluisbergen', 'Knokke-Heist', 'Koekelare', 'Koksijde', 'Kontich', 'Kortemark', 'Kortenaken', 'Kortenberg', 'Kortessem', 'Kortrijk', 'Kraainem', 'Kruibeke', 'Kruisem', 'Kuurne', 'Laakdal', 'Laarne', 'Lanaken', 'Landen','Langemark-Poelkapelle', 'Lebbeke', 'Lede', 'Ledegem', 'Lendelede', 'Lennik', 'Leopoldsburg','Leuven', 'Lichtervelde', 'Liedekerke', 'Lier', 'Lierde', 'Lievegem', 'Lille', 'Linkebeek', 'Lint', 'Linter', 'Lochristi', 'Lokeren', 'Lommel', 'Londerzeel', 'Lo-Reninge', 'Lubbeek', 'Lummen', 'Maarkedal', 'Maaseik', 'Maasmechelen', 'Machelen', 'Maldegem', 'Malle', 'Mechelen', 'Meerhout', 'Meise', 'Melle', 'Menen', 'Merchtem', 'Merelbeke', 'Merksplas', 'Mesen', 'Meulebeke', 'Middelkerke', 'Moerbeke', 'Mol', 'Moorslede', 'Mortsel', 'Nazareth', 'Niel', 'Nieuwerkerken', 'Nieuwpoort', 'Nijlen', 'Ninove', 'Olen', 'Oostende', 'Oosterzele', 'Oostkamp', 'Oostrozebeke', 'Opwijk', 'Oudenaarde', 'Oudenburg', 'Oud-Heverlee', 'Oudsbergen', 'Oud-Turnhout', 'Overijse', 'Peer', 'Pelt', 'Pepingen', 'Pittem', 'Poperinge', 'Putte', 'Puurs-Sint-Amands', 'Ranst', 'Ravels', 'Retie', 'Riemst', 'Rijkevorsel', 'Roeselare', 'Ronse', 'Roosdaal', 'Rotselaar', 'Ruiselede', 'Rumst', 'Schelle', 'Scherpenheuvel-Zichem', 'Schilde', 'Schoten', 'Sint-Genesius-Rode', 'Sint-Gillis-Waas', 'Sint-Katelijne-Waver','Sint-Laureins', 'Sint-Lievens-Houtem', 'Sint-Martens-Latem', 'Sint-Niklaas', 'Sint-Pieters-Leeuw', 'Sint-Truiden', 'Spiere-Helkijn','Stabroek', 'Staden', 'Steenokkerzeel', 'Stekene', 'Temse', 'Ternat', 'Tervuren', 'Tessenderlo', 'Tielt', 'Tielt-Winge', 'Tienen', 'Tongeren', 'Torhout', 'Tremelo', 'Turnhout', 'Veurne', 'Vilvoorde', 'Vleteren', 'Voeren', 'Vorselaar', 'Vosselaar', 'Waasmunster', 'Wachtebeke', 'Waregem', 'Wellen', 'Wemmel', 'Wervik', 'Westerlo','Wetteren', 'Wevelgem', 'Wezembeek-Oppem', 'Wichelen', 'Wielsbeke', 'Wijnegem', 'Willebroek', 'Wingene', 'Wommelgem', 'Wortegem-Petegem','Wuustwezel', 'Zandhoven', 'Zaventem', 'Zedelgem', 'Zele', 'Zelzate', 'Zemst', 'Zoersel', 'Zonhoven', 'Zonnebeke', 'Zottegem', 'Zoutleeuw', 'Zuienkerke', 'Zulte', 'Zutendaal', 'Zwalm', 'Zwevegem', 'Zwijndrecht'];
   gemeenteCodes: string[] = [
@@ -400,6 +400,7 @@ export class GroupsAddComponent implements OnInit {
     });
   }
   async ngOnInit() {
+    this.isSaving = false;
     this.isLoaded = true;
     this.filteredGemeentes$ = of(this.gemeentes);
 
@@ -433,6 +434,8 @@ export class GroupsAddComponent implements OnInit {
     });
   }
   onSubmit(groupData) {
+    if(this.isSaving)return;
+    this.isSaving = true;
     this.isRbNaamInvalid = false;
     this.isRbProjectNrInvalid = false;
     this.isRbProjectNaamInvalid = false;
@@ -493,7 +496,10 @@ export class GroupsAddComponent implements OnInit {
       newGroup._id = newGroup.id;
      }
       this.formService.isComingFromCreateGroup = true;
+      this.isSaving = false;
       this.router.navigate(['/pages/settings-variable', newGroup._id]);
+    }, error => {
+      this.toastBadForm();
     });
   }
   addSecondMog(){
@@ -524,6 +530,7 @@ export class GroupsAddComponent implements OnInit {
     this.addForm.controls['mogProjectNaam2'].setValue('');
   }
   toastBadForm() {
+    this.isSaving = false;
     this.toastrService.warning('Probeer het opnieuw', 'Oops!');
   }
 

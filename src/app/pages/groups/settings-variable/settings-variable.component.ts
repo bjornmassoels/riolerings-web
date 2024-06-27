@@ -27,6 +27,7 @@ export class SettingsVariableComponent implements OnInit {
   instellingenForm: UntypedFormGroup;
   isComingFromCreateGroup: boolean;
 
+  isSaving: boolean = false;
   public isLoaded: boolean = false;
   _id: string;
   group: Group;
@@ -57,6 +58,7 @@ export class SettingsVariableComponent implements OnInit {
     this.dwaValueChanged = false;
     this.rwaValueChanged = false;
     this.slokkerValueChanged = false;
+    this.isSaving = false;
     this.isComingFromCreateGroup = this.formService.isComingFromCreateGroup;
     this.apiService.getGroupSettingsVariables().subscribe((x) => {
       this.groupsWithSettings = x as Group[];
@@ -110,6 +112,8 @@ export class SettingsVariableComponent implements OnInit {
   }
 
   saveSettings() {
+    if(this.isSaving)return;
+    this.isSaving = true;
     let idDwa =  this.group.dwaSettings._id;
     let idRwa  = this.group.rwaSettings._id;
     let idSlokker = this.group.slokkerSettings._id;
@@ -145,10 +149,14 @@ export class SettingsVariableComponent implements OnInit {
       this.dwaValueChanged = false;
       this.rwaValueChanged = false;
       this.slokkerValueChanged = false;
+      this.isSaving = false;
       if(this.isComingFromCreateGroup){
         this.router.navigate(['/pages/groupview', sendGroup._id]);
       }
       this.toastrService.success( 'De gekozen invulvelden zijn gewijzigd.', 'Succes!');
+    }, error => {
+      this.isSaving = false;
+      this.toastrService.warning('Er is iets misgelopen..Probeer het opnieuw', 'Oops!');
     });
   }
     private  buildFormSlokker(){

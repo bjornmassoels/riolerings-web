@@ -59,7 +59,7 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
   usersWhoEdited: string = '';
   group: Group;
   days: string[] = ['Zondag','Maandag','Dinsdag','Woensdag','Donderdag','Vrijdag','Zaterdag'];
-
+  isSaving: boolean = false;
   public company: Company;
   public companyId;
   projectEditedByGronwderker: boolean;
@@ -77,7 +77,7 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
   ) {
     route.params.subscribe((val) => {
       this.isLoaded = false;
-
+      this.isSaving = false;
       if(this.formService.lastProjects.length === 0){
          this.hasPreviousPage = false;
       } else {
@@ -275,6 +275,8 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
     this.checkChangedValue('/pages/groupview/' + this.group._id);
   }
   async onSubmitForm() {
+    if(this.isSaving)return;
+    this.isSaving = true;
     if(this.currentProject._id == null){
       this.currentProject._id = this.currentProject.id;
     }
@@ -395,6 +397,7 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
               this.chosenImageList = [];
               this.schetsChosenImageList = [];
               this.hasChangedValue = false;
+              this.isSaving = false;
               this.chosenImageListIndex = [];
               this.schetsChosenImageListIndex = [];
               if (this.newDate != null) {
@@ -405,6 +408,8 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
                 this.photos.push(null);
               }
               this.newDate = null;
+            } else {
+              this.isSaving = false;
             }
           });
       } else {
@@ -424,6 +429,7 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
       }
       this.chosenImageList = [];
       this.schetsChosenImageList = [];
+      this.isSaving = false;
       this.hasChangedValue = false;
       this.chosenImageListIndex = [];
       this.schetsChosenImageListIndex = [];
@@ -597,7 +603,10 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
                     });
                     dialogRef.afterClosed().subscribe(async () => {
                       if (this.formService.isUpdated) {
+                        this.isSaving = false;
                         this.loadData();
+                      } else {
+                        this.isSaving = false;
                       }
                     });
                   } else {
@@ -605,6 +614,7 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
                         this.toastrService.success(this.slokkerProjectSend.street + ' slokker is opgeslagen', 'Succes!');
                         this.currentProject = null;
                         this.hasChangedValue = false;
+                        this.isSaving = false;
                         this.isLoaded = false;
                         await this.delay(100);
                         this.loadData();
@@ -652,7 +662,10 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
                     });
                     dialogRef.afterClosed().subscribe(async () => {
                       if (this.formService.isUpdated) {
+                        this.isSaving = false;
                         this.loadData();
+                      } else {
+                        this.isSaving = false;
                       }
                     });
                   } else {
@@ -660,6 +673,7 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
                       this.toastrService.success(this.slokkerProjectSend.street + ' slokker is opgeslagen', 'Succes!');
                       this.newDate = null;
                       this.isLoaded = false;
+                      this.isSaving = false;
                       this.currentProject = null;
                       await this.delay(100);
                       this.loadData();

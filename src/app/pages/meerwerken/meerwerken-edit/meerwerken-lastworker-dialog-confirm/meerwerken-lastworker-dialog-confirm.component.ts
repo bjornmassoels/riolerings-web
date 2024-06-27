@@ -35,6 +35,8 @@ export class MeerwerkenLastworkerDialogConfirmComponent implements OnInit {
       this.formService.isUpdated = true;
       this.dialog.closeAll();
       await this.delay(1000);
+    }, error => {
+      this.toastrService.danger('Er is iets misgegaan', 'Error');
     });
   }
   delay(timeInMillis: number): Promise<void> {

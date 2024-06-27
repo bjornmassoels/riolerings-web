@@ -8,6 +8,8 @@
   <button *ngIf="isInfoOpen" mat-raised-button class="form-button2" (click)="goToInfo()">
     Sluit info
   </button>
+  <nb-spinner *ngIf="isSaving" class="opslaan-spinner" size="giant" [message]="'Opslaan..'" status="info"></nb-spinner>
+
 </div>
 <div style="margin-top: 35px" *ngIf="isInfoOpen">
   <h5>U moet de landmeter de velden van B to E laten genereren in een excel</h5>

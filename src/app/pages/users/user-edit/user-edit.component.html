@@ -1,6 +1,8 @@
 <div style="width:90%;">
   <button (click)='goBack()' color='primary' mat-raised-button class="form-button-back">Terug</button>
 </div>
+<nb-spinner *ngIf="isSaving" class="opslaan-spinner" size="giant" [message]="'Opslaan..'" status="info"></nb-spinner>
+
 <mat-card style="float:left; margin-top: 10px !important;  box-shadow: #00000030 0 10px 20px, #0000003b 0 6px 6px;  border-radius: 15px; padding:14px;" class="edit-card">
   <div class="topRow">
     <mat-card-title>Gebruiker bewerken</mat-card-title>

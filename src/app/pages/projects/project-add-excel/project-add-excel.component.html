@@ -8,6 +8,8 @@
   <!--<button (click)="goToView()"  mat-raised-button class="form-button" color="primary" >
     Ga naar view
   </button> -->
+  <nb-spinner *ngIf="isSaving" class="opslaan-spinner" size="giant" [message]="'Even geduld..'" status="info"></nb-spinner>
+
 </div>
 <div *ngIf="!isLoaded" class="loadingBar">
   <p style="font-size: 17px; font-weight: 600">Even geduld aub... Het project wordt aangemaakt.</p>

@@ -327,6 +327,7 @@ export class ProjectAddExcelComponent implements OnInit {
 
 
   async onSubmitInfo() {
+    if(this.isSaving)return;
     this.isSaving = true;
     this.toastrService.success(
       'Het project en aansluitingen worden aangemaakt, dit kan even duren',
@@ -678,6 +679,9 @@ export class ProjectAddExcelComponent implements OnInit {
           '/pages/settings-variable',
           this.formService.currentGroup._id,
         ]);
+      }, error => {
+        this.isSaving = false;
+        this.toastrService.danger('Er is iets misgegaan, probeer opnieuw', 'Fout');
       });
   }
   editGietijzerDWA() {

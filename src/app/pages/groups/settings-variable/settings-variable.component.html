@@ -6,6 +6,8 @@
     <h5 style="font-size: 21px; margin-bottom: 7px;">Stel invulvelden in die voor dit project van toepassing zijn.</h5>
     <h6 style="font-size: 16px; margin-bottom: 0px;">Als u een invulveld uitzet(uitvinken), dan verdwijnt deze op de mobiele app en admin-website voor het hele project.</h6>
   </div>
+  <nb-spinner *ngIf="isSaving" class="opslaan-spinner" size="giant" [message]="'Opslaan..'" status="info"></nb-spinner>
+
 </div>
 
 <div class='settingsVariableDiv'>

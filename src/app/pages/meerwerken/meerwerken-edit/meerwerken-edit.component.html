@@ -15,6 +15,8 @@
   <button (click)="goToView()"  mat-raised-button class="form-button3" >
     Ga naar view
   </button>
+  <nb-spinner *ngIf="isSaving" class="opslaan-spinner" size="giant" [message]="'Opslaan..'" status="info"></nb-spinner>
+
 </div>
 
 <mat-card id="content" *ngIf="isLoaded" class="project-card">

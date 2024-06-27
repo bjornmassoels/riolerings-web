@@ -25,6 +25,7 @@ export class ReadExcelLambertComponent implements OnInit {
   output: LambertObject[] ;
   isInfoOpen: boolean = false;
   isloading: boolean = false;
+  isSaving: boolean = false;
   constructor(private formBuilder: UntypedFormBuilder, private formService:FormService, private router: Router, private apiService: ApiService, private route: ActivatedRoute) {
     route.params.subscribe((val) => {
       this._id = this.route.snapshot.paramMap.get('id');
@@ -37,6 +38,8 @@ export class ReadExcelLambertComponent implements OnInit {
 
 
   addfile(event) {
+    if(this.isSaving)return
+    this.isSaving = true;
     this.isloading = true;
     this.file = event.target.files[0];
     const fileReader = new FileReader();
@@ -57,7 +60,12 @@ export class ReadExcelLambertComponent implements OnInit {
       this.apiService.setLambertCoordinates(this._id, arraylist).subscribe(x => {
           this.output = x as LambertObject [];
           this.isloading = false;
+          this.isSaving = false;
           this.isLoaded = true;
+      }, error => {
+        this.isloading = false;
+        this.isSaving = false;
+        this.isLoaded = true;
       });
     };
   }

@@ -29,6 +29,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
   filterItemsNaam: User[] = [];
   observableFilteredItems$: Observable<string[]>;
   isUserCreate: boolean = false;
+  isSaving: boolean = false;
   constructor(
     private apiService: ApiService,
     private formBuilder: UntypedFormBuilder,
@@ -123,6 +124,8 @@ async ngAfterViewInit() {
   }
 
   async updateUser() {
+    if(this.isSaving)return;
+    this.isSaving = true;
     this.selectedUser.groups = [];
     for (let group of this.groups) {
       if (group.isInUser != null && group.isInUser === true) {
@@ -132,7 +135,11 @@ async ngAfterViewInit() {
     let index = this.users.findIndex(x => x._id === this.selectedUser._id);
     this.users[index] = this.selectedUser;
     await this.apiService.updateUser(this.selectedUser).subscribe(x => {
+      this.isSaving = false;
       this.toastrService.success('De gebruiker zijn toegewezen projecten zijn gewijzigd', 'Succes!');
+    }, error => {
+      this.isSaving = false;
+      this.toastrService.warning('Probeer het opnieuw', 'Oops!');
     });
   }
   soortTranslate(role: string){
