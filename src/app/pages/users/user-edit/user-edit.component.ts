@@ -37,7 +37,7 @@ export class UserEditComponent implements OnInit {
   veranderWachtwoord: boolean = false;
   hasChangedValue: boolean = false;
   public functies: string[] = ["Werfleider", "Grondwerker"];
-  talen: string[] = ['Nederlands', 'Frans', 'Engels'];
+  talen: string[] = ['Nederlands', 'Frans', 'Engels', 'Pools'];
   isSaving: boolean = false;
 
   constructor(

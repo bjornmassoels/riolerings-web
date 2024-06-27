@@ -27,7 +27,7 @@ export class UserCreateComponent implements OnInit {
   isPassword2Invalid: boolean = false;
   isFunctieInvalid: boolean = false;
   newUser: User;
-  talen: string[] = ['Nederlands', 'Frans', 'Engels'];
+  talen: string[] = ['Nederlands', 'Frans', 'Engels', 'Pools'];
   public functies: string[] = ["Werfleider", "Grondwerker"];
   public myCompany: Company;
   public adminCode: string;
