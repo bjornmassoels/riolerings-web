@@ -491,13 +491,16 @@ export class ProjectAddComponent implements OnInit {
         this.currentProject.regenWaterAfvoer.hasChangedDiameterBuis = false;
         this.currentStreet = this.currentProject.street;
         if(this.chosenImageList.length === 0 && this.chosenImageList2.length === 0){
-          await this.apiService.updateProject(this.currentProject).subscribe(x=> {
+          this.apiService.updateProject(this.currentProject).subscribe(x=> {
             this.toastrService.success( 'De aansluiting is aangemaakt', 'Succes!');
             this.currentProject = null;
             this.hasChangedValue = false;
-            this.isLoaded = false;
             this.isSaving = false;
             this.loadData();
+            setTimeout(() => {
+              //focus on this.addForm.get('naam')
+              document.getElementById('huisNr').focus();
+            }, 200);
           }, error => {
             this.toastrService.danger('Er is iets misgelopen', 'Fout!');
             this.isSaving = false;

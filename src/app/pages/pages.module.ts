@@ -143,6 +143,7 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
     MatButtonToggleGroup,
     MatButtonToggle,
     NbSpinnerModule,
+    MatProgressSpinner,
   ],
   declarations: [
     PagesComponent,

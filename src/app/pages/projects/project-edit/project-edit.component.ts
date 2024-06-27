@@ -28,7 +28,7 @@ import { CdkDragDrop, CdkDragEnter, moveItemInArray, transferArrayItem } from '@
     '../../styles/project-view.scss',
   ],
 })
-export class ProjectEditComponent implements OnInit,OnDestroy {
+export class ProjectEditComponent implements OnInit, OnDestroy {
   public currentProject: Project;
   public isLoaded: boolean = false;
   public hasPreviousPage: boolean = false;
@@ -701,6 +701,8 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
                 if (this.newDate != null) {
                   this.newDate = null;
                 }
+              } else {
+                this.isSaving = false;
               }
             });
           } else {
@@ -870,8 +872,11 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
               this.chosenImageList = [];
               this.chosenImageList2 = [];
               this.hasChangedValue = false;
+              this.isSaving = false;
               this.chosenImageListIndex = [];
               this.chosenImageList2Index = [];
+            } else {
+              this.isSaving = false;
             }
           });
         } else {
@@ -883,6 +888,7 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
             this.chosenImageList2Index = [];
             this.isFotoRWA = false;
             this.isLoaded = false;
+            this.isSaving = false;
             this.usersWhoEdited = '';
             this.newDate = null;
             this.hasChangedValue = false;
@@ -901,6 +907,7 @@ export class ProjectEditComponent implements OnInit,OnDestroy {
           this.isFotoRWA = false;
           this.newDate = null;
           this.usersWhoEdited = '';
+          this.isSaving = false;
           this.isLoaded = false;
           this.hasChangedValue = false;
           this.toastrService.success('De aansluiting is gewijzigd', 'Succes!');

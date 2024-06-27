@@ -5,7 +5,7 @@
   <button *ngIf="!isSaving" (click)="onSubmitInfo()" mat-raised-button class="save-button" color="primary" type="submit">
     Opslaan
   </button>
-  <nb-spinner *ngIf="isSaving" class="spinner" size="giant" [message]="'Even geduld..'" status="info"></nb-spinner>
+  <nb-spinner *ngIf="isSaving" class="opslaan-spinner" size="giant" [message]="'Opslaan..'" status="info"></nb-spinner>
 </div>
 
 
@@ -49,7 +49,7 @@
       </div>
       <div class="data-container">
         <p class="label-text"><b>Huisnummer</b></p>
-        <input class="normalInput" nbInput type="text" formControlName="huisNr" />
+        <input id="huisNr" class="normalInput" nbInput type="text" formControlName="huisNr" />
       </div>
       <div *ngIf="currentProject.isWachtAansluiting || currentProject.droogWaterAfvoer.isWachtaansluiting || currentProject.regenWaterAfvoer.isWachtaansluiting" class="data-container">
         <p class="label-text"><b>Volgnummer</b></p>
@@ -812,5 +812,4 @@
   <button *ngIf="!isSaving" (click)="onSubmitInfo()" mat-raised-button class="save-button" color="primary" type="submit">
     Opslaan
   </button>
-  <nb-spinner *ngIf="isSaving" class="spinner" size="giant" [message]="'Even geduld..'" status="info"></nb-spinner>
 </div>

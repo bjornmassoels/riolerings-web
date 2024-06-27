@@ -2,7 +2,7 @@
   <button mat-raised-button class="form-button" (click)="goToPrevious()">
     Terug
   </button>
-  <nb-spinner *ngIf="isSaving" class="spinner" size="giant" [message]="'Even geduld..'" status="info"></nb-spinner>
+  <nb-spinner *ngIf="isSaving" class="opslaan-spinner" size="giant" [message]="'Even geduld..'" status="info"></nb-spinner>
   <button *ngIf="setVariables === false" (click)="onSubmitInfo()" mat-raised-button class="form-button4" color="primary" type="submit">
     Genereer aansluitingen ->
   </button>
@@ -75,11 +75,11 @@
       <div class="column-container">
 
         <div class="data-container">
-          <p class="label-text"><b>Straat</b></p>
+          <p style="font-size: 16px;" class="label-text"><b>Straat</b></p>
           <input nbInput class="normalInput" type="text" formControlName="street" />
         </div>
 
-        <div class="data-container">
+        <div style="margin-top: 5px" class="data-container">
           <p class="label-text"><b>Verhogen met +1 tussen huisnummers?(1 kant van de straat)</b></p>
           <nb-toggle [(ngModel)]="isIncremented" [ngModelOptions]="{standalone: true}" (checkedChange)="increment($event)" ></nb-toggle>
         </div>
@@ -89,11 +89,11 @@
         </div>
         <div class="input-container8">
           <p class="label-text">Van huisnummer</p>
-          <input nbInput type="number" formControlName="vanHuisNr">
+          <input class="smallInput" nbInput type="number" formControlName="vanHuisNr">
         </div>
         <div class="input-container8">
           <p class="label-text">Tot huisnummer</p>
-          <input nbInput type="number" formControlName="totHuisNr">
+          <input  class="smallInput" nbInput type="number" formControlName="totHuisNr">
         </div>
       </div>
     </div>

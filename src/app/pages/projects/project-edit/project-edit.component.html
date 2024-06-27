@@ -11,7 +11,8 @@
   <button [disabled]="isSaving" (click)="onSubmitInfo()" mat-raised-button class="form-button-blue" color="primary" type="submit">
     Opslaan
   </button>
-  <nb-spinner *ngIf="isSaving" class="spinner" size="giant" [message]="'Bezig met opslaan\nEven geduld..'" status="info"></nb-spinner>
+
+  <nb-spinner *ngIf="isSaving" class="opslaan-spinner" size="giant" [message]="'Opslaan..'" status="info"></nb-spinner>
 
   <p class="boldText" *ngIf="index !== -1">{{index + 1}}/{{totalProjectCount}}</p>
   <button (click)="goToView()" mat-raised-button class="form-button3" >
