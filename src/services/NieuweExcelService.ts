@@ -11,18 +11,19 @@ import { TotaalMeetstaat } from '../models/totaalMeestaat';
 import { SlokkerTotaalMeetstaat } from '../models/slokkerTotaalMeetstaat';
 import { slokkerSettings } from '../models/slokkerSettings';
 import { group } from '@angular/animations';
+import { Borders } from 'exceljs';
 @Injectable()
 export class NieuweExcelService {
   constructor(private apiService: ApiService) {
   }
 
   async getBase64ImageFromUrl(imageUrl) {
-    var res = await fetch(imageUrl);
-    var blob = await res.blob();
+    const res = await fetch(imageUrl);
+    const blob = await res.blob();
 
     return new Promise((resolve, reject) => {
-      var reader = new FileReader();
-      reader.addEventListener("load", function() {
+      const reader = new FileReader();
+      reader.addEventListener('load', function() {
         resolve(reader.result);
       }, false);
 
@@ -35,7 +36,7 @@ export class NieuweExcelService {
 
 
   generateNewExcel(title: string, headers: string[], dataList: Group, logoURL: string, companyName: string, isVordering: boolean) {
-    let workbook = new Workbook();
+    const workbook = new Workbook();
     let dwaPostNumbers = dataList.dwaPostNumbers;
     if (dwaPostNumbers == null) {
       dwaPostNumbers = new Postnumbers();
@@ -48,8 +49,8 @@ export class NieuweExcelService {
     if (slokkerPostNumbers == null) {
       slokkerPostNumbers = new SlokkerPostnumbers();
     }
-    let worksheet = workbook.addWorksheet('Blad1 DWA', {
-      views: [{ state: "frozen", ySplit: 6 }],
+    const worksheet = workbook.addWorksheet('Blad1 DWA', {
+      views: [{ state: 'frozen', ySplit: 6 }],
     });
 
     let buisVertMult = 1;
@@ -57,16 +58,16 @@ export class NieuweExcelService {
     let bochtMult = 0.3;
     let mofMult = 0.15;
 
-    if(dataList.yStukMult != null){
+    if (dataList.yStukMult != null) {
       yStukMult = dataList.yStukMult;
     }
-    if(dataList.bochtMult != null){
+    if (dataList.bochtMult != null) {
       bochtMult = dataList.bochtMult;
     }
-    if(dataList.mofMult != null){
+    if (dataList.mofMult != null) {
       mofMult = dataList.mofMult;
     }
-    if(dataList.buisVertMult != null){
+    if (dataList.buisVertMult != null) {
       buisVertMult = dataList.buisVertMult;
     }
     // Add new row
@@ -85,9 +86,9 @@ export class NieuweExcelService {
     titleRow.getCell('W').value = 'Berekening fundering/omhulling:';
 
     if (dataList.projectList.length !== 0) {
-      let locationRow = worksheet.addRow([
+      const locationRow = worksheet.addRow([
         dataList.aannemerProjectNr + ' - ' + dataList.rbProjectNaam +
-        ' - ' + dataList.rbGemeente
+        ' - ' + dataList.rbGemeente,
       ]);
       locationRow.font = {
         name: 'Arial',
@@ -97,15 +98,15 @@ export class NieuweExcelService {
       };
       locationRow.height = 20;
       locationRow.getCell('W').value = 'Buis vert: x' + buisVertMult + ', Bocht: x' + bochtMult +
-        ", Y-Stuk: x" + yStukMult + ", Indrukmof: x" + mofMult;
+        ', Y-Stuk: x' + yStukMult + ', Indrukmof: x' + mofMult;
 
     }
     worksheet.mergeCells('A2:I2');
-    //CHECK VOOR NIET GEBRUIKTE VARIABELEN
+    // CHECK VOOR NIET GEBRUIKTE VARIABELEN
     let notUsedVariableCount = 0;
     let secondNotUsedVariableCount = 0;
     let thirdNotUsedVariableCount = 0;
-    if(!dataList.bochtenInGraden){
+    if (!dataList.bochtenInGraden) {
       notUsedVariableCount++;
     }
     if (!dataList.dwaSettings.mof) {
@@ -132,7 +133,7 @@ export class NieuweExcelService {
     if (!dataList.dwaSettings.tPutje) {
       secondNotUsedVariableCount++;
     }
-    if(!dataList.bochtenInGraden){
+    if (!dataList.bochtenInGraden) {
       thirdNotUsedVariableCount++;
     }
     let kolommen = ['P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'AA', 'AB', 'AC', 'AD', 'AE', 'AF', 'AG', 'AH', 'AI', 'AJ', 'AK', 'AL', 'AM', 'AN', 'AO'];
@@ -159,10 +160,10 @@ export class NieuweExcelService {
     let eindBuisNaPut = kolommen[indexEindBuisNaPut];
 
     let indexStukkenNaPut = 21 - (notUsedVariableCount + secondNotUsedVariableCount);
-    let stukkenNaPut = kolommen[indexStukkenNaPut]
+    let stukkenNaPut = kolommen[indexStukkenNaPut];
 
     let indexEindPut = 24 - (notUsedVariableCount + secondNotUsedVariableCount + thirdNotUsedVariableCount);
-    let eindNaPut = kolommen[indexEindPut]
+    let eindNaPut = kolommen[indexEindPut];
 
     let putjesRow = worksheet.addRow(['', '', '', 'VOOR PUTJE']);
     putjesRow.font = { name: 'Arial', family: 4, size: 13, bold: true };
@@ -175,41 +176,26 @@ export class NieuweExcelService {
       fgColor: { argb: 'EEECE1' },
       bgColor: { argb: '000080' },
     };
-    putjesRow.getCell('A').border = {
-      top: { style: 'thin' },
-      left: { style: 'thin' },
-      bottom: { style: 'thin' },
-      right: { style: 'thin' },
-    };
+    putjesRow.getCell('A').border = this.setThinBorder();
     worksheet.mergeCells('D3:I3');
-    putjesRow.getCell('J').value = 'VOOR PUTJE'
+    putjesRow.getCell('J').value = 'VOOR PUTJE';
     worksheet.mergeCells('J3:' + eindVoorPutje + '3');
     putjesRow.getCell(startPutjeEnSoortPutje).value = 'PUTJE';
     worksheet.mergeCells(startPutjeEnSoortPutje + '3:' + eindPutKader + '3');
     putjesRow.getCell(beginNaPutje).value = 'NA PUTJE';
     worksheet.mergeCells(beginNaPutje + '3:' + eindNaPut + '3');
-    putjesRow.getCell(kolommen[indexEndVoorPutje+1]).border = {
-      top: { style: 'medium' },
-      left: { style: 'medium' },
-      bottom: { style: 'medium' },
-      right: { style: 'medium' },
-    };
-    putjesRow.getCell(kolommen[indexEndVoorPutje+1]).fill = {
+    putjesRow.getCell(kolommen[indexEndVoorPutje + 1]).border = this.setMediumBorder();
+    putjesRow.getCell(kolommen[indexEndVoorPutje + 1]).fill = {
       type: 'pattern',
       pattern: 'solid',
       fgColor: { argb: 'FFEDFF' },
       bgColor: { argb: '000080' },
     };
 
-    //STANDAARD INDEX VANAF R =
+    // STANDAARD INDEX VANAF R =
     putjesRow.eachCell({ includeEmpty: true }, (cell, number) => {
       if (number === 4 || number === 10) {
-        cell.border = {
-          top: { style: 'medium' },
-          left: { style: 'medium' },
-          bottom: { style: 'medium' },
-          right: { style: 'medium' },
-        };
+        cell.border = this.setMediumBorder();
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
@@ -217,12 +203,7 @@ export class NieuweExcelService {
           bgColor: { argb: '000080' },
         };
       } else if (number === (indexStartPutjeEnSoortPutje + 16)) {
-        cell.border = {
-          top: { style: 'medium' },
-          left: { style: 'medium' },
-          bottom: { style: 'medium' },
-          right: { style: 'medium' },
-        };
+        cell.border = this.setMediumBorder();
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
@@ -230,12 +211,7 @@ export class NieuweExcelService {
           bgColor: { argb: '000080' },
         };
       } else if (number === (indexBeginNaPutje + 16)) {
-        cell.border = {
-          top: { style: 'medium' },
-          left: { style: 'medium' },
-          bottom: { style: 'medium' },
-          right: { style: 'medium' },
-        };
+        cell.border = this.setMediumBorder();
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
@@ -249,7 +225,7 @@ export class NieuweExcelService {
     let postenRow = worksheet.addRow(['Postnummers']);
     worksheet.mergeCells('A4:C4');
     postenRow.font = { name: 'Arial', family: 4, size: 12 };
-    postenRow.alignment = {horizontal:'center'}
+    postenRow.alignment = {horizontal: 'center'};
     postenRow.getCell('D').value = this.PostNumberNullToString(dwaPostNumbers.buisVoorHorGres);
     postenRow.getCell('E').value = this.PostNumberNullToString(dwaPostNumbers.buisVoorHorPVC);
     postenRow.getCell('F').value = this.PostNumberNullToString(dwaPostNumbers.buisVoorHorPP);
@@ -265,7 +241,7 @@ export class NieuweExcelService {
     postenRow.getCell('O').value = this.PostNumberNullToString(dwaPostNumbers.reductieVoor);
 
     let indexCount = 0;
-    if(!dataList.bochtenInGraden){
+    if (!dataList.bochtenInGraden) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(dwaPostNumbers.bochtVoor);
       indexCount++;
     } else {
@@ -274,27 +250,27 @@ export class NieuweExcelService {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(dwaPostNumbers.bocht90Voor);
       indexCount++;
     }
-    if(dataList.dwaSettings.mof){
+    if (dataList.dwaSettings.mof) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(dwaPostNumbers.mof);
       indexCount++;
     }
-    if(dataList.dwaSettings.krimpMof){
+    if (dataList.dwaSettings.krimpMof) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(dwaPostNumbers.krimpmof);
       indexCount++;
     }
-    if(dataList.dwaSettings.koppelStuk){
+    if (dataList.dwaSettings.koppelStuk) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(dwaPostNumbers.koppelstuk);
       indexCount++;
     }
-    if(dataList.dwaSettings.stop){
+    if (dataList.dwaSettings.stop) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(dwaPostNumbers.stop);
       indexCount++;
     }
-    if(dataList.dwaSettings.andere){
+    if (dataList.dwaSettings.andere) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(dwaPostNumbers.andere);
       indexCount++;
     }
-    if(dataList.dwaSettings.terugSlagKlep){
+    if (dataList.dwaSettings.terugSlagKlep) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(dwaPostNumbers.terugslagKlep);
       indexCount++;
     }
@@ -304,11 +280,11 @@ export class NieuweExcelService {
     indexCount++;
     postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(dwaPostNumbers.pvcTStuk);
     indexCount += 3;
-    if(dataList.dwaSettings.sifonPutje){
+    if (dataList.dwaSettings.sifonPutje) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(dwaPostNumbers.sifonPutje);
       indexCount++;
     }
-    if(dataList.dwaSettings.tPutje){
+    if (dataList.dwaSettings.tPutje) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(dwaPostNumbers.tPutje);
       indexCount++;
     }
@@ -324,7 +300,7 @@ export class NieuweExcelService {
     indexCount++;
     postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(dwaPostNumbers.buisAchterPP);
     indexCount++;
-    if(!dataList.bochtenInGraden){
+    if (!dataList.bochtenInGraden) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(dwaPostNumbers.bochtAchter);
       indexCount++;
     } else {
@@ -337,12 +313,7 @@ export class NieuweExcelService {
     indexCount++;
     postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(dwaPostNumbers.YAchter);
     postenRow.eachCell({ includeEmpty: true }, (cell, number) => {
-      cell.border = {
-        top: { style: 'thin' },
-        left: { style: 'thin' },
-        bottom: { style: 'thin' },
-        right: { style: 'thin' },
-      };
+      cell.border = this.setThinBorder();
     });
 
     let putjesRow2 = worksheet.addRow(['', '', '', 'BUIS HORIZONTAAL']);
@@ -356,18 +327,13 @@ export class NieuweExcelService {
       fgColor: { argb: 'EEECE1' },
       bgColor: { argb: '000080' },
     };
-    putjesRow2.getCell('A').border = {
-      top: { style: 'thin' },
-      left: { style: 'thin' },
-      bottom: { style: 'thin' },
-      right: { style: 'thin' },
-    };
+    putjesRow2.getCell('A').border = this.setThinBorder();
     worksheet.mergeCells('D5:F5');
     putjesRow2.getCell('G').value = 'BUIS VERTICAAL';
     worksheet.mergeCells('G5:I5');
     putjesRow2.getCell('J').value = 'HOEVEELHEDEN VOOR PUTJE';
     worksheet.mergeCells('J5:' + eindVoorPutje + '5');
-    putjesRow2.getCell(kolommen[indexEndVoorPutje+1]).value = 'Fun/omh';
+    putjesRow2.getCell(kolommen[indexEndVoorPutje + 1]).value = 'Fun/omh';
     putjesRow2.getCell(startPutjeEnSoortPutje).value = 'SOORT PUTJE';
     worksheet.mergeCells(startPutjeEnSoortPutje + '5:' + eindSoortPutje + '5');
     putjesRow2.getCell(beginPutKader).value = 'PUTKADERS';
@@ -380,25 +346,15 @@ export class NieuweExcelService {
 
     putjesRow2.eachCell({ includeEmpty: true }, (cell, number) => {
       if (number === 4 || number === 7 || number === 10) {
-        cell.border = {
-          top: { style: 'medium' },
-          left: { style: 'medium' },
-          bottom: { style: 'medium' },
-          right: { style: 'medium' },
-        };
+        cell.border = this.setMediumBorder();
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
           fgColor: { argb: 'FABF8F' },
           bgColor: { argb: '000080' },
         };
-      } else if ((number === (indexStartPutjeEnSoortPutje + 16)) || (number === (indexBeginPutKader + 16) )){
-        cell.border = {
-          top: { style: 'medium' },
-          left: { style: 'medium' },
-          bottom: { style: 'medium' },
-          right: { style: 'medium' },
-        };
+      } else if ((number === (indexStartPutjeEnSoortPutje + 16)) || (number === (indexBeginPutKader + 16) )) {
+        cell.border = this.setMediumBorder();
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
@@ -406,12 +362,7 @@ export class NieuweExcelService {
           bgColor: { argb: '000080' },
         };
       } else if ((number === (indexBeginNaPutje + 16)) || (number === (indexStukkenNaPut + 16))) {
-        cell.border = {
-          top: { style: 'medium' },
-          left: { style: 'medium' },
-          bottom: { style: 'medium' },
-          right: { style: 'medium' },
-        };
+        cell.border = this.setMediumBorder();
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
@@ -419,26 +370,16 @@ export class NieuweExcelService {
           bgColor: { argb: '000080' },
         };
       } else if (number === indexEndVoorPutje + 17) {
-        cell.border = {
-          top: { style: 'medium' },
-          left: { style: 'medium' },
-          bottom: { style: 'medium' },
-          right: { style: 'medium' },
-        };
+        cell.border = this.setMediumBorder();
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
           fgColor: { argb: 'FFEDFF' },
           bgColor: { argb: '000080' },
         };
-      } else if(number === (indexBeginPutKader + 14)){
-        if(dataList.dwaSettings.sifonPutje && dataList.dwaSettings.tPutje){
-          cell.border = {
-            top: { style: 'medium' },
-            left: { style: 'medium' },
-            bottom: { style: 'medium' },
-            right: { style: 'medium' },
-          };
+      } else if (number === (indexBeginPutKader + 14)) {
+        if (dataList.dwaSettings.sifonPutje && dataList.dwaSettings.tPutje) {
+          cell.border = this.setMediumBorder();
           cell.fill = {
             type: 'pattern',
             pattern: 'solid',
@@ -446,14 +387,9 @@ export class NieuweExcelService {
             bgColor: { argb: '000080' },
           };
         }
-      } else if(number === (indexBeginPutKader + 15)){
-        if(dataList.dwaSettings.sifonPutje || dataList.dwaSettings.tPutje){
-          cell.border = {
-            top: { style: 'medium' },
-            left: { style: 'medium' },
-            bottom: { style: 'medium' },
-            right: { style: 'medium' },
-          };
+      } else if (number === (indexBeginPutKader + 15)) {
+        if (dataList.dwaSettings.sifonPutje || dataList.dwaSettings.tPutje) {
+          cell.border = this.setMediumBorder();
           cell.fill = {
             type: 'pattern',
             pattern: 'solid',
@@ -464,14 +400,14 @@ export class NieuweExcelService {
       }
     });
 
-    let stukkenRow = worksheet.addRow(['Straat', 'Huisnr.', 'Volgnr.', 'Gres','PVC','PP', 'Gres','PVC','PP','Indrukmof', 'Y-Stuk', 'T-Buis',
+    let stukkenRow = worksheet.addRow(['Straat', 'Huisnr.', 'Volgnr.', 'Gres', 'PVC', 'PP', 'Gres', 'PVC', 'PP', 'Indrukmof', 'Y-Stuk', 'T-Buis',
     'T-Stuk', 'Flex. aansl.', 'Reductie']);
     stukkenRow.font = { name: 'Arial', family: 4, size: 13, bold: true };
     stukkenRow.height = 18;
     stukkenRow.alignment = { vertical: 'middle', horizontal: 'center' };
     indexCount = 0;
 
-    if(!dataList.bochtenInGraden){
+    if (!dataList.bochtenInGraden) {
       stukkenRow.getCell(kolommen[indexCount]).value = 'Bocht';
       indexCount++;
     } else {
@@ -480,27 +416,27 @@ export class NieuweExcelService {
       stukkenRow.getCell(kolommen[indexCount]).value = 'Bocht 90°';
       indexCount++;
     }
-    if(dataList.dwaSettings.mof){
+    if (dataList.dwaSettings.mof) {
       stukkenRow.getCell(kolommen[indexCount]).value = 'Mof';
       indexCount++;
     }
-    if(dataList.dwaSettings.krimpMof){
+    if (dataList.dwaSettings.krimpMof) {
       stukkenRow.getCell(kolommen[indexCount]).value = 'Krimpmof';
       indexCount++;
     }
-    if(dataList.dwaSettings.koppelStuk){
+    if (dataList.dwaSettings.koppelStuk) {
       stukkenRow.getCell(kolommen[indexCount]).value = 'Koppelstuk';
       indexCount++;
     }
-    if(dataList.dwaSettings.stop){
+    if (dataList.dwaSettings.stop) {
       stukkenRow.getCell(kolommen[indexCount]).value = 'Stop';
       indexCount++;
     }
-    if(dataList.dwaSettings.andere){
+    if (dataList.dwaSettings.andere) {
       stukkenRow.getCell(kolommen[indexCount]).value = 'Andere';
       indexCount++;
     }
-    if(dataList.dwaSettings.terugSlagKlep){
+    if (dataList.dwaSettings.terugSlagKlep) {
       stukkenRow.getCell(kolommen[indexCount]).value = 'Terugslagklep';
       indexCount++;
     }
@@ -514,11 +450,11 @@ export class NieuweExcelService {
     indexCount++;
     stukkenRow.getCell(kolommen[indexCount]).value = 'Andere';
     indexCount++;
-    if(dataList.dwaSettings.sifonPutje){
+    if (dataList.dwaSettings.sifonPutje) {
       stukkenRow.getCell(kolommen[indexCount]).value = 'Sifonput';
       indexCount++;
     }
-    if(dataList.dwaSettings.tPutje){
+    if (dataList.dwaSettings.tPutje) {
       stukkenRow.getCell(kolommen[indexCount]).value = 'T-putje';
       indexCount++;
     }
@@ -534,7 +470,7 @@ export class NieuweExcelService {
     indexCount++;
     stukkenRow.getCell(kolommen[indexCount]).value = 'PP';
     indexCount++;
-    if(!dataList.bochtenInGraden){
+    if (!dataList.bochtenInGraden) {
       stukkenRow.getCell(kolommen[indexCount]).value = 'Bocht';
       indexCount++;
     } else {
@@ -549,64 +485,39 @@ export class NieuweExcelService {
 
     stukkenRow.eachCell({ includeEmpty: true }, (cell, number) => {
       if (number <= 3) {
-        cell.border = {
-          top: { style: 'medium' },
-          left: { style: 'medium' },
-          bottom: { style: 'medium' },
-          right: { style: 'medium' },
-        };
+        cell.border = this.setMediumBorder();
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
           fgColor: { argb: 'EEECE1' },
           bgColor: { argb: '000080' },
         };
-      }else if (number > 3 && number <= (23 - notUsedVariableCount)) {
-        cell.border = {
-          top: { style: 'medium' },
-          left: { style: 'medium' },
-          bottom: { style: 'medium' },
-          right: { style: 'medium' },
-        };
+      } else if (number > 3 && number <= (23 - notUsedVariableCount)) {
+        cell.border = this.setMediumBorder();
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
           fgColor: { argb: 'FABF8F' },
           bgColor: { argb: '000080' },
         };
-      } else if (number === (24 - notUsedVariableCount)){
-        cell.border = {
-          top: { style: 'medium' },
-          left: { style: 'medium' },
-          bottom: { style: 'medium' },
-          right: { style: 'medium' },
-        };
+      } else if (number === (24 - notUsedVariableCount)) {
+        cell.border = this.setMediumBorder();
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
           fgColor: { argb: 'FFEDFF' },
           bgColor: { argb: '000080' },
         };
-      }else if (number > (24 - notUsedVariableCount) && number <= (33 - (notUsedVariableCount + secondNotUsedVariableCount))){
-        cell.border = {
-          top: { style: 'medium' },
-          left: { style: 'medium' },
-          bottom: { style: 'medium' },
-          right: { style: 'medium' },
-        };
+      } else if (number > (24 - notUsedVariableCount) && number <= (33 - (notUsedVariableCount + secondNotUsedVariableCount))) {
+        cell.border = this.setMediumBorder();
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
           fgColor: { argb: 'EEECE1' },
           bgColor: { argb: '000080' },
         };
-      } else if (number > (33 - (notUsedVariableCount + secondNotUsedVariableCount)) && number <= (40 - (notUsedVariableCount + secondNotUsedVariableCount + thirdNotUsedVariableCount))){
-        cell.border = {
-          top: { style: 'medium' },
-          left: { style: 'medium' },
-          bottom: { style: 'medium' },
-          right: { style: 'medium' },
-        };
+      } else if (number > (33 - (notUsedVariableCount + secondNotUsedVariableCount)) && number <= (40 - (notUsedVariableCount + secondNotUsedVariableCount + thirdNotUsedVariableCount))) {
+        cell.border = this.setMediumBorder();
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
@@ -656,9 +567,9 @@ export class NieuweExcelService {
     let terugslagklepCount = 0;
     let sifonPutjeCount = 0;
     let tPutjeCount = 0;
-    for (let data of dataList.projectList) {
-      let project = data;
-      if(project.droogWaterAfvoer != null && this.checkHasDWA(project.droogWaterAfvoer)) {
+    for (const data of dataList.projectList) {
+      const project = data;
+      if (project.droogWaterAfvoer != null && this.checkHasDWA(project.droogWaterAfvoer)) {
         totalRowCount++;
         let buisVoorHorGres = 0;
         let buisVoorHorPVC = 0;
@@ -669,8 +580,8 @@ export class NieuweExcelService {
         let buisAchterGres = 0;
         let buisAchterPVC = 0;
         let buisAchterPP = 0;
-        if(project.droogWaterAfvoer.buisTypeAchter == null){
-          switch(project.droogWaterAfvoer.buisType){
+        if (project.droogWaterAfvoer.buisTypeAchter == null) {
+          switch (project.droogWaterAfvoer.buisType) {
             case null: {
               break;
             }
@@ -703,7 +614,7 @@ export class NieuweExcelService {
             }
           }
         } else {
-          switch(project.droogWaterAfvoer.buisType){
+          switch (project.droogWaterAfvoer.buisType) {
             case null: {
               break;
             }
@@ -729,7 +640,7 @@ export class NieuweExcelService {
               break;
             }
           }
-          switch(project.droogWaterAfvoer.buisTypeAchter){
+          switch (project.droogWaterAfvoer.buisTypeAchter) {
             case null: {
               break;
             }
@@ -751,11 +662,10 @@ export class NieuweExcelService {
           }
         }
 
-        if(!dataList.bochtenInGraden){
+        if (!dataList.bochtenInGraden) {
           bochtVoorCount += this.NullToZero(project.droogWaterAfvoer.bochtVoor) + this.NullToZero(project.droogWaterAfvoer.bochtVoor2);
           bochtAchterCount += this.NullToZero(project.droogWaterAfvoer.bochtAchter);
-        }
-        else {
+        } else {
           bochtVoor45Count += this.NullToZero(project.droogWaterAfvoer.gradenBochtVoor45) + this.NullToZero(project.droogWaterAfvoer.gradenBocht2Voor45);
           bochtVoor90Count += this.NullToZero(project.droogWaterAfvoer.gradenBochtVoor90) + this.NullToZero(project.droogWaterAfvoer.gradenBocht2Voor90);
           bochtAchter45Count += this.NullToZero(project.droogWaterAfvoer.gradenBochtAchter45);
@@ -806,21 +716,21 @@ export class NieuweExcelService {
             flexAanCount++;
             break;
         }
-        if(project.droogWaterAfvoer.soortPutje === 't-stuk'){
+        if (project.droogWaterAfvoer.soortPutje === 't-stuk') {
           pvcTStukCount++;
           pvcTStuk += 1;
-        } else if(project.droogWaterAfvoer.soortPutje === 'kunststof'){
+        } else if (project.droogWaterAfvoer.soortPutje === 'kunststof') {
           kunststofCount += 1;
           kunststof = 1;
-        } else if(project.droogWaterAfvoer.soortPutje === 'geen'){
+        } else if (project.droogWaterAfvoer.soortPutje === 'geen') {
           geenPutjeCount++;
           geenPutje = 1;
-        }  else if(project.droogWaterAfvoer.soortPutje === 'andere'){
+        }  else if (project.droogWaterAfvoer.soortPutje === 'andere') {
           anderPutjeCount++;
           anderPutje = project.droogWaterAfvoer.anderPutje;
         }
 
-        if(dataList.dwaSettings.terugSlagKlep === true && project.droogWaterAfvoer.terugslagklep === true){
+        if (dataList.dwaSettings.terugSlagKlep === true && project.droogWaterAfvoer.terugslagklep === true) {
           terugslagklep = 1;
           terugslagklepCount++;
         }
@@ -828,7 +738,7 @@ export class NieuweExcelService {
         tPutjeCount += this.NullToZero(project.droogWaterAfvoer.tPutje);
 
         let funOmh = 0;
-        if(!dataList.bochtenInGraden){
+        if (!dataList.bochtenInGraden) {
           funOmh =
             this.NullToZero(project.droogWaterAfvoer.buisVoorHor) + this.NullToZero(project.droogWaterAfvoer.buisVoorHor2) +
             (this.NullToZero(project.droogWaterAfvoer.buisVoorVert) * buisVertMult) + (this.NullToZero(project.droogWaterAfvoer.buisVoorVert2) * buisVertMult) +
@@ -846,9 +756,9 @@ export class NieuweExcelService {
             (this.NullToZero(indrukmof) * mofMult);
           funOmhCount += +funOmh;
         }
-        let funOmhString = +(funOmh.toFixed(2));
+        const funOmhString = +(funOmh.toFixed(2));
 
-        let dataRow = worksheet.addRow([
+        const dataRow = worksheet.addRow([
           project?.street,
           project?.huisNr,
           project?.index,
@@ -863,11 +773,11 @@ export class NieuweExcelService {
           this.ConvertNumberToEmptyString(tBuis),
           this.ConvertNumberToEmptyString(tStuk),
           this.ConvertNumberToEmptyString(flexAansluiting),
-          this.ConvertNumberToEmptyString(this.NullToZero(project.droogWaterAfvoer.reductieVoor) + this.NullToZero(project.droogWaterAfvoer.reductieVoor2))
+          this.ConvertNumberToEmptyString(this.NullToZero(project.droogWaterAfvoer.reductieVoor) + this.NullToZero(project.droogWaterAfvoer.reductieVoor2)),
         ]);
        dataRow.font = { name: 'Arial', family: 4, size: 12};
         let indexCount = 0;
-        if(!dataList.bochtenInGraden){
+        if (!dataList.bochtenInGraden) {
           dataRow.getCell(kolommen[indexCount]).value = this.ConvertNumberToEmptyString(this.NullToZero(project.droogWaterAfvoer.bochtVoor) + this.NullToZero(project.droogWaterAfvoer.bochtVoor2));
           indexCount++;
         } else {
@@ -876,34 +786,34 @@ export class NieuweExcelService {
           dataRow.getCell(kolommen[indexCount]).value = this.ConvertNumberToEmptyString(this.NullToZero(project.droogWaterAfvoer.gradenBochtVoor90) + this.NullToZero(project.droogWaterAfvoer.gradenBocht2Voor90));
           indexCount++;
         }
-        if(dataList.dwaSettings.mof){
+        if (dataList.dwaSettings.mof) {
           dataRow.getCell(kolommen[indexCount]).value = this.ConvertNumberToEmptyString(project.droogWaterAfvoer.mof);
           mofCount += this.NullToZero(project.droogWaterAfvoer.mof);
           indexCount++;
         }
-        if(dataList.dwaSettings.krimpMof){
+        if (dataList.dwaSettings.krimpMof) {
           dataRow.getCell(kolommen[indexCount]).value = this.ConvertNumberToEmptyString(project.droogWaterAfvoer.krimpmof);
           krimpmofCount += this.NullToZero(project.droogWaterAfvoer.krimpmof);
           indexCount++;
         }
-        if(dataList.dwaSettings.koppelStuk){
+        if (dataList.dwaSettings.koppelStuk) {
           dataRow.getCell(kolommen[indexCount]).value = this.ConvertNumberToEmptyString(project.droogWaterAfvoer.koppelstuk);
           koppelstukCount += this.NullToZero(project.droogWaterAfvoer.koppelstuk);
           indexCount++;
         }
-        if(dataList.dwaSettings.stop){
+        if (dataList.dwaSettings.stop) {
           dataRow.getCell(kolommen[indexCount]).value = this.ConvertNumberToEmptyString(project.droogWaterAfvoer.stop);
           stopCount += this.NullToZero(project.droogWaterAfvoer.stop);
           indexCount++;
         }
-        if(dataList.dwaSettings.andere){
+        if (dataList.dwaSettings.andere) {
           dataRow.getCell(kolommen[indexCount]).value = project.droogWaterAfvoer.andere;
-          if(project.droogWaterAfvoer.andere != null && project.droogWaterAfvoer.andere.trim() !== ''){
+          if (project.droogWaterAfvoer.andere != null && project.droogWaterAfvoer.andere.trim() !== '') {
             andereCount++;
           }
           indexCount++;
         }
-        if(dataList.dwaSettings.terugSlagKlep){
+        if (dataList.dwaSettings.terugSlagKlep) {
           dataRow.getCell(kolommen[indexCount]).value = this.ConvertNumberToEmptyString(terugslagklep);
           indexCount++;
         }
@@ -917,11 +827,11 @@ export class NieuweExcelService {
         indexCount++;
         dataRow.getCell(kolommen[indexCount]).value = anderPutje;
         indexCount++;
-        if(dataList.dwaSettings.sifonPutje){
+        if (dataList.dwaSettings.sifonPutje) {
           dataRow.getCell(kolommen[indexCount]).value = this.ConvertNumberToEmptyString(project.droogWaterAfvoer.sifonPutje);
           indexCount++;
         }
-        if(dataList.dwaSettings.tPutje){
+        if (dataList.dwaSettings.tPutje) {
           dataRow.getCell(kolommen[indexCount]).value = this.ConvertNumberToEmptyString(project.droogWaterAfvoer.tPutje);
           indexCount++;
         }
@@ -931,25 +841,25 @@ export class NieuweExcelService {
         indexCount++;
         dataRow.getCell(kolommen[indexCount]).value = this.BoolToString(!project.droogWaterAfvoer.gietijzer ? project.droogWaterAfvoer.alukader : false);
         indexCount++;
-        dataRow.getCell(kolommen[indexCount]).value = this.ConvertNumberToEmptyString(buisAchterGres)
+        dataRow.getCell(kolommen[indexCount]).value = this.ConvertNumberToEmptyString(buisAchterGres);
         indexCount++;
-        dataRow.getCell(kolommen[indexCount]).value = this.ConvertNumberToEmptyString(buisAchterPVC)
+        dataRow.getCell(kolommen[indexCount]).value = this.ConvertNumberToEmptyString(buisAchterPVC);
         indexCount++;
-        dataRow.getCell(kolommen[indexCount]).value = this.ConvertNumberToEmptyString(buisAchterPP)
+        dataRow.getCell(kolommen[indexCount]).value = this.ConvertNumberToEmptyString(buisAchterPP);
         indexCount++;
-        if(!dataList.bochtenInGraden){
-          dataRow.getCell(kolommen[indexCount]).value = this.ConvertNumberToEmptyString(project.droogWaterAfvoer.bochtAchter)
+        if (!dataList.bochtenInGraden) {
+          dataRow.getCell(kolommen[indexCount]).value = this.ConvertNumberToEmptyString(project.droogWaterAfvoer.bochtAchter);
           indexCount++;
         } else {
-          dataRow.getCell(kolommen[indexCount]).value = this.ConvertNumberToEmptyString(project.droogWaterAfvoer.gradenBochtAchter45)
+          dataRow.getCell(kolommen[indexCount]).value = this.ConvertNumberToEmptyString(project.droogWaterAfvoer.gradenBochtAchter45);
           indexCount++;
-          dataRow.getCell(kolommen[indexCount]).value = this.ConvertNumberToEmptyString(project.droogWaterAfvoer.gradenBochtAchter90)
+          dataRow.getCell(kolommen[indexCount]).value = this.ConvertNumberToEmptyString(project.droogWaterAfvoer.gradenBochtAchter90);
           indexCount++;
         }
 
-        dataRow.getCell(kolommen[indexCount]).value = this.ConvertNumberToEmptyString(project.droogWaterAfvoer.reductieAchter)
+        dataRow.getCell(kolommen[indexCount]).value = this.ConvertNumberToEmptyString(project.droogWaterAfvoer.reductieAchter);
         indexCount++;
-        dataRow.getCell(kolommen[indexCount]).value = this.ConvertNumberToEmptyString(project.droogWaterAfvoer.YAchter)
+        dataRow.getCell(kolommen[indexCount]).value = this.ConvertNumberToEmptyString(project.droogWaterAfvoer.YAchter);
         indexCount++;
       }
     }
@@ -978,12 +888,12 @@ export class NieuweExcelService {
 
     let counter = 0;
     let totaalExtraPreviousTotalen = 0;
-    if(dataList.totalenMeetstaatDWA != null && dataList.totalenMeetstaatDWA.length !== 0){
+    if (dataList.totalenMeetstaatDWA != null && dataList.totalenMeetstaatDWA.length !== 0) {
       totaalExtraPreviousTotalen = dataList.totalenMeetstaatDWA.length;
 
-      for(let vorige of dataList.totalenMeetstaatDWA){
+      for (const vorige of dataList.totalenMeetstaatDWA) {
         counter++;
-        let vorigeTotalenRow = worksheet.addRow([(counter === dataList.totalenMeetstaatDWA.length ? 'Laatste vorige totalen' : 'Vorige totalen'),
+        const vorigeTotalenRow = worksheet.addRow([(counter === dataList.totalenMeetstaatDWA.length ? 'Laatste vorige totalen' : 'Vorige totalen'),
           'Datum:', new Date(vorige.date).toLocaleDateString(), vorige.buisVoorHorGres, vorige.buisVoorHorPVC, vorige.buisVoorHorPP,
           vorige.buisVoorVertGres, vorige.buisVoorVertPVC, vorige.buisVoorVertPP, vorige.indrukmof,
           vorige.yStuk, vorige.tBuis, vorige.tStuk, vorige.flexAan, vorige.reductieVoor]);
@@ -992,7 +902,7 @@ export class NieuweExcelService {
         vorigeTotalenRow.alignment = { vertical: 'middle', horizontal: 'center' };
         indexCount = 0;
 
-        if(!dataList.bochtenInGraden){
+        if (!dataList.bochtenInGraden) {
           vorigeTotalenRow.getCell(kolommen[indexCount]).value = vorige.bochtVoor;
           indexCount++;
         } else {
@@ -1001,27 +911,27 @@ export class NieuweExcelService {
           vorigeTotalenRow.getCell(kolommen[indexCount]).value = vorige.gradenBochtVoor90;
           indexCount++;
         }
-        if(dataList.dwaSettings.mof){
+        if (dataList.dwaSettings.mof) {
           vorigeTotalenRow.getCell(kolommen[indexCount]).value = vorige.mof;
           indexCount++;
         }
-        if(dataList.dwaSettings.krimpMof){
+        if (dataList.dwaSettings.krimpMof) {
           vorigeTotalenRow.getCell(kolommen[indexCount]).value = vorige.krimpmof;
           indexCount++;
         }
-        if(dataList.dwaSettings.koppelStuk){
+        if (dataList.dwaSettings.koppelStuk) {
           vorigeTotalenRow.getCell(kolommen[indexCount]).value = vorige.koppelstuk;
           indexCount++;
         }
-        if(dataList.dwaSettings.stop){
+        if (dataList.dwaSettings.stop) {
           vorigeTotalenRow.getCell(kolommen[indexCount]).value = vorige.stop;
           indexCount++;
         }
-        if(dataList.dwaSettings.andere){
+        if (dataList.dwaSettings.andere) {
           vorigeTotalenRow.getCell(kolommen[indexCount]).value = vorige.andere;
           indexCount++;
         }
-        if(dataList.dwaSettings.terugSlagKlep){
+        if (dataList.dwaSettings.terugSlagKlep) {
           vorigeTotalenRow.getCell(kolommen[indexCount]).value = vorige.terugslagklep;
           indexCount++;
         }
@@ -1035,11 +945,11 @@ export class NieuweExcelService {
         indexCount++;
         vorigeTotalenRow.getCell(kolommen[indexCount]).value = vorige.anderPutje;
         indexCount++;
-        if(dataList.dwaSettings.sifonPutje){
+        if (dataList.dwaSettings.sifonPutje) {
           vorigeTotalenRow.getCell(kolommen[indexCount]).value = vorige.sifonPutje;
           indexCount++;
         }
-        if(dataList.dwaSettings.tPutje){
+        if (dataList.dwaSettings.tPutje) {
           vorigeTotalenRow.getCell(kolommen[indexCount]).value = vorige.tPutje;
           indexCount++;
         }
@@ -1055,7 +965,7 @@ export class NieuweExcelService {
         indexCount++;
         vorigeTotalenRow.getCell(kolommen[indexCount]).value = vorige.buisAchterPP;
         indexCount++;
-        if(!dataList.bochtenInGraden){
+        if (!dataList.bochtenInGraden) {
           vorigeTotalenRow.getCell(kolommen[indexCount]).value = vorige.bochtAchter;
           indexCount++;
         } else {
@@ -1068,7 +978,7 @@ export class NieuweExcelService {
         indexCount++;
         vorigeTotalenRow.getCell(kolommen[indexCount]).value = vorige.YAchter;
         indexCount++;
-        if(counter === dataList.totalenMeetstaatDWA.length){
+        if (counter === dataList.totalenMeetstaatDWA.length) {
           vorigeTotalenRow.eachCell({ includeEmpty: true }, (cell, number) => {
             cell.fill = {
               type: 'pattern',
@@ -1076,53 +986,43 @@ export class NieuweExcelService {
               fgColor: { argb: '44c7dbFF' },
               bgColor: { argb: '44db58FF' },
             };
-            cell.border = {
-              top: { style: 'medium' },
-              left: { style: 'medium' },
-              bottom: { style: 'medium' },
-              right: { style: 'medium' },
-            };
+            cell.border = this.setMediumBorder();
           });
         } else {
           vorigeTotalenRow.eachCell({ includeEmpty: true }, (cell, number) => {
-            cell.border = {
-              top: { style: 'thin' },
-              left: { style: 'thin' },
-              bottom: { style: 'thin' },
-              right: { style: 'thin' },
-            };
+            cell.border = this.setThinBorder();
           });
         }
       }
     }
 
-    let allStrings = ['VOOR PUTJE','PUTJE','NA PUTJE','BUIS HORIZONTAAL', 'BUIS VERTICAAL','HOEVEELHEDEN VOOR PUTJE','SOORT PUTJE','PUTKADERS','BUIS NA PUTJE','STUKKEN NA PUTJE',
-      'Huis- en wachtaansluitingen RWA', 'Huis- en wachtaansluitingen DWA',('  Bedrijf: ' + companyName),  'Postnummers',
-      'Berekening fundering/omhulling:', 'Buis vert: x' + buisVertMult + ', Bocht: x' + bochtMult + ", Y-Stuk: x" + yStukMult + ", Indrukmof: x" + mofMult, 'Kolken','Bedrijf: ' + companyName,
+    const allStrings = ['VOOR PUTJE', 'PUTJE', 'NA PUTJE', 'BUIS HORIZONTAAL', 'BUIS VERTICAAL', 'HOEVEELHEDEN VOOR PUTJE', 'SOORT PUTJE', 'PUTKADERS', 'BUIS NA PUTJE', 'STUKKEN NA PUTJE',
+      'Huis- en wachtaansluitingen RWA', 'Huis- en wachtaansluitingen DWA', ('  Bedrijf: ' + companyName),  'Postnummers',
+      'Berekening fundering/omhulling:', 'Buis vert: x' + buisVertMult + ', Bocht: x' + bochtMult + ', Y-Stuk: x' + yStukMult + ', Indrukmof: x' + mofMult, 'Kolken', 'Bedrijf: ' + companyName,
       dataList.aannemerProjectNr + ' - ' + dataList.rbProjectNaam + ' - ' + dataList.rbGemeente];
     worksheet.columns.forEach(function (column, i) {
-      if((i >= 1 && i < 10) || (i >= 11 && i <= 13) || (i >= 27 - notUsedVariableCount && i <= 33 - notUsedVariableCount)){
+      if ((i >= 1 && i < 10) || (i >= 11 && i <= 13) || (i >= 27 - notUsedVariableCount && i <= 33 - notUsedVariableCount)) {
         column.width = 11;
-      } else if(i === 10) {
+      } else if (i === 10) {
         column.width = 13;
-      } else{
+      } else {
         let maxLength = 0;
-        column["eachCell"]({ includeEmpty: true }, function (cell) {
-          if(!allStrings.find(x => x === cell.value)){
-            let columnLength = cell.value ? cell.value.toString().length : 10;
+        column['eachCell']({ includeEmpty: true }, function (cell) {
+          if (!allStrings.find(x => x === cell.value)) {
+            const columnLength = cell.value ? cell.value.toString().length : 10;
             if (columnLength > maxLength ) {
               maxLength = columnLength;
             }
           }
         });
         column.width = maxLength < 11 ? 11 : maxLength + 3;
-        if(i === 0){
+        if (i === 0) {
           column.width = 25;
-        }  else if(maxLength >= 8 && maxLength < 10){
+        }  else if (maxLength >= 8 && maxLength < 10) {
           column.width = maxLength < 13 ? 13 : maxLength + 2;
-        } else if(maxLength >= 10 && maxLength < 13){
+        } else if (maxLength >= 10 && maxLength < 13) {
           column.width = 14;
-        } else if(maxLength >= 13){
+        } else if (maxLength >= 13) {
           column.width = 16;
         }
       }
@@ -1130,127 +1030,127 @@ export class NieuweExcelService {
     let totaalKolommen = ['D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'AA', 'AB', 'AC', 'AD', 'AE', 'AF', 'AG', 'AH', 'AI', 'AJ', 'AK', 'AL', 'AM', 'AN'];
     let eindKolomNewData = 6 + totalRowCount;
 
-    if(totaalExtraPreviousTotalen > 0){
+    if (totaalExtraPreviousTotalen > 0) {
       totaalExtraPreviousTotalen++;
-      let latestTotalen = dataList.totalenMeetstaatDWA[dataList.totalenMeetstaatDWA.length - 1];
-      let verschilTotalenRow = worksheet.addRow(['VERSCHIL totalen', '', '']);
+      const latestTotalen = dataList.totalenMeetstaatDWA[dataList.totalenMeetstaatDWA.length - 1];
+      const verschilTotalenRow = worksheet.addRow(['VERSCHIL totalen', '', '']);
       verschilTotalenRow.font = { name: 'Arial', family: 4, size: 13, bold: true };
       verschilTotalenRow.height = 18;
       verschilTotalenRow.alignment = { vertical: 'middle', horizontal: 'center' };
       indexCount = 1;
 
-      let column = "D";
+      let column = 'D';
       indexCount = 0;
-      let verschilRow = 6 + totaalExtraPreviousTotalen + totalRowCount;
-      for(let i = 0; i < 12; i++){
+      const verschilRow = 6 + totaalExtraPreviousTotalen + totalRowCount;
+      for (let i = 0; i < 12; i++) {
         column = totaalKolommen[i];
-        verschilTotalenRow.getCell(totaalKolommen[i]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
+        verschilTotalenRow.getCell(totaalKolommen[i]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
         indexCount++;
       }
 
-      if(!dataList.bochtenInGraden){
+      if (!dataList.bochtenInGraden) {
         column = totaalKolommen[indexCount];
-        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
+        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
         indexCount++;
       } else {
         column = totaalKolommen[indexCount];
-        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
+        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
         indexCount++;
         column = totaalKolommen[indexCount];
-        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
-        indexCount++;
-      }
-      if(dataList.dwaSettings.mof){
-        column = totaalKolommen[indexCount];
-        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
+        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
         indexCount++;
       }
-      if(dataList.dwaSettings.krimpMof){
+      if (dataList.dwaSettings.mof) {
         column = totaalKolommen[indexCount];
-        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
+        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
         indexCount++;
       }
-      if(dataList.dwaSettings.koppelStuk){
+      if (dataList.dwaSettings.krimpMof) {
         column = totaalKolommen[indexCount];
-        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
+        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
         indexCount++;
       }
-      if(dataList.dwaSettings.stop){
+      if (dataList.dwaSettings.koppelStuk) {
         column = totaalKolommen[indexCount];
-        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
+        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
         indexCount++;
       }
-      if(dataList.dwaSettings.andere){
+      if (dataList.dwaSettings.stop) {
         column = totaalKolommen[indexCount];
-        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
+        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
         indexCount++;
       }
-      if(dataList.dwaSettings.terugSlagKlep){
+      if (dataList.dwaSettings.andere) {
         column = totaalKolommen[indexCount];
-        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
+        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
         indexCount++;
       }
-      column = totaalKolommen[indexCount];
-      verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
-      indexCount++;
-      column = totaalKolommen[indexCount];
-      verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
-      indexCount++;
-      column = totaalKolommen[indexCount];
-      verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
-      indexCount++;
-      column = totaalKolommen[indexCount];
-      verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
-      indexCount++;
-      column = totaalKolommen[indexCount];
-      verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
-      indexCount++;
-      if(dataList.dwaSettings.sifonPutje){
+      if (dataList.dwaSettings.terugSlagKlep) {
         column = totaalKolommen[indexCount];
-        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
-        indexCount++;
-      }
-      if(dataList.dwaSettings.tPutje){
-        column = totaalKolommen[indexCount];
-        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
+        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
         indexCount++;
       }
       column = totaalKolommen[indexCount];
-      verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
+      verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
       indexCount++;
       column = totaalKolommen[indexCount];
-      verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
+      verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
       indexCount++;
       column = totaalKolommen[indexCount];
-      verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
+      verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
       indexCount++;
       column = totaalKolommen[indexCount];
-      verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
+      verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
       indexCount++;
       column = totaalKolommen[indexCount];
-      verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
+      verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
       indexCount++;
-      column = totaalKolommen[indexCount];
-      verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
-      indexCount++;
-      column = totaalKolommen[indexCount];
-      if(!dataList.bochtenInGraden){
+      if (dataList.dwaSettings.sifonPutje) {
         column = totaalKolommen[indexCount];
-        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
+        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
+        indexCount++;
+      }
+      if (dataList.dwaSettings.tPutje) {
+        column = totaalKolommen[indexCount];
+        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
+        indexCount++;
+      }
+      column = totaalKolommen[indexCount];
+      verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
+      indexCount++;
+      column = totaalKolommen[indexCount];
+      verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
+      indexCount++;
+      column = totaalKolommen[indexCount];
+      verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
+      indexCount++;
+      column = totaalKolommen[indexCount];
+      verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
+      indexCount++;
+      column = totaalKolommen[indexCount];
+      verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
+      indexCount++;
+      column = totaalKolommen[indexCount];
+      verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
+      indexCount++;
+      column = totaalKolommen[indexCount];
+      if (!dataList.bochtenInGraden) {
+        column = totaalKolommen[indexCount];
+        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
         indexCount++;
       } else {
         column = totaalKolommen[indexCount];
-        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
+        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
         indexCount++;
         column = totaalKolommen[indexCount];
-        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
+        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
         indexCount++;
       }
       column = totaalKolommen[indexCount];
-      verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
+      verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
       indexCount++;
       column = totaalKolommen[indexCount];
-      verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
+      verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
       indexCount++;
       verschilTotalenRow.eachCell({ includeEmpty: true }, (cell, number) => {
         cell.fill = {
@@ -1259,12 +1159,7 @@ export class NieuweExcelService {
           fgColor: { argb: 'f2f2f2' },
           bgColor: { argb: 'f2f2f2' },
         };
-        cell.border = {
-          top: { style: 'medium' },
-          left: { style: 'medium' },
-           bottom: { style: 'medium' },
-          right: { style: 'medium' },
-        };
+        cell.border = this.setMediumBorder();
       });
 
     }
@@ -1275,52 +1170,52 @@ export class NieuweExcelService {
     totalenRow.alignment = { vertical: 'middle', horizontal: 'center' };
     indexCount = 0;
     let nonEmptyCount = 0;
-    let row = "D";
-    for(let i = 0; i < 12; i++){
+    let row = 'D';
+    for (let i = 0; i < 12; i++) {
       row = totaalKolommen[i];
-      totalenRow.getCell(row).value = { formula: "=SUM(" + row + "7:" + row + eindKolomNewData + ')', date1904: false };
+      totalenRow.getCell(row).value = { formula: '=SUM(' + row + '7:' + row + eindKolomNewData + ')', date1904: false };
       indexCount++;
     }
-    if(!dataList.bochtenInGraden){
+    if (!dataList.bochtenInGraden) {
       row = totaalKolommen[indexCount];
-      totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=SUM(" + row + "7:" + row + eindKolomNewData + ')', date1904: false };
+      totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=SUM(' + row + '7:' + row + eindKolomNewData + ')', date1904: false };
       indexCount++;
     } else {
       row = totaalKolommen[indexCount];
-      totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=SUM(" + row + "7:" + row + eindKolomNewData + ')', date1904: false };
+      totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=SUM(' + row + '7:' + row + eindKolomNewData + ')', date1904: false };
       indexCount++;
       row = totaalKolommen[indexCount];
-      totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=SUM(" + row + "7:" + row + eindKolomNewData + ')', date1904: false };
-      indexCount++;
-    }
-    if(dataList.dwaSettings.mof){
-      row = totaalKolommen[indexCount];
-      totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=SUM(" + row + "7:" + row + eindKolomNewData + ')', date1904: false };
+      totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=SUM(' + row + '7:' + row + eindKolomNewData + ')', date1904: false };
       indexCount++;
     }
-    if(dataList.dwaSettings.krimpMof){
+    if (dataList.dwaSettings.mof) {
       row = totaalKolommen[indexCount];
-      totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=SUM(" + row + "7:" + row + eindKolomNewData + ')', date1904: false };
+      totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=SUM(' + row + '7:' + row + eindKolomNewData + ')', date1904: false };
       indexCount++;
     }
-    if(dataList.dwaSettings.koppelStuk){
+    if (dataList.dwaSettings.krimpMof) {
       row = totaalKolommen[indexCount];
-      totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=SUM(" + row + "7:" + row + eindKolomNewData + ')', date1904: false };
+      totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=SUM(' + row + '7:' + row + eindKolomNewData + ')', date1904: false };
       indexCount++;
     }
-    if(dataList.dwaSettings.stop){
+    if (dataList.dwaSettings.koppelStuk) {
       row = totaalKolommen[indexCount];
-      totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=SUM(" + row + "7:" + row + eindKolomNewData + ')', date1904: false };
+      totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=SUM(' + row + '7:' + row + eindKolomNewData + ')', date1904: false };
       indexCount++;
     }
-    if(dataList.dwaSettings.andere){
+    if (dataList.dwaSettings.stop) {
       row = totaalKolommen[indexCount];
-      //optelling andere veld
+      totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=SUM(' + row + '7:' + row + eindKolomNewData + ')', date1904: false };
+      indexCount++;
+    }
+    if (dataList.dwaSettings.andere) {
+      row = totaalKolommen[indexCount];
+      // optelling andere veld
       nonEmptyCount = 0;
       const startRow = 7;
       const endRow = eindKolomNewData; // The end row number
       for (let i = startRow; i <= endRow; i++) {
-        let cellValue = worksheet.getCell(`${row}${i}`).value;
+        const cellValue = worksheet.getCell(`${row}${i}`).value;
         // Check if the cell is not null/undefined, and is not an empty string
         if (cellValue !== null && cellValue !== undefined && cellValue.toString().trim() !== '') {
           nonEmptyCount++;
@@ -1329,30 +1224,30 @@ export class NieuweExcelService {
       totalenRow.getCell(totaalKolommen[indexCount]).value = nonEmptyCount;
       indexCount++;
     }
-    if(dataList.dwaSettings.terugSlagKlep){
+    if (dataList.dwaSettings.terugSlagKlep) {
       row = totaalKolommen[indexCount];
-      totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=SUM(" + row + "7:" + row + eindKolomNewData + ')', date1904: false };
+      totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=SUM(' + row + '7:' + row + eindKolomNewData + ')', date1904: false };
       indexCount++;
     }
     row = totaalKolommen[indexCount];
-    totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=SUM(" + row + "7:" + row + eindKolomNewData + ')', date1904: false };
+    totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=SUM(' + row + '7:' + row + eindKolomNewData + ')', date1904: false };
     indexCount++;
     row = totaalKolommen[indexCount];
-    totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=COUNT(" + row + "7:" + row + eindKolomNewData + ')', date1904: false };
+    totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=COUNT(' + row + '7:' + row + eindKolomNewData + ')', date1904: false };
     indexCount++;
     row = totaalKolommen[indexCount];
-    totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=COUNT(" + row + "7:" + row + eindKolomNewData + ')', date1904: false };
+    totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=COUNT(' + row + '7:' + row + eindKolomNewData + ')', date1904: false };
     indexCount++;
     row = totaalKolommen[indexCount];
-    totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=COUNT(" + row + "7:" + row + eindKolomNewData + ')', date1904: false };
+    totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=COUNT(' + row + '7:' + row + eindKolomNewData + ')', date1904: false };
     indexCount++;
     row = totaalKolommen[indexCount];
-    //optelling andere veld
+    // optelling andere veld
     nonEmptyCount = 0;
     let startRow = 7;
     let endRow = eindKolomNewData; // The end row number
     for (let i = startRow; i <= endRow; i++) {
-      let cellValue = worksheet.getCell(`${row}${i}`).value;
+      const cellValue = worksheet.getCell(`${row}${i}`).value;
       // Check if the cell is not null/undefined, and is not an empty string
       if (cellValue !== null && cellValue !== undefined && cellValue.toString().trim() !== '') {
         nonEmptyCount++;
@@ -1361,52 +1256,52 @@ export class NieuweExcelService {
     totalenRow.getCell(totaalKolommen[indexCount]).value = nonEmptyCount;
     indexCount++;
 
-    if(dataList.dwaSettings.sifonPutje){
+    if (dataList.dwaSettings.sifonPutje) {
       row = totaalKolommen[indexCount];
-      totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=SUM(" + row + "7:" + row + eindKolomNewData + ')', date1904: false };
+      totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=SUM(' + row + '7:' + row + eindKolomNewData + ')', date1904: false };
       indexCount++;
     }
-    if(dataList.dwaSettings.tPutje){
+    if (dataList.dwaSettings.tPutje) {
       row = totaalKolommen[indexCount];
-      totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=SUM(" + row + "7:" + row + eindKolomNewData + ')', date1904: false };
+      totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=SUM(' + row + '7:' + row + eindKolomNewData + ')', date1904: false };
       indexCount++;
     }
-    //start gietijzer
+    // start gietijzer
     row = totaalKolommen[indexCount];
-    totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=COUNTIF(' + row + "7:" + row + eindKolomNewData +',"ja")', date1904: false };
+    totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=COUNTIF(' + row + '7:' + row + eindKolomNewData + ',"ja")', date1904: false };
     indexCount++;
     row = totaalKolommen[indexCount];
-    totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=COUNTIF(' + row + "7:" + row + eindKolomNewData +',"ja")', date1904: false };
+    totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=COUNTIF(' + row + '7:' + row + eindKolomNewData + ',"ja")', date1904: false };
     indexCount++;
     row = totaalKolommen[indexCount];
-    totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=COUNTIF(' + row + "7:" + row + eindKolomNewData +',"ja")', date1904: false };
+    totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=COUNTIF(' + row + '7:' + row + eindKolomNewData + ',"ja")', date1904: false };
     indexCount++;
     row = totaalKolommen[indexCount];
-    totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=SUM(" + row + "7:" + row + eindKolomNewData + ')', date1904: false };
+    totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=SUM(' + row + '7:' + row + eindKolomNewData + ')', date1904: false };
     indexCount++;
     row = totaalKolommen[indexCount];
-    totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=SUM(" + row + "7:" + row + eindKolomNewData + ')', date1904: false };
+    totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=SUM(' + row + '7:' + row + eindKolomNewData + ')', date1904: false };
     indexCount++;
     row = totaalKolommen[indexCount];
-    totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=SUM(" + row + "7:" + row + eindKolomNewData + ')', date1904: false };
+    totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=SUM(' + row + '7:' + row + eindKolomNewData + ')', date1904: false };
     indexCount++;
-    if(!dataList.bochtenInGraden){
+    if (!dataList.bochtenInGraden) {
       row = totaalKolommen[indexCount];
-      totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=SUM(" + row + "7:" + row + eindKolomNewData + ')', date1904: false };
+      totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=SUM(' + row + '7:' + row + eindKolomNewData + ')', date1904: false };
       indexCount++;
     } else {
       row = totaalKolommen[indexCount];
-      totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=SUM(" + row + "7:" + row + eindKolomNewData + ')', date1904: false };
+      totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=SUM(' + row + '7:' + row + eindKolomNewData + ')', date1904: false };
       indexCount++;
       row = totaalKolommen[indexCount];
-      totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=SUM(" + row + "7:" + row + eindKolomNewData + ')', date1904: false };
+      totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=SUM(' + row + '7:' + row + eindKolomNewData + ')', date1904: false };
       indexCount++;
     }
     row = totaalKolommen[indexCount];
-    totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=SUM(" + row + "7:" + row + eindKolomNewData + ')', date1904: false };
+    totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=SUM(' + row + '7:' + row + eindKolomNewData + ')', date1904: false };
     indexCount++;
     row = totaalKolommen[indexCount];
-    totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=SUM(" + row + "7:" + row + eindKolomNewData + ')', date1904: false };
+    totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=SUM(' + row + '7:' + row + eindKolomNewData + ')', date1904: false };
     indexCount++;
     totalenRow.eachCell({ includeEmpty: true }, (cell, number) => {
       cell.fill = {
@@ -1415,23 +1310,18 @@ export class NieuweExcelService {
         fgColor: { argb: 'FFFF21' },
         bgColor: { argb: 'FFFF21' },
       };
-      cell.border = {
-        top: { style: 'medium' },
-        left: { style: 'medium' },
-        bottom: { style: 'medium' },
-        right: { style: 'medium' },
-      };
+      cell.border = this.setMediumBorder();
     });
 
 
-    stukkenRow = worksheet.addRow(['Straat', 'Huisnr.', 'Volgnr.', 'Gres','PVC','PP', 'Gres','PVC','PP','Indrukmof', 'Y-Stuk', 'T-Buis',
+    stukkenRow = worksheet.addRow(['Straat', 'Huisnr.', 'Volgnr.', 'Gres', 'PVC', 'PP', 'Gres', 'PVC', 'PP', 'Indrukmof', 'Y-Stuk', 'T-Buis',
       'T-Stuk', 'Flex. aansl.', 'Reductie']);
     stukkenRow.font = { name: 'Arial', family: 4, size: 13, bold: true };
     stukkenRow.height = 18;
     stukkenRow.alignment = { vertical: 'middle', horizontal: 'center' };
     indexCount = 0;
 
-    if(!dataList.bochtenInGraden){
+    if (!dataList.bochtenInGraden) {
       stukkenRow.getCell(kolommen[indexCount]).value = 'Bocht';
       indexCount++;
     } else {
@@ -1440,27 +1330,27 @@ export class NieuweExcelService {
       stukkenRow.getCell(kolommen[indexCount]).value = 'Bocht 90°';
       indexCount++;
     }
-    if(dataList.dwaSettings.mof){
+    if (dataList.dwaSettings.mof) {
       stukkenRow.getCell(kolommen[indexCount]).value = 'Mof';
       indexCount++;
     }
-    if(dataList.dwaSettings.krimpMof){
+    if (dataList.dwaSettings.krimpMof) {
       stukkenRow.getCell(kolommen[indexCount]).value = 'Krimpmof';
       indexCount++;
     }
-    if(dataList.dwaSettings.koppelStuk){
+    if (dataList.dwaSettings.koppelStuk) {
       stukkenRow.getCell(kolommen[indexCount]).value = 'Koppelstuk';
       indexCount++;
     }
-    if(dataList.dwaSettings.stop){
+    if (dataList.dwaSettings.stop) {
       stukkenRow.getCell(kolommen[indexCount]).value = 'Stop';
       indexCount++;
     }
-    if(dataList.dwaSettings.andere){
+    if (dataList.dwaSettings.andere) {
       stukkenRow.getCell(kolommen[indexCount]).value = 'Andere';
       indexCount++;
     }
-    if(dataList.dwaSettings.terugSlagKlep){
+    if (dataList.dwaSettings.terugSlagKlep) {
       stukkenRow.getCell(kolommen[indexCount]).value = 'Terugslagklep';
       indexCount++;
     }
@@ -1474,11 +1364,11 @@ export class NieuweExcelService {
     indexCount++;
     stukkenRow.getCell(kolommen[indexCount]).value = 'Andere';
     indexCount++;
-    if(dataList.dwaSettings.sifonPutje){
+    if (dataList.dwaSettings.sifonPutje) {
       stukkenRow.getCell(kolommen[indexCount]).value = 'Sifonput';
       indexCount++;
     }
-    if(dataList.dwaSettings.tPutje){
+    if (dataList.dwaSettings.tPutje) {
       stukkenRow.getCell(kolommen[indexCount]).value = 'T-putje';
       indexCount++;
     }
@@ -1494,7 +1384,7 @@ export class NieuweExcelService {
     indexCount++;
     stukkenRow.getCell(kolommen[indexCount]).value = 'PP';
     indexCount++;
-    if(!dataList.bochtenInGraden){
+    if (!dataList.bochtenInGraden) {
       stukkenRow.getCell(kolommen[indexCount]).value = 'Bocht';
       indexCount++;
     } else {
@@ -1509,64 +1399,39 @@ export class NieuweExcelService {
 
     stukkenRow.eachCell({ includeEmpty: true }, (cell, number) => {
       if (number <= 3) {
-        cell.border = {
-          top: { style: 'medium' },
-          left: { style: 'medium' },
-          bottom: { style: 'medium' },
-          right: { style: 'medium' },
-        };
+        cell.border = this.setMediumBorder();
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
           fgColor: { argb: 'EEECE1' },
           bgColor: { argb: '000080' },
         };
-      }else if (number > 3 && number <= (23 - notUsedVariableCount)) {
-        cell.border = {
-          top: { style: 'medium' },
-          left: { style: 'medium' },
-          bottom: { style: 'medium' },
-          right: { style: 'medium' },
-        };
+      } else if (number > 3 && number <= (23 - notUsedVariableCount)) {
+        cell.border = this.setMediumBorder();
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
           fgColor: { argb: 'FABF8F' },
           bgColor: { argb: '000080' },
         };
-      } else if (number === (24 - notUsedVariableCount)){
-        cell.border = {
-          top: { style: 'medium' },
-          left: { style: 'medium' },
-          bottom: { style: 'medium' },
-          right: { style: 'medium' },
-        };
+      } else if (number === (24 - notUsedVariableCount)) {
+        cell.border = this.setMediumBorder();
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
           fgColor: { argb: 'FFEDFF' },
           bgColor: { argb: '000080' },
         };
-      }else if (number > (24 - notUsedVariableCount) && number <= (33 - (notUsedVariableCount + secondNotUsedVariableCount))){
-        cell.border = {
-          top: { style: 'medium' },
-          left: { style: 'medium' },
-          bottom: { style: 'medium' },
-          right: { style: 'medium' },
-        };
+      } else if (number > (24 - notUsedVariableCount) && number <= (33 - (notUsedVariableCount + secondNotUsedVariableCount))) {
+        cell.border = this.setMediumBorder();
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
           fgColor: { argb: 'EEECE1' },
           bgColor: { argb: '000080' },
         };
-      } else if (number > (33 - (notUsedVariableCount + secondNotUsedVariableCount)) && number <= (40 - (notUsedVariableCount + secondNotUsedVariableCount + thirdNotUsedVariableCount))){
-        cell.border = {
-          top: { style: 'medium' },
-          left: { style: 'medium' },
-          bottom: { style: 'medium' },
-          right: { style: 'medium' },
-        };
+      } else if (number > (33 - (notUsedVariableCount + secondNotUsedVariableCount)) && number <= (40 - (notUsedVariableCount + secondNotUsedVariableCount + thirdNotUsedVariableCount))) {
+        cell.border = this.setMediumBorder();
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
@@ -1583,11 +1448,11 @@ export class NieuweExcelService {
     totaalBuisVertVoor = +totaalBuisVertVoor.toFixed(2);
     totaalBuisAchter = +totaalBuisAchter.toFixed(2);
 
-    //SAVE MEETSTAAT TOTALEN
-    let totalenMeetstaatDWA = new TotaalMeetstaat(totaalBuisHorVoor,totaalBuisVertVoor, totaalBuisAchter,buisVoorHorGresCount, buisVoorHorPVCCount, buisVoorHorPPCount,
+    // SAVE MEETSTAAT TOTALEN
+    const totalenMeetstaatDWA = new TotaalMeetstaat(totaalBuisHorVoor, totaalBuisVertVoor, totaalBuisAchter, buisVoorHorGresCount, buisVoorHorPVCCount, buisVoorHorPPCount,
       buisVoorVertGresCount, buisVoorVertPVCCount, buisVoorVertPPCount, bochtVoorCount, reductieVoorCount, indrukmofCount, yStukCount, tBuisCount, tStukCount,
-      flexAanCount, mofCount, krimpmofCount, koppelstukCount,stopCount, andereCount,kunststofCount,pvcTStukCount,gietIjzerCount,betonKaderCount,aluKaderCount,buisAchterGresCount,
-      buisAchterPVCCount, buisAchterPPCount, bochtAchterCount, YAchterCount, reductieAchterCount, funOmhCount,geenPutjeCount,anderPutjeCount,0,terugslagklepCount,0,
+      flexAanCount, mofCount, krimpmofCount, koppelstukCount, stopCount, andereCount, kunststofCount, pvcTStukCount, gietIjzerCount, betonKaderCount, aluKaderCount, buisAchterGresCount,
+      buisAchterPVCCount, buisAchterPPCount, bochtAchterCount, YAchterCount, reductieAchterCount, funOmhCount, geenPutjeCount, anderPutjeCount, 0, terugslagklepCount, 0,
       sifonPutjeCount, tPutjeCount, bochtVoor45Count, bochtAchter45Count, bochtVoor90Count, bochtAchter90Count);
 
 
@@ -1604,18 +1469,14 @@ export class NieuweExcelService {
       fgColor: { argb: 'EEECE1' },
       bgColor: { argb: '000080' },
     };
-    putjesRow2.getCell('A').border = {
-      top: { style: 'thin' },
-      left: { style: 'thin' },
-      bottom: { style: 'thin' },
-      right: { style: 'thin' },
-    };
+    putjesRow2.getCell('A').border = this.setThinBorder();
+
     worksheet.mergeCells('D' + putjes2RowRij + ':F' + putjes2RowRij);
     putjesRow2.getCell('G').value = 'BUIS VERTICAAL';
     worksheet.mergeCells('G' + putjes2RowRij + ':I' + putjes2RowRij);
     putjesRow2.getCell('J').value = 'HOEVEELHEDEN VOOR PUTJE';
-    worksheet.mergeCells('J' + putjes2RowRij +':' + eindVoorPutje + putjes2RowRij);
-    putjesRow2.getCell(kolommen[indexEndVoorPutje+1]).value = 'Fun/omh';
+    worksheet.mergeCells('J' + putjes2RowRij + ':' + eindVoorPutje + putjes2RowRij);
+    putjesRow2.getCell(kolommen[indexEndVoorPutje + 1]).value = 'Fun/omh';
     putjesRow2.getCell(startPutjeEnSoortPutje).value = 'SOORT PUTJE';
     worksheet.mergeCells(startPutjeEnSoortPutje + putjes2RowRij + ':' + eindSoortPutje + putjes2RowRij);
     putjesRow2.getCell(beginPutKader).value = 'PUTKADERS';
@@ -1628,25 +1489,15 @@ export class NieuweExcelService {
 
     putjesRow2.eachCell({ includeEmpty: true }, (cell, number) => {
       if (number === 4 || number === 7 || number === 11) {
-        cell.border = {
-          top: { style: 'medium' },
-          left: { style: 'medium' },
-          bottom: { style: 'medium' },
-          right: { style: 'medium' },
-        };
+        cell.border = this.setMediumBorder();
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
           fgColor: { argb: 'FABF8F' },
           bgColor: { argb: '000080' },
         };
-      } else if ((number === (indexStartPutjeEnSoortPutje + 16)) || (number === (indexBeginPutKader + 16))){
-        cell.border = {
-          top: { style: 'medium' },
-          left: { style: 'medium' },
-          bottom: { style: 'medium' },
-          right: { style: 'medium' },
-        };
+      } else if ((number === (indexStartPutjeEnSoortPutje + 16)) || (number === (indexBeginPutKader + 16))) {
+        cell.border = this.setMediumBorder();
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
@@ -1654,12 +1505,7 @@ export class NieuweExcelService {
           bgColor: { argb: '000080' },
         };
       } else if ((number === (indexBeginNaPutje + 16)) || (number === (indexStukkenNaPut + 16))) {
-        cell.border = {
-          top: { style: 'medium' },
-          left: { style: 'medium' },
-          bottom: { style: 'medium' },
-          right: { style: 'medium' },
-        };
+        cell.border = this.setMediumBorder();
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
@@ -1667,26 +1513,16 @@ export class NieuweExcelService {
           bgColor: { argb: '000080' },
         };
       } else if (number === indexEndVoorPutje + 17) {
-        cell.border = {
-          top: { style: 'medium' },
-          left: { style: 'medium' },
-          bottom: { style: 'medium' },
-          right: { style: 'medium' },
-        };
+        cell.border = this.setMediumBorder();
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
           fgColor: { argb: 'FFEDFF' },
           bgColor: { argb: '000080' },
         };
-      } else if(number === (indexBeginPutKader + 14)){
-        if(dataList.dwaSettings.sifonPutje && dataList.dwaSettings.tPutje){
-          cell.border = {
-            top: { style: 'medium' },
-            left: { style: 'medium' },
-            bottom: { style: 'medium' },
-            right: { style: 'medium' },
-          };
+      } else if (number === (indexBeginPutKader + 14)) {
+        if (dataList.dwaSettings.sifonPutje && dataList.dwaSettings.tPutje) {
+          cell.border = this.setMediumBorder();
           cell.fill = {
             type: 'pattern',
             pattern: 'solid',
@@ -1694,14 +1530,9 @@ export class NieuweExcelService {
             bgColor: { argb: '000080' },
           };
         }
-      } else if(number === (indexBeginPutKader + 15)){
-        if(dataList.dwaSettings.sifonPutje || dataList.dwaSettings.tPutje){
-          cell.border = {
-            top: { style: 'medium' },
-            left: { style: 'medium' },
-            bottom: { style: 'medium' },
-            right: { style: 'medium' },
-          };
+      } else if (number === (indexBeginPutKader + 15)) {
+        if (dataList.dwaSettings.sifonPutje || dataList.dwaSettings.tPutje) {
+          cell.border = this.setMediumBorder();
           cell.fill = {
             type: 'pattern',
             pattern: 'solid',
@@ -1716,7 +1547,7 @@ export class NieuweExcelService {
     let postRowRij = 10 + totaalExtraPreviousTotalen + totalRowCount;
     worksheet.mergeCells('A' + postRowRij + ':C' + postRowRij);
     postenRow.font = { name: 'Arial', family: 4, size: 11 };
-    postenRow.alignment = {horizontal:'center'}
+    postenRow.alignment = {horizontal: 'center'};
     postenRow.getCell('D').value = this.PostNumberNullToString(dwaPostNumbers.buisVoorHorGres);
     postenRow.getCell('E').value = this.PostNumberNullToString(dwaPostNumbers.buisVoorHorPVC);
     postenRow.getCell('F').value = this.PostNumberNullToString(dwaPostNumbers.buisVoorHorPP);
@@ -1733,36 +1564,36 @@ export class NieuweExcelService {
     postenRow.getCell('O').value = this.PostNumberNullToString(dwaPostNumbers.reductieVoor);
 
     indexCount = 0;
-    if(!dataList.bochtenInGraden){
+    if (!dataList.bochtenInGraden) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(dwaPostNumbers.bochtVoor);
       indexCount++;
-    } else{
+    } else {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(dwaPostNumbers.bocht45Voor);
       indexCount++;
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(dwaPostNumbers.bocht90Voor);
       indexCount++;
     }
-    if(dataList.dwaSettings.mof){
+    if (dataList.dwaSettings.mof) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(dwaPostNumbers.mof);
       indexCount++;
     }
-    if(dataList.dwaSettings.krimpMof){
+    if (dataList.dwaSettings.krimpMof) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(dwaPostNumbers.krimpmof);
       indexCount++;
     }
-    if(dataList.dwaSettings.koppelStuk){
+    if (dataList.dwaSettings.koppelStuk) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(dwaPostNumbers.koppelstuk);
       indexCount++;
     }
-    if(dataList.dwaSettings.stop){
+    if (dataList.dwaSettings.stop) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(dwaPostNumbers.stop);
       indexCount++;
     }
-    if(dataList.dwaSettings.andere){
+    if (dataList.dwaSettings.andere) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(dwaPostNumbers.andere);
       indexCount++;
     }
-    if(dataList.dwaSettings.terugSlagKlep){
+    if (dataList.dwaSettings.terugSlagKlep) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(dwaPostNumbers.terugslagKlep);
       indexCount++;
     }
@@ -1772,11 +1603,11 @@ export class NieuweExcelService {
     indexCount++;
     postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(dwaPostNumbers.pvcTStuk);
     indexCount += 3;
-    if(dataList.dwaSettings.sifonPutje){
+    if (dataList.dwaSettings.sifonPutje) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(dwaPostNumbers.sifonPutje);
       indexCount++;
     }
-    if(dataList.dwaSettings.tPutje){
+    if (dataList.dwaSettings.tPutje) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(dwaPostNumbers.tPutje);
       indexCount++;
     }
@@ -1792,10 +1623,10 @@ export class NieuweExcelService {
     indexCount++;
     postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(dwaPostNumbers.buisAchterPP);
     indexCount++;
-    if(!dataList.bochtenInGraden){
+    if (!dataList.bochtenInGraden) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(dwaPostNumbers.bochtAchter);
       indexCount++;
-    } else{
+    } else {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(dwaPostNumbers.bocht45Achter);
       indexCount++;
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(dwaPostNumbers.bocht90Achter);
@@ -1806,14 +1637,9 @@ export class NieuweExcelService {
     postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(dwaPostNumbers.YAchter);
 
     postenRow.eachCell({ includeEmpty: true }, (cell, number) => {
-      cell.border = {
-        top: { style: 'thin' },
-        left: { style: 'thin' },
-        bottom: { style: 'thin' },
-        right: { style: 'thin' },
-      };
+      cell.border = this.setThinBorder();
     });
-    let putjesRowRij = 11 + totaalExtraPreviousTotalen + totalRowCount;
+    const putjesRowRij = 11 + totaalExtraPreviousTotalen + totalRowCount;
     putjesRow = worksheet.addRow(['', '', '', 'VOOR PUTJE']);
     putjesRow.font = { name: 'Arial', family: 4, size: 13, bold: true };
     putjesRow.height = 18;
@@ -1825,40 +1651,25 @@ export class NieuweExcelService {
       fgColor: { argb: 'EEECE1' },
       bgColor: { argb: '000080' },
     };
-    putjesRow.getCell('A').border = {
-      top: { style: 'thin' },
-      left: { style: 'thin' },
-      bottom: { style: 'thin' },
-      right: { style: 'thin' },
-    };
+    putjesRow.getCell('A').border = this.setThinBorder();
     worksheet.mergeCells('D' + putjesRowRij + ':I' + putjesRowRij);
-    putjesRow.getCell('J').value = 'VOOR PUTJE'
+    putjesRow.getCell('J').value = 'VOOR PUTJE';
     worksheet.mergeCells('J' + putjesRowRij + ':' + eindVoorPutje + putjesRowRij);
     putjesRow.getCell(startPutjeEnSoortPutje).value = 'PUTJE';
     worksheet.mergeCells(startPutjeEnSoortPutje + putjesRowRij + ':' + eindPutKader + putjesRowRij);
     putjesRow.getCell(beginNaPutje).value = 'NA PUTJE';
     worksheet.mergeCells(beginNaPutje + putjesRowRij + ':' + eindNaPut + putjesRowRij);
-    putjesRow.getCell(kolommen[indexEndVoorPutje+1]).border = {
-      top: { style: 'medium' },
-      left: { style: 'medium' },
-      bottom: { style: 'medium' },
-      right: { style: 'medium' },
-    };
-    putjesRow.getCell(kolommen[indexEndVoorPutje+1]).fill = {
+    putjesRow.getCell(kolommen[indexEndVoorPutje + 1]).border = this.setMediumBorder();
+    putjesRow.getCell(kolommen[indexEndVoorPutje + 1]).fill = {
       type: 'pattern',
       pattern: 'solid',
       fgColor: { argb: 'FFEDFF' },
       bgColor: { argb: '000080' },
     };
-    //STANDAARD INDEX VANAF R =
+    // STANDAARD INDEX VANAF R =
     putjesRow.eachCell({ includeEmpty: true }, (cell, number) => {
       if (number === 4 || number === 11) {
-        cell.border = {
-          top: { style: 'medium' },
-          left: { style: 'medium' },
-          bottom: { style: 'medium' },
-          right: { style: 'medium' },
-        };
+        cell.border = this.setMediumBorder();
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
@@ -1866,12 +1677,7 @@ export class NieuweExcelService {
           bgColor: { argb: '000080' },
         };
       } else if (number === (indexStartPutjeEnSoortPutje + 16)) {
-        cell.border = {
-          top: { style: 'medium' },
-          left: { style: 'medium' },
-          bottom: { style: 'medium' },
-          right: { style: 'medium' },
-        };
+        cell.border = this.setMediumBorder();
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
@@ -1879,12 +1685,7 @@ export class NieuweExcelService {
           bgColor: { argb: '000080' },
         };
       } else if (number === (indexBeginNaPutje + 16)) {
-        cell.border = {
-          top: { style: 'medium' },
-          left: { style: 'medium' },
-          bottom: { style: 'medium' },
-          right: { style: 'medium' },
-        };
+        cell.border = this.setMediumBorder();
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
@@ -1904,12 +1705,12 @@ export class NieuweExcelService {
       margins: {
         left: 0.2, right: 0.2,
         top: 0.75, bottom: 0.75,
-        header: 0.3, footer: 0.3
-      }
+        header: 0.3, footer: 0.3,
+      },
     };
     worksheet.properties.showGridLines = true;
     worksheet.views = [
-      { zoomScale: 70 }
+      { zoomScale: 70 },
     ];
 
 
@@ -1949,8 +1750,8 @@ export class NieuweExcelService {
 
     /// RWA BEGIN
 
-    let worksheet2 = workbook.addWorksheet('Blad2 RWA', {
-      views: [{ state: "frozen", ySplit: 6 }],
+    const worksheet2 = workbook.addWorksheet('Blad2 RWA', {
+      views: [{ state: 'frozen', ySplit: 6 }],
     });
 
     // Add new row
@@ -1969,9 +1770,9 @@ export class NieuweExcelService {
     titleRow.getCell('W').value = 'Berekening fundering/omhulling:';
 
     if (dataList.projectList.length !== 0) {
-      let locationRow = worksheet2.addRow([
+      const locationRow = worksheet2.addRow([
         dataList.aannemerProjectNr + ' - ' + dataList.rbProjectNaam +
-        ' - ' + dataList.rbGemeente
+        ' - ' + dataList.rbGemeente,
       ]);
       locationRow.font = {
         name: 'Arial',
@@ -1981,15 +1782,15 @@ export class NieuweExcelService {
       };
       locationRow.height = 20;
       locationRow.getCell('W').value = 'Buis vert: x' + buisVertMult + ', Bocht: x' + bochtMult +
-        ", Y-Stuk: x" + yStukMult + ", Indrukmof: x" + mofMult;
+        ', Y-Stuk: x' + yStukMult + ', Indrukmof: x' + mofMult;
 
     }
     worksheet2.mergeCells('A2:I2');
-    //CHECK VOOR NIET GEBRUIKTE VARIABELEN
+    // CHECK VOOR NIET GEBRUIKTE VARIABELEN
     notUsedVariableCount = 0;
     secondNotUsedVariableCount = 0;
     thirdNotUsedVariableCount = 0;
-    if(!dataList.bochtenInGraden){
+    if (!dataList.bochtenInGraden) {
       notUsedVariableCount++;
     }
     if (!dataList.rwaSettings.mof) {
@@ -2019,10 +1820,10 @@ export class NieuweExcelService {
     if (!dataList.rwaSettings.infilPutje) {
       secondNotUsedVariableCount++;
     }
-    if(!dataList.bochtenInGraden){
+    if (!dataList.bochtenInGraden) {
       thirdNotUsedVariableCount++;
     }
-    kolommen = ['N','O','P','Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'AA', 'AB', 'AC', 'AD', 'AE', 'AF', 'AG', 'AH', 'AI', 'AJ', 'AK', 'AL'];
+    kolommen = ['N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'AA', 'AB', 'AC', 'AD', 'AE', 'AF', 'AG', 'AH', 'AI', 'AJ', 'AK', 'AL'];
     indexEndVoorPutje = 8 - notUsedVariableCount;
     eindVoorPutje = kolommen[indexEndVoorPutje];
 
@@ -2047,7 +1848,7 @@ export class NieuweExcelService {
 
     eindBuisNaPut = kolommen[indexEindBuisNaPut];
 
-    stukkenNaPut = kolommen[indexStukkenNaPut]
+    stukkenNaPut = kolommen[indexStukkenNaPut];
 
     eindNaPut = kolommen[indexEindPut];
     beginNaPutje = kolommen[indexBeginNaPutje];
@@ -2063,41 +1864,26 @@ export class NieuweExcelService {
       fgColor: { argb: 'EEECE1' },
       bgColor: { argb: '000080' },
     };
-    putjesRow.getCell('A').border = {
-      top: { style: 'thin' },
-      left: { style: 'thin' },
-      bottom: { style: 'thin' },
-      right: { style: 'thin' },
-    };
+    putjesRow.getCell('A').border = this.setThinBorder();
     worksheet2.mergeCells('D3:G3');
-    putjesRow.getCell('H').value = 'VOOR PUTJE'
+    putjesRow.getCell('H').value = 'VOOR PUTJE';
     worksheet2.mergeCells('H3:' + eindVoorPutje + '3');
     putjesRow.getCell(startPutjeEnSoortPutje).value = 'PUTJE';
     worksheet2.mergeCells(startPutjeEnSoortPutje + '3:' + eindPutKader + '3');
     putjesRow.getCell(beginNaPutje).value = 'NA PUTJE';
     worksheet2.mergeCells(beginNaPutje + '3:' + eindNaPut + '3');
-    putjesRow.getCell(kolommen[indexEndVoorPutje+1]).border = {
-      top: { style: 'medium' },
-      left: { style: 'medium' },
-      bottom: { style: 'medium' },
-      right: { style: 'medium' },
-    };
-    putjesRow.getCell(kolommen[indexEndVoorPutje+1]).fill = {
+    putjesRow.getCell(kolommen[indexEndVoorPutje + 1]).border = this.setMediumBorder();
+    putjesRow.getCell(kolommen[indexEndVoorPutje + 1]).fill = {
       type: 'pattern',
       pattern: 'solid',
       fgColor: { argb: 'FFEDFF' },
       bgColor: { argb: '000080' },
     };
 
-    //STANDAARD INDEX VANAF R =
+    // STANDAARD INDEX VANAF R =
     putjesRow.eachCell({ includeEmpty: true }, (cell, number) => {
       if (number === 4 || number === 10) {
-        cell.border = {
-          top: { style: 'medium' },
-          left: { style: 'medium' },
-          bottom: { style: 'medium' },
-          right: { style: 'medium' },
-        };
+        cell.border = this.setMediumBorder();
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
@@ -2105,12 +1891,7 @@ export class NieuweExcelService {
           bgColor: { argb: '000080' },
         };
       } else if (number === (indexStartPutjeEnSoortPutje + 16)) {
-        cell.border = {
-          top: { style: 'medium' },
-          left: { style: 'medium' },
-          bottom: { style: 'medium' },
-          right: { style: 'medium' },
-        };
+        cell.border = this.setMediumBorder();
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
@@ -2118,12 +1899,7 @@ export class NieuweExcelService {
           bgColor: { argb: '000080' },
         };
       } else if (number === (indexBeginNaPutje + 17)) {
-        cell.border = {
-          top: { style: 'medium' },
-          left: { style: 'medium' },
-          bottom: { style: 'medium' },
-          right: { style: 'medium' },
-        };
+        cell.border = this.setMediumBorder();
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
@@ -2137,7 +1913,7 @@ export class NieuweExcelService {
     postenRow = worksheet2.addRow(['Postnummers']);
     worksheet2.mergeCells('A4:C4');
     postenRow.font = { name: 'Arial', family: 4, size: 12 };
-    postenRow.alignment = {horizontal:'center'}
+    postenRow.alignment = {horizontal: 'center'};
     postenRow.getCell('D').value = this.PostNumberNullToString(rwaPostNumbers.buisVoorHorPVC);
     postenRow.getCell('E').value = this.PostNumberNullToString(rwaPostNumbers.buisVoorHorPP);
 
@@ -2152,7 +1928,7 @@ export class NieuweExcelService {
     postenRow.getCell('M').value = this.PostNumberNullToString(rwaPostNumbers.reductieVoor);
 
     indexCount = 0;
-    if(!dataList.bochtenInGraden){
+    if (!dataList.bochtenInGraden) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(rwaPostNumbers.bochtVoor);
       indexCount++;
     } else {
@@ -2161,31 +1937,31 @@ export class NieuweExcelService {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(rwaPostNumbers.bocht90Voor);
       indexCount++;
     }
-    if(dataList.rwaSettings.mof){
+    if (dataList.rwaSettings.mof) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(rwaPostNumbers.mof);
       indexCount++;
     }
-    if(dataList.rwaSettings.krimpMof){
+    if (dataList.rwaSettings.krimpMof) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(rwaPostNumbers.krimpmof);
       indexCount++;
     }
-    if(dataList.rwaSettings.koppelStuk){
+    if (dataList.rwaSettings.koppelStuk) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(rwaPostNumbers.koppelstuk);
       indexCount++;
     }
-    if(dataList.rwaSettings.stop){
+    if (dataList.rwaSettings.stop) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(rwaPostNumbers.stop);
       indexCount++;
     }
-    if(dataList.rwaSettings.andere){
+    if (dataList.rwaSettings.andere) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(rwaPostNumbers.andere);
       indexCount++;
     }
-    if(dataList.rwaSettings.aanslBovRwa){
+    if (dataList.rwaSettings.aanslBovRwa) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(rwaPostNumbers.aanslBovAfvoer);
       indexCount++;
     }
-    if(dataList.rwaSettings.terugSlagKlep){
+    if (dataList.rwaSettings.terugSlagKlep) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(rwaPostNumbers.terugslagKlep);
       indexCount++;
     }
@@ -2195,11 +1971,11 @@ export class NieuweExcelService {
     indexCount++;
     postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(rwaPostNumbers.pvcTStuk);
     indexCount += 3;
-    if(dataList.rwaSettings.infilPutje){
+    if (dataList.rwaSettings.infilPutje) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(rwaPostNumbers.infiltratiePutje);
       indexCount++;
     }
-    if(dataList.rwaSettings.tPutje){
+    if (dataList.rwaSettings.tPutje) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(rwaPostNumbers.tPutje);
       indexCount++;
     }
@@ -2213,7 +1989,7 @@ export class NieuweExcelService {
     indexCount++;
     postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(rwaPostNumbers.buisAchterPP);
     indexCount++;
-    if(!dataList.bochtenInGraden){
+    if (!dataList.bochtenInGraden) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(rwaPostNumbers.bochtAchter);
       indexCount++;
     } else {
@@ -2226,12 +2002,7 @@ export class NieuweExcelService {
     indexCount++;
     postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(rwaPostNumbers.YAchter);
     postenRow.eachCell({ includeEmpty: true }, (cell, number) => {
-      cell.border = {
-        top: { style: 'thin' },
-        left: { style: 'thin' },
-        bottom: { style: 'thin' },
-        right: { style: 'thin' },
-      };
+      cell.border = this.setThinBorder();
     });
 
     putjesRow2 = worksheet2.addRow(['', '', '', 'BUIS HORIZONTAAL']);
@@ -2245,18 +2016,13 @@ export class NieuweExcelService {
       fgColor: { argb: 'EEECE1' },
       bgColor: { argb: '000080' },
     };
-    putjesRow2.getCell('A').border = {
-      top: { style: 'thin' },
-      left: { style: 'thin' },
-      bottom: { style: 'thin' },
-      right: { style: 'thin' },
-    };
+    putjesRow2.getCell('A').border = this.setThinBorder();
     worksheet2.mergeCells('D5:E5');
     putjesRow2.getCell('F').value = 'BUIS VERTICAAL';
     worksheet2.mergeCells('F5:G5');
     putjesRow2.getCell('H').value = 'HOEVEELHEDEN VOOR PUTJE';
     worksheet2.mergeCells('H5:' + eindVoorPutje + '5');
-    putjesRow2.getCell(kolommen[indexEndVoorPutje+1]).value = 'Fun/omh';
+    putjesRow2.getCell(kolommen[indexEndVoorPutje + 1]).value = 'Fun/omh';
     putjesRow2.getCell(startPutjeEnSoortPutje).value = 'SOORT PUTJE';
     worksheet2.mergeCells(startPutjeEnSoortPutje + '5:' + eindSoortPutje + '5');
     putjesRow2.getCell(beginPutKader).value = 'PUTKADERS';
@@ -2269,25 +2035,15 @@ export class NieuweExcelService {
 
     putjesRow2.eachCell({ includeEmpty: true }, (cell, number) => {
       if (number === 4 || number === 6 || number === 8) {
-        cell.border = {
-          top: { style: 'medium' },
-          left: { style: 'medium' },
-          bottom: { style: 'medium' },
-          right: { style: 'medium' },
-        };
+        cell.border = this.setMediumBorder();
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
           fgColor: { argb: 'B8CCE4' },
           bgColor: { argb: '000080' },
         };
-      } else if ((number === (indexStartPutjeEnSoortPutje + 15)) || (number === (indexBeginPutKader + 15))){
-        cell.border = {
-          top: { style: 'medium' },
-          left: { style: 'medium' },
-          bottom: { style: 'medium' },
-          right: { style: 'medium' },
-        };
+      } else if ((number === (indexStartPutjeEnSoortPutje + 15)) || (number === (indexBeginPutKader + 15))) {
+        cell.border = this.setMediumBorder();
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
@@ -2295,12 +2051,7 @@ export class NieuweExcelService {
           bgColor: { argb: '000080' },
         };
       } else if ((number === (indexBeginNaPutje + 15)) || (number === (indexStukkenNaPut + 15))) {
-        cell.border = {
-          top: { style: 'medium' },
-          left: { style: 'medium' },
-          bottom: { style: 'medium' },
-          right: { style: 'medium' },
-        };
+        cell.border = this.setMediumBorder();
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
@@ -2308,26 +2059,16 @@ export class NieuweExcelService {
           bgColor: { argb: '000080' },
         };
       } else if (number === indexEndVoorPutje + 15) {
-        cell.border = {
-          top: { style: 'medium' },
-          left: { style: 'medium' },
-          bottom: { style: 'medium' },
-          right: { style: 'medium' },
-        };
+        cell.border = this.setMediumBorder();
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
           fgColor: { argb: 'FFEDFF' },
           bgColor: { argb: '000080' },
         };
-      } else if(number === (indexBeginPutKader + 13)){
-        if(dataList.rwaSettings.infilPutje && dataList.rwaSettings.tPutje){
-          cell.border = {
-            top: { style: 'medium' },
-            left: { style: 'medium' },
-            bottom: { style: 'medium' },
-            right: { style: 'medium' },
-          };
+      } else if (number === (indexBeginPutKader + 13)) {
+        if (dataList.rwaSettings.infilPutje && dataList.rwaSettings.tPutje) {
+          cell.border = this.setMediumBorder();
           cell.fill = {
             type: 'pattern',
             pattern: 'solid',
@@ -2335,14 +2076,9 @@ export class NieuweExcelService {
             bgColor: { argb: '000080' },
           };
         }
-      } else if(number === (indexBeginPutKader + 14)){
-        if(dataList.rwaSettings.infilPutje || dataList.rwaSettings.tPutje){
-          cell.border = {
-            top: { style: 'medium' },
-            left: { style: 'medium' },
-            bottom: { style: 'medium' },
-            right: { style: 'medium' },
-          };
+      } else if (number === (indexBeginPutKader + 14)) {
+        if (dataList.rwaSettings.infilPutje || dataList.rwaSettings.tPutje) {
+          cell.border = this.setMediumBorder();
           cell.fill = {
             type: 'pattern',
             pattern: 'solid',
@@ -2353,14 +2089,14 @@ export class NieuweExcelService {
       }
     });
 
-    stukkenRow = worksheet2.addRow(['Straat', 'Huisnr.', 'Volgnr.', 'PVC','PP','PVC','PP','Indrukmof', 'Y-Stuk', 'T-Buis',
+    stukkenRow = worksheet2.addRow(['Straat', 'Huisnr.', 'Volgnr.', 'PVC', 'PP', 'PVC', 'PP', 'Indrukmof', 'Y-Stuk', 'T-Buis',
       'T-Stuk', 'Flex. aansl.', 'Reductie']);
     stukkenRow.font = { name: 'Arial', family: 4, size: 13, bold: true };
     stukkenRow.height = 18;
     stukkenRow.alignment = { vertical: 'middle', horizontal: 'center' };
     indexCount = 0;
 
-    if(!dataList.bochtenInGraden){
+    if (!dataList.bochtenInGraden) {
       stukkenRow.getCell(kolommen[indexCount]).value = 'Bocht';
       indexCount++;
     } else {
@@ -2369,31 +2105,31 @@ export class NieuweExcelService {
       stukkenRow.getCell(kolommen[indexCount]).value = 'Bocht 90°';
       indexCount++;
     }
-    if(dataList.rwaSettings.mof){
+    if (dataList.rwaSettings.mof) {
       stukkenRow.getCell(kolommen[indexCount]).value = 'Mof';
       indexCount++;
     }
-    if(dataList.rwaSettings.krimpMof){
+    if (dataList.rwaSettings.krimpMof) {
       stukkenRow.getCell(kolommen[indexCount]).value = 'Krimpmof';
       indexCount++;
     }
-    if(dataList.rwaSettings.koppelStuk){
+    if (dataList.rwaSettings.koppelStuk) {
       stukkenRow.getCell(kolommen[indexCount]).value = 'Koppelstuk';
       indexCount++;
     }
-    if(dataList.rwaSettings.stop){
+    if (dataList.rwaSettings.stop) {
       stukkenRow.getCell(kolommen[indexCount]).value = 'Stop';
       indexCount++;
     }
-    if(dataList.rwaSettings.andere){
+    if (dataList.rwaSettings.andere) {
       stukkenRow.getCell(kolommen[indexCount]).value = 'Andere';
       indexCount++;
     }
-    if(dataList.rwaSettings.aanslBovRwa){
+    if (dataList.rwaSettings.aanslBovRwa) {
       stukkenRow.getCell(kolommen[indexCount]).value = 'Aansl. bov';
       indexCount++;
     }
-    if(dataList.rwaSettings.terugSlagKlep){
+    if (dataList.rwaSettings.terugSlagKlep) {
       stukkenRow.getCell(kolommen[indexCount]).value = 'Terugslagklep';
       indexCount++;
     }
@@ -2406,13 +2142,13 @@ export class NieuweExcelService {
     stukkenRow.getCell(kolommen[indexCount]).value = 'Geen';
     indexCount++;
     stukkenRow.getCell(kolommen[indexCount]).value = 'Andere';
-    if(dataList.rwaSettings.infilPutje){
+    if (dataList.rwaSettings.infilPutje) {
       indexCount++;
-      stukkenRow.getCell(kolommen[indexCount]).value = 'Infilputje'
+      stukkenRow.getCell(kolommen[indexCount]).value = 'Infilputje';
     }
-    if(dataList.rwaSettings.tPutje){
+    if (dataList.rwaSettings.tPutje) {
       indexCount++;
-      stukkenRow.getCell(kolommen[indexCount]).value = 'T-putje'
+      stukkenRow.getCell(kolommen[indexCount]).value = 'T-putje';
     }
     indexCount++;
     stukkenRow.getCell(kolommen[indexCount]).value = 'Gietijzer';
@@ -2426,7 +2162,7 @@ export class NieuweExcelService {
     stukkenRow.getCell(kolommen[indexCount]).value = 'PP';
     indexCount++;
 
-    if(!dataList.bochtenInGraden){
+    if (!dataList.bochtenInGraden) {
       stukkenRow.getCell(kolommen[indexCount]).value = 'Bocht';
       indexCount++;
     } else {
@@ -2441,64 +2177,39 @@ export class NieuweExcelService {
 
     stukkenRow.eachCell({ includeEmpty: true }, (cell, number) => {
       if (number <= 3) {
-        cell.border = {
-          top: { style: 'medium' },
-          left: { style: 'medium' },
-          bottom: { style: 'medium' },
-          right: { style: 'medium' },
-        };
+        cell.border = this.setMediumBorder();
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
           fgColor: { argb: 'EEECE1' },
           bgColor: { argb: '000080' },
         };
-      }else if (number > 3 && number <= (22 - notUsedVariableCount)) {
-        cell.border = {
-          top: { style: 'medium' },
-          left: { style: 'medium' },
-          bottom: { style: 'medium' },
-          right: { style: 'medium' },
-        };
+      } else if (number > 3 && number <= (22 - notUsedVariableCount)) {
+        cell.border = this.setMediumBorder();
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
           fgColor: { argb: 'B8CCE4' },
           bgColor: { argb: '000080' },
         };
-      } else if (number === (23 - notUsedVariableCount)){
-        cell.border = {
-          top: { style: 'medium' },
-          left: { style: 'medium' },
-          bottom: { style: 'medium' },
-          right: { style: 'medium' },
-        };
+      } else if (number === (23 - notUsedVariableCount)) {
+        cell.border = this.setMediumBorder();
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
           fgColor: { argb: 'FFEDFF' },
           bgColor: { argb: '000080' },
         };
-      } else if (number > (23 - notUsedVariableCount) && number <= 32 - (secondNotUsedVariableCount + notUsedVariableCount)){
-        cell.border = {
-          top: { style: 'medium' },
-          left: { style: 'medium' },
-          bottom: { style: 'medium' },
-          right: { style: 'medium' },
-        };
+      } else if (number > (23 - notUsedVariableCount) && number <= 32 - (secondNotUsedVariableCount + notUsedVariableCount)) {
+        cell.border = this.setMediumBorder();
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
           fgColor: { argb: 'EEECE1' },
           bgColor: { argb: '000080' },
         };
-      } else if (number > 32  - (secondNotUsedVariableCount + notUsedVariableCount + thirdNotUsedVariableCount) && number <= 38 - (secondNotUsedVariableCount + notUsedVariableCount + thirdNotUsedVariableCount)){
-        cell.border = {
-          top: { style: 'medium' },
-          left: { style: 'medium' },
-          bottom: { style: 'medium' },
-          right: { style: 'medium' },
-        };
+      } else if (number > 32  - (secondNotUsedVariableCount + notUsedVariableCount + thirdNotUsedVariableCount) && number <= 38 - (secondNotUsedVariableCount + notUsedVariableCount + thirdNotUsedVariableCount)) {
+        cell.border = this.setMediumBorder();
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
@@ -2547,8 +2258,8 @@ export class NieuweExcelService {
     let bochtVoor90CountRWA = 0;
     let bochtAchter45CountRWA = 0;
     let bochtAchter90CountRWA = 0;
-    for (let data of dataList.projectList) {
-      let project = data;
+    for (const data of dataList.projectList) {
+      const project = data;
       if (project.regenWaterAfvoer != null && this.checkHasRWA(project.regenWaterAfvoer)) {
         totalRowCountRWA++;
         let buisVoorHorPVC = 0;
@@ -2557,14 +2268,14 @@ export class NieuweExcelService {
         let buisVoorVertPP = 0;
         let buisAchterPVC = 0;
         let buisAchterPP = 0;
-        if(project.regenWaterAfvoer.isPP){
+        if (project.regenWaterAfvoer.isPP) {
           buisVoorHorPPCountRWA += this.NullToZero(project.regenWaterAfvoer.buisVoorHor) + this.NullToZero(project.regenWaterAfvoer.buisVoorHor2);
           buisVoorVertPPCountRWA += this.NullToZero(project.regenWaterAfvoer.buisVoorVert) + this.NullToZero(project.regenWaterAfvoer.buisVoorVert2);
           buisAchterPPCountRWA += this.NullToZero(project.regenWaterAfvoer.buisAchter);
           buisVoorHorPP = this.NullToZero(project.regenWaterAfvoer.buisVoorHor) + this.NullToZero(project.regenWaterAfvoer.buisVoorHor2);
           buisVoorVertPP = this.NullToZero(project.regenWaterAfvoer.buisVoorVert) + this.NullToZero(project.regenWaterAfvoer.buisVoorVert2);
           buisAchterPP = this.NullToZero(project.regenWaterAfvoer.buisAchter);
-        } else if(project.regenWaterAfvoer.buisTypeAchter == null){
+        } else if (project.regenWaterAfvoer.buisTypeAchter == null) {
           buisVoorHorPVCCountRWA += this.NullToZero(project.regenWaterAfvoer.buisVoorHor) + this.NullToZero(project.regenWaterAfvoer.buisVoorHor2);
           buisVoorVertPVCCountRWA += this.NullToZero(project.regenWaterAfvoer.buisVoorVert) + this.NullToZero(project.regenWaterAfvoer.buisVoorVert2);
           buisAchterPVCCountRWA += this.NullToZero(project.regenWaterAfvoer.buisAchter);
@@ -2572,7 +2283,7 @@ export class NieuweExcelService {
           buisVoorVertPVC = this.NullToZero(project.regenWaterAfvoer.buisVoorVert) + this.NullToZero(project.regenWaterAfvoer.buisVoorVert2);
           buisAchterPVC = this.NullToZero(project.regenWaterAfvoer.buisAchter);
         } else {
-          switch(project.regenWaterAfvoer.buisType) {
+          switch (project.regenWaterAfvoer.buisType) {
             case null: {
               break;
             }
@@ -2591,7 +2302,7 @@ export class NieuweExcelService {
               break;
             }
           }
-          switch(project.regenWaterAfvoer.buisTypeAchter) {
+          switch (project.regenWaterAfvoer.buisTypeAchter) {
             case null: {
               break;
             }
@@ -2608,11 +2319,10 @@ export class NieuweExcelService {
           }
         }
 
-        if(!dataList.bochtenInGraden){
+        if (!dataList.bochtenInGraden) {
           bochtVoorCountRWA += this.NullToZero(project.regenWaterAfvoer.bochtVoor) + this.NullToZero(project.regenWaterAfvoer.bochtVoor2);
           bochtAchterCountRWA += this.NullToZero(project.regenWaterAfvoer.bochtAchter);
-        }
-        else {
+        } else {
           bochtVoor45CountRWA += this.NullToZero(project.regenWaterAfvoer.gradenBochtVoor45) + this.NullToZero(project.regenWaterAfvoer.gradenBocht2Voor45);
           bochtVoor90CountRWA += this.NullToZero(project.regenWaterAfvoer.gradenBochtVoor90) + this.NullToZero(project.regenWaterAfvoer.gradenBocht2Voor90);
           bochtAchter45CountRWA += this.NullToZero(project.regenWaterAfvoer.gradenBochtAchter45);
@@ -2677,17 +2387,17 @@ export class NieuweExcelService {
           anderPutjeCountRWA++;
           anderPutje = project.regenWaterAfvoer.anderPutje;
         }
-        if(dataList.rwaSettings.infilPutje === true && project.regenWaterAfvoer.infilPutje === true){
+        if (dataList.rwaSettings.infilPutje === true && project.regenWaterAfvoer.infilPutje === true) {
           infilPutje = 1;
           infilPutjeCountRWA++;
         }
-        if(dataList.rwaSettings.terugSlagKlep === true && project.regenWaterAfvoer.terugslagklep === true){
+        if (dataList.rwaSettings.terugSlagKlep === true && project.regenWaterAfvoer.terugslagklep === true) {
           terugslagklep = 1;
           terugslagklepCountRWA++;
         }
         tPutjeCountRWA += this.NullToZero(project.regenWaterAfvoer.tPutje);
         let funOmh = 0;
-        if(!dataList.bochtenInGraden){
+        if (!dataList.bochtenInGraden) {
           funOmh =
             this.NullToZero(project.regenWaterAfvoer.buisVoorHor) + this.NullToZero(project.regenWaterAfvoer.buisVoorHor2) +
             (this.NullToZero(project.regenWaterAfvoer.buisVoorVert) * buisVertMult) + (this.NullToZero(project.regenWaterAfvoer.buisVoorVert2) * buisVertMult) +
@@ -2705,9 +2415,9 @@ export class NieuweExcelService {
             (this.NullToZero(indrukmof) * mofMult);
           funOmhCountRWA += +funOmh;
         }
-        let funOmhString = +(funOmh.toFixed(2));
+        const funOmhString = +(funOmh.toFixed(2));
 
-        let dataRow = worksheet2.addRow([
+        const dataRow = worksheet2.addRow([
           project?.street,
           project?.huisNr,
           project?.index,
@@ -2720,11 +2430,11 @@ export class NieuweExcelService {
           this.ConvertNumberToEmptyString(tBuis),
           this.ConvertNumberToEmptyString(tStuk),
           this.ConvertNumberToEmptyString(flexAansluiting),
-          this.ConvertNumberToEmptyString(this.NullToZero(project.regenWaterAfvoer.reductieVoor) + this.NullToZero(project.regenWaterAfvoer.reductieVoor2))
+          this.ConvertNumberToEmptyString(this.NullToZero(project.regenWaterAfvoer.reductieVoor) + this.NullToZero(project.regenWaterAfvoer.reductieVoor2)),
         ]);
         dataRow.font = { name: 'Arial', family: 4, size: 12};
         let indexCount = 0;
-        if(!dataList.bochtenInGraden){
+        if (!dataList.bochtenInGraden) {
           dataRow.getCell(kolommen[indexCount]).value = this.ConvertNumberToEmptyString(this.NullToZero(project.regenWaterAfvoer.bochtVoor) + this.NullToZero(project.regenWaterAfvoer.bochtVoor2));
           indexCount++;
         } else {
@@ -2733,39 +2443,39 @@ export class NieuweExcelService {
           dataRow.getCell(kolommen[indexCount]).value = this.ConvertNumberToEmptyString(this.NullToZero(project.regenWaterAfvoer.gradenBochtVoor90) + this.NullToZero(project.regenWaterAfvoer.gradenBocht2Voor90));
           indexCount++;
         }
-        if(dataList.rwaSettings.mof){
+        if (dataList.rwaSettings.mof) {
           dataRow.getCell(kolommen[indexCount]).value = this.ConvertNumberToEmptyString(project.regenWaterAfvoer.mof);
           mofCountRWA += this.NullToZero(project.regenWaterAfvoer.mof);
           indexCount++;
         }
-        if(dataList.rwaSettings.krimpMof){
+        if (dataList.rwaSettings.krimpMof) {
           dataRow.getCell(kolommen[indexCount]).value = this.ConvertNumberToEmptyString(project.regenWaterAfvoer.krimpmof);
           krimpmofCountRWA += this.NullToZero(project.regenWaterAfvoer.krimpmof);
           indexCount++;
         }
-        if(dataList.rwaSettings.koppelStuk){
+        if (dataList.rwaSettings.koppelStuk) {
           dataRow.getCell(kolommen[indexCount]).value = this.ConvertNumberToEmptyString(project.regenWaterAfvoer.koppelstuk);
           koppelstukCountRWA += this.NullToZero(project.regenWaterAfvoer.koppelstuk);
           indexCount++;
         }
-        if(dataList.rwaSettings.stop){
+        if (dataList.rwaSettings.stop) {
           dataRow.getCell(kolommen[indexCount]).value = this.ConvertNumberToEmptyString(project.regenWaterAfvoer.stop);
           stopCountRWA += this.NullToZero(project.regenWaterAfvoer.stop);
           indexCount++;
         }
-        if(dataList.rwaSettings.andere){
+        if (dataList.rwaSettings.andere) {
           dataRow.getCell(kolommen[indexCount]).value = project.regenWaterAfvoer.andere;
-          if(project.regenWaterAfvoer.andere != null && project.regenWaterAfvoer.andere.trim() !== ''){
+          if (project.regenWaterAfvoer.andere != null && project.regenWaterAfvoer.andere.trim() !== '') {
             andereCountRWA++;
           }
           indexCount++;
         }
-        if(dataList.rwaSettings.aanslBovRwa){
+        if (dataList.rwaSettings.aanslBovRwa) {
           dataRow.getCell(kolommen[indexCount]).value = this.ConvertNumberToEmptyString(project.regenWaterAfvoer.aanslBovRWA);
           aanslBovRegenafvoerCountRWA += this.NullToZero(project.regenWaterAfvoer.aanslBovRWA);
           indexCount++;
         }
-        if(dataList.rwaSettings.terugSlagKlep){
+        if (dataList.rwaSettings.terugSlagKlep) {
           dataRow.getCell(kolommen[indexCount]).value = this.ConvertNumberToEmptyString(terugslagklep);
           indexCount++;
         }
@@ -2779,11 +2489,11 @@ export class NieuweExcelService {
         indexCount++;
         dataRow.getCell(kolommen[indexCount]).value = anderPutje;
         indexCount++;
-        if(dataList.rwaSettings.infilPutje){
+        if (dataList.rwaSettings.infilPutje) {
           dataRow.getCell(kolommen[indexCount]).value = this.ConvertNumberToEmptyString(infilPutje);
           indexCount++;
         }
-        if(dataList.rwaSettings.tPutje){
+        if (dataList.rwaSettings.tPutje) {
           dataRow.getCell(kolommen[indexCount]).value = this.ConvertNumberToEmptyString(project.regenWaterAfvoer.tPutje);
           indexCount++;
         }
@@ -2793,11 +2503,11 @@ export class NieuweExcelService {
         indexCount++;
         dataRow.getCell(kolommen[indexCount]).value = this.BoolToString(!project.regenWaterAfvoer.gietijzer ? project.regenWaterAfvoer.alukader : false);
         indexCount++;
-        dataRow.getCell(kolommen[indexCount]).value = this.ConvertNumberToEmptyString(buisAchterPVC)
+        dataRow.getCell(kolommen[indexCount]).value = this.ConvertNumberToEmptyString(buisAchterPVC);
         indexCount++;
-        dataRow.getCell(kolommen[indexCount]).value = this.ConvertNumberToEmptyString(buisAchterPP)
+        dataRow.getCell(kolommen[indexCount]).value = this.ConvertNumberToEmptyString(buisAchterPP);
         indexCount++;
-        if(!dataList.bochtenInGraden){
+        if (!dataList.bochtenInGraden) {
           dataRow.getCell(kolommen[indexCount]).value = this.ConvertNumberToEmptyString(this.NullToZero(project.regenWaterAfvoer.bochtAchter));
           indexCount++;
         } else {
@@ -2806,9 +2516,9 @@ export class NieuweExcelService {
           dataRow.getCell(kolommen[indexCount]).value = this.ConvertNumberToEmptyString(this.NullToZero(project.regenWaterAfvoer.gradenBochtAchter90));
           indexCount++;
         }
-        dataRow.getCell(kolommen[indexCount]).value = this.ConvertNumberToEmptyString(project.regenWaterAfvoer.reductieAchter)
+        dataRow.getCell(kolommen[indexCount]).value = this.ConvertNumberToEmptyString(project.regenWaterAfvoer.reductieAchter);
         indexCount++;
-        dataRow.getCell(kolommen[indexCount]).value = this.ConvertNumberToEmptyString(project.regenWaterAfvoer.YAchter)
+        dataRow.getCell(kolommen[indexCount]).value = this.ConvertNumberToEmptyString(project.regenWaterAfvoer.YAchter);
         indexCount++;
 
       }
@@ -2846,21 +2556,21 @@ export class NieuweExcelService {
     totaalBuisVertVoorRWA = +totaalBuisVertVoorRWA.toFixed(2);
     totaalBuisAchterRWA = +totaalBuisAchterRWA.toFixed(2);
 
-    let totalenMeetstaatRWA = new TotaalMeetstaat(totaalBuisHorVoorRWA, totaalBuisVertVoorRWA, totaalBuisAchterRWA, 0,
+    const totalenMeetstaatRWA = new TotaalMeetstaat(totaalBuisHorVoorRWA, totaalBuisVertVoorRWA, totaalBuisAchterRWA, 0,
       buisVoorHorPVCCountRWA, buisVoorHorPPCountRWA, 0, buisVoorVertPVCCountRWA, buisVoorVertPPCountRWA, bochtVoorCountRWA, reductieVoorCountRWA,
-      indrukmofCountRWA, yStukCountRWA,tBuisCountRWA, tStukCountRWA, flexAanCountRWA,mofCountRWA,krimpmofCountRWA,koppelstukCountRWA,stopCountRWA,andereCountRWA,
-      kunststofCountRWA,pvcTStukCountRWA,gietIjzerCountRWA,betonKaderCountRWA,aluKaderCountRWA,0,buisAchterPVCCountRWA,buisAchterPPCountRWA,
+      indrukmofCountRWA, yStukCountRWA, tBuisCountRWA, tStukCountRWA, flexAanCountRWA, mofCountRWA, krimpmofCountRWA, koppelstukCountRWA, stopCountRWA, andereCountRWA,
+      kunststofCountRWA, pvcTStukCountRWA, gietIjzerCountRWA, betonKaderCountRWA, aluKaderCountRWA, 0, buisAchterPVCCountRWA, buisAchterPPCountRWA,
       bochtAchterCountRWA, YAchterCountRWA, reductieAchterCountRWA, funOmhCountRWA, geenPutjeCountRWA, anderPutjeCountRWA, aanslBovRegenafvoerCountRWA, terugslagklepCountRWA,
-      infilPutjeCountRWA,0,tPutjeCountRWA, bochtVoor45CountRWA, bochtAchter45CountRWA, bochtVoor90CountRWA, bochtAchter90CountRWA);
+      infilPutjeCountRWA, 0, tPutjeCountRWA, bochtVoor45CountRWA, bochtAchter45CountRWA, bochtVoor90CountRWA, bochtAchter90CountRWA);
 
     counter = 0;
     totaalExtraPreviousTotalen = 0;
-    if(dataList.totalenMeetstaatRWA != null && dataList.totalenMeetstaatRWA.length !== 0){
+    if (dataList.totalenMeetstaatRWA != null && dataList.totalenMeetstaatRWA.length !== 0) {
       totaalExtraPreviousTotalen = dataList.totalenMeetstaatRWA.length;
 
-      for(let vorige of dataList.totalenMeetstaatRWA){
+      for (const vorige of dataList.totalenMeetstaatRWA) {
         counter++;
-        let vorigeTotalenRow = worksheet2.addRow([(counter === dataList.totalenMeetstaatRWA.length ? 'Laatste vorige totalen' : 'Vorige totalen'),
+        const vorigeTotalenRow = worksheet2.addRow([(counter === dataList.totalenMeetstaatRWA.length ? 'Laatste vorige totalen' : 'Vorige totalen'),
           'Datum:', new Date(vorige.date).toLocaleDateString(), vorige.buisVoorHorPVC, vorige.buisVoorHorPP,
           vorige.buisVoorVertPVC, vorige.buisVoorVertPP, vorige.indrukmof,
           vorige.yStuk, vorige.tBuis, vorige.tStuk, vorige.flexAan, vorige.reductieVoor]);
@@ -2869,7 +2579,7 @@ export class NieuweExcelService {
         vorigeTotalenRow.alignment = { vertical: 'middle', horizontal: 'center' };
         indexCount = 0;
 
-        if(!dataList.bochtenInGraden){
+        if (!dataList.bochtenInGraden) {
           vorigeTotalenRow.getCell(kolommen[indexCount]).value = vorige.bochtVoor;
           indexCount++;
         } else {
@@ -2878,31 +2588,31 @@ export class NieuweExcelService {
           vorigeTotalenRow.getCell(kolommen[indexCount]).value = vorige.gradenBochtVoor90;
           indexCount++;
         }
-        if(dataList.rwaSettings.mof){
+        if (dataList.rwaSettings.mof) {
           vorigeTotalenRow.getCell(kolommen[indexCount]).value = vorige.mof;
           indexCount++;
         }
-        if(dataList.rwaSettings.krimpMof){
+        if (dataList.rwaSettings.krimpMof) {
           vorigeTotalenRow.getCell(kolommen[indexCount]).value = vorige.krimpmof;
           indexCount++;
         }
-        if(dataList.rwaSettings.koppelStuk){
+        if (dataList.rwaSettings.koppelStuk) {
           vorigeTotalenRow.getCell(kolommen[indexCount]).value = vorige.koppelstuk;
           indexCount++;
         }
-        if(dataList.rwaSettings.stop){
+        if (dataList.rwaSettings.stop) {
           vorigeTotalenRow.getCell(kolommen[indexCount]).value = vorige.stop;
           indexCount++;
         }
-        if(dataList.rwaSettings.andere){
+        if (dataList.rwaSettings.andere) {
           vorigeTotalenRow.getCell(kolommen[indexCount]).value = vorige.andere;
           indexCount++;
         }
-        if(dataList.rwaSettings.aanslBovRwa){
+        if (dataList.rwaSettings.aanslBovRwa) {
           vorigeTotalenRow.getCell(kolommen[indexCount]).value = vorige.aanslBovAfvoer;
           indexCount++;
         }
-        if(dataList.rwaSettings.terugSlagKlep){
+        if (dataList.rwaSettings.terugSlagKlep) {
           vorigeTotalenRow.getCell(kolommen[indexCount]).value = vorige.terugslagklep;
           indexCount++;
         }
@@ -2916,11 +2626,11 @@ export class NieuweExcelService {
         indexCount++;
         vorigeTotalenRow.getCell(kolommen[indexCount]).value = vorige.anderPutje;
         indexCount++;
-        if(dataList.rwaSettings.infilPutje){
+        if (dataList.rwaSettings.infilPutje) {
           vorigeTotalenRow.getCell(kolommen[indexCount]).value = vorige.infilPutje;
           indexCount++;
         }
-        if(dataList.rwaSettings.tPutje){
+        if (dataList.rwaSettings.tPutje) {
           vorigeTotalenRow.getCell(kolommen[indexCount]).value = vorige.tPutje;
           indexCount++;
         }
@@ -2934,7 +2644,7 @@ export class NieuweExcelService {
         indexCount++;
         vorigeTotalenRow.getCell(kolommen[indexCount]).value = vorige.buisAchterPP;
         indexCount++;
-        if(!dataList.bochtenInGraden){
+        if (!dataList.bochtenInGraden) {
           vorigeTotalenRow.getCell(kolommen[indexCount]).value = vorige.bochtAchter;
           indexCount++;
         } else {
@@ -2947,7 +2657,7 @@ export class NieuweExcelService {
         indexCount++;
         vorigeTotalenRow.getCell(kolommen[indexCount]).value = vorige.YAchter;
         indexCount++;
-        if(counter === dataList.totalenMeetstaatRWA.length){
+        if (counter === dataList.totalenMeetstaatRWA.length) {
           vorigeTotalenRow.eachCell({ includeEmpty: true }, (cell, number) => {
             cell.fill = {
               type: 'pattern',
@@ -2955,176 +2665,166 @@ export class NieuweExcelService {
               fgColor: { argb: 'D8E4BC' },
               bgColor: { argb: 'D8E4BC' },
             };
-            cell.border = {
-              top: { style: 'medium' },
-              left: { style: 'medium' },
-              bottom: { style: 'medium' },
-              right: { style: 'medium' },
-            };
+            cell.border = this.setMediumBorder();
           });
         } else {
           vorigeTotalenRow.eachCell({ includeEmpty: true }, (cell, number) => {
-            cell.border = {
-              top: { style: 'thin' },
-              left: { style: 'thin' },
-              bottom: { style: 'thin' },
-              right: { style: 'thin' },
-            };
+            cell.border = this.setThinBorder();
           });
         }
       }
     }
 
     worksheet2.columns.forEach(function (column, i) {
-      if((i >= 1 && i < 8)){
+      if ((i >= 1 && i < 8)) {
         column.width = 12;
-      } else if((i >= 9 && i <= 11) || (i >= 27 - notUsedVariableCount && i  <= (32 - notUsedVariableCount))){
+      } else if ((i >= 9 && i <= 11) || (i >= 27 - notUsedVariableCount && i  <= (32 - notUsedVariableCount))) {
         column.width = 11;
-      } else if(i === 8) {
+      } else if (i === 8) {
         column.width = 13;
-      } else{
+      } else {
         let maxLength = 0;
-        column["eachCell"]({ includeEmpty: true }, function (cell) {
-          if(!allStrings.find(x => x === cell.value)){
-            let columnLength = cell.value ? cell.value.toString().length : 10;
+        column['eachCell']({ includeEmpty: true }, function (cell) {
+          if (!allStrings.find(x => x === cell.value)) {
+            const columnLength = cell.value ? cell.value.toString().length : 10;
             if (columnLength > maxLength ) {
               maxLength = columnLength;
             }
           }
         });
         column.width = maxLength < 11 ? 11 : maxLength + 3;
-        if(i === 0){
+        if (i === 0) {
           column.width = 25;
-        }  else if(maxLength >= 8 && maxLength < 10){
+        }  else if (maxLength >= 8 && maxLength < 10) {
           column.width = maxLength < 13 ? 13 : maxLength + 2;
-        } else if(maxLength >= 10 && maxLength < 13){
+        } else if (maxLength >= 10 && maxLength < 13) {
           column.width = 14;
-        } else if(maxLength >= 13){
+        } else if (maxLength >= 13) {
           column.width = 16;
         }
       }
     });
-    if(totaalExtraPreviousTotalen > 0){
+    if (totaalExtraPreviousTotalen > 0) {
       totaalExtraPreviousTotalen++;
-      let latestTotalen = dataList.totalenMeetstaatRWA[dataList.totalenMeetstaatRWA.length-1];
+      const latestTotalen = dataList.totalenMeetstaatRWA[dataList.totalenMeetstaatRWA.length - 1];
 
-      let verschilTotalenRow = worksheet2.addRow(['VERSCHIL totalen', '', '']);
+      const verschilTotalenRow = worksheet2.addRow(['VERSCHIL totalen', '', '']);
       verschilTotalenRow.font = { name: 'Arial', family: 4, size: 13, bold: true };
       verschilTotalenRow.height = 18;
       verschilTotalenRow.alignment = { vertical: 'middle', horizontal: 'center' };
-      let column = "D";
+      let column = 'D';
       indexCount = 0;
-      let verschilRow = 6 + totaalExtraPreviousTotalen + totalRowCountRWA;
-      for(let i = 0; i < 10; i++){
+      const verschilRow = 6 + totaalExtraPreviousTotalen + totalRowCountRWA;
+      for (let i = 0; i < 10; i++) {
         column = totaalKolommen[i];
-        verschilTotalenRow.getCell(totaalKolommen[i]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
+        verschilTotalenRow.getCell(totaalKolommen[i]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
         indexCount++;
       }
-      if(!dataList.bochtenInGraden){
+      if (!dataList.bochtenInGraden) {
         column = totaalKolommen[indexCount];
-        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
+        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
         indexCount++;
       } else {
         column = totaalKolommen[indexCount];
-        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
+        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
         indexCount++;
         column = totaalKolommen[indexCount];
-        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
+        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
         indexCount++;
       }
 
-      if(dataList.rwaSettings.mof){
+      if (dataList.rwaSettings.mof) {
         column = totaalKolommen[indexCount];
-        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
+        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
         indexCount++;
       }
-      if(dataList.rwaSettings.krimpMof){
+      if (dataList.rwaSettings.krimpMof) {
         column = totaalKolommen[indexCount];
-        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
+        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
         indexCount++;
       }
-      if(dataList.rwaSettings.koppelStuk){
+      if (dataList.rwaSettings.koppelStuk) {
         column = totaalKolommen[indexCount];
-        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
+        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
         indexCount++;
       }
-      if(dataList.rwaSettings.stop){
+      if (dataList.rwaSettings.stop) {
         column = totaalKolommen[indexCount];
-        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
+        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
         indexCount++;
       }
-      if(dataList.rwaSettings.andere){
+      if (dataList.rwaSettings.andere) {
         column = totaalKolommen[indexCount];
-        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
+        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
         indexCount++;
       }
-      if(dataList.rwaSettings.aanslBovRwa){
+      if (dataList.rwaSettings.aanslBovRwa) {
         column = totaalKolommen[indexCount];
-        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
+        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
         indexCount++;
       }
-      if(dataList.rwaSettings.terugSlagKlep){
+      if (dataList.rwaSettings.terugSlagKlep) {
         column = totaalKolommen[indexCount];
-        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
-        indexCount++;
-      }
-      column = totaalKolommen[indexCount];
-      verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
-      indexCount++;
-      column = totaalKolommen[indexCount];
-      verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
-      indexCount++;
-      column = totaalKolommen[indexCount];
-      verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
-      indexCount++;
-      column = totaalKolommen[indexCount];
-      verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
-      indexCount++;
-      column = totaalKolommen[indexCount];
-      verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
-      indexCount++;
-      if(dataList.rwaSettings.infilPutje){
-        column = totaalKolommen[indexCount];
-        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
-        indexCount++;
-      }
-      if(dataList.rwaSettings.tPutje){
-        column = totaalKolommen[indexCount];
-        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
+        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
         indexCount++;
       }
       column = totaalKolommen[indexCount];
-      verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
+      verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
       indexCount++;
       column = totaalKolommen[indexCount];
-      verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
+      verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
       indexCount++;
       column = totaalKolommen[indexCount];
-      verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
+      verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
       indexCount++;
       column = totaalKolommen[indexCount];
-      verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
+      verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
       indexCount++;
       column = totaalKolommen[indexCount];
-      verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
+      verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
       indexCount++;
-      if(!dataList.bochtenInGraden){
+      if (dataList.rwaSettings.infilPutje) {
         column = totaalKolommen[indexCount];
-        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
+        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
+        indexCount++;
+      }
+      if (dataList.rwaSettings.tPutje) {
+        column = totaalKolommen[indexCount];
+        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
+        indexCount++;
+      }
+      column = totaalKolommen[indexCount];
+      verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
+      indexCount++;
+      column = totaalKolommen[indexCount];
+      verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
+      indexCount++;
+      column = totaalKolommen[indexCount];
+      verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
+      indexCount++;
+      column = totaalKolommen[indexCount];
+      verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
+      indexCount++;
+      column = totaalKolommen[indexCount];
+      verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
+      indexCount++;
+      if (!dataList.bochtenInGraden) {
+        column = totaalKolommen[indexCount];
+        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
         indexCount++;
       } else {
         column = totaalKolommen[indexCount];
-        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
+        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
         indexCount++;
         column = totaalKolommen[indexCount];
-        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
+        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
         indexCount++;
       }
       column = totaalKolommen[indexCount];
-      verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
+      verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
       indexCount++;
       column = totaalKolommen[indexCount];
-      verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
+      verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
       indexCount++;
       verschilTotalenRow.eachCell({ includeEmpty: true }, (cell, number) => {
         cell.fill = {
@@ -3133,12 +2833,7 @@ export class NieuweExcelService {
           fgColor: { argb: 'f2f2f2' },
           bgColor: { argb: 'f2f2f2' },
         };
-        cell.border = {
-          top: { style: 'medium' },
-          left: { style: 'medium' },
-          bottom: { style: 'medium' },
-          right: { style: 'medium' },
-        };
+        cell.border = this.setMediumBorder();
       });
     }
     totalenRow = worksheet2.addRow(['Huidige totalen', '', '']);
@@ -3147,52 +2842,52 @@ export class NieuweExcelService {
     totalenRow.alignment = { vertical: 'middle', horizontal: 'center' };
     indexCount = 0;
     eindKolomNewData = 6 + totalRowCountRWA;
-    row = "D";
-    for(let i = 0; i < 10; i++){
+    row = 'D';
+    for (let i = 0; i < 10; i++) {
       row = totaalKolommen[i];
-      totalenRow.getCell(row).value = { formula: "=SUM(" + row + "7:" + row + eindKolomNewData + ')', date1904: false };
+      totalenRow.getCell(row).value = { formula: '=SUM(' + row + '7:' + row + eindKolomNewData + ')', date1904: false };
       indexCount++;
     }
-    if(!dataList.bochtenInGraden){
+    if (!dataList.bochtenInGraden) {
       row = totaalKolommen[indexCount];
-      totalenRow.getCell(row).value = { formula: "=SUM(" + row + "7:" + row + eindKolomNewData + ')', date1904: false };
+      totalenRow.getCell(row).value = { formula: '=SUM(' + row + '7:' + row + eindKolomNewData + ')', date1904: false };
       indexCount++;
     } else {
       row = totaalKolommen[indexCount];
-      totalenRow.getCell(row).value = { formula: "=SUM(" + row + "7:" + row + eindKolomNewData + ')', date1904: false };
+      totalenRow.getCell(row).value = { formula: '=SUM(' + row + '7:' + row + eindKolomNewData + ')', date1904: false };
       indexCount++;
       row = totaalKolommen[indexCount];
-      totalenRow.getCell(row).value = { formula: "=SUM(" + row + "7:" + row + eindKolomNewData + ')', date1904: false };
-      indexCount++;
-    }
-    if(dataList.rwaSettings.mof){
-      row = totaalKolommen[indexCount];
-      totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=SUM(" + row + "7:" + row + eindKolomNewData + ')', date1904: false };
+      totalenRow.getCell(row).value = { formula: '=SUM(' + row + '7:' + row + eindKolomNewData + ')', date1904: false };
       indexCount++;
     }
-    if(dataList.rwaSettings.krimpMof){
+    if (dataList.rwaSettings.mof) {
       row = totaalKolommen[indexCount];
-      totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=SUM(" + row + "7:" + row + eindKolomNewData + ')', date1904: false };
+      totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=SUM(' + row + '7:' + row + eindKolomNewData + ')', date1904: false };
       indexCount++;
     }
-    if(dataList.rwaSettings.koppelStuk){
+    if (dataList.rwaSettings.krimpMof) {
       row = totaalKolommen[indexCount];
-      totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=SUM(" + row + "7:" + row + eindKolomNewData + ')', date1904: false };
+      totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=SUM(' + row + '7:' + row + eindKolomNewData + ')', date1904: false };
       indexCount++;
     }
-    if(dataList.rwaSettings.stop){
+    if (dataList.rwaSettings.koppelStuk) {
       row = totaalKolommen[indexCount];
-      totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=SUM(" + row + "7:" + row + eindKolomNewData + ')', date1904: false };
+      totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=SUM(' + row + '7:' + row + eindKolomNewData + ')', date1904: false };
+      indexCount++;
+    }
+    if (dataList.rwaSettings.stop) {
+      row = totaalKolommen[indexCount];
+      totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=SUM(' + row + '7:' + row + eindKolomNewData + ')', date1904: false };
       indexCount++;
     }
     if (dataList.rwaSettings.andere) {
       row = totaalKolommen[indexCount];
-      //optelling andere veld
+      // optelling andere veld
       nonEmptyCount = 0;
       const startRow = 7;
       const endRow = eindKolomNewData; // The end row number
       for (let i = startRow; i <= endRow; i++) {
-        let cellValue = worksheet2.getCell(`${row}${i}`).value;
+        const cellValue = worksheet2.getCell(`${row}${i}`).value;
         // Check if the cell is not null/undefined, and is not an empty string
         if (cellValue !== null && cellValue !== undefined && cellValue.toString().trim() !== '') {
           nonEmptyCount++;
@@ -3201,35 +2896,35 @@ export class NieuweExcelService {
       totalenRow.getCell(totaalKolommen[indexCount]).value = nonEmptyCount;
       indexCount++;
     }
-    if(dataList.rwaSettings.aanslBovRwa){
+    if (dataList.rwaSettings.aanslBovRwa) {
       row = totaalKolommen[indexCount];
-      totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=SUM(" + row + "7:" + row + eindKolomNewData + ')', date1904: false };
+      totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=SUM(' + row + '7:' + row + eindKolomNewData + ')', date1904: false };
       indexCount++;
     }
-    if(dataList.rwaSettings.terugSlagKlep){
+    if (dataList.rwaSettings.terugSlagKlep) {
       row = totaalKolommen[indexCount];
-      totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=SUM(" + row + "7:" + row + eindKolomNewData + ')', date1904: false };
+      totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=SUM(' + row + '7:' + row + eindKolomNewData + ')', date1904: false };
       indexCount++;
     }
     row = totaalKolommen[indexCount];
-    totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=SUM(" + row + "7:" + row + eindKolomNewData + ')', date1904: false };
+    totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=SUM(' + row + '7:' + row + eindKolomNewData + ')', date1904: false };
     indexCount++;
     row = totaalKolommen[indexCount];
-    totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=SUM(" + row + "7:" + row + eindKolomNewData + ')', date1904: false };
+    totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=SUM(' + row + '7:' + row + eindKolomNewData + ')', date1904: false };
     indexCount++;
     row = totaalKolommen[indexCount];
-    totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=SUM(" + row + "7:" + row + eindKolomNewData + ')', date1904: false };
+    totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=SUM(' + row + '7:' + row + eindKolomNewData + ')', date1904: false };
     indexCount++;
     row = totaalKolommen[indexCount];
-    totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=SUM(" + row + "7:" + row + eindKolomNewData + ')', date1904: false };
+    totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=SUM(' + row + '7:' + row + eindKolomNewData + ')', date1904: false };
     indexCount++;
     row = totaalKolommen[indexCount];
-    //optelling andere veld
+    // optelling andere veld
     nonEmptyCount = 0;
     startRow = 7;
     endRow = eindKolomNewData; // The end row number
     for (let i = startRow; i <= endRow; i++) {
-      let cellValue = worksheet2.getCell(`${row}${i}`).value;
+      const cellValue = worksheet2.getCell(`${row}${i}`).value;
       // Check if the cell is not null/undefined, and is not an empty string
       if (cellValue !== null && cellValue !== undefined && cellValue.toString().trim() !== '') {
         nonEmptyCount++;
@@ -3237,48 +2932,48 @@ export class NieuweExcelService {
     }
     totalenRow.getCell(totaalKolommen[indexCount]).value = nonEmptyCount;
     indexCount++;
-    if(dataList.rwaSettings.infilPutje){
+    if (dataList.rwaSettings.infilPutje) {
       row = totaalKolommen[indexCount];
-      totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=SUM(" + row + "7:" + row + eindKolomNewData + ')', date1904: false };
+      totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=SUM(' + row + '7:' + row + eindKolomNewData + ')', date1904: false };
       indexCount++;
     }
-    if(dataList.rwaSettings.tPutje){
+    if (dataList.rwaSettings.tPutje) {
       row = totaalKolommen[indexCount];
-      totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=SUM(" + row + "7:" + row + eindKolomNewData + ')', date1904: false };
+      totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=SUM(' + row + '7:' + row + eindKolomNewData + ')', date1904: false };
       indexCount++;
     }
     row = totaalKolommen[indexCount];
-    totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=COUNTIF(' + row + "7:" + row + eindKolomNewData +',"ja")', date1904: false };
+    totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=COUNTIF(' + row + '7:' + row + eindKolomNewData + ',"ja")', date1904: false };
     indexCount++;
     row = totaalKolommen[indexCount];
-    totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=COUNTIF(' + row + "7:" + row + eindKolomNewData +',"ja")', date1904: false };
+    totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=COUNTIF(' + row + '7:' + row + eindKolomNewData + ',"ja")', date1904: false };
     indexCount++;
     row = totaalKolommen[indexCount];
-    totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=COUNTIF(' + row + "7:" + row + eindKolomNewData +',"ja")', date1904: false };
+    totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=COUNTIF(' + row + '7:' + row + eindKolomNewData + ',"ja")', date1904: false };
     indexCount++;
     row = totaalKolommen[indexCount];
-    totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=SUM(" + row + "7:" + row + eindKolomNewData + ')', date1904: false };
+    totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=SUM(' + row + '7:' + row + eindKolomNewData + ')', date1904: false };
     indexCount++;
     row = totaalKolommen[indexCount];
-    totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=SUM(" + row + "7:" + row + eindKolomNewData + ')', date1904: false };
+    totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=SUM(' + row + '7:' + row + eindKolomNewData + ')', date1904: false };
     indexCount++;
-    if(!dataList.bochtenInGraden){
+    if (!dataList.bochtenInGraden) {
       row = totaalKolommen[indexCount];
-      totalenRow.getCell(row).value = { formula: "=SUM(" + row + "7:" + row + eindKolomNewData + ')', date1904: false };
+      totalenRow.getCell(row).value = { formula: '=SUM(' + row + '7:' + row + eindKolomNewData + ')', date1904: false };
       indexCount++;
     } else {
       row = totaalKolommen[indexCount];
-      totalenRow.getCell(row).value = { formula: "=SUM(" + row + "7:" + row + eindKolomNewData + ')', date1904: false };
+      totalenRow.getCell(row).value = { formula: '=SUM(' + row + '7:' + row + eindKolomNewData + ')', date1904: false };
       indexCount++;
       row = totaalKolommen[indexCount];
-      totalenRow.getCell(row).value = { formula: "=SUM(" + row + "7:" + row + eindKolomNewData + ')', date1904: false };
+      totalenRow.getCell(row).value = { formula: '=SUM(' + row + '7:' + row + eindKolomNewData + ')', date1904: false };
       indexCount++;
     }
     row = totaalKolommen[indexCount];
-    totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=SUM(" + row + "7:" + row + eindKolomNewData + ')', date1904: false };
+    totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=SUM(' + row + '7:' + row + eindKolomNewData + ')', date1904: false };
     indexCount++;
     row = totaalKolommen[indexCount];
-    totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=SUM(" + row + "7:" + row + eindKolomNewData + ')', date1904: false };
+    totalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=SUM(' + row + '7:' + row + eindKolomNewData + ')', date1904: false };
     indexCount++;
     row = totaalKolommen[indexCount];
     totalenRow.eachCell({ includeEmpty: true }, (cell, number) => {
@@ -3288,22 +2983,17 @@ export class NieuweExcelService {
         fgColor: { argb: 'FFFF21' },
         bgColor: { argb: 'FFFF21' },
       };
-      cell.border = {
-        top: { style: 'medium' },
-        left: { style: 'medium' },
-        bottom: { style: 'medium' },
-        right: { style: 'medium' },
-      };
+      cell.border = this.setMediumBorder();
     });
 
-    stukkenRow = worksheet2.addRow(['Straat', 'Huisnr.', 'Volgnr.', 'PVC','PP','PVC','PP','Indrukmof', 'Y-Stuk', 'T-Buis',
+    stukkenRow = worksheet2.addRow(['Straat', 'Huisnr.', 'Volgnr.', 'PVC', 'PP', 'PVC', 'PP', 'Indrukmof', 'Y-Stuk', 'T-Buis',
       'T-Stuk', 'Flex. aansl.', 'Reductie']);
     stukkenRow.font = { name: 'Arial', family: 4, size: 13, bold: true };
     stukkenRow.height = 18;
     stukkenRow.alignment = { vertical: 'middle', horizontal: 'center' };
     indexCount = 0;
 
-    if(!dataList.bochtenInGraden){
+    if (!dataList.bochtenInGraden) {
       stukkenRow.getCell(kolommen[indexCount]).value = 'Bocht';
       indexCount++;
     } else {
@@ -3312,31 +3002,31 @@ export class NieuweExcelService {
       stukkenRow.getCell(kolommen[indexCount]).value = 'Bocht 90°';
       indexCount++;
     }
-    if(dataList.rwaSettings.mof){
+    if (dataList.rwaSettings.mof) {
       stukkenRow.getCell(kolommen[indexCount]).value = 'Mof';
       indexCount++;
     }
-    if(dataList.rwaSettings.krimpMof){
+    if (dataList.rwaSettings.krimpMof) {
       stukkenRow.getCell(kolommen[indexCount]).value = 'Krimpmof';
       indexCount++;
     }
-    if(dataList.rwaSettings.koppelStuk){
+    if (dataList.rwaSettings.koppelStuk) {
       stukkenRow.getCell(kolommen[indexCount]).value = 'Koppelstuk';
       indexCount++;
     }
-    if(dataList.rwaSettings.stop){
+    if (dataList.rwaSettings.stop) {
       stukkenRow.getCell(kolommen[indexCount]).value = 'Stop';
       indexCount++;
     }
-    if(dataList.rwaSettings.andere){
+    if (dataList.rwaSettings.andere) {
       stukkenRow.getCell(kolommen[indexCount]).value = 'Andere';
       indexCount++;
     }
-    if(dataList.rwaSettings.aanslBovRwa){
+    if (dataList.rwaSettings.aanslBovRwa) {
       stukkenRow.getCell(kolommen[indexCount]).value = 'Aansl. bov';
       indexCount++;
     }
-    if(dataList.rwaSettings.terugSlagKlep){
+    if (dataList.rwaSettings.terugSlagKlep) {
       stukkenRow.getCell(kolommen[indexCount]).value = 'Terugslagklep';
       indexCount++;
     }
@@ -3349,13 +3039,13 @@ export class NieuweExcelService {
     stukkenRow.getCell(kolommen[indexCount]).value = 'Geen';
     indexCount++;
     stukkenRow.getCell(kolommen[indexCount]).value = 'Andere';
-    if(dataList.rwaSettings.infilPutje){
+    if (dataList.rwaSettings.infilPutje) {
       indexCount++;
-      stukkenRow.getCell(kolommen[indexCount]).value = 'Infilputje'
+      stukkenRow.getCell(kolommen[indexCount]).value = 'Infilputje';
     }
-    if(dataList.rwaSettings.tPutje){
+    if (dataList.rwaSettings.tPutje) {
       indexCount++;
-      stukkenRow.getCell(kolommen[indexCount]).value = 'T-putje'
+      stukkenRow.getCell(kolommen[indexCount]).value = 'T-putje';
     }
     indexCount++;
     stukkenRow.getCell(kolommen[indexCount]).value = 'Gietijzer';
@@ -3368,7 +3058,7 @@ export class NieuweExcelService {
     indexCount++;
     stukkenRow.getCell(kolommen[indexCount]).value = 'PP';
     indexCount++;
-    if(!dataList.bochtenInGraden){
+    if (!dataList.bochtenInGraden) {
       stukkenRow.getCell(kolommen[indexCount]).value = 'Bocht';
       indexCount++;
     } else {
@@ -3383,64 +3073,39 @@ export class NieuweExcelService {
 
     stukkenRow.eachCell({ includeEmpty: true }, (cell, number) => {
       if (number <= 3) {
-        cell.border = {
-          top: { style: 'medium' },
-          left: { style: 'medium' },
-          bottom: { style: 'medium' },
-          right: { style: 'medium' },
-        };
+        cell.border = this.setMediumBorder();
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
           fgColor: { argb: 'EEECE1' },
           bgColor: { argb: '000080' },
         };
-      }else if (number > 3 && number <= (22 - notUsedVariableCount)) {
-        cell.border = {
-          top: { style: 'medium' },
-          left: { style: 'medium' },
-          bottom: { style: 'medium' },
-          right: { style: 'medium' },
-        };
+      } else if (number > 3 && number <= (22 - notUsedVariableCount)) {
+        cell.border = this.setMediumBorder();
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
           fgColor: { argb: 'B8CCE4' },
           bgColor: { argb: '000080' },
         };
-      } else if (number === (23 - notUsedVariableCount)){
-        cell.border = {
-          top: { style: 'medium' },
-          left: { style: 'medium' },
-          bottom: { style: 'medium' },
-          right: { style: 'medium' },
-        };
+      } else if (number === (23 - notUsedVariableCount)) {
+        cell.border = this.setMediumBorder();
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
           fgColor: { argb: 'FFEDFF' },
           bgColor: { argb: '000080' },
         };
-      } else if (number > (23 - notUsedVariableCount) && number <= 32 - (secondNotUsedVariableCount + notUsedVariableCount)){
-        cell.border = {
-          top: { style: 'medium' },
-          left: { style: 'medium' },
-          bottom: { style: 'medium' },
-          right: { style: 'medium' },
-        };
+      } else if (number > (23 - notUsedVariableCount) && number <= 32 - (secondNotUsedVariableCount + notUsedVariableCount)) {
+        cell.border = this.setMediumBorder();
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
           fgColor: { argb: 'EEECE1' },
           bgColor: { argb: '000080' },
         };
-      } else if (number > 32  - (secondNotUsedVariableCount + notUsedVariableCount + thirdNotUsedVariableCount) && number <= 38 - (secondNotUsedVariableCount + notUsedVariableCount + thirdNotUsedVariableCount)){
-        cell.border = {
-          top: { style: 'medium' },
-          left: { style: 'medium' },
-          bottom: { style: 'medium' },
-          right: { style: 'medium' },
-        };
+      } else if (number > 32  - (secondNotUsedVariableCount + notUsedVariableCount + thirdNotUsedVariableCount) && number <= 38 - (secondNotUsedVariableCount + notUsedVariableCount + thirdNotUsedVariableCount)) {
+        cell.border = this.setMediumBorder();
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
@@ -3463,18 +3128,13 @@ export class NieuweExcelService {
       fgColor: { argb: 'EEECE1' },
       bgColor: { argb: '000080' },
     };
-    putjesRow2.getCell('A').border = {
-      top: { style: 'thin' },
-      left: { style: 'thin' },
-      bottom: { style: 'thin' },
-      right: { style: 'thin' },
-    };
+    putjesRow2.getCell('A').border = this.setThinBorder();
     worksheet2.mergeCells('D' + putjes2RowRij + ':E' + putjes2RowRij);
     putjesRow2.getCell('F').value = 'BUIS VERTICAAL';
     worksheet2.mergeCells('F' + putjes2RowRij + ':G' + putjes2RowRij);
     putjesRow2.getCell('H').value = 'HOEVEELHEDEN VOOR PUTJE';
     worksheet2.mergeCells('H' + putjes2RowRij + ':' + eindVoorPutje + putjes2RowRij);
-    putjesRow2.getCell(kolommen[indexEndVoorPutje+1]).value = 'Fun/omh';
+    putjesRow2.getCell(kolommen[indexEndVoorPutje + 1]).value = 'Fun/omh';
     putjesRow2.getCell(startPutjeEnSoortPutje).value = 'SOORT PUTJE';
     worksheet2.mergeCells(startPutjeEnSoortPutje + putjes2RowRij + ':' + eindSoortPutje + putjes2RowRij);
     putjesRow2.getCell(beginPutKader).value = 'PUTKADERS';
@@ -3487,25 +3147,15 @@ export class NieuweExcelService {
 
     putjesRow2.eachCell({ includeEmpty: true }, (cell, number) => {
       if (number === 4 || number === 6 || number === 8) {
-        cell.border = {
-          top: { style: 'medium' },
-          left: { style: 'medium' },
-          bottom: { style: 'medium' },
-          right: { style: 'medium' },
-        };
+        cell.border = this.setMediumBorder();
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
           fgColor: { argb: 'B8CCE4' },
           bgColor: { argb: '000080' },
         };
-      } else if ((number === (indexStartPutjeEnSoortPutje + 15)) || (number === (indexBeginPutKader + 15))){
-        cell.border = {
-          top: { style: 'medium' },
-          left: { style: 'medium' },
-          bottom: { style: 'medium' },
-          right: { style: 'medium' },
-        };
+      } else if ((number === (indexStartPutjeEnSoortPutje + 15)) || (number === (indexBeginPutKader + 15))) {
+        cell.border = this.setMediumBorder();
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
@@ -3513,12 +3163,7 @@ export class NieuweExcelService {
           bgColor: { argb: '000080' },
         };
       } else if ((number === (indexBeginNaPutje + 15)) || (number === (indexStukkenNaPut + 15))) {
-        cell.border = {
-          top: { style: 'medium' },
-          left: { style: 'medium' },
-          bottom: { style: 'medium' },
-          right: { style: 'medium' },
-        };
+        cell.border = this.setMediumBorder();
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
@@ -3526,12 +3171,7 @@ export class NieuweExcelService {
           bgColor: { argb: '000080' },
         };
       } else if (number === indexEndVoorPutje + 15) {
-        cell.border = {
-          top: { style: 'medium' },
-          left: { style: 'medium' },
-          bottom: { style: 'medium' },
-          right: { style: 'medium' },
-        };
+        cell.border = this.setMediumBorder();
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
@@ -3545,7 +3185,7 @@ export class NieuweExcelService {
     postenRow = worksheet2.addRow(['Postnummers', '', '']);
     worksheet2.mergeCells('A' + postRowRij + ':C' + postRowRij);
     postenRow.font = { name: 'Arial', family: 4, size: 12 };
-    postenRow.alignment = {horizontal:'center'}
+    postenRow.alignment = {horizontal: 'center'};
     postenRow.getCell('D').value = this.PostNumberNullToString(rwaPostNumbers.buisVoorHorPVC);
     postenRow.getCell('E').value = this.PostNumberNullToString(rwaPostNumbers.buisVoorHorPP);
 
@@ -3560,7 +3200,7 @@ export class NieuweExcelService {
     postenRow.getCell('M').value = this.PostNumberNullToString(rwaPostNumbers.reductieVoor);
 
     indexCount = 0;
-    if(!dataList.bochtenInGraden){
+    if (!dataList.bochtenInGraden) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(rwaPostNumbers.bochtVoor);
       indexCount++;
     } else {
@@ -3569,31 +3209,31 @@ export class NieuweExcelService {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(rwaPostNumbers.bocht90Voor);
       indexCount++;
     }
-    if(dataList.rwaSettings.mof){
+    if (dataList.rwaSettings.mof) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(rwaPostNumbers.mof);
       indexCount++;
     }
-    if(dataList.rwaSettings.krimpMof){
+    if (dataList.rwaSettings.krimpMof) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(rwaPostNumbers.krimpmof);
       indexCount++;
     }
-    if(dataList.rwaSettings.koppelStuk){
+    if (dataList.rwaSettings.koppelStuk) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(rwaPostNumbers.koppelstuk);
       indexCount++;
     }
-    if(dataList.rwaSettings.stop){
+    if (dataList.rwaSettings.stop) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(rwaPostNumbers.stop);
       indexCount++;
     }
-    if(dataList.rwaSettings.andere){
+    if (dataList.rwaSettings.andere) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(rwaPostNumbers.andere);
       indexCount++;
     }
-    if(dataList.rwaSettings.aanslBovRwa){
+    if (dataList.rwaSettings.aanslBovRwa) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(rwaPostNumbers.aanslBovAfvoer);
       indexCount++;
     }
-    if(dataList.rwaSettings.terugSlagKlep){
+    if (dataList.rwaSettings.terugSlagKlep) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(rwaPostNumbers.terugslagKlep);
       indexCount++;
     }
@@ -3603,11 +3243,11 @@ export class NieuweExcelService {
     indexCount++;
     postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(rwaPostNumbers.pvcTStuk);
     indexCount += 3;
-    if(dataList.rwaSettings.infilPutje){
+    if (dataList.rwaSettings.infilPutje) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(rwaPostNumbers.infiltratiePutje);
       indexCount++;
     }
-    if(dataList.rwaSettings.tPutje){
+    if (dataList.rwaSettings.tPutje) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(rwaPostNumbers.tPutje);
       indexCount++;
     }
@@ -3621,7 +3261,7 @@ export class NieuweExcelService {
     indexCount++;
     postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(rwaPostNumbers.buisAchterPP);
     indexCount++;
-    if(!dataList.bochtenInGraden){
+    if (!dataList.bochtenInGraden) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(rwaPostNumbers.bochtAchter);
       indexCount++;
     } else {
@@ -3634,15 +3274,10 @@ export class NieuweExcelService {
     indexCount++;
     postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(rwaPostNumbers.YAchter);
     postenRow.eachCell({ includeEmpty: true }, (cell, number) => {
-      cell.border = {
-        top: { style: 'thin' },
-        left: { style: 'thin' },
-        bottom: { style: 'thin' },
-        right: { style: 'thin' },
-      };
+      cell.border = this.setThinBorder();
     });
 
-    let putjeRowRij = 11 + totaalExtraPreviousTotalen + totalRowCountRWA;
+    const putjeRowRij = 11 + totaalExtraPreviousTotalen + totalRowCountRWA;
 
     putjesRow = worksheet2.addRow(['', '', '', 'VOOR PUTJE']);
     putjesRow.font = { name: 'Arial', family: 4, size: 13, bold: true };
@@ -3655,41 +3290,26 @@ export class NieuweExcelService {
       fgColor: { argb: 'EEECE1' },
       bgColor: { argb: '000080' },
     };
-    putjesRow.getCell('A').border = {
-      top: { style: 'thin' },
-      left: { style: 'thin' },
-      bottom: { style: 'thin' },
-      right: { style: 'thin' },
-    };
+    putjesRow.getCell('A').border = this.setThinBorder();
     worksheet2.mergeCells('D' + putjeRowRij + ':G' + putjeRowRij);
-    putjesRow.getCell('H').value = 'VOOR PUTJE'
+    putjesRow.getCell('H').value = 'VOOR PUTJE';
     worksheet2.mergeCells('H' + putjeRowRij + ':' + eindVoorPutje + putjeRowRij);
     putjesRow.getCell(startPutjeEnSoortPutje).value = 'PUTJE';
     worksheet2.mergeCells(startPutjeEnSoortPutje + putjeRowRij + ':' + eindPutKader + putjeRowRij);
     putjesRow.getCell(beginNaPutje).value = 'NA PUTJE';
     worksheet2.mergeCells(beginNaPutje + putjeRowRij + ':' + eindNaPut + putjeRowRij);
-    putjesRow.getCell(kolommen[indexEndVoorPutje+1]).border = {
-      top: { style: 'medium' },
-      left: { style: 'medium' },
-      bottom: { style: 'medium' },
-      right: { style: 'medium' },
-    };
-    putjesRow.getCell(kolommen[indexEndVoorPutje+1]).fill = {
+    putjesRow.getCell(kolommen[indexEndVoorPutje + 1]).border = this.setMediumBorder();
+    putjesRow.getCell(kolommen[indexEndVoorPutje + 1]).fill = {
       type: 'pattern',
       pattern: 'solid',
       fgColor: { argb: 'FFEDFF' },
       bgColor: { argb: '000080' },
     };
 
-    //STANDAARD INDEX VANAF R =
+    // STANDAARD INDEX VANAF R =
     putjesRow.eachCell({ includeEmpty: true }, (cell, number) => {
       if (number === 4 || number === 10) {
-        cell.border = {
-          top: { style: 'medium' },
-          left: { style: 'medium' },
-          bottom: { style: 'medium' },
-          right: { style: 'medium' },
-        };
+        cell.border = this.setMediumBorder();
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
@@ -3697,12 +3317,7 @@ export class NieuweExcelService {
           bgColor: { argb: '000080' },
         };
       } else if (number === (indexStartPutjeEnSoortPutje + 16)) {
-        cell.border = {
-          top: { style: 'medium' },
-          left: { style: 'medium' },
-          bottom: { style: 'medium' },
-          right: { style: 'medium' },
-        };
+        cell.border = this.setMediumBorder();
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
@@ -3710,12 +3325,7 @@ export class NieuweExcelService {
           bgColor: { argb: '000080' },
         };
       } else if (number === (indexBeginNaPutje + 17)) {
-        cell.border = {
-          top: { style: 'medium' },
-          left: { style: 'medium' },
-          bottom: { style: 'medium' },
-          right: { style: 'medium' },
-        };
+        cell.border = this.setMediumBorder();
         cell.fill = {
           type: 'pattern',
           pattern: 'solid',
@@ -3736,12 +3346,12 @@ export class NieuweExcelService {
       margins: {
         left: 0.2, right: 0.2,
         top: 0.75, bottom: 0.75,
-        header: 0.3, footer: 0.3
-      }
+        header: 0.3, footer: 0.3,
+      },
     };
     worksheet2.properties.showGridLines = true;
     worksheet2.views = [
-      { zoomScale: 70 }
+      { zoomScale: 70 },
     ];
 
 
@@ -3769,10 +3379,10 @@ export class NieuweExcelService {
 
 
 
-    //begin kolkpage
+    // begin kolkpage
 
-    let worksheet3 = workbook.addWorksheet('Blad3 KOLK', {
-      views: [{ state: "frozen", ySplit: 5 }],
+    const worksheet3 = workbook.addWorksheet('Blad3 KOLK', {
+      views: [{ state: 'frozen', ySplit: 5 }],
     });
 
     // Add new row
@@ -3791,9 +3401,9 @@ export class NieuweExcelService {
     titleRow.getCell('S').value = 'Berekening fundering/omhulling:';
 
     if (dataList.slokkerProjectList.length !== 0) {
-      let locationRow = worksheet3.addRow([
+      const locationRow = worksheet3.addRow([
         dataList.aannemerProjectNr + ' - ' + dataList.rbProjectNaam +
-        ' - ' + dataList.rbGemeente
+        ' - ' + dataList.rbGemeente,
       ]);
       locationRow.font = {
         name: 'Arial',
@@ -3803,13 +3413,13 @@ export class NieuweExcelService {
       };
       locationRow.height = 20;
       locationRow.getCell('S').value = 'Buis vert: x' + buisVertMult + ', Bocht: x' + bochtMult +
-        ", Y-Stuk: x" + yStukMult + ", Indrukmof: x" + mofMult;
+        ', Y-Stuk: x' + yStukMult + ', Indrukmof: x' + mofMult;
 
     }
     worksheet3.mergeCells('A2:G2');
-    //CHECK VOOR NIET GEBRUIKTE VARIABELEN
+    // CHECK VOOR NIET GEBRUIKTE VARIABELEN
     notUsedVariableCount = 0;
-    if(!dataList.bochtenInGraden){
+    if (!dataList.bochtenInGraden) {
       notUsedVariableCount++;
     }
     if (!dataList.slokkerSettings.mof) {
@@ -3827,13 +3437,13 @@ export class NieuweExcelService {
     if (!dataList.slokkerSettings.andere) {
       notUsedVariableCount++;
     }
-    if(!dataList.slokkerSettings.infiltratieKlok){
+    if (!dataList.slokkerSettings.infiltratieKlok) {
       notUsedVariableCount++;
     }
-    kolommen = ['J','K', 'L', 'M', 'N', 'O','P', 'Q', 'R', 'S'];
-    let indexEindStukken = 6 - notUsedVariableCount;
-    let eindStukken = kolommen[indexEindStukken];
-    let funOmhKolom = kolommen[indexEindStukken + 2];
+    kolommen = ['J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S'];
+    const indexEindStukken = 6 - notUsedVariableCount;
+    const eindStukken = kolommen[indexEindStukken];
+    const funOmhKolom = kolommen[indexEindStukken + 2];
     /*
     let eindVoorPutje = 'U';
     let startPutjeEnSoortPutje = "W";
@@ -3873,14 +3483,14 @@ export class NieuweExcelService {
     console.log(notUsedVariableCount)
 */
 
-    postenRow = worksheet3.addRow(['Postnummers','', this.PostNumberNullToString(slokkerPostNumbers.buis), this.PostNumberNullToString(slokkerPostNumbers.buisVert),
+    postenRow = worksheet3.addRow(['Postnummers', '', this.PostNumberNullToString(slokkerPostNumbers.buis), this.PostNumberNullToString(slokkerPostNumbers.buisVert),
       this.PostNumberNullToString(slokkerPostNumbers.indrukmof), this.PostNumberNullToString(slokkerPostNumbers.ytStuk), this.PostNumberNullToString(slokkerPostNumbers.tBuis), this.PostNumberNullToString(slokkerPostNumbers.flexAan),
       this.PostNumberNullToString(slokkerPostNumbers.reductie)]);
     worksheet3.mergeCells('A3:B3');
     postenRow.font = { name: 'Arial', family: 4, size: 12 };
-    postenRow.alignment = {horizontal:'center'}
+    postenRow.alignment = {horizontal: 'center'};
     indexCount = 0;
-    if(!dataList.bochtenInGraden){
+    if (!dataList.bochtenInGraden) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(slokkerPostNumbers.bocht);
       indexCount++;
     } else {
@@ -3889,47 +3499,42 @@ export class NieuweExcelService {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(slokkerPostNumbers.bocht90);
       indexCount++;
     }
-    if(dataList.slokkerSettings.mof){
+    if (dataList.slokkerSettings.mof) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(slokkerPostNumbers.mof);
       indexCount++;
     }
-    if(dataList.slokkerSettings.krimpmof){
+    if (dataList.slokkerSettings.krimpmof) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(slokkerPostNumbers.krimpmof);
       indexCount++;
     }
-    if(dataList.slokkerSettings.koppelstuk){
+    if (dataList.slokkerSettings.koppelstuk) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(slokkerPostNumbers.koppelstuk);
       indexCount++;
     }
-    if(dataList.slokkerSettings.stop){
+    if (dataList.slokkerSettings.stop) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(slokkerPostNumbers.stop);
       indexCount++;
     }
-    if(dataList.slokkerSettings.andere){
+    if (dataList.slokkerSettings.andere) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(slokkerPostNumbers.andere);
       indexCount++;
     }
-    if(dataList.slokkerSettings.infiltratieKlok){
+    if (dataList.slokkerSettings.infiltratieKlok) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(slokkerPostNumbers.infiltratieKolk);
       indexCount++;
     }
     postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(slokkerPostNumbers.funOmh);
     indexCount++;
     postenRow.eachCell({ includeEmpty: true }, (cell, number) => {
-      cell.border = {
-        top: { style: 'medium' },
-        left: { style: 'medium' },
-        bottom: { style: 'medium' },
-        right: { style: 'medium' },
-      };
+      cell.border = this.setMediumBorder();
     });
 
 
-    stukkenRow = worksheet3.addRow(['Straat', 'Kolk nr.', 'Buis hor.', 'Buis vert.' ,'Indrukmof', 'Y/T-stuk', 'T-buis', 'Flex. aansl.', 'Reductie']);
+    stukkenRow = worksheet3.addRow(['Straat', 'Kolk nr.', 'Buis hor.', 'Buis vert.' , 'Indrukmof', 'Y/T-stuk', 'T-buis', 'Flex. aansl.', 'Reductie']);
     stukkenRow.font = { name: 'Arial', family: 4, size: 13, bold: true };
-    stukkenRow.alignment = {horizontal:'center'}
+    stukkenRow.alignment = {horizontal: 'center'};
     indexCount = 0;
-    if(!dataList.bochtenInGraden){
+    if (!dataList.bochtenInGraden) {
       stukkenRow.getCell(kolommen[indexCount]).value = 'Bocht';
       indexCount++;
     } else {
@@ -3938,39 +3543,34 @@ export class NieuweExcelService {
       stukkenRow.getCell(kolommen[indexCount]).value = 'Bocht 90°';
       indexCount++;
     }
-    if(dataList.slokkerSettings.mof){
+    if (dataList.slokkerSettings.mof) {
       stukkenRow.getCell(kolommen[indexCount]).value = 'Mof';
       indexCount++;
     }
-    if(dataList.slokkerSettings.krimpmof){
+    if (dataList.slokkerSettings.krimpmof) {
       stukkenRow.getCell(kolommen[indexCount]).value = 'Krimpmof';
       indexCount++;
     }
-    if(dataList.slokkerSettings.koppelstuk){
+    if (dataList.slokkerSettings.koppelstuk) {
       stukkenRow.getCell(kolommen[indexCount]).value = 'Koppelstuk';
       indexCount++;
     }
-    if(dataList.slokkerSettings.stop){
-      stukkenRow.getCell(kolommen[indexCount]).value ='Stop';
+    if (dataList.slokkerSettings.stop) {
+      stukkenRow.getCell(kolommen[indexCount]).value = 'Stop';
       indexCount++;
     }
-    if(dataList.slokkerSettings.andere){
+    if (dataList.slokkerSettings.andere) {
       stukkenRow.getCell(kolommen[indexCount]).value = 'Andere';
       indexCount++;
     }
-    if(dataList.slokkerSettings.infiltratieKlok){
-      stukkenRow.getCell(kolommen[indexCount]).value = "Infiltratiekolk";
+    if (dataList.slokkerSettings.infiltratieKlok) {
+      stukkenRow.getCell(kolommen[indexCount]).value = 'Infiltratiekolk';
       indexCount++;
     }
     stukkenRow.getCell(kolommen[indexCount]).value = 'Fun/omh';
     indexCount++;
     stukkenRow.eachCell({ includeEmpty: true }, (cell, number) => {
-      cell.border = {
-        top: { style: 'medium' },
-        left: { style: 'medium' },
-        bottom: { style: 'medium' },
-        right: { style: 'medium' },
-      };
+      cell.border = this.setMediumBorder();
       cell.fill = {
         type: 'pattern',
         pattern: 'solid',
@@ -3998,13 +3598,13 @@ export class NieuweExcelService {
     let infiltratieKolkCount = 0;
     funOmhCount = 0;
     totalRowCount = 0;
-    for (let data of dataList.slokkerProjectList) {
+    for (const data of dataList.slokkerProjectList) {
       totalRowCount++;
-      let slokker = data;
+      const slokker = data;
       let flexAansluiting = 0;
       let indrukmof = 0;
       let infiltratieKolk = 0;
-      let mof = 0;
+      const mof = 0;
       let tBuis = 0;
       let ytStuk = 0;
       switch (slokker.slokker.tBuisStuk) {
@@ -4031,7 +3631,7 @@ export class NieuweExcelService {
       }
       buisHorCount += this.NullToZero(slokker.slokker.buis) + this.NullToZero(slokker.slokker.buis2);
       buisVertCount += this.NullToZero(slokker.slokker.buisVert) + this.NullToZero(slokker.slokker.buisVert2);
-      if(!dataList.bochtenInGraden){
+      if (!dataList.bochtenInGraden) {
         bochtCount += this.NullToZero(slokker.slokker.bocht) + this.NullToZero(slokker.slokker.bocht2);
       } else {
         bocht45Count += this.NullToZero(slokker.slokker.gradenBocht45) + this.NullToZero(slokker.slokker.gradenBocht45Fase2);
@@ -4044,16 +3644,16 @@ export class NieuweExcelService {
       krimpmofCount += this.NullToZero(slokker.slokker.krimpmof);
       koppelstukCount += this.NullToZero(slokker.slokker.koppelstuk);
       stopCount += this.NullToZero(slokker.slokker.stop);
-      if(slokker.slokker.andere != null && slokker.slokker.andere.trim() !== ''){
+      if (slokker.slokker.andere != null && slokker.slokker.andere.trim() !== '') {
         andereCount++;
       }
-      if(dataList.slokkerSettings.infiltratieKlok && slokker.slokker.infiltratieKlok){
+      if (dataList.slokkerSettings.infiltratieKlok && slokker.slokker.infiltratieKlok) {
         infiltratieKolkCount++;
         infiltratieKolk = 1;
       }
 
       let funOmh = 0;
-      if(!dataList.bochtenInGraden){
+      if (!dataList.bochtenInGraden) {
         funOmh =
           this.NullToZero(slokker.slokker.buis) + this.NullToZero(slokker.slokker.buis2) +
           (this.NullToZero(slokker.slokker.buisVert) * buisVertMult) + (this.NullToZero(slokker.slokker.buisVert2) * buisVertMult) +
@@ -4072,9 +3672,9 @@ export class NieuweExcelService {
 
 
       funOmhCount += +funOmh;
-      let funOmhString = +(funOmh.toFixed(2));
+      const funOmhString = +(funOmh.toFixed(2));
 
-      let dataRow3 = worksheet3.addRow([
+      const dataRow3 = worksheet3.addRow([
         slokker.street,
         slokker.index,
         this.ConvertNumberToEmptyString(this.NullToZero(slokker.slokker.buis) + this.NullToZero(slokker.slokker.buis2)),
@@ -4083,11 +3683,11 @@ export class NieuweExcelService {
         this.ConvertNumberToEmptyString(ytStuk),
         this.ConvertNumberToEmptyString(tBuis),
         this.ConvertNumberToEmptyString(flexAansluiting),
-        this.ConvertNumberToEmptyString(slokker.slokker.reductie)
+        this.ConvertNumberToEmptyString(slokker.slokker.reductie),
       ]);
       dataRow3.font = { name: 'Arial', family: 4, size: 12};
       indexCount = 0;
-      if(!dataList.bochtenInGraden){
+      if (!dataList.bochtenInGraden) {
         dataRow3.getCell(kolommen[indexCount]).value = this.ConvertNumberToEmptyString(this.NullToZero(slokker.slokker.bocht) + this.NullToZero(slokker.slokker.bocht2));
         indexCount++;
       } else {
@@ -4096,27 +3696,27 @@ export class NieuweExcelService {
         dataRow3.getCell(kolommen[indexCount]).value = this.ConvertNumberToEmptyString(this.NullToZero(slokker.slokker.gradenBocht90) + this.NullToZero(slokker.slokker.gradenBocht90Fase2));
         indexCount++;
       }
-      if(dataList.slokkerSettings.mof){
+      if (dataList.slokkerSettings.mof) {
         dataRow3.getCell(kolommen[indexCount]).value = this.ConvertNumberToEmptyString(slokker.slokker.mof);
         indexCount++;
       }
-      if(dataList.slokkerSettings.krimpmof){
+      if (dataList.slokkerSettings.krimpmof) {
         dataRow3.getCell(kolommen[indexCount]).value = this.ConvertNumberToEmptyString(slokker.slokker.krimpmof);
         indexCount++;
       }
-      if(dataList.slokkerSettings.koppelstuk){
+      if (dataList.slokkerSettings.koppelstuk) {
         dataRow3.getCell(kolommen[indexCount]).value = this.ConvertNumberToEmptyString(slokker.slokker.koppelstuk);
         indexCount++;
       }
-      if(dataList.slokkerSettings.stop){
+      if (dataList.slokkerSettings.stop) {
         dataRow3.getCell(kolommen[indexCount]).value = this.ConvertNumberToEmptyString(slokker.slokker.stop);
         indexCount++;
       }
-      if(dataList.slokkerSettings.andere){
+      if (dataList.slokkerSettings.andere) {
         dataRow3.getCell(kolommen[indexCount]).value = slokker.slokker.andere;
         indexCount++;
       }
-      if(dataList.slokkerSettings.infiltratieKlok){
+      if (dataList.slokkerSettings.infiltratieKlok) {
         dataRow3.getCell(kolommen[indexCount]).value = this.ConvertNumberToEmptyString(infiltratieKolk);
         indexCount++;
       }
@@ -4144,12 +3744,12 @@ export class NieuweExcelService {
 
     counter = 0;
     totaalExtraPreviousTotalen = 0;
-    if(dataList.totalenMeetstaatKolk != null && dataList.totalenMeetstaatKolk.length !== 0){
+    if (dataList.totalenMeetstaatKolk != null && dataList.totalenMeetstaatKolk.length !== 0) {
       totaalExtraPreviousTotalen = dataList.totalenMeetstaatKolk.length;
 
-      for(let vorige of dataList.totalenMeetstaatKolk){
+      for (const vorige of dataList.totalenMeetstaatKolk) {
         counter++;
-        let vorigeTotalenRow = worksheet3.addRow([(counter === dataList.totalenMeetstaatKolk.length ? 'Laatste vorige totalen' : 'Vorige totalen'),
+        const vorigeTotalenRow = worksheet3.addRow([(counter === dataList.totalenMeetstaatKolk.length ? 'Laatste vorige totalen' : 'Vorige totalen'),
           new Date(vorige.date).toLocaleDateString(), vorige.buis, vorige.buisVert, vorige.indrukmof,
           vorige.ytStuk, vorige.tBuis, vorige.flexAan, vorige.reductie]);
         vorigeTotalenRow.font = { name: 'Arial', family: 4, size: 13, bold: true };
@@ -4157,7 +3757,7 @@ export class NieuweExcelService {
         vorigeTotalenRow.alignment = { vertical: 'middle', horizontal: 'center' };
         indexCount = 0;
 
-        if(!dataList.bochtenInGraden){
+        if (!dataList.bochtenInGraden) {
           vorigeTotalenRow.getCell(kolommen[indexCount]).value = vorige.bocht;
           indexCount++;
         } else {
@@ -4166,34 +3766,34 @@ export class NieuweExcelService {
           vorigeTotalenRow.getCell(kolommen[indexCount]).value = vorige.gradenBocht90;
           indexCount++;
         }
-        if(dataList.slokkerSettings.mof){
+        if (dataList.slokkerSettings.mof) {
           vorigeTotalenRow.getCell(kolommen[indexCount]).value = vorige.mof;
           indexCount++;
         }
-        if(dataList.slokkerSettings.krimpmof){
+        if (dataList.slokkerSettings.krimpmof) {
           vorigeTotalenRow.getCell(kolommen[indexCount]).value = vorige.krimpmof;
           indexCount++;
         }
-        if(dataList.slokkerSettings.koppelstuk){
+        if (dataList.slokkerSettings.koppelstuk) {
           vorigeTotalenRow.getCell(kolommen[indexCount]).value = vorige.koppelstuk;
           indexCount++;
         }
-        if(dataList.slokkerSettings.stop){
+        if (dataList.slokkerSettings.stop) {
           vorigeTotalenRow.getCell(kolommen[indexCount]).value = vorige.stop;
           indexCount++;
         }
-        if(dataList.slokkerSettings.andere){
+        if (dataList.slokkerSettings.andere) {
           vorigeTotalenRow.getCell(kolommen[indexCount]).value = vorige.andere;
           indexCount++;
         }
-        if(dataList.slokkerSettings.infiltratieKlok) {
+        if (dataList.slokkerSettings.infiltratieKlok) {
           vorigeTotalenRow.getCell(kolommen[indexCount]).value = vorige.infiltratieKolk;
           indexCount++;
         }
 
         vorigeTotalenRow.getCell(kolommen[indexCount]).value = vorige.funOmh;
         indexCount++;
-        if(counter === dataList.totalenMeetstaatKolk.length){
+        if (counter === dataList.totalenMeetstaatKolk.length) {
           vorigeTotalenRow.eachCell({ includeEmpty: true }, (cell, number) => {
             cell.fill = {
               type: 'pattern',
@@ -4201,86 +3801,76 @@ export class NieuweExcelService {
               fgColor: { argb: '44c7dbFF' },
               bgColor: { argb: '44db58FF' },
             };
-            cell.border = {
-              top: { style: 'medium' },
-              left: { style: 'medium' },
-              bottom: { style: 'medium' },
-              right: { style: 'medium' },
-            };
+            cell.border = this.setMediumBorder();
           });
         } else {
           vorigeTotalenRow.eachCell({ includeEmpty: true }, (cell, number) => {
-            cell.border = {
-              top: { style: 'thin' },
-              left: { style: 'thin' },
-              bottom: { style: 'thin' },
-              right: { style: 'thin' },
-            };
+            cell.border = this.setThinBorder();
           });
         }
       }
     }
 
-    totaalKolommen = ['C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'AA', 'AB', 'AC', 'AD', 'AE', 'AF', 'AG', 'AH', 'AI','AJ', 'AK', 'AL'];
+    totaalKolommen = ['C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'AA', 'AB', 'AC', 'AD', 'AE', 'AF', 'AG', 'AH', 'AI', 'AJ', 'AK', 'AL'];
 
-    if(totaalExtraPreviousTotalen > 0) {
+    if (totaalExtraPreviousTotalen > 0) {
 
-      let verschilTotalenRow = worksheet3.addRow(['VERSCHIL totalen', '']);
+      const verschilTotalenRow = worksheet3.addRow(['VERSCHIL totalen', '']);
       verschilTotalenRow.font = { name: 'Arial', family: 4, size: 13, bold: true };
       verschilTotalenRow.height = 18;
       verschilTotalenRow.alignment = { vertical: 'middle', horizontal: 'center' };
       indexCount = 0;
-      let verschilRow = 5 + totaalExtraPreviousTotalen + totalRowCount;
+      const verschilRow = 5 + totaalExtraPreviousTotalen + totalRowCount;
       let column = 'C';
-      for(let i = 0; i < 7; i++){
+      for (let i = 0; i < 7; i++) {
         column = totaalKolommen[i];
-        verschilTotalenRow.getCell(totaalKolommen[i]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
+        verschilTotalenRow.getCell(totaalKolommen[i]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
         indexCount++;
       }
-      if(!dataList.bochtenInGraden){
+      if (!dataList.bochtenInGraden) {
         column = totaalKolommen[indexCount];
-        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
+        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
         indexCount++;
       } else {
         column = totaalKolommen[indexCount];
-        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
+        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
         indexCount++;
         column = totaalKolommen[indexCount];
-        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
+        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
         indexCount++;
       }
       if (dataList.slokkerSettings.mof) {
         column = totaalKolommen[indexCount];
-        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
+        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
         indexCount++;
       }
       if (dataList.slokkerSettings.krimpmof) {
         column = totaalKolommen[indexCount];
-        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
+        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
         indexCount++;
       }
       if (dataList.slokkerSettings.koppelstuk) {
         column = totaalKolommen[indexCount];
-        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
+        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
         indexCount++;
       }
       if (dataList.slokkerSettings.stop) {
         column = totaalKolommen[indexCount];
-        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
+        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
         indexCount++;
       }
       if (dataList.slokkerSettings.andere) {
         column = totaalKolommen[indexCount];
-        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
+        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
         indexCount++;
       }
-      if(dataList.slokkerSettings.infiltratieKlok) {
+      if (dataList.slokkerSettings.infiltratieKlok) {
         column = totaalKolommen[indexCount];
-        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
+        verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
         indexCount++;
       }
       column = totaalKolommen[indexCount];
-      verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: "=(" + column + (verschilRow+1) +  "-" + column + (verschilRow-1) + ')', date1904: false };
+      verschilTotalenRow.getCell(totaalKolommen[indexCount]).value = { formula: '=(' + column + (verschilRow + 1) +  '-' + column + (verschilRow - 1) + ')', date1904: false };
       indexCount++;
       verschilTotalenRow.eachCell({ includeEmpty: true }, (cell, number) => {
         cell.fill = {
@@ -4289,12 +3879,7 @@ export class NieuweExcelService {
           fgColor: { argb: 'f2f2f2' },
           bgColor: { argb: 'f2f2f2' },
         };
-        cell.border = {
-          top: { style: 'medium' },
-          left: { style: 'medium' },
-          bottom: { style: 'medium' },
-          right: { style: 'medium' },
-        };
+        cell.border = this.setMediumBorder();
       });
     }
 
@@ -4304,51 +3889,51 @@ export class NieuweExcelService {
     totalenRow.alignment = { vertical: 'middle', horizontal: 'center' };
     indexCount = 0;
     eindKolomNewData = 4 + totalRowCount;
-    row = "C";
-    for(let i = 0; i < 7; i++){
+    row = 'C';
+    for (let i = 0; i < 7; i++) {
       row = totaalKolommen[i];
-      totalenRow.getCell(row).value = { formula: "=SUM(" + row + "5:" + row + eindKolomNewData + ')', date1904: false };
+      totalenRow.getCell(row).value = { formula: '=SUM(' + row + '5:' + row + eindKolomNewData + ')', date1904: false };
       indexCount++;
     }
 
-    if(!dataList.bochtenInGraden){
+    if (!dataList.bochtenInGraden) {
       row = totaalKolommen[indexCount];
-      totalenRow.getCell(row).value = { formula: "=SUM(" + row + "5:" + row + eindKolomNewData + ')', date1904: false };
+      totalenRow.getCell(row).value = { formula: '=SUM(' + row + '5:' + row + eindKolomNewData + ')', date1904: false };
       indexCount++;
     } else {
       row = totaalKolommen[indexCount];
-      totalenRow.getCell(row).value = { formula: "=SUM(" + row + "5:" + row + eindKolomNewData + ')', date1904: false };
+      totalenRow.getCell(row).value = { formula: '=SUM(' + row + '5:' + row + eindKolomNewData + ')', date1904: false };
       indexCount++;
       row = totaalKolommen[indexCount];
-      totalenRow.getCell(row).value = { formula: "=SUM(" + row + "5:" + row + eindKolomNewData + ')', date1904: false };
+      totalenRow.getCell(row).value = { formula: '=SUM(' + row + '5:' + row + eindKolomNewData + ')', date1904: false };
       indexCount++;
     }
-    if(dataList.slokkerSettings.mof){
+    if (dataList.slokkerSettings.mof) {
       row = totaalKolommen[indexCount];
-      totalenRow.getCell(row).value = { formula: "=SUM(" + row + "5:" + row + eindKolomNewData + ')', date1904: false };
+      totalenRow.getCell(row).value = { formula: '=SUM(' + row + '5:' + row + eindKolomNewData + ')', date1904: false };
       indexCount++;
     }
-    if(dataList.slokkerSettings.krimpmof){
+    if (dataList.slokkerSettings.krimpmof) {
       row = totaalKolommen[indexCount];
-      totalenRow.getCell(row).value = { formula: "=SUM(" + row + "5:" + row + eindKolomNewData + ')', date1904: false };
+      totalenRow.getCell(row).value = { formula: '=SUM(' + row + '5:' + row + eindKolomNewData + ')', date1904: false };
       indexCount++;
     }
-    if(dataList.slokkerSettings.koppelstuk){
+    if (dataList.slokkerSettings.koppelstuk) {
       row = totaalKolommen[indexCount];
-      totalenRow.getCell(row).value = { formula: "=SUM(" + row + "5:" + row + eindKolomNewData + ')', date1904: false };
+      totalenRow.getCell(row).value = { formula: '=SUM(' + row + '5:' + row + eindKolomNewData + ')', date1904: false };
       indexCount++;
     }
-    if(dataList.slokkerSettings.stop){
+    if (dataList.slokkerSettings.stop) {
       row = totaalKolommen[indexCount];
-      totalenRow.getCell(row).value = { formula: "=SUM(" + row + "5:" + row + eindKolomNewData + ')', date1904: false };
+      totalenRow.getCell(row).value = { formula: '=SUM(' + row + '5:' + row + eindKolomNewData + ')', date1904: false };
       indexCount++;
     }
-    if(dataList.slokkerSettings.andere){
+    if (dataList.slokkerSettings.andere) {
       nonEmptyCount = 0;
       const startRow = 5;
       const endRow = eindKolomNewData; // The end row number
       for (let i = startRow; i <= endRow; i++) {
-        let cellValue = worksheet3.getCell(`${row}${i}`).value;
+        const cellValue = worksheet3.getCell(`${row}${i}`).value;
         // Check if the cell is not null/undefined, and is not an empty string
         if (cellValue !== null && cellValue !== undefined && cellValue.toString().trim() !== '') {
           nonEmptyCount++;
@@ -4357,13 +3942,13 @@ export class NieuweExcelService {
       totalenRow.getCell(totaalKolommen[indexCount]).value = nonEmptyCount;
       indexCount++;
     }
-    if(dataList.slokkerSettings.infiltratieKlok) {
+    if (dataList.slokkerSettings.infiltratieKlok) {
       row = totaalKolommen[indexCount];
-      totalenRow.getCell(row).value = { formula: "=SUM(" + row + "5:" + row + eindKolomNewData + ')', date1904: false };
+      totalenRow.getCell(row).value = { formula: '=SUM(' + row + '5:' + row + eindKolomNewData + ')', date1904: false };
       indexCount++;
     }
     row = totaalKolommen[indexCount];
-    totalenRow.getCell(row).value = { formula: "=SUM(" + row + "5:" + row + eindKolomNewData + ')', date1904: false };
+    totalenRow.getCell(row).value = { formula: '=SUM(' + row + '5:' + row + eindKolomNewData + ')', date1904: false };
     indexCount++;
     totalenRow.eachCell({ includeEmpty: true }, (cell, number) => {
       cell.fill = {
@@ -4372,18 +3957,13 @@ export class NieuweExcelService {
         fgColor: { argb: 'FFFF21' },
         bgColor: { argb: 'FFFF21' },
       };
-      cell.border = {
-        top: { style: 'medium' },
-        left: { style: 'medium' },
-        bottom: { style: 'medium' },
-        right: { style: 'medium' },
-      };
+      cell.border = this.setMediumBorder();
     });
     worksheet3.columns.forEach(function (column, i) {
       let maxLength = 0;
-      column["eachCell"]({ includeEmpty: true }, function (cell) {
-        if(!allStrings.find(x => x === cell.value)){
-          let columnLength = cell.value ? cell.value.toString().length : 10;
+      column['eachCell']({ includeEmpty: true }, function (cell) {
+        if (!allStrings.find(x => x === cell.value)) {
+          const columnLength = cell.value ? cell.value.toString().length : 10;
           if (columnLength > maxLength ) {
             maxLength = columnLength;
           }
@@ -4393,9 +3973,9 @@ export class NieuweExcelService {
     });
     stukkenRow = worksheet3.addRow(['Straat', 'Kolk nr.', 'Buis hor.', 'Buis vert.', 'Indrukmof', 'Y/T-stuk', 'T-buis', 'Flex. aansl.', 'Reductie']);
     stukkenRow.font = { name: 'Arial', family: 4, size: 13, bold: true };
-    stukkenRow.alignment = {horizontal:'center'}
+    stukkenRow.alignment = {horizontal: 'center'};
     indexCount = 0;
-    if(!dataList.bochtenInGraden){
+    if (!dataList.bochtenInGraden) {
       stukkenRow.getCell(kolommen[indexCount]).value = 'Bocht';
       indexCount++;
     } else {
@@ -4404,39 +3984,34 @@ export class NieuweExcelService {
       stukkenRow.getCell(kolommen[indexCount]).value = 'Bocht 90°';
       indexCount++;
     }
-    if(dataList.slokkerSettings.mof){
-      stukkenRow.getCell(kolommen[indexCount]).value = 'Mof'
+    if (dataList.slokkerSettings.mof) {
+      stukkenRow.getCell(kolommen[indexCount]).value = 'Mof';
       indexCount++;
     }
-    if(dataList.slokkerSettings.krimpmof){
-      stukkenRow.getCell(kolommen[indexCount]).value ='Krimpmof'
+    if (dataList.slokkerSettings.krimpmof) {
+      stukkenRow.getCell(kolommen[indexCount]).value = 'Krimpmof';
       indexCount++;
     }
-    if(dataList.slokkerSettings.koppelstuk){
-      stukkenRow.getCell(kolommen[indexCount]).value = 'Koppelstuk'
+    if (dataList.slokkerSettings.koppelstuk) {
+      stukkenRow.getCell(kolommen[indexCount]).value = 'Koppelstuk';
       indexCount++;
     }
-    if(dataList.slokkerSettings.stop){
-      stukkenRow.getCell(kolommen[indexCount]).value ='Stop'
+    if (dataList.slokkerSettings.stop) {
+      stukkenRow.getCell(kolommen[indexCount]).value = 'Stop';
       indexCount++;
     }
-    if(dataList.slokkerSettings.andere){
-      stukkenRow.getCell(kolommen[indexCount]).value = 'Andere'
+    if (dataList.slokkerSettings.andere) {
+      stukkenRow.getCell(kolommen[indexCount]).value = 'Andere';
       indexCount++;
     }
-    if(dataList.slokkerSettings.infiltratieKlok) {
-      stukkenRow.getCell(kolommen[indexCount]).value = "Infiltratiekolk";
+    if (dataList.slokkerSettings.infiltratieKlok) {
+      stukkenRow.getCell(kolommen[indexCount]).value = 'Infiltratiekolk';
       indexCount++;
     }
-    stukkenRow.getCell(kolommen[indexCount]).value ='Fun/omh'
+    stukkenRow.getCell(kolommen[indexCount]).value = 'Fun/omh';
     indexCount++;
     stukkenRow.eachCell({ includeEmpty: true }, (cell, number) => {
-      cell.border = {
-        top: { style: 'medium' },
-        left: { style: 'medium' },
-        bottom: { style: 'medium' },
-        right: { style: 'medium' },
-      };
+      cell.border = this.setMediumBorder();
       cell.fill = {
         type: 'pattern',
         pattern: 'solid',
@@ -4445,15 +4020,15 @@ export class NieuweExcelService {
       };
     });
 
-    postenRow = worksheet3.addRow(['Postnummers','', this.PostNumberNullToString(slokkerPostNumbers.buis), this.PostNumberNullToString(slokkerPostNumbers.buisVert),
+    postenRow = worksheet3.addRow(['Postnummers', '', this.PostNumberNullToString(slokkerPostNumbers.buis), this.PostNumberNullToString(slokkerPostNumbers.buisVert),
       this.PostNumberNullToString(slokkerPostNumbers.indrukmof), this.PostNumberNullToString(slokkerPostNumbers.ytStuk), this.PostNumberNullToString(slokkerPostNumbers.tBuis), this.PostNumberNullToString(slokkerPostNumbers.flexAan),
       this.PostNumberNullToString(slokkerPostNumbers.reductie)]);
-    let postenRowIndex = 8 + totaalExtraPreviousTotalen + totalRowCount;
+    const postenRowIndex = 8 + totaalExtraPreviousTotalen + totalRowCount;
    worksheet3.mergeCells('A' + postenRowIndex + ':B' + postenRowIndex);
     postenRow.font = { name: 'Arial', family: 4, size: 12 };
-    postenRow.alignment = {horizontal:'center'}
+    postenRow.alignment = {horizontal: 'center'};
     indexCount = 0;
-    if(!dataList.bochtenInGraden){
+    if (!dataList.bochtenInGraden) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(slokkerPostNumbers.bocht);
       indexCount++;
     } else {
@@ -4462,38 +4037,33 @@ export class NieuweExcelService {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(slokkerPostNumbers.bocht90);
       indexCount++;
     }
-    if(dataList.slokkerSettings.mof){
+    if (dataList.slokkerSettings.mof) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(slokkerPostNumbers.mof);
       indexCount++;
     }
-    if(dataList.slokkerSettings.krimpmof){
+    if (dataList.slokkerSettings.krimpmof) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(slokkerPostNumbers.krimpmof);
       indexCount++;
     }
-    if(dataList.slokkerSettings.koppelstuk){
+    if (dataList.slokkerSettings.koppelstuk) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(slokkerPostNumbers.koppelstuk);
       indexCount++;
     }
-    if(dataList.slokkerSettings.stop){
+    if (dataList.slokkerSettings.stop) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(slokkerPostNumbers.stop);
       indexCount++;
     }
-    if(dataList.slokkerSettings.andere){
+    if (dataList.slokkerSettings.andere) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(slokkerPostNumbers.andere);
       indexCount++;
     }
-    if(dataList.slokkerSettings.infiltratieKlok){
+    if (dataList.slokkerSettings.infiltratieKlok) {
       postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(slokkerPostNumbers.infiltratieKolk);
       indexCount++;
     }
     postenRow.getCell(kolommen[indexCount]).value = this.PostNumberNullToString(slokkerPostNumbers.funOmh);
     postenRow.eachCell({ includeEmpty: true }, (cell, number) => {
-      cell.border = {
-        top: { style: 'medium' },
-        left: { style: 'medium' },
-        bottom: { style: 'medium' },
-        right: { style: 'medium' },
-      };
+      cell.border = this.setMediumBorder();
     });
 
     worksheet3.pageSetup = {
@@ -4506,20 +4076,20 @@ export class NieuweExcelService {
       margins: {
         left: 0.2, right: 0.2,
         top: 0.75, bottom: 0.75,
-        header: 0.3, footer: 0.3
-      }
+        header: 0.3, footer: 0.3,
+      },
     };
     worksheet3.properties.showGridLines = true;
     worksheet3.views = [
-      { zoomScale: 77 }
+      { zoomScale: 77 },
     ];
 
 
     if (logoURL != null) {
       this.getBase64ImageFromUrl(logoURL)
         .then(result => {
-          let base64 = result as string;
-          let logo = workbook.addImage({
+          const base64 = result as string;
+          const logo = workbook.addImage({
             base64: base64,
             extension: 'png',
           });
@@ -4527,28 +4097,28 @@ export class NieuweExcelService {
           worksheet2.addImage(logo, 'K1:M2');
           worksheet3.addImage(logo, 'S7:U9');
           workbook.xlsx.writeBuffer().then((data) => {
-            let blob = new Blob([data], {
+            const blob = new Blob([data], {
               type:
                 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
             });
-            fs.saveAs(blob, companyName + '-' + dataList.rbProjectNr + "-" + dataList.rbProjectNaam + "-" + dataList.rbGemeente + " MEETSTAAT.xlsx");
+            fs.saveAs(blob, companyName + '-' + dataList.rbProjectNr + '-' + dataList.rbProjectNaam + '-' + dataList.rbGemeente + ' MEETSTAAT.xlsx');
           });
         })
         .catch(err => console.error(err));
     } else {
       workbook.xlsx.writeBuffer().then((data) => {
-        let blob = new Blob([data], {
+        const blob = new Blob([data], {
           type:
             'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         });
-        fs.saveAs(blob, companyName + '-' + dataList.rbProjectNr + "-" + dataList.rbProjectNaam + "-" + dataList.rbGemeente + " MEETSTAAT.xlsx");
+        fs.saveAs(blob, companyName + '-' + dataList.rbProjectNr + '-' + dataList.rbProjectNaam + '-' + dataList.rbGemeente + ' MEETSTAAT.xlsx');
       });
     }
 
-    if(isVordering){
-      //SAVE MEETSTAAT TOTALEN
-      let totalenMeetstaatKolk = new SlokkerTotaalMeetstaat(indrukmofCount,tBuisCount,ytStukCount,flexAanCount,buisHorCount, buisVertCount,bochtCount,reductieCount,funOmhCount,mofCount,
-        krimpmofCount,koppelstukCount,stopCount,andereCount,infiltratieKolkCount, bocht45Count, bocht90Count);
+    if (isVordering) {
+      // SAVE MEETSTAAT TOTALEN
+      const totalenMeetstaatKolk = new SlokkerTotaalMeetstaat(indrukmofCount, tBuisCount, ytStukCount, flexAanCount, buisHorCount, buisVertCount, bochtCount, reductieCount, funOmhCount, mofCount,
+        krimpmofCount, koppelstukCount, stopCount, andereCount, infiltratieKolkCount, bocht45Count, bocht90Count);
       dataList.totalenMeetstaatDWA = [];
       dataList.totalenMeetstaatKolk = [];
       dataList.totalenMeetstaatRWA = [];
@@ -4556,7 +4126,7 @@ export class NieuweExcelService {
       dataList.totalenMeetstaatDWA.push(totalenMeetstaatDWA);
       dataList.totalenMeetstaatRWA.push(totalenMeetstaatRWA);
       this.apiService.updateTotalenMeetstaat(dataList).subscribe(x => {
-      })
+      });
     }
   }
 
@@ -4605,6 +4175,23 @@ export class NieuweExcelService {
     } else {
       return 'ja';
     }
+  }
+
+  setThinBorder(): Partial<Borders> {
+    return {
+      top: { style: 'thin' },
+      left: { style: 'thin' },
+      bottom: { style: 'thin' },
+      right: { style: 'thin' },
+    };
+  }
+  setMediumBorder(): Partial<Borders> {
+    return {
+      top: { style: 'medium' as const },
+      left: { style: 'medium' as const },
+      bottom: { style: 'medium' as const },
+      right: { style: 'medium' as const },
+    };
   }
 
   checkHasDWA(dwa: Waterafvoer) {
