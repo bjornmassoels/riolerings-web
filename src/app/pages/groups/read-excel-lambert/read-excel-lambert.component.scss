@@ -97,3 +97,32 @@
   gap: 40px 0;
   align-items:center;
 }
+.aansluitingText{
+  font-size: 15px;
+  padding:1px 3px;
+  border:1px solid black;
+  font-weight: 600;
+  color: black;
+  width:fit-content;
+  margin-bottom: 0;
+  background-color: white;
+}
+.aansluitingDiv{
+  width:90%;
+  display:flex;
+  flex-direction:row;
+  justify-content:flex-start;
+  align-items:center;
+  gap:4px;
+  flex-wrap: wrap;
+}
+.faIcon{
+  font-size: 18px;
+  margin-right: 5px;
+}
+.lightGreen{
+  background-color: lightgreen;
+}
+.lightRed{
+  background-color: lightcoral;
+}

@@ -31,7 +31,9 @@ export class Slokkers {
     andere: string;
     buisType: string;
     infiltratieKlok: boolean;
+    //aansluitingOpengracht =  zogezegd aangeslotenOpVrijeUitstroom  . boolean behouden voor compatibiliteit
     aansluitingOpengracht: boolean;
+    aansluitingOpengrachtString: string;
     plaatsAansluiting: string;
     diameter: string;
     tBuisStuk: string;

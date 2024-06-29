@@ -438,6 +438,9 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
       }
       this.hasChangedValue = false;
       this.newDate = null;
+    }, error => {
+      this.toastrService.danger('Er is iets misgegaan, probeer het opnieuw', 'Oops');
+      this.isSaving = false;
     });
   }
 
@@ -618,6 +621,9 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
                         this.isLoaded = false;
                         await this.delay(100);
                         this.loadData();
+                      }, error =>  {
+                        this.toastrService.danger('Er is iets misgegaan, probeer het opnieuw', 'Oops');
+                        this.isSaving = false;
                       });
                     }
                 }
@@ -677,6 +683,9 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
                       this.currentProject = null;
                       await this.delay(100);
                       this.loadData();
+                    }, error => {
+                      this.toastrService.danger('Er is iets misgegaan, probeer het opnieuw', 'Oops');
+                      this.isSaving = false;
                     });
                   }
                 }
