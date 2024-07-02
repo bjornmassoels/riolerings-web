@@ -17,7 +17,7 @@ export class Group {
   public projectList: Project[];
   public slokkerProjectList: SlokkerProjects[];
   public meerwerkList: Meerwerk[];
-  schademeldingen: Schademelding[];
+  schademeldingList: Schademelding[];
   public street: string;
   public company_id: Company;
   public chosen: boolean;

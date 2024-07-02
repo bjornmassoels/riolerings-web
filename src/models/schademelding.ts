@@ -2,6 +2,7 @@
 import { Group } from './groups';
 import { User } from './user';
 import { Photo } from './photo';
+import { Company } from './company';
 
 
 export class Schademelding {
@@ -54,9 +55,26 @@ export class Schademelding {
   tempMachineNummer: string;
 
 
-  public isSlokker: boolean;
-  public isMeerwerk: boolean;
+  isMeerwerk: boolean;
   isSchademelding: boolean;
+  isSelected : boolean;
+
+  //velden van meerwerk voor in zelfde lijst te kunnen loopen
+  public projectNaam: string;
+  public gemeente: string;
+  public street: string;
+  public huisNr: string;
+  public opmerking: string;
+  public minutesWorked: number;
+  public lastWorker: User;
+  public lastWorkerDate: Date;
+  public startDate: Date;
+  public postNumber: string;
+  public countEmployees: number;
+  id: string;
+  xCoordGeoLocationFirsPhoto: number;
+  yCoordGeoLocationFirsPhoto: number;
+  updated: Date;
 
   constructor() {
   }

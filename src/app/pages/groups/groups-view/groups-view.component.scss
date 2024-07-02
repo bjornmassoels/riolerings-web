@@ -822,6 +822,15 @@ width: 270px;
   padding:4px;
   width:fit-content;
 }
+.rowSchademeldingOuterDiv{
+  display:flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  background-color: #88888861;
+  border:1px solid darkgray;
+  border-radius: 5px;
+}
 .rowSchademeldingOuterDiv:hover {
   cursor: pointer;
   background-color: #4b89ff;
@@ -829,7 +838,6 @@ width: 270px;
 }
 .extraBox{
   padding:5px 8px;
-  border: 1px solid lightgray;
   border-radius: 20px;
 }
 .extraInfoText{
@@ -847,12 +855,114 @@ width: 270px;
   gap: 0 30px;
   width:fit-content;
 }
-.rowSchademeldingOuterDiv{
-  display:flex;
+
+
+
+
+//css schademelding en ow
+
+
+.header {
+  display: flex !important;
+  justify-content: space-between;
+  align-items: center;
+  gap:0 10px;
+  width:fit-content;
+  margin-top: 4px !important;
+}
+
+.faIcon{
+  font-size: 20px;
+  margin-right:5px;
+}
+
+
+.hasNotBeenViewBackOW{
+  background-color: #84aeff !important;
+}
+.hasNotBeenViewBackOrange{
+  background-color: #ff9c23 !important;
+}
+.orangeBack{
+  background-color: orange;
+}
+.lightBlueBack{
+  background-color: #84aeff;
+
+}
+.item-box {
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+}
+
+
+/* Specifieke kleur en stijl voor iconen naast tekst */
+.fa-user-pen, .fa-calendar-days, .fa-location-dot, .fa-building,
+.fa-bullseye, .fa-person-circle-exclamation, .fa-circle-question, .fa-snowplow, .fa-comment {
+  color: #0056b3; /* Blauwe kleur voor iconen */
+}
+
+
+
+/* Specifieke kleuren voor verschillende soorten informatie */
+.fa-user-pen { color: #428bca; } /* Blauw voor gebruikersnamen */
+.fa-calendar-days { color: #5cb85c; } /* Groen voor datums */
+.fa-location-dot { color: #f0ad4e; } /* Oranje voor locaties */
+.fa-building { color: #5bc0de; } /* Lichtblauw voor gebouwen */
+.fa-bullseye { color: #d9534f; } /* Rood voor schade richting */
+.fa-person-circle-exclamation { color: #5cb85c; } /* Groen voor verantwoordelijke persoon */
+.fa-circle-question { color: #f0ad4e; } /* Oranje voor schadeoorzaak */
+.fa-snowplow { color: #428bca; } /* Blauw voor schade door wat */
+.fa-comment { color: #d9534f; } /* Rood voor opmerkingen */
+
+
+.infoTextSchadeOw{
+  margin:10px 0;
+  font-size: 16px;
+  padding: 0 10px;
+}
+
+.item-box-schadeOw{
+  padding: 5px 10px 10px 10px;
+  width: 100%;
+  border-bottom: solid 1px #ccc;
+  color: rgba(0, 0, 0, 0.87);
+  display: flex;
   flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  background: white;
+  font-size: 15px !important;
+}
+.schade-ow-edit-box{
+  display:flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: #e1e1e1;
+  gap:6px 0;
+  min-width:170px;
+}
+.nieuwText{
+  font-size: 17px;
+  font-weight: 600;
+  padding:3px;
   border:1px solid darkgray;
+  background-color: yellow;
   border-radius: 5px;
+  margin-bottom: 6px;
+}
+.schadeMinimuWidth{
+  min-width: 220px;
+  padding-left:20px;
+}
+.geenSchadeOfOW{
+  font-size: 19px;
+  font-weight: 600;
+  padding:3px;
+  border:1px solid darkgray;
+  background-color: #e2f8ff;
+  border-radius: 5px;
+  display:block;
+  margin: 100px auto 0 auto;
+  width:fit-content;
 }

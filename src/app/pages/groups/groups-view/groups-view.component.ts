@@ -26,6 +26,7 @@ import { GroupsViewPdfDownloadDialogComponent } from './groups-view-pdf-download
 import moment from 'moment';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { Schademelding } from '../../../../models/schademelding';
+import { Meerwerk } from '../../../../models/meerwerk';
 
 declare var Pace: any;
 
@@ -45,7 +46,7 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
   usersBox: any;
   public projects: Array<Project> = [];
   public slokkerProjects: Array<Project> = [];
-  public meerwerkenList: Array<Project> = [];
+  public meerwerkenList: Array<Schademelding> = [];
   public allProjects: Array<any> = [];
   public allProjectsBetweenDates: Array<Project> = [];
   public isOn: boolean;
@@ -90,6 +91,8 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
   selectedKolkenWithValue: number;
   populatedProjects: Project[];
   schademeldingList: Schademelding[];
+  owAndSchademeldingList: Schademelding[];
+  isViewingOwAndSchademeldingList: boolean;
   constructor(
     private apiService: ApiService,
     private router: Router,
@@ -132,7 +135,9 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
       this.filterTussenDateStartString = this.formService.filterTussenDateStartString;
       this.filterTussenDateEndString = this.formService.filterTussenDateEndString;
     }
-
+    if(this.formService.isViewingOwAndSchademeldingList != null){
+      this.isViewingOwAndSchademeldingList = this.formService.isViewingOwAndSchademeldingList;
+    }
 
   }
 
@@ -141,6 +146,7 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
     this.filterStraatText = '';
     this.isDownloading = false;
     this.selectEverything = false;
+    this.isViewingOwAndSchademeldingList = false;
     this.dateSorteer = 'Afwerkingsdatum';
     this.allStreetNames = [];
     this.apiService.getGroupByIdLighterVersion(groupId).subscribe(async (x) => {
@@ -202,26 +208,37 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
           this.allProjects.push(slokker);
         }
       }
-      this.meerwerkenList = this.group.meerwerkList as Project[];
-      if (this.meerwerkenList != null) {
+      this.meerwerkenList = this.group.meerwerkList as unknown as Schademelding[];
+      if (this.meerwerkenList != null && this.meerwerkenList.length > 0) {
         for (let meerwerk of this.meerwerkenList) {
           meerwerk.createdDate = new Date(meerwerk.created);
           if(meerwerk.updated != null)meerwerk.updated = new Date(meerwerk.updated);
           if (meerwerk.startDate != null) {
             meerwerk.startDate = new Date(meerwerk.startDate);
           }
+          meerwerk.photos = meerwerk.photos.filter(x => x != null);
+
           meerwerk.isMeerwerk = true;
           meerwerk.isSelected = false;
-          this.allProjects.push(meerwerk);
+          meerwerk.isSchademelding = false;
         }
+      } else {
+        this.meerwerkenList = [];
       }
-      this.schademeldingList = this.group.schademeldingen as Schademelding[];
-      if (this.schademeldingList != null) {
+      this.schademeldingList = this.group.schademeldingList as Schademelding[];
+      if (this.schademeldingList != null && this.schademeldingList.length > 0) {
         for (let schademelding of this.schademeldingList) {
           schademelding.createdDate = new Date(schademelding.created);
-
+          schademelding.isMeerwerk = false;
+          schademelding.isSelected = false;
+          schademelding.isSchademelding = true;
         }
+      } else {
+        this.schademeldingList = [];
       }
+      this.owAndSchademeldingList = [...this.schademeldingList, ...this.meerwerkenList];
+      this.owAndSchademeldingList.sort((a, b) => { return a.createdDate < b.createdDate ? 1 : -1; });
+      console.log(this.owAndSchademeldingList);
       this.searchAllProjectsList = this.allProjects;
       this.formService.lastProjects = this.allProjects;
       this.currentProject = new Project();
@@ -597,9 +614,7 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
       this.formService.previousPage.push('/pages/groupview/' + this._id);
       if (project.isSlokker) {
         this.router.navigate(['/pages/slokkerprojectview', project._id]);
-      } else if (project.isMeerwerk) {
-        this.router.navigate(['/pages/meerwerkview', project._id]);
-      } else {
+      }else {
         this.router.navigate(['/pages/projectview', project._id]);
       }
     }
@@ -614,9 +629,7 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
       this.formService.previousPage.push('/pages/groupview/' + this._id);
       if (project.isSlokker) {
         this.router.navigate(['/pages/slokkerprojectedit', project._id]);
-      } else if (project.isMeerwerk) {
-        this.router.navigate(['/pages/meerwerkedit', project._id]);
-      } else {
+      }  else {
         this.router.navigate(['/pages/projectedit', project._id]);
       }
     }
@@ -1368,6 +1381,41 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
 
   createSchademelding() {
     this.formService.previousPage.push('/pages/groupview/' + this._id);
-    this.router.navigate(['/pages/editschademelding/' + this._id + '/' + null ]);
+    this.router.navigate(['/pages/schademeldingedit/' + this._id + '/' + null ]);
+  }
+
+  toggleOwAndSchademeldingView() {
+    this.isViewingOwAndSchademeldingList = !this.isViewingOwAndSchademeldingList;
+    this.formService.isViewingOwAndSchademeldingList = this.isViewingOwAndSchademeldingList;
+  }
+
+  editSchademelding(schademelding: Schademelding) {
+    this.formService.previousPage.push('/pages/groupview/' + this._id);
+    this.router.navigate(['/pages/schademeldingedit/' + this._id + '/' + schademelding._id]);
+  }
+
+  protected readonly onclick = onclick;
+
+  openSchademelding(schademelding: Schademelding) {
+    this.formService.previousPage.push('/pages/groupview/' + this._id);
+    this.router.navigate(['/pages/schademeldingview/' + this._id + '/' + schademelding._id]);
+  }
+
+  openMeerwerk(schademelding: Schademelding) {
+    this.formService.previousPage.push('/pages/groupview/' + this._id);
+    this.router.navigate(['/pages/meerwerkview', schademelding._id]);
+  }
+  editMeerwerk(schademelding: Schademelding) {
+    this.formService.previousPage.push('/pages/groupview/' + this._id);
+    this.router.navigate(['/pages/meerwerkedit' , schademelding._id]);
+  }
+
+  convertMinutesToHours(minutesWorked: number) {
+    if(minutesWorked == null){
+      return '0u 0m';
+    }
+    const hours = Math.floor(minutesWorked / 60);
+    const minutes = minutesWorked % 60;
+    return hours + 'u ' + minutes + 'm';
   }
 }

@@ -103,15 +103,11 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
     const index = this.lastProjects.findIndex(x => x._id === this._id);
     if (index !== 0) {
       const project = this.lastProjects[index - 1];
-      if(!project.isMeerwerk){
         if(project.isSlokker == null || project.isSlokker === false){
           this.checkChangedValue('/pages/projectedit/' + project._id);
         } else {
           this.checkChangedValue('/pages/slokkerprojectedit/' + project._id);
         }
-      } else {
-        this.checkChangedValue('/pages/meerwerkedit/' + project._id);
-      }
     }
   }
 
@@ -119,15 +115,11 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
     const index = this.lastProjects.findIndex(x => x._id === this._id);
     if (this.lastProjects.length > index + 1) {
       const project = this.lastProjects[index + 1];
-      if(!project.isMeerwerk){
         if(project.isSlokker == null || project.isSlokker === false){
           this.checkChangedValue('/pages/projectedit/' +  project._id);
         } else {
           this.checkChangedValue('/pages/slokkerprojectedit/' + project._id);
         }
-      } else {
-        this.checkChangedValue('/pages/meerwerkedit/' + project._id);
-      }
       }
     }
 

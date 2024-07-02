@@ -108,9 +108,7 @@
 
       <div class="flexColumn">
         <p class="inputText"><nb-icon icon="user" pack="fa" style="font-size: 16px;"></nb-icon> Schade door wie</p>
-        <nb-select class="inputField"  placeholder="Schade door wie.." formControlName="schadeDoorWie" >
-          <nb-option *ngFor="let arbeider of arbeiders" value="{{arbeider._id}}">{{arbeider.name}}</nb-option>
-        </nb-select>
+        <input class="inputField"  nbInput type="text" formControlName="schadeDoorWie" placeholder="Schade door..." />
       </div>
 
       <div class="flexColumn">

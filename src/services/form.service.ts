@@ -22,6 +22,7 @@ export class FormService {
   previousPageForScrollIndex: string;
   schademeldingen: Schademelding[];
   schademelding: Schademelding;
+  isViewingOwAndSchademeldingList: boolean;
 
   get currentSlokkerProjects(): SlokkerProjects[] {
     return this._currentSlokkerProjects;

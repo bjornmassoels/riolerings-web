@@ -534,7 +534,7 @@ export class SchademeldingEditComponent implements OnInit, OnDestroy {
         this.toastrService.success( 'De schademelding is aangemaakt', 'Succes!');
         this.outputEvent.emit('schademelding');
         await this.delay(80);
-        await this.router.navigate(['/pages/editschademelding/' + this.group_id + '/' + newSchademelding._id]);
+        await this.router.navigate(['/pages/schademeldingedit/' + this.group_id + '/' + newSchademelding._id]);
       }, error => {
         this.toastrService.danger( 'Er is intern iets misgelopen', 'Mislukt!');
         this.isSaving = false;

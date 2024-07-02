@@ -113,7 +113,7 @@ const routes: Routes = [{
       component: ProjectAddComponent
     },
     {
-      path: 'editschademelding/:groupid/:id',
+      path: 'schademeldingedit/:groupid/:id',
       component: SchademeldingEditComponent
     },
     {

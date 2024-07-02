@@ -118,6 +118,7 @@ export class GroupsComponent implements OnInit {
         this.formService.previousSorteer = null;
         this.formService.filterTussenDateStartString = null;
         this.formService.filterTussenDateEndString = null;
+        this.formService.isViewingOwAndSchademeldingList = false;
         this.formService._allGroups = this.groups;
         if (this.formService.previousGroupIndex != null) {
           let behavior: string = 'auto';
