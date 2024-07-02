@@ -22,6 +22,36 @@ nb-select ::ng-deep {
   margin-bottom:10px;
   padding:14px;
   overflow-x: hidden;
+  margin-top: 7px;
+}
+.form-button {
+  font-weight: 500;
+  background-color: black !important;
+  color: white !important;
+  border: 1px solid black;
+  border-radius: 5px;
+  width: 124px !important;
+  height: 40px;
+  font-size: 18px;
+}
+.boldText {
+  margin-top: 11px;
+  font-size: 24px;
+  font-weight: 600;
+  margin-left: 15px;
+  margin-right: 20px;
+}
+.form-button-blue {
+  font-size: 18px;
+  font-weight: 500;
+  margin-right: 10px;
+  background-color: dodgerblue !important;
+  color: white !important;
+  border: 1px solid dodgerblue;
+  border-radius: 5px;
+  width: 110px !important;
+  height: 40px;
+  margin-left: 35px;
 }
 .outerRowDiv{
   display:flex;
@@ -163,7 +193,7 @@ tr{
   padding:6px;
   margin-top:30px;
   margin-left: 25px;
-  width: 137px;
+  width: 140px;
   height: 85px;
   display: flex;
   flex-direction: column;

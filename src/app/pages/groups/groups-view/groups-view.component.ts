@@ -89,7 +89,7 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
   selectedWachtaansluitingenWithValue: number;
   selectedKolkenWithValue: number;
   populatedProjects: Project[];
-  schademeldingen: Schademelding[];
+  schademeldingList: Schademelding[];
   constructor(
     private apiService: ApiService,
     private router: Router,
@@ -215,9 +215,9 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
           this.allProjects.push(meerwerk);
         }
       }
-      this.schademeldingen = this.group.schademeldingen as Schademelding[];
-      if (this.schademeldingen != null) {
-        for (let schademelding of this.schademeldingen) {
+      this.schademeldingList = this.group.schademeldingen as Schademelding[];
+      if (this.schademeldingList != null) {
+        for (let schademelding of this.schademeldingList) {
           schademelding.createdDate = new Date(schademelding.created);
 
         }

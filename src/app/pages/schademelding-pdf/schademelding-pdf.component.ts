@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Schademelding } from '../../../models/schademelding';
 import { Company } from '../../../models/company';
+import { Group } from '../../../models/groups';
 
 @Component({
   selector: 'ngx-schademelding-pdf',
@@ -10,6 +11,7 @@ import { Company } from '../../../models/company';
 export class SchademeldingPdfComponent implements OnInit {
   @Input() public schademelding: Schademelding;
   @Input() public company: Company;
+  @Input() public group: Group;
   isLoaded: boolean = false;
   constructor() {
   }

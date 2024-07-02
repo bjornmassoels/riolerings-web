@@ -1,14 +1,29 @@
-<div *ngIf="!isNewSchademelding" class="navRow">
-  <button mat-raised-button class="nav-button-black" (click)="onCloseClick(false)">Sluiten</button>
-  <p *ngIf="schademeldingen != null" class="indexText">{{index + 1}}/{{schademeldingen.length}}</p>
-  <button [disabled]="index === 0" *ngIf="index != null && index !== -1" mat-raised-button class="nav-button" (click)="onPreviousClick(false)">Vorige</button>
-  <button [disabled]="index === schademeldingen.length - 1" *ngIf="index != null && index !== -1" mat-raised-button class="nav-button" (click)="onNextClick(false)">Volgende</button>
-  <button mat-raised-button class="save-button" color="primary" (click)="onSubmit()">Opslaan</button>
 
+<div *ngIf="!isNewSchademelding" class="topRow">
+  <button mat-raised-button class="form-button" (click)="goToPrevious()">
+    Terug
+  </button>
+  <button *ngIf="index != null && index !== -1" [disabled]="index === 0" mat-raised-button class="form-button" (click)="onPreviousClick(false)">
+    Vorige
+  </button>
+  <button  *ngIf="index != null && index !== -1" [disabled]="index === schademeldingen.length - 1" mat-raised-button class="form-button" (click)="onNextClick(false)">
+    Volgende
+  </button>
+  <button [disabled]="isSaving" (click)="onSubmit()" mat-raised-button class="form-button-blue" color="primary" type="submit">
+    Opslaan
+  </button>
+
+  <nb-spinner *ngIf="isSaving" class="opslaan-spinner" size="giant" [message]="'Opslaan..'" status="info"></nb-spinner>
+
+  <p *ngIf="schademeldingen != null && index !== -1"  class="boldText">{{index + 1}}/{{schademeldingen.length}}</p>
   <button style="margin-left: 35px;" (click)="generatePDF()" mat-raised-button class="nav-button-black" color="primary"><i style="margin-right: 5px" class="fa-solid fa-download"> </i>PDF </button>
+
 
 </div>
 
+<button *ngIf="isNewSchademelding" mat-raised-button class="form-button" (click)="goToPrevious()">
+  Terug
+</button>
 <mat-card class="edit-card-werf">
   <form *ngIf="isLoaded" [formGroup]="editForm"  class="outerRowDiv">
 
@@ -29,11 +44,11 @@
         <div style="margin-top: 6px"  class="form-group row">
           <div class="col-sm-10">
             <div  class="uurFlexer">
-              <nb-select  class="smallSelect" formControlName="verwachtingKlaarUur">
+              <nb-select  class="smallSelect" formControlName="tijdstipUur">
                 <nb-option *ngFor="let hour of allHours" [value]="hour">{{hour}}</nb-option>
               </nb-select>
               <p class="extraText">Uur</p>
-              <nb-select class="smallSelect" formControlName="verwachtingKlaarMinuten">
+              <nb-select class="smallSelect" formControlName="tijdstipMinuten">
                 <nb-option *ngFor="let number of allMinutes" [value]="number">{{number}}</nb-option>
               </nb-select>
               <p class="extraText">Min</p>
@@ -68,7 +83,7 @@
       </div>
 
       <div *ngIf="photosGetter().length === 1" class="upload-container-empty">
-        <h3>Voeg foto toe</h3>
+        <p style="font-weight: bold">Voeg foto toe</p>
         <input  type="file" name="file" (change)="onFileSelect($event,0)"
                accept=".png,.jpg,.jpeg,.tiff" class="uploadButton2" />
       </div>
@@ -317,13 +332,29 @@
   </form>
 </mat-card>
 
-<div style="margin-bottom: 600px" *ngIf="!isNewSchademelding" class="navRow">
-  <button mat-raised-button class="nav-button-black" (click)="onCloseClick(false)">Sluiten</button>
-    <p *ngIf="schademeldingen != null" class="indexText">{{index + 1}}/{{schademeldingen.length}}</p>
-    <button [disabled]="index === 0" *ngIf="index != null && index !== -1" mat-raised-button class="nav-button" (click)="onPreviousClick(false)">Vorige</button>
-    <button [disabled]="index === schademeldingen.length - 1" *ngIf="index != null && index !== -1" mat-raised-button class="nav-button" (click)="onNextClick(false)">Volgende</button>
-  <button mat-raised-button class="save-button" color="primary" (click)="onSubmit()">Opslaan</button>
+
+<div style="margin-bottom: 600px" *ngIf="!isNewSchademelding" class="topRow">
+  <button mat-raised-button class="form-button" (click)="goToPrevious()">
+    Terug
+  </button>
+  <button *ngIf="index != null && index !== -1" [disabled]="index === 0" mat-raised-button class="form-button" (click)="onPreviousClick(false)">
+    Vorige
+  </button>
+  <button  *ngIf="index != null && index !== -1" [disabled]="index === schademeldingen.length - 1" mat-raised-button class="form-button" (click)="onNextClick(false)">
+    Volgende
+  </button>
+  <button [disabled]="isSaving" (click)="onSubmit()" mat-raised-button class="form-button-blue" color="primary" type="submit">
+    Opslaan
+  </button>
+
+  <nb-spinner *ngIf="isSaving" class="opslaan-spinner" size="giant" [message]="'Opslaan..'" status="info"></nb-spinner>
+
+  <p *ngIf="schademeldingen != null && index !== -1"  class="boldText">{{index + 1}}/{{schademeldingen.length}}</p>
+  <button style="margin-left: 35px;" (click)="generatePDF()" mat-raised-button class="nav-button-black" color="primary"><i style="margin-right: 5px" class="fa-solid fa-download"> </i>PDF </button>
+
+
 </div>
+
 <div *ngIf=" isPrint" style="margin-left:10px; display:none;font-size:12px !important;"  id="printContainer" >
-  <ngx-schademelding-pdf [schademelding]="printSchademelding" [company]="company"></ngx-schademelding-pdf>
+  <ngx-schademelding-pdf [schademelding]="printSchademelding" [company]="company" [group]="group"></ngx-schademelding-pdf>
 </div>

@@ -93,10 +93,25 @@
     <ngx-loading-bar style='margin-bottom: 40px; margin-top: 30px;' diameter="40px" includeBar="false" fixed="false" color="blue" value="2"></ngx-loading-bar>
   </div>
 </div>
-<button *ngIf='isOn && !isLoadingBar' (click)="toggleProjectDetails()" class="btn btn-info" [disabled]="checkIfHasSelected()" [ngClass]="checkIfHasSelected()? 'halfOpacity': ''">
-  <i style='margin-right: 8px' [class]="showProjectDetails ? 'fa fa-angle-up' : 'fa fa-angle-down'"></i>
-  <b style="font-size: 15px !important;">{{ showProjectDetails ? 'Verberg Projectgegevens' :group?.rbGemeente + ' - ' + group?.aannemerProjectNr + ' - ' + group?.rbProjectNaam }}</b>
-</button>
+<div class="extraInfoRow">
+  <div class="rowSchademeldingOuterDiv">
+    <nb-icon style="font-size: 24px;margin-right: 10px;margin-left: 10px;border:1px solid gray; border-radius:5px;" pack="fa" icon="angle-down"></nb-icon>
+    <div class="owSchademeldingToggleDiv">
+      <div style="background-color: #ff3928" class="extraBox">
+        <p class="extraInfoText"><nb-icon pack="fa" icon="triangle-exclamation"></nb-icon> <span style="font-size: 18px;margin-left: 6px">0</span> Schademeldingen</p>
+      </div>
+      <div style="background-color: #bec8ff" class="extraBox">
+        <p class="extraInfoText"><nb-icon pack="fa" icon="plus"></nb-icon> <span style="font-size: 18px;margin-left: 6px">0</span> Onvoorziene werken</p>
+      </div>
+    </div>
+  </div>
+
+  <button style="max-width: 900px;line-height: 20px;" *ngIf='isOn && !isLoadingBar' (click)="toggleProjectDetails()" class="btn btn-info" [disabled]="checkIfHasSelected()" [ngClass]="checkIfHasSelected()? 'halfOpacity': ''">
+    <i style='margin-right: 8px' [class]="showProjectDetails ? 'fa fa-angle-up' : 'fa fa-angle-down'"></i>
+    <b style="font-size: 15px !important;">{{ showProjectDetails ? 'Verberg Projectgegevens' :group?.rbGemeente + ' - ' + group?.aannemerProjectNr + ' - ' + group?.rbProjectNaam }}</b>
+  </button>
+</div>
+
 <div *ngIf="isOn" [hidden]='isLoadingBar' class="infoFlex">
   <div *ngIf="group?.rbProjectNaam && showProjectDetails" class="info-row">
     <div class="info-section">
@@ -197,7 +212,10 @@
 
           <input class="selectBox" style="border: 1px solid #88a7da"  [(ngModel)]="range" nbInput placeholder="Filter tussen datums.." [nbDatepicker]="datePicker">
           <nb-rangepicker (rangeChange)="dateChanged()" #datePicker></nb-rangepicker>
-          <button *ngIf="range?.start" (click)="clearDate()" class="clear-button">Clear</button>
+          <button class="closeButton" [ngClass]="range?.start == null ? 'hideButton' : ''"
+                  nbButton status="warning" (click)="clearDate()">
+            <nb-icon icon="close-outline"></nb-icon>
+          </button>
         </div>
       </div>
     </div>

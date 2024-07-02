@@ -1,7 +1,7 @@
 <div id="schademeldingOverzicht">
-  <h1 style="margin: 0 0 6px 12px;">Detailrapport schadegeval</h1>
+  <h3 style="margin: 0 0 6px 12px;">Detailrapport schadegeval</h3>
   <div class="boxColumn">
-    <h2>Algemene gegevens</h2>
+    <h4>Algemene gegevens</h4>
     <p>Werf: <span id="werfNummer">{{schademelding.group_id?.rbProjectNaam}}</span></p>
     <p>Werfnummer: <span id="werfNaam">{{NullToEmptyStr(schademelding.group_id?.aannemerProjectNr)}}</span></p>
     <p>Werfleider: <span style="padding-right: 50px" id="date">{{NullToEmptyStr(schademelding.group_id?.aannemerWerfleider)}}</span><i class="fa-solid fa-clock faIcon"></i>Tijdstip ongeval: <span *ngIf="schademelding.date" id="created">{{('0' + schademelding.date.getDate()).slice(-2)}}/{{('0' + (schademelding.date.getMonth() + 1)).slice(-2)}}/{{('0' + schademelding.date.getFullYear()).slice(-2)}} -
@@ -9,7 +9,7 @@
     <p>Betrokken partij: <span id="tegenPartij">{{schademelding.tegenPartij}}</span></p>
   </div>
   <div class="boxColumn">
-    <h2>Details van de Schade</h2>
+    <h4>Details van de Schade</h4>
     <p>Schade gericht aan: <span id="schadeGerichtAan">{{schademelding.schadeGerichtAan === 'Andere' ? schademelding.schadeGerichtAanAndereString : NullToEmptyStr(schademelding.schadeGerichtAan)}}</span></p>
     <p>Schade door: <span *ngIf="schademelding.schadeDoorWie" id="schadeDoorWie">{{NullToEmptyStr(schademelding.schadeDoorWie)}}</span></p>
     <p>Schade door wat: <span id="schadeDoorWat">{{schademelding.schadeDoorWat}}{{schademelding.tempMachineNummer != null? ' - ' + schademelding.tempMachineNummer: ''}}</span></p>
@@ -23,8 +23,8 @@
     <p>Plaats van werken: <span id="plaatsVanWerken">{{schademelding.plaatsVanWerken === 'Andere'? schademelding.plaatsVanWerkenAndereString : NullToEmptyStr(schademelding.plaatsVanWerken)}}</span></p>
     <p>Omschrijving van de schade: <span id="omschrijvingSchade">{{schademelding.omschrijvingSchade}}</span></p>
   </div>
-  <div *ngIf="schademelding.group_id.gebruiktHerstellingBijSchademelding && checkIfHerstellingIsNotEmpty()" class="boxColumn">
-    <h2>Herstelling</h2>
+  <div *ngIf="group.gebruiktHerstellingBijSchademelding && checkIfHerstellingIsNotEmpty()" class="boxColumn">
+    <h4>Herstelling</h4>
     <p>Starttijd herstelling: <span *ngIf="schademelding.startTijdHerstelling" id="startTijdHerstelling">{{('0' + schademelding.startTijdHerstelling.getDate()).slice(-2)}}/{{('0' + (schademelding.startTijdHerstelling.getMonth() + 1)).slice(-2)}}/{{('0' + schademelding.startTijdHerstelling.getFullYear()).slice(-2)}} -
       {{('0' + schademelding.startTijdHerstelling.getHours()).slice(-2)}}:{{('0' + schademelding.startTijdHerstelling.getMinutes()).slice(-2)}}</span></p>
     <p>Eindtijd herstelling: <span *ngIf="schademelding.eindTijdHerstelling" id="eindTijdHerstelling">{{('0' + schademelding.eindTijdHerstelling.getDate()).slice(-2)}}/{{('0' + (schademelding.eindTijdHerstelling.getMonth() + 1)).slice(-2)}}/{{('0' + schademelding.eindTijdHerstelling.getFullYear()).slice(-2)}} -
@@ -32,8 +32,8 @@
     <p>Aantal personen herstelling: <span id="aantalPersonen">{{schademelding.aantalPersonenHerstelling ? schademelding.aantalPersonenHerstelling + ' pers' : ''}}</span></p>
     <p>Details van schadeherstelling: <span id="detailsHerstelling">{{schademelding.detailsHerstelling}}</span></p>
   </div>
-  <div *ngIf="schademelding.group_id.gebruiktJurdischeInfoBijSchademelding && checkIfPolitieIsNotEmpty()" class="boxColumn">
-    <h2>Politie</h2>
+  <div *ngIf="group.gebruiktJurdischeInfoBijSchademelding && checkIfPolitieIsNotEmpty()" class="boxColumn">
+    <h4>Politie</h4>
     <p >Minnelijke vaststelling gebeurd? <span id="minnelijkeVaststelling">{{schademelding.isMinnelijkeVaststelling ? 'Ja' : 'Nee'}}</span></p>
     <p>Proces-verbaal opgesteld: <span id="isProcesVerbaal">{{schademelding.isProcesVerbaal ? 'Ja' : 'Nee'}}</span></p>
     <p>Gemeente politie: <span id="gemeentePolitie">{{schademelding.gemeentePolitie}}</span></p>
@@ -42,7 +42,7 @@
 
   <div class="pageBreak">
     <div class="fotoBoxColumn">
-      <h2 style="padding-left: 10px">Fotos van schade</h2>
+      <h4 style="padding-left: 10px">Fotos van schade</h4>
       <div class="two-photo-div">
         <div *ngIf="schademelding.photos[0]?.src" style="max-width:calc(96% / 2) !important;" class="imageColumn">
           <p class="fotoText">{{schademelding.photos[0].beschrijving}}</p>
@@ -67,7 +67,7 @@
   </div>
   <div *ngIf="schademelding.photos[4]?.src || schademelding.photos[5]?.src" class="pageBreak">
     <div class="fotoBoxColumn">
-      <h2 style="padding-left: 10px">Fotos van schade vervolg</h2>
+      <h4 style="padding-left: 10px">Fotos van schade vervolg</h4>
       <div class="two-photo-div">
         <div *ngIf="schademelding.photos[4]?.src" style="max-width:calc(96% / 2) !important;" class="imageColumn">
           <p class="fotoText">{{schademelding.photos[4].beschrijving}}</p>

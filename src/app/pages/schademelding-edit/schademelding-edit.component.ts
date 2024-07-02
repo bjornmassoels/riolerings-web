@@ -162,8 +162,8 @@ export class SchademeldingEditComponent implements OnInit, OnDestroy {
 
     this.editForm = this.formBuilder.group({
       date: this.schademelding.date != null ? moment(this.schademelding.date) : null,
-      verwachtingKlaarUur: this.schademelding.date == null ? '' : +new Date(this.schademelding.date).getHours(),
-      verwachtingKlaarMinuten: this.schademelding.date == null ? '' : +new Date(this.schademelding.date).getMinutes(),
+      tijdstipUur: this.schademelding.date == null ? 8 : +new Date(this.schademelding.date).getHours(),
+      tijdstipMinuten: this.schademelding.date == null ? 0 : +new Date(this.schademelding.date).getMinutes(),
       werf: this.schademelding.group_id?.rbProjectNaam != null? this.schademelding.group_id.rbProjectNaam : '',
       schadeGerichtAan: this.schademelding.schadeGerichtAan,
       schadeGerichtAanAndereString: this.schademelding.schadeGerichtAanAndereString,
@@ -214,6 +214,11 @@ export class SchademeldingEditComponent implements OnInit, OnDestroy {
         this.schademelding.hasBeenViewed = true;
       });
     }
+
+    while(this.apiService.thisCompany == null){
+      await this.delay(50);
+    }
+    this.company = this.apiService.thisCompany;
   }
 
   addPhoto() {
@@ -234,9 +239,9 @@ export class SchademeldingEditComponent implements OnInit, OnDestroy {
       data.created = this.schademelding.created;
       if(data.date != null){
         data.date = new Date(data.date);
-        if(data.verwachtingKlaarUur != null && data.verwachtingKlaarMinuten != null){
-          data.date.setHours(data.verwachtingKlaarUur);
-          data.date.setMinutes(data.verwachtingKlaarMinuten);
+        if(data.tijdstipUur != null && data.tijdstipMinuten != null){
+          data.date.setHours(data.tijdstipUur);
+          data.date.setMinutes(data.tijdstipMinuten);
         } else {
           data.date.setHours(0);
           data.date.setMinutes(0);
@@ -293,9 +298,9 @@ export class SchademeldingEditComponent implements OnInit, OnDestroy {
     this.formService.previousIndexScroll = this.index;
     this.formService.previousPageForScrollIndex = 'schademelding';
     if(!isDelete){
-      this.checkChangedValue('/pages/schademeldingen');
+      this.checkChangedValue('/pages/groupview' + this.group_id);
     } else {
-      this.router.navigate(['/pages/schademeldingen']);
+      this.router.navigate(['/pages/groupview' + this.group_id]);
     }
   }
   delay(timeInMillis: number): Promise<void> {
@@ -364,9 +369,9 @@ export class SchademeldingEditComponent implements OnInit, OnDestroy {
 
   onNextClick(isDelete: boolean) {
     if(!isDelete){
-      this.checkChangedValue('/pages/editschademelding/' + this.schademeldingen[this.index + 1]._id);
+      this.checkChangedValue('/pages/editschademelding/' + this.group_id + '/' + this.schademeldingen[this.index + 1]._id);
     } else {
-      this.router.navigate(['/pages/editschademelding/' + this.schademeldingen[this.index + 1]._id]);
+      this.router.navigate(['/pages/editschademelding/' + this.group_id + '/' + this.schademeldingen[this.index + 1]._id]);
     }
   }
 
@@ -384,9 +389,9 @@ export class SchademeldingEditComponent implements OnInit, OnDestroy {
   }
   onPreviousClick(isDelete: boolean) {
     if(!isDelete){
-      this.checkChangedValue('/pages/editschademelding/' + this.schademeldingen[this.index - 1]._id);
+      this.checkChangedValue('/pages/editschademelding/' + this.group_id + '/' + this.schademeldingen[this.index - 1]._id);
     } else {
-      this.router.navigate(['/pages/editschademelding/' + this.schademeldingen[this.index - 1]._id]);
+      this.router.navigate(['/pages/editschademelding/' + this.group_id + '/' + this.schademeldingen[this.index - 1]._id]);
     }
   }
 
@@ -512,7 +517,9 @@ export class SchademeldingEditComponent implements OnInit, OnDestroy {
     }
   }
 
-  private saveOrCreateSchademelding(data: Schademelding) {
+  private saveOrCreateSchademelding(data) {
+    data.group_id = this.group_id;
+
     if(this.isNewSchademelding){
       data.creator_user = new User();
       data.creator_user._id = this.apiService.userId;
@@ -527,7 +534,7 @@ export class SchademeldingEditComponent implements OnInit, OnDestroy {
         this.toastrService.success( 'De schademelding is aangemaakt', 'Succes!');
         this.outputEvent.emit('schademelding');
         await this.delay(80);
-        await this.router.navigate(['/pages/schademeldingen/editschademelding/' + newSchademelding._id]);
+        await this.router.navigate(['/pages/editschademelding/' + this.group_id + '/' + newSchademelding._id]);
       }, error => {
         this.toastrService.danger( 'Er is intern iets misgelopen', 'Mislukt!');
         this.isSaving = false;
@@ -553,6 +560,10 @@ export class SchademeldingEditComponent implements OnInit, OnDestroy {
         this.isSaving = false;
       });
     }
+  }
+
+  goToPrevious() {
+     this.router.navigate(['/pages/groupview', this.group_id]);
   }
 }
 
