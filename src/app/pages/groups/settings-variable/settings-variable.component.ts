@@ -24,6 +24,7 @@ export class SettingsVariableComponent implements OnInit {
   dwaForm: UntypedFormGroup;
   rwaForm: UntypedFormGroup;
   slokkerForm: UntypedFormGroup;
+  schademeldingForm: UntypedFormGroup;
   instellingenForm: UntypedFormGroup;
   isComingFromCreateGroup: boolean;
 
@@ -83,6 +84,7 @@ export class SettingsVariableComponent implements OnInit {
        } else {
           this.buildFormSlokker();
         }
+        this.buildSchademelding();
          if(this.group._id == null || this.group._id === ''){
            this.group._id =  this.group.id;
          }
@@ -121,23 +123,38 @@ export class SettingsVariableComponent implements OnInit {
     if(this.dwaValueChanged === true){
       sendGroup.dwaSettings = this.dwaForm.value as dwaSettings;
       sendGroup.dwaSettings._id = idDwa;
+      if(this.formService.currentGroup){
+        this.formService.currentGroup.dwaSettings = sendGroup.dwaSettings;
+      }
     } else {
       sendGroup.dwaSettings = undefined;
     }
     if(this.rwaValueChanged === true){
       sendGroup.rwaSettings = this.rwaForm.value as rwaSettings;
       sendGroup.rwaSettings._id = idRwa;
+      if(this.formService.currentGroup){
+        this.formService.currentGroup.rwaSettings = sendGroup.rwaSettings;
+      }
     } else {
       sendGroup.rwaSettings = undefined;
     }
     if(this.slokkerValueChanged === true){
       sendGroup.slokkerSettings = this.slokkerForm.value as slokkerSettings;
       sendGroup.slokkerSettings._id = idSlokker;
+      if(this.formService.currentGroup){
+        this.formService.currentGroup.slokkerSettings = sendGroup.slokkerSettings;
+      }
     } else {
       sendGroup.slokkerSettings = undefined;
     }
 
     sendGroup.bochtenInGraden = this.bochtenInGraden;
+    sendGroup.gebruiktHerstellingBijSchademelding = this.schademeldingForm.value.gebruiktHerstellingBijSchademelding;
+    sendGroup.gebruiktJurdischeInfoBijSchademelding = this.schademeldingForm.value.gebruiktJurdischeInfoBijSchademelding;
+    if(this.formService.currentGroup){
+      this.formService.currentGroup.gebruiktHerstellingBijSchademelding = sendGroup.gebruiktHerstellingBijSchademelding;
+      this.formService.currentGroup.gebruiktJurdischeInfoBijSchademelding = sendGroup.gebruiktJurdischeInfoBijSchademelding;
+    }
 
     sendGroup.dwaPostNumbers = undefined;
     sendGroup.rwaPostNumbers = undefined;
@@ -301,5 +318,12 @@ export class SettingsVariableComponent implements OnInit {
     this.buildFormDWA();
     this.buildFormRWA();
     this.buildFormSlokker();
+  }
+
+  private buildSchademelding() {
+    this.schademeldingForm = this.formBuilder.group({
+      gebruiktHerstellingBijSchademelding: this.group.gebruiktHerstellingBijSchademelding,
+      gebruiktJurdischeInfoBijSchademelding: this.group.gebruiktJurdischeInfoBijSchademelding
+    });
   }
 }

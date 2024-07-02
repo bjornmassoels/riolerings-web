@@ -1,0 +1,580 @@
+import {Component, ElementRef, EventEmitter, Inject, NgZone, OnDestroy, OnInit, Output, ViewChild} from '@angular/core';
+import {UntypedFormArray, UntypedFormBuilder, UntypedFormGroup} from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { NbToastrService } from '@nebular/theme';
+import {catchError, finalize, forkJoin, mapTo, Observable, of} from "rxjs";
+import {AngularFireStorage} from "@angular/fire/compat/storage";
+import moment from "moment";
+import {map, startWith, tap} from "rxjs/operators";
+import {MatDialog, MatDialogRef} from "@angular/material/dialog";
+import * as html2pdf from 'html2pdf.js';
+import { Group } from '../../../models/groups';
+import { Schademelding } from '../../../models/schademelding';
+import { Company } from '../../../models/company';
+import { User } from '../../../models/user';
+import { ApiService } from '../../../services/api.service';
+import { FormService } from '../../../services/form.service';
+import { Photo } from '../../../models/photo';
+import { HasChangedPopupComponent } from '../has-changed-popup/has-changed-popup.component';
+import { PhotoPopupDialog } from './photo-popup/photo-popup.component';
+
+@Component({
+  selector: 'ngx-schademelding-edit',
+  templateUrl: './schademelding-edit.component.html',
+  styleUrls: ['./schademelding-edit.component.scss']
+})
+export class SchademeldingEditComponent implements OnInit, OnDestroy {
+  @ViewChild('addresstext', { static: false }) public addresstext: ElementRef;
+  @Output() outputEvent: EventEmitter<string> = new EventEmitter();
+
+  allMinutes: number[] = [];
+  allHours: number[] = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23];
+  private _id: string;
+  public isLoaded: boolean;
+  uploadForm;
+  tempImages: any[] = [null,null,null,null,null,null];
+
+  schademelding: Schademelding;
+  schademeldingen: Schademelding[];
+  index: number;
+  isNameInvalid: boolean = false;
+  editForm;
+  minuten: number[] = [0,15,30,45];
+  company: Company;
+  hasChangedValue: boolean = false;
+  arbeiders: User[];
+  isWerfleiderInvalid: boolean = false;
+  isSaving: boolean;
+  loadedCount: number = 0;
+  selectedPhoto: boolean = false;
+  chosenImageList: any[] = [];
+  chosenImageListIndex: number [] = [];
+  imageChangedEvent: any;
+  imagePath: any;
+  isPrint: boolean;
+  printSchademelding: Schademelding;
+  isNewSchademelding: boolean = false;
+  group: Group;
+  group_id: string;
+
+  constructor(
+    private formBuilder: UntypedFormBuilder,
+    private apiService: ApiService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private toastrService: NbToastrService,
+    private dialog: MatDialog,
+    private formService: FormService,
+    private storage: AngularFireStorage
+  ) {
+    for (let i = 0; i < 60; i++) {
+      this.allMinutes.push(i);
+    }
+    route.params.subscribe((val) => {
+      this.loadData();
+    });
+  }
+
+  ngOnInit(){}
+
+  loadData() {
+    this.loadedCount = 0;
+    this._id = this.route.snapshot.paramMap.get('id');
+    this.group_id = this.route.snapshot.paramMap.get('groupid');
+    this.group = this.formService.currentGroup;
+    console.log('id' + this._id)
+    if(this._id === 'null'){
+      this.isNewSchademelding = true;
+    } else {
+      this.isNewSchademelding = false;
+    }
+    this.hasChangedValue = false;
+    this.chosenImageList = [];
+    this.chosenImageListIndex = [];
+    this.tempImages = [null,null,null,null,null,null];
+    this.isSaving = false;
+    this.isPrint = false;
+    this.isLoaded = false;
+    this.company = this.apiService.thisCompany;
+    this.schademelding = this.formService.schademelding;
+    this.schademeldingen = this.formService.schademeldingen;
+    const schademelding$ = !this.isNewSchademelding ?  this.apiService.getSchademelding(this._id).pipe(
+      tap(x => {
+        this.schademelding = x as Schademelding;
+        this.formService.schademelding = this.schademelding;
+      }),
+      catchError(error => {
+        console.error('Failed to load or create schademelding', error);
+        return of(0); // Return 0 or handle as needed
+      }),
+      mapTo(1)
+    ): of(1);
+
+    const schademeldingen$ = this.schademeldingen == null ? this.apiService.getSchademeldingen(this.group_id).pipe(
+      tap(x => {
+        this.schademeldingen = x as Schademelding[];
+        this.formService.schademeldingen = this.schademeldingen;
+      }),
+      mapTo(1)
+    ) : of(1);
+    const group$ = this.group == null ? this.apiService.getGroupByIdLighterVersion(this.group_id).pipe(
+      tap(x => {
+        this.group = x as Group;
+        this.formService.currentGroup = this.group;
+      }),
+      mapTo(1)
+    ) : of(1);
+
+    forkJoin([schademelding$, schademeldingen$, group$])
+      .pipe(tap(([count1, count2, count3]) => this.loadedCount = count1 + count2 + count3))
+      .subscribe(() => {
+        this.buildForm();
+      });
+  }
+
+  async buildForm(){
+    while(this.loadedCount !== 3){
+      await this.delay(50);
+    }
+    if(this.isNewSchademelding){
+      this.schademelding = new Schademelding();
+      this.schademelding.created = new Date();
+      this.schademelding.creator_user = new User();
+      this.schademelding.creator_user._id = this.apiService.userId;
+      this.schademelding.hasBeenViewed = true;
+    } else {
+      this.schademelding.created = new Date(this.schademelding.created);
+    }
+    this.index = this.schademeldingen.findIndex(x => x._id === this._id);
+
+    let startTijdHerstelling;
+    let eindTijdHerstelling;
+    if(this.schademelding.startTijdHerstelling != null){
+      this.schademelding.startTijdHerstelling = new Date(this.schademelding.startTijdHerstelling);
+      startTijdHerstelling = (('0' + this.schademelding.startTijdHerstelling.getHours()).slice(-2) + ':' + ('0' + this.schademelding.startTijdHerstelling.getMinutes()).slice(-2)).toString();
+    }
+    if(this.schademelding.eindTijdHerstelling != null){
+      this.schademelding.eindTijdHerstelling = new Date(this.schademelding.eindTijdHerstelling);
+      eindTijdHerstelling = (('0' + this.schademelding.eindTijdHerstelling.getHours()).slice(-2) + ':' + ('0' + this.schademelding.eindTijdHerstelling.getMinutes()).slice(-2)).toString();
+    }
+    if(this.schademelding.photos == null) this.schademelding.photos = [];
+    this.schademelding.photos = this.schademelding.photos.filter(x => x != null);
+
+    this.editForm = this.formBuilder.group({
+      date: this.schademelding.date != null ? moment(this.schademelding.date) : null,
+      verwachtingKlaarUur: this.schademelding.date == null ? '' : +new Date(this.schademelding.date).getHours(),
+      verwachtingKlaarMinuten: this.schademelding.date == null ? '' : +new Date(this.schademelding.date).getMinutes(),
+      werf: this.schademelding.group_id?.rbProjectNaam != null? this.schademelding.group_id.rbProjectNaam : '',
+      schadeGerichtAan: this.schademelding.schadeGerichtAan,
+      schadeGerichtAanAndereString: this.schademelding.schadeGerichtAanAndereString,
+      schadeDoorWie: this.schademelding.schadeDoorWie,
+      schadeDoorWat: this.schademelding.schadeDoorWat,
+      soortActiviteit: this.schademelding.soortActiviteit,
+      soortActiviteitAndereString: this.schademelding.soortActiviteitAndereString,
+      oorzaakSchade: this.schademelding.oorzaakSchade,
+      isBetwistingMogelijk: this.schademelding.isBetwistingMogelijk,
+      isLeidingPlanOpWerf: this.schademelding.isLeidingPlanOpWerf,
+      isLeidingVolgensPlan: this.schademelding.isLeidingVolgensPlan,
+      diepteLeiding: this.schademelding.diepteLeiding,
+      leidingBeschermd: this.schademelding.leidingBeschermd,
+      leidingBeschermdAndereString: this.schademelding.leidingBeschermdAndereString,
+      diepteGraafwerken: this.schademelding.diepteGraafwerken,
+      plaatsVanWerken: this.schademelding.plaatsVanWerken,
+      plaatsVanWerkenAndereString: this.schademelding.plaatsVanWerkenAndereString,
+      omschrijvingSchade: this.schademelding.omschrijvingSchade,
+      isMinnelijkeVaststelling: this.schademelding.isMinnelijkeVaststelling,
+      isProcesVerbaal: this.schademelding.isProcesVerbaal,
+      gemeentePolitie: this.schademelding.gemeentePolitie,
+      photos: this.formBuilder.array([]),
+      datumHerstelling: this.schademelding.startTijdHerstelling != null ? moment(this.schademelding.startTijdHerstelling) : null,
+      herstelStartUur: startTijdHerstelling != null ? +startTijdHerstelling.split(':')[0] : undefined,
+      herstelStartMinuten: startTijdHerstelling != null ? +startTijdHerstelling.split(':')[1] : undefined,
+      herstelEindUur: eindTijdHerstelling != null ? +eindTijdHerstelling.split(':')[0] : undefined,
+      herstelEindMinuten: eindTijdHerstelling != null ? +eindTijdHerstelling.split(':')[1] : undefined,
+      aantalPersonenHerstelling: this.schademelding.aantalPersonenHerstelling,
+      detailsHerstelling: this.schademelding.detailsHerstelling,
+      tegenPartij: this.schademelding.tegenPartij
+    });
+    this.uploadForm = this.formBuilder.group({
+      file: [''],
+      photos: new UntypedFormArray([])
+    });
+    this.editForm.valueChanges.subscribe(x => {
+      this.hasChangedValue = true;
+    })
+    this.schademelding.photos.forEach(x => {
+      this.photosGetter().push(this.setPhotoOnLoad(x.beschrijving, x.src));
+    });
+    this.addPhoto();
+
+    this.isLoaded = true;
+
+    if(!this.isNewSchademelding && !this.schademelding.hasBeenViewed){
+      this.apiService.updateSchademeldingHasBeenViewed(this.schademelding._id).subscribe(x => {
+        this.schademelding.hasBeenViewed = true;
+      });
+    }
+  }
+
+  addPhoto() {
+    let photosValue = this.photosGetter().value;
+    if(this.photosGetter().length < 6 && (photosValue.length === 0 || (photosValue[photosValue.length - 1] != null && photosValue[photosValue.length - 1].src !== '') || this.tempImages[photosValue.length - 1] != null)){
+      this.photosGetter().push(this.newPhoto());
+    }
+  }
+  async onSubmit() {
+    this.isNameInvalid = false;
+    if(!this.isSaving){
+      this.isSaving = true;
+      this.isWerfleiderInvalid = false;
+      let data = this.editForm.value;
+      if(!this.isNewSchademelding){
+        data._id = this._id;
+      }
+      data.created = this.schademelding.created;
+      if(data.date != null){
+        data.date = new Date(data.date);
+        if(data.verwachtingKlaarUur != null && data.verwachtingKlaarMinuten != null){
+          data.date.setHours(data.verwachtingKlaarUur);
+          data.date.setMinutes(data.verwachtingKlaarMinuten);
+        } else {
+          data.date.setHours(0);
+          data.date.setMinutes(0);
+        }
+      }
+      if(data.datumHerstelling != null){
+        data.startTijdHerstelling = new Date(data.datumHerstelling);
+        if(data.herstelStartUur != null && data.herstelStartMinuten != null){
+          data.startTijdHerstelling.setHours(data.herstelStartUur);
+          data.startTijdHerstelling.setMinutes(data.herstelStartMinuten);
+          if(data.herstelEindUur != null && data.herstelEindMinuten != null){
+            data.eindTijdHerstelling = new Date(data.datumHerstelling);
+            data.eindTijdHerstelling.setHours(data.herstelEindUur);
+            data.eindTijdHerstelling.setMinutes(data.herstelEindMinuten);
+          }
+        } else {
+          data.startTijdHerstelling.setHours(0);
+          data.startTijdHerstelling.setMinutes(0);
+        }
+      } else {
+        data.startTijdHerstelling = null;
+        data.eindTijdHerstelling = null;
+      }
+      if(this.schademelding.creator_user){
+        data.created = this.schademelding.created;
+        data.creator_user = this.schademelding.creator_user;
+      }
+      console.log(data)
+      if(this.chosenImageList != null && this.chosenImageList.length > 0){
+        this.schademelding = data;
+        this.schademelding.photos = this.schademelding.photos.filter(x => x != null && x.src != null && x.src !== '');
+        this.uploadImages();
+      } else {
+        data.photos = this.photosGetter().value;
+        data.photos = data.photos.filter(x => x != null && x.src != null && x.src !== '');
+        this.saveOrCreateSchademelding(data);
+      }
+
+    }
+  }
+
+  clearDatum() {
+    this.editForm.get('date').setValue(null);
+  }
+  clearDatumHerstelling() {
+    this.editForm.get('datumHerstelling').setValue(null);
+  }
+  ngOnDestroy(){
+    this.formService.previousIndexScroll = this.index;
+    this.formService.previousPageForScrollIndex = 'schademelding';
+  }
+
+  onCloseClick(isDelete: boolean) {
+    this.formService.previousIndexScroll = this.index;
+    this.formService.previousPageForScrollIndex = 'schademelding';
+    if(!isDelete){
+      this.checkChangedValue('/pages/schademeldingen');
+    } else {
+      this.router.navigate(['/pages/schademeldingen']);
+    }
+  }
+  delay(timeInMillis: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(() => resolve(), timeInMillis));
+  }
+
+  async uploadImages() {
+
+    this.schademelding.photos = this.photosGetter().value;
+    let counter = 0;
+
+    for(let i=0 ; i < this.chosenImageList.length; i++){
+      const fileRef = this.storage.ref(this.generateRandomName());
+      const task = fileRef.putString(this.chosenImageList[i], 'data_url');
+
+      task
+        .snapshotChanges()
+        .pipe(
+          finalize(() => {
+            fileRef.getDownloadURL().subscribe(async (url) => {
+              if (url) {
+                console.log(url)
+                counter++;
+                let index = this.chosenImageListIndex[i];
+                this.schademelding.photos[index] = new Photo();
+                this.schademelding.photos[index].src = url;
+                this.schademelding.photos[index].beschrijving = this.photosGetter().at(index).value.beschrijving;
+
+                if(counter === this.chosenImageList.length){
+                  this.schademelding.photos = this.schademelding.photos.filter(x => x != null && x.src != null && x.src !== '');
+                  this.saveOrCreateSchademelding(this.schademelding);
+
+                }
+              }
+            });
+          })
+        )
+        .subscribe();
+    }
+  }
+  onDeleteClick() {
+    const dialogRef = this.dialog.open(DeleteDialogSchademelding, {
+      width:'450px',
+      panelClass: 'mat-dialog-padding'
+    });
+    dialogRef.afterClosed().subscribe(async (result) => {
+      if(this.formService.isDelete){
+        this.schademelding._id = this._id;
+        this.apiService.deleteSchademelding(this.schademelding).subscribe(x => {
+          this.schademeldingen.splice(this.index, 1);
+          this.index--;
+          this.toastrService.danger( 'De schademelding is verwijderd', 'Succes!');
+          if(this.schademeldingen.length === 0 ){
+            this.onCloseClick(true);
+          } else if(this.index + 1 !== this.schademeldingen.length){
+            this.onNextClick(true);
+          } else {
+            this.index++;
+            this.onPreviousClick(true)
+          }
+        });
+      }
+    });
+
+  }
+
+  onNextClick(isDelete: boolean) {
+    if(!isDelete){
+      this.checkChangedValue('/pages/editschademelding/' + this.schademeldingen[this.index + 1]._id);
+    } else {
+      this.router.navigate(['/pages/editschademelding/' + this.schademeldingen[this.index + 1]._id]);
+    }
+  }
+
+  checkChangedValue(route: string){
+    if(this.hasChangedValue){
+      this.formService.previousRoute = route;
+      const dialogRef = this.dialog.open(HasChangedPopupComponent, {
+        width:'450px',
+        height:'200px',
+        panelClass: 'mat-dialog-padding'
+      });
+    } else {
+      this.router.navigate([route]);
+    }
+  }
+  onPreviousClick(isDelete: boolean) {
+    if(!isDelete){
+      this.checkChangedValue('/pages/editschademelding/' + this.schademeldingen[this.index - 1]._id);
+    } else {
+      this.router.navigate(['/pages/editschademelding/' + this.schademeldingen[this.index - 1]._id]);
+    }
+  }
+
+
+  photosGetter(): UntypedFormArray {
+    return this.uploadForm.get('photos') as UntypedFormArray;
+  }
+  newPhoto(): UntypedFormGroup {
+    return this.formBuilder.group({
+      beschrijving: '',
+      src: ''
+    });
+  }
+  updatePhoto(index: number, src: string) {
+    // Ensure the index is within the bounds of the array
+    if(index >= 0 && index < this.photosGetter().length) {
+      // Create a new FormGroup with the updated values
+      const beschrijving = this.photosGetter().at(index).value.beschrijving;
+      const updatedPhoto = this.setPhotoOnLoad(beschrijving, src);
+
+      // Update the FormGroup at the specified index
+      this.photosGetter().at(index).patchValue(updatedPhoto.value);
+    }
+  }
+  setPhotoOnLoad(beschrijving: string, src: string): UntypedFormGroup {
+
+    return this.formBuilder.group({
+      beschrijving,
+      src
+    });
+  }
+  removePhoto(i: number) {
+    this.photosGetter().removeAt(i);
+    this.schademelding.photos.splice(i,1);
+    this.addPhoto();
+  }
+
+  changeBeschrijving() {
+    this.hasChangedValue = true;
+  }
+
+  onFileSelect(event, i: number) {
+    let file;
+
+    this.selectedPhoto = true;
+    this.imageChangedEvent = event;
+    if (event.target.files.length > 0) {
+      file = event.target.files[0];
+      this.uploadForm.get('file').setValue(file);
+    }
+    let reader = new FileReader();
+    this.imagePath = file;
+    reader.readAsDataURL(file);
+    reader.onload = (_event) => {
+      this.chosenImageList.push(reader.result);
+      this.chosenImageListIndex.push(i);
+      this.hasChangedValue = true;
+      this.tempImages[i] = reader.result.toString();
+      this.addPhoto();
+    };
+  }
+  imagePopUp(photo: string) {
+    this.formService._chosenPhoto = photo;
+    let dialogRef = this.dialog.open(PhotoPopupDialog, {
+      height: '98vh',
+      width: '42vw',
+      panelClass: 'mat-dialog-padding'
+    });
+  }
+  generateRandomName(): string {
+    if(this.company._id == null) this.company._id = this.company.id;
+    const random = Math.floor(100000000 + Math.random() * 900000);
+    const name = 'fotos/' + this.company._id + '/' + random;
+    return name;
+  }
+
+  checkIfSchadeGerichtAanIsNutsleidingenOfAndere() {
+    if(this.editForm.get('schadeGerichtAan').value && (this.editForm.get('schadeGerichtAan').value === 'Nutsleidingen' || this.editForm.get('schadeGerichtAan').value === 'Andere')){
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  async generatePDF() {
+    this.apiService.getPopulatedSchademelding(this._id).subscribe(async x => {
+      this.printSchademelding =  x as Schademelding;
+      await this.delay(300);
+
+      this.isPrint = true;
+      await this.delay(200);
+
+      this.toggleDisplay();
+      await this.delay(50);
+      let options;
+      let fileName
+      fileName = 'Schademelding' + (this.printSchademelding.group_id.rbProjectNaam != null ? '-' + this.printSchademelding.group_id.rbProjectNaam : '') + '.pdf';
+      options = {
+        filename:
+        fileName,
+        image: {type: 'png'},
+        html2canvas: {useCORS: true},
+        jsPDF: {orientation: 'portrait', format: 'a4', compressPdf: true},
+        margin: [0.5, 0.5, 0.5, 0.5],
+        pagebreak: { mode: 'avoid-all', avoid:  '.pageBreak'}
+      };
+
+      let element = document.getElementById('printContainer');
+
+      await html2pdf().from(element).set(options).save();
+      this.toggleDisplay();
+      this.toastrService.success( 'Het schaderapport is gedownload.', 'Succes!');
+      this.isPrint = false;
+    });
+
+  }
+  toggleDisplay() {
+    const element = document.getElementById('printContainer');
+    if (element.style.display == 'block') {
+      element.style.display = 'none';
+    } else {
+      element.style.display = 'block';
+    }
+  }
+
+  private saveOrCreateSchademelding(data: Schademelding) {
+    if(this.isNewSchademelding){
+      data.creator_user = new User();
+      data.creator_user._id = this.apiService.userId;
+      this.apiService.createSchademelding(data).subscribe(async x => {
+        let newSchademelding = x as Schademelding;
+        newSchademelding.date = new Date(newSchademelding.date);
+        this.schademeldingen.push(newSchademelding);
+        this.schademeldingen.forEach(x => x.date = new Date(x.date));
+        this.schademeldingen.sort((a,b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        this.formService.schademeldingen = this.schademeldingen;
+        this.formService.schademelding = null;
+        this.toastrService.success( 'De schademelding is aangemaakt', 'Succes!');
+        this.outputEvent.emit('schademelding');
+        await this.delay(80);
+        await this.router.navigate(['/pages/schademeldingen/editschademelding/' + newSchademelding._id]);
+      }, error => {
+        this.toastrService.danger( 'Er is intern iets misgelopen', 'Mislukt!');
+        this.isSaving = false;
+      });
+    } else {
+      this.apiService.updateSchademelding(data).subscribe(x => {
+        this.schademeldingen[this.index] = data;
+        this.formService.schademeldingen = this.schademeldingen;
+        this.formService.schademelding = data;
+        this.hasChangedValue = false;
+        this.chosenImageList = [];
+        this.chosenImageListIndex = [];
+        this.tempImages = [null,null,null,null,null,null];
+        this.photosGetter().clear();
+        this.schademelding.photos.forEach(x => {
+          this.photosGetter().push(this.setPhotoOnLoad(x.beschrijving, x.src));
+        });
+        this.addPhoto();
+        this.toastrService.success( 'De schademelding is aangepast', 'Succes!');
+        this.isSaving = false;
+      }, error => {
+        this.toastrService.danger( 'Er is intern iets misgelopen', 'Mislukt!');
+        this.isSaving = false;
+      });
+    }
+  }
+}
+
+@Component({
+  selector: 'delete-dialog-schademelding',
+  templateUrl: 'delete-dialog.html',
+})
+export class DeleteDialogSchademelding {
+  constructor(
+    public dialogRef: MatDialogRef<DeleteDialogSchademelding>,
+    public formService: FormService
+  ) {
+    this.formService.isDelete = false;
+  }
+
+  onNoClick(): void {
+    this.formService.isDelete = false;
+    this.dialogRef.close();
+  }
+
+  onDeleteClick() {
+    this.formService.isDelete = true;
+    this.dialogRef.close();
+  }
+}

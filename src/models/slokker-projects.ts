@@ -15,6 +15,8 @@ export class SlokkerProjects {
   public company_id: Company;
   public user_id: string;
   public isSlokker: boolean;
+  public isMeerwerk: boolean;
+
   public opmerking: string;
   public slokker: Slokkers;
   public photos: string[];
@@ -29,7 +31,6 @@ export class SlokkerProjects {
   public equipNrRiolering: string;
   public usersWhoEdited: User[];
   public werfleider: string;
-  public isMeerwerk: boolean;
   public paid: boolean;
   public lastWorker: User;
   public lastWorkerDate: Date;

@@ -27,8 +27,8 @@
   border: 1px solid dodgerblue;
   border-radius: 5px;
   position: relative !important;
-  bottom: 28px;
-  left:60px;
+  top: -240px;
+  left:85px;
 }
 .variableSelect{
   min-width: 350px !important;
@@ -55,7 +55,6 @@
   margin-bottom: 12px;
 }
 .flexer{
-  width: 380px !important;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -114,4 +113,11 @@
   justify-content:center;
   gap: 40px 0;
   align-items:center;
+}
+.outerColumnRight{
+  display:flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px 0;
 }

@@ -97,6 +97,9 @@ import { HasChangedPopupComponent } from './has-changed-popup/has-changed-popup.
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatButtonToggle, MatButtonToggleGroup } from '@angular/material/button-toggle';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { SchademeldingEditComponent } from './schademelding-edit/schademelding-edit.component';
+import { SchademeldingPdfComponent } from './schademelding-pdf/schademelding-pdf.component';
+import { PhotoPopupDialog } from './schademelding-edit/photo-popup/photo-popup.component';
 
 @NgModule({
   imports: [
@@ -199,7 +202,10 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
     UpdatePopupDialogComponent,
     GroupsViewPdfDownloadDialogComponent,
     GoogleMapsLocatiePopupComponent,
-    HasChangedPopupComponent
+    HasChangedPopupComponent,
+    SchademeldingEditComponent,
+    SchademeldingPdfComponent,
+    PhotoPopupDialog
   ],
   providers: [FormService, ExcelService, MatDatepickerModule, NieuweExcelService, NbMomentDateService],
   exports: [choicePipe],

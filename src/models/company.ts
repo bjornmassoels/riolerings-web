@@ -30,6 +30,8 @@ export class Company {
     prijsPerHA: number;
     prijsPerKolk: number;
     accountDeletionRequests: string[];
+
+
     constructor(
 
     ) {

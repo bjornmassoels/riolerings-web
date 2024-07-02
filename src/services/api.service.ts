@@ -15,6 +15,7 @@ import {Router} from "@angular/router";
 import { SendPdfID } from '../models/sendPdfID';
 import { saveAs } from 'file-saver';
 import { firstValueFrom } from 'rxjs';
+import { Schademelding } from '../models/schademelding';
 
 @Injectable({
   providedIn: 'root',
@@ -646,5 +647,110 @@ export class ApiService {
       },
     };
     return firstValueFrom(this.http.get(this.apiURL + '/slokkerprojects.getLastWorkerDate', headers));
+  }
+
+  getSchademeldingen(groupId: string) {
+    if(groupId == null) groupId = '';
+    let headers = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: this._token,
+        companyid: this.companyid,
+        groupid: groupId
+      },
+    };
+
+    return this.http
+      .get( this.apiURL + '/schademeldings.list' , headers)
+      .pipe(tap((x) => {}));
+  }
+
+  deleteSchademelding(schademelding: Schademelding) {
+    let headers = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: this._token
+      },
+    };
+    return this.http.post(
+      this.apiURL + '/schademeldings.delete',
+      JSON.stringify(schademelding),
+      headers
+    );
+  }
+
+  getSchademelding(_id: string) {
+    let headers = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: this._token,
+        _id: _id
+      },
+    };
+
+    return this.http
+      .get( this.apiURL + '/schademeldings.id' , headers)
+      .pipe(tap((x) => {}));
+  }
+
+  updateSchademelding(data: Schademelding) {
+    let headers = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: this._token
+      },
+    };
+
+    return this.http.post(
+      this.apiURL + '/schademeldings.update',
+      JSON.stringify(data),
+      headers
+    );
+  }
+
+  getPopulatedSchademelding(_id: string) {
+    let headers = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: this._token,
+        _id: _id
+      },
+    };
+
+    return this.http
+      .get( this.apiURL + '/schademeldings.getPopulatedSchademelding' , headers)
+      .pipe(tap((x) => {}));
+  }
+
+  updateSchademeldingHasBeenViewed(_id: string) {
+    let headers = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: this._token,
+        companyid: this.companyid,
+        _id: _id
+      },
+    };
+
+    return this.http
+      .get( this.apiURL + '/schademeldings.updateSchademeldingHasBeenViewed' , headers)
+      .pipe(tap((x) => {}));
+  }
+
+  createSchademelding(schademelding: Schademelding) {
+    let headers = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: this._token,
+        companyid: this.companyid
+      },
+    };
+    schademelding.company_id = this.companyid;
+
+    return this.http.post(
+      this.apiURL + '/schademeldings.create',
+      JSON.stringify(schademelding),
+      headers
+    );
   }
 }

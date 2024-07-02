@@ -25,6 +25,7 @@ import { Slokkers } from '../../../../models/slokkers';
 import { GroupsViewPdfDownloadDialogComponent } from './groups-view-pdf-download-dialog/groups-view-pdf-download-dialog.component';
 import moment from 'moment';
 import { MatMenuTrigger } from '@angular/material/menu';
+import { Schademelding } from '../../../../models/schademelding';
 
 declare var Pace: any;
 
@@ -45,7 +46,7 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
   public projects: Array<Project> = [];
   public slokkerProjects: Array<Project> = [];
   public meerwerkenList: Array<Project> = [];
-  public allProjects: Array<Project> = [];
+  public allProjects: Array<any> = [];
   public allProjectsBetweenDates: Array<Project> = [];
   public isOn: boolean;
   public selectAllCheckbox: any;
@@ -88,6 +89,7 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
   selectedWachtaansluitingenWithValue: number;
   selectedKolkenWithValue: number;
   populatedProjects: Project[];
+  schademeldingen: Schademelding[];
   constructor(
     private apiService: ApiService,
     private router: Router,
@@ -211,6 +213,13 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
           meerwerk.isMeerwerk = true;
           meerwerk.isSelected = false;
           this.allProjects.push(meerwerk);
+        }
+      }
+      this.schademeldingen = this.group.schademeldingen as Schademelding[];
+      if (this.schademeldingen != null) {
+        for (let schademelding of this.schademeldingen) {
+          schademelding.createdDate = new Date(schademelding.created);
+
         }
       }
       this.searchAllProjectsList = this.allProjects;
@@ -1355,5 +1364,10 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
     this.searchForm.setValue('');
     this.formService.previousStreet = '';
     this.filterStraatText = '';
+  }
+
+  createSchademelding() {
+    this.formService.previousPage.push('/pages/groupview/' + this._id);
+    this.router.navigate(['/pages/editschademelding/' + this._id + '/' + null ]);
   }
 }

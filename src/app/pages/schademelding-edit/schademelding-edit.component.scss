@@ -1,0 +1,280 @@
+nb-select ::ng-deep {
+  .select-button {
+    min-width: 0;
+  }
+}
+.specialShadow{
+  box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+}
+.photo {
+  margin-left: 25px;
+  height: 12rem;
+  width: 12rem;
+  border-radius: 10px;
+  margin: 1rem;
+  box-shadow: 0px 0px 2px lightgrey;
+}
+.edit-card-werf {
+  box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+  border-radius: 15px;
+  width: 93%;
+  width:1200px !important;
+  margin-bottom:10px;
+  padding:14px;
+  overflow-x: hidden;
+}
+.outerRowDiv{
+  display:flex;
+  flex-direction:row;
+  justify-content:flex-start;
+  align-items:flex-start;
+  flex-wrap: wrap;
+  padding:10px 5px;
+  gap:5px 35px;
+  margin-top:-8px;
+}
+.big-input {
+  width: 400px;
+}
+.form {
+  width: 550px;
+}
+.logoColumn{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:flex-start;
+  padding:8px;
+  border:1px solid black;
+  border-radius: 10px;
+  min-width: 510px;
+}
+tr{
+  height:55px;
+}
+.werfleiderSelect{
+  width: 250px;
+}
+.dagboekExtraInfoText{
+  font-size: 17px;
+  font-weight: 600;
+  width:100% !important;
+  text-align: center;
+  text-decoration: underline;
+}
+.infoText{
+  width:220px !important;
+}
+.dagboekColumn{
+  width:100%;
+  margin-bottom: 12px;
+  margin-left:20px;
+}
+.hideButton{
+  visibility: hidden;
+}
+.closeButton{
+  width: 28px;
+  height: 28px;
+  margin: 0 0 0 6px;
+  padding: 4px 4px 6px 4px!important;
+}
+.shortNumberInput{
+  width: 50px;
+}
+.inputText{
+  margin-left: 2px;
+  margin-bottom: 4px;
+}
+.flexColumn{
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  margin: 5px 0;
+}
+.inputField{
+  min-width:240px;
+}
+.biggerFieldInput{
+  width:300px;
+}
+.uurFlexer{
+  display:flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items:center;
+  margin-top: 4px;
+}
+.smallRow{
+  display:flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 180px !important;
+}
+.infoText2{
+  font-size:15px;
+  font-weight:600;
+  margin:5px 13px 0px 7px !important;
+}
+.smallSelect{
+  width:75px !important;
+  max-width:75px !important;
+  min-width:75px !important;
+}
+.extraText{
+  min-width:25px;
+  margin: 0 5px;
+}
+.smallerText{
+  font-size:15px !important;
+  font-weight:500 !important;
+}
+.groupColDiv{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:flex-start;
+  margin: 0 0 0 10px;
+}
+.groupRowDiv{
+  display:flex;
+  flex-direction:row;
+  justify-content:center;
+  align-items:flex-start;
+  margin: 0 0 0 10px;
+  gap: 0 20px;
+}
+.selectBox{
+  width:150px !important;
+  select-min-width: 450px !important;
+}
+.herstelTitle{
+  font-size: 17px;
+  font-weight: 600;
+  width: 100%;
+  margin-left: 5px;
+  text-decoration: underline;
+  margin-bottom: 7px;
+  margin-top: -8px;
+}
+.upload-container-empty{
+  padding:6px;
+  margin-top:30px;
+  margin-left: 25px;
+  width: 137px;
+  height: 85px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 2px dashed lightgrey;
+}
+.uploadButton {
+  width: 100%;
+  padding:10px !important;
+}
+.uploadButton2 {
+  width: 100%;
+}
+.fotoText {
+  font-size: 15px;
+  font-weight: 700;
+  width: 250px;
+  text-align: center;
+}
+.fotoColumn {
+  border: 2px solid lightskyblue;
+  border-radius: 10px;
+  margin-left: 6px;
+  margin-right: 6px;
+  height: 450px;
+  width: 280px;
+}
+.addButton{
+  width: 180px;
+  height: 50px;
+  font-size:16px ;
+  background-color: darkslategrey;
+  color:white;
+  border-radius:15px;
+  margin-left:-210px;
+  margin-top:15px;
+  margin-bottom:8px;
+}
+.fotoInput{
+  border:1x solid black;
+  margin:17px auto;
+}
+.fotoRow{
+  display:flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  overflow-x: auto;
+}
+.deleteButton {
+  width: 30px;
+  font-weight: 800;
+  letter-spacing: 1.4pt;
+  margin-left:120px;
+  font-size: 1.2em;
+  min-width:50px !important;
+  max-width:50px !important;
+  min-height:40px !important;
+  max-height:40px !important;
+}
+.deleteButton2 {
+  border:1px solid darkred;
+  border-radius: 15px;
+  font-weight: 600;
+  letter-spacing: 1.4pt;
+  font-size: 15px;
+  background-color: red;
+  width:50px;
+  min-height:28px;
+}
+
+.innerColumn {
+  margin-top: 10px;
+  height: 60%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+.section-title{
+  width:100%;
+  font-size:22px;
+  font-weight:600;
+  margin:0px 0px 5px 15px;
+  height:30px;
+}
+.photo{
+  height: 330px;
+  width: 220px;
+  margin-bottom: 0.5rem;
+}
+.upload-container {
+  padding-top: 5rem;
+}
+.extraInfoNutsleidingRow{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: 0 25px;
+  margin-left: 12px;
+  align-items: flex-start;
+  margin-top: 6px;
+  border: 1px dashed gray;
+  border-radius: 15px;
+  padding: 4px 13px;
+  width: fit-content;
+  margin-bottom: 9px;
+}
+.downloadImage{
+  width:28px;
+  height:28px;
+  margin-right:10px;
+}
