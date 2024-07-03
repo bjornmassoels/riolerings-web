@@ -30,7 +30,7 @@ import { catchError, forkJoin, mapTo, of } from 'rxjs';
     '../../styles/project-view.scss'
   ],
 })
-export class SchademeldingViewComponent implements OnInit {
+export class SchademeldingViewComponent implements OnInit, OnDestroy {
   days: string[] = ['Zondag','Maandag','Dinsdag','Woensdag','Donderdag','Vrijdag','Zaterdag'];
 
   public schademelding: Schademelding;
@@ -212,11 +212,16 @@ export class SchademeldingViewComponent implements OnInit {
       element.style.display = 'block';
     }
   }
+   ngOnDestroy(){
+      this.formService.previousIndexScroll = this.index;
+      this.formService.previousPageForScrollIndex = 'schademelding';
+    }
 
-  goToPrevious() {
-    this.router.navigate(['/pages/groupview', this.group._id]);
-  }
-
+    goToPrevious() {
+      this.formService.previousIndexScroll = this.index;
+      this.formService.previousPageForScrollIndex = 'schademelding';
+      this.router.navigate(['/pages/groupview', this.group._id]);
+    }
   goToEdit() {
     if (this.schademelding._id == null) {
       this.schademelding._id = this.schademelding.id;

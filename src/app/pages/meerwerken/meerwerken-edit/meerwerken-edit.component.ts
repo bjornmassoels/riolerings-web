@@ -34,7 +34,7 @@ import { VariablesService } from '../../../../services/variables.service';
     '../../styles/project-view.scss',
   ],
 })
-export class MeerwerkenEditComponent implements OnInit {
+export class MeerwerkenEditComponent implements OnInit , OnDestroy{
   days: string[] = ['Zondag','Maandag','Dinsdag','Woensdag','Donderdag','Vrijdag','Zaterdag'];
 
   public currentProject: Meerwerk;
@@ -319,6 +319,11 @@ export class MeerwerkenEditComponent implements OnInit {
       return false;
     }
   }
+  ngOnDestroy(){
+    this.formService.previousIndexScroll = this.index;
+    this.formService.previousPageForScrollIndex = 'schademelding';
+  }
+
   onFileSelect(event, i: number) {
     var file;
     this.selectedPhoto = true;

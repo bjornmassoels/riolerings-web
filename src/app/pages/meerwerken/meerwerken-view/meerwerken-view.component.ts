@@ -31,7 +31,7 @@ import { Schademelding } from '../../../../models/schademelding';
     '../../styles/project-view.scss',
   ],
 })
-export class MeerwerkenViewComponent implements OnInit {
+export class MeerwerkenViewComponent implements OnInit, OnDestroy {
   days: string[] = ['Zondag','Maandag','Dinsdag','Woensdag','Donderdag','Vrijdag','Zaterdag'];
 
   public currentProject: Meerwerk;
@@ -197,11 +197,16 @@ export class MeerwerkenViewComponent implements OnInit {
       element.style.display = 'block';
     }
   }
-
-  goToPrevious() {
-    this.router.navigate(['/pages/groupview', this.group._id]);
+  ngOnDestroy(){
+    this.formService.previousIndexScroll = this.index;
+    this.formService.previousPageForScrollIndex = 'schademelding';
   }
 
+  goToPrevious() {
+    this.formService.previousIndexScroll = this.index;
+    this.formService.previousPageForScrollIndex = 'schademelding';
+    this.router.navigate(['/pages/groupview', this.group._id]);
+  }
   goToEdit() {
     if (this.currentProject._id == null) {
       this.currentProject._id = this.currentProject.id;

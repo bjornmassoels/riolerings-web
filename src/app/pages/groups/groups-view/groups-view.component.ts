@@ -292,18 +292,33 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
       this.isOn = true;
       Pace.stop();
       await this.delay(50);
-      if (this.formService.previousIndex != null) {
+      if (this.formService.previousIndex != null || this.formService.previousIndexScroll != null) {
         let behavior: string = 'auto';
-        const rows = document.getElementsByClassName("scroll");
-        setTimeout(() => {
-          if(rows[this.formService.previousIndex] != null){
-            rows[this.formService.previousIndex].scrollIntoView({
-              behavior: <ScrollBehavior>behavior.toString(),
-              block: 'center'
-            });
-            this.formService.previousIndex = null;
-          }
-        }, 10);
+        let rows;
+        if(this.isViewingOwAndSchademeldingList){
+          rows = document.getElementsByClassName("schademelding");
+          setTimeout(() => {
+            if(rows[this.formService.previousIndexScroll] != null){
+              rows[this.formService.previousIndexScroll].scrollIntoView({
+                behavior: <ScrollBehavior>behavior.toString(),
+                block: 'center'
+              });
+              this.formService.previousIndexScroll = null;
+            }
+          }, 10);
+        } else {
+          rows = document.getElementsByClassName("scroll");
+          setTimeout(() => {
+            if(rows[this.formService.previousIndex] != null){
+              rows[this.formService.previousIndex].scrollIntoView({
+                behavior: <ScrollBehavior>behavior.toString(),
+                block: 'center'
+              });
+              this.formService.previousIndex = null;
+            }
+          }, 10);
+        }
+
       }
       this.formService._allProjects = this.allProjects;
     });

@@ -5,11 +5,11 @@
   </button>
 
   <div  class="navigation-row">
-    <button *ngIf="index !== -1" [disabled]="index === 0" mat-raised-button class="nav-button" (click)="onPreviousClick()">
+    <button *ngIf="index != null && index !== -1" [disabled]="index === 0" mat-raised-button class="nav-button" (click)="onPreviousClick()">
       <i class="fa-solid fa-left-long navIcon"></i>
     </button>
     <p *ngIf="index != null && owAndSchademeldingList != null && index !== -1"  class="boldText">{{index + 1}}/{{owAndSchademeldingList.length}}</p>
-    <button  *ngIf="index !== -1" [disabled]="index === owAndSchademeldingList.length - 1" mat-raised-button class="nav-button" (click)="onNextClick()">
+    <button  *ngIf="index != null &&  index !== -1" [disabled]="index === owAndSchademeldingList.length - 1" mat-raised-button class="nav-button" (click)="onNextClick()">
       <i class="fa-solid fa-right-long navIcon"></i>
     </button>
   </div>
