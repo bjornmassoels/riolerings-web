@@ -93,6 +93,8 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
   schademeldingList: Schademelding[];
   owAndSchademeldingList: Schademelding[];
   isViewingOwAndSchademeldingList: boolean;
+  newSchademeldingCounter: number;
+  newMeerwerkCounter: number;
   constructor(
     private apiService: ApiService,
     private router: Router,
@@ -147,6 +149,8 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
     this.isDownloading = false;
     this.selectEverything = false;
     this.isViewingOwAndSchademeldingList = false;
+    this.newMeerwerkCounter = 0;
+    this.newSchademeldingCounter = 0;
     this.dateSorteer = 'Afwerkingsdatum';
     this.allStreetNames = [];
     this.apiService.getGroupByIdLighterVersion(groupId).subscribe(async (x) => {
@@ -208,6 +212,7 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
           this.allProjects.push(slokker);
         }
       }
+
       this.meerwerkenList = this.group.meerwerkList as unknown as Schademelding[];
       if (this.meerwerkenList != null && this.meerwerkenList.length > 0) {
         for (let meerwerk of this.meerwerkenList) {
@@ -218,6 +223,9 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
           }
           meerwerk.photos = meerwerk.photos.filter(x => x != null);
 
+          if(!meerwerk.hasBeenViewed){
+            this.newMeerwerkCounter++;
+          }
           meerwerk.isMeerwerk = true;
           meerwerk.isSelected = false;
           meerwerk.isSchademelding = false;
@@ -233,6 +241,9 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
           schademelding.isMeerwerk = false;
           schademelding.isSelected = false;
           schademelding.isSchademelding = true;
+          if(!schademelding.hasBeenViewed){
+            this.newSchademeldingCounter++;
+          }
         }
       } else {
         this.schademeldingList = [];

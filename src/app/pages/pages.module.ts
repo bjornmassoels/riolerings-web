@@ -107,6 +107,7 @@ import {
 } from './schademeldingen/schademeldingen-view/schademelding-view-delete-dialog/schademelding-view-delete-dialog.component';
 import {  SchademeldingEditComponent } from './schademeldingen/schademelding-edit/schademelding-edit.component';
 import { PhotoPopupDialog } from './schademeldingen/schademelding-edit/photo-popup/photo-popup.component';
+import { MatBadge } from '@angular/material/badge';
 
 @NgModule({
   imports: [
@@ -154,6 +155,7 @@ import { PhotoPopupDialog } from './schademeldingen/schademelding-edit/photo-pop
     MatButtonToggle,
     NbSpinnerModule,
     MatProgressSpinner,
+    MatBadge,
   ],
   declarations: [
     PagesComponent,

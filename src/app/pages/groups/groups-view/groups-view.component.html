@@ -100,15 +100,31 @@
 
     <div *ngIf="isOn" class="owSchademeldingToggleDiv">
       <div style="background-color: #ffa018; border:1px solid orangered;" class="extraBox">
-        <p class="extraInfoText"><nb-icon pack="fa" icon="triangle-exclamation"></nb-icon> <span style="font-size: 18px;margin-left: 6px">{{schademeldingList.length}}</span> Schademelding{{schademeldingList.length !== 1? 'en' : ''}}</p>
+        <p class="extraInfoText"
+           [matBadge]="newSchademeldingCounter !== 0 ? newSchademeldingCounter : ''"
+           matBadgePosition="after"
+           matBadgeColor="accent"
+           [matTooltip]="newSchademeldingCounter !== 0 ? newSchademeldingCounter + ' nieuwe' : ''">
+          <nb-icon pack="fa" icon="triangle-exclamation"></nb-icon>
+          <span style="font-size: 18px;margin-left: 6px">{{schademeldingList.length}}</span>
+          Schademelding{{schademeldingList.length !== 1? 'en' : ''}}
+        </p>
       </div>
       <div style="background-color: #bec8ff; border:1px solid #689cff" class="extraBox">
-        <p class="extraInfoText"><nb-icon pack="fa" icon="plus"></nb-icon> <span style="font-size: 18px;margin-left: 6px">{{meerwerkenList.length}}</span> Onvoorziene werk{{meerwerkenList.length !== 1? 'en' : ''}}</p>
+        <p class="extraInfoText"
+           [matBadge]="newMeerwerkCounter !== 0 ? newMeerwerkCounter : ''"
+           matBadgePosition="after"
+           matBadgeColor="accent"
+           [matTooltip]="newMeerwerkCounter !== 0 ? newMeerwerkCounter + ' nieuwe' : ''">
+          <nb-icon pack="fa" icon="plus"></nb-icon>
+          <span style="font-size: 18px;margin-left: 6px">{{meerwerkenList.length}}</span>
+          Onvoorziene werk{{meerwerkenList.length !== 1? 'en' : ''}}
+        </p>
       </div>
     </div>
   </div>
 
-  <button style="max-width: 900px;line-height: 20px;" *ngIf='isOn && !isLoadingBar' (click)="toggleProjectDetails()" class="btn btn-info" [disabled]="checkIfHasSelected()" [ngClass]="checkIfHasSelected()? 'halfOpacity': ''">
+  <button style="max-width: 900px;line-height: 20px;--bs-btn-bg: lightgray !important;" *ngIf='isOn && !isLoadingBar' (click)="toggleProjectDetails()" class="btn btn-info" [disabled]="checkIfHasSelected()" [ngClass]="checkIfHasSelected()? 'halfOpacity': ''">
     <i style='margin-right: 8px' [class]="showProjectDetails ? 'fa fa-angle-up' : 'fa fa-angle-down'"></i>
     <b style="font-size: 15px !important;">{{ showProjectDetails ? 'Verberg Projectgegevens' :group?.rbGemeente + ' - ' + group?.aannemerProjectNr + ' - ' + group?.rbProjectNaam }}</b>
   </button>
@@ -226,7 +242,7 @@
 
 <div *ngIf="isOn && !isViewingOwAndSchademeldingList" cdkScrollable class="scroll-table">
   <table  cdkDropList class="item-list">
-    <tr style="padding:4px 10px !important;" class="item-box">
+    <tr style="padding:3px 10px !important;border-bottom: 1px solid gray" class="item-box">
       <th style="max-width:170px !important;min-width:170px !important;text-align: center;margin-left:15px ">Open</th>
       <th style="padding-left: 35px;max-width:150px;"><p style="width:89px;margin-bottom: 0;font-weight: bold">Selecteer</p></th>
       <th class="smallestCol">Soort</th>
@@ -235,7 +251,7 @@
       <th class="smallCol">Volgnr</th>
       <th class="smallCol">Startdatum</th>
       <th id="afwerkingHeader" [matMenuTriggerFor]="menu2" class="normalCol">
-        <p style="font-size:14px;font-weight: bold;margin-bottom: 0;padding-top: 5px">Afwerkingsdatum</p>
+        <p style="font-size:14px;font-weight: bold;margin-bottom: 0;">Afwerkingsdatum</p>
         <div style="flex-direction: row;display: flex;gap: 0 5px;">
           <p style="margin-bottom: 0;width: fit-content"><small>of laatst gewijzigd</small>  </p>
           <span style="font-size: 18px;margin-top: 3px" class="material-icons">
@@ -301,7 +317,11 @@
   </table>
 </div>
 
-<div *ngIf="isOn && isViewingOwAndSchademeldingList" cdkScrollable style="max-width:1200px !important; height: calc(100vh - 260px) !important; " class="scroll-table">
+
+
+
+
+<div *ngIf="isOn && isViewingOwAndSchademeldingList" cdkScrollable style="max-width:1200px !important; height: calc(100vh - 260px) !important;padding-bottom: 0px;margin-top: 15px; " class="scroll-table">
   <p class="geenSchadeOfOW" *ngIf="owAndSchademeldingList.length === 0">Er zijn nog geen onvoorziene werken of schademeldingen aangemaakt in dit project.</p>
   <table class="item-list">
     <tbody>
