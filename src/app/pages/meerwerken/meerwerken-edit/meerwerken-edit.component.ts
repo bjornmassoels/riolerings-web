@@ -19,6 +19,10 @@ import {AngularFireStorage} from "@angular/fire/compat/storage";
 import { MatDialog } from '@angular/material/dialog';
 import { HasChangedPopupComponent } from '../../has-changed-popup/has-changed-popup.component';
 import moment from 'moment';
+import { Schademelding } from '../../../../models/schademelding';
+import { MeerwerkViewDeleteDialogComponent } from '../meerwerken-view/meerwerk-view-delete-dialog/meerwerk-view-delete-dialog.component';
+import { DialogOverviewExampleDialog3 } from '../meerwerken-view/meerwerken-view.component';
+import { VariablesService } from '../../../../services/variables.service';
 
 
 
@@ -39,8 +43,6 @@ export class MeerwerkenEditComponent implements OnInit {
   public meerwerkForm: UntypedFormGroup;
   public totalProjectCount: number;
   public isLoaded: boolean = false;
-  public isFirst: boolean = false;
-  public isLast: boolean = false;
   public _id: string;
   public meerwerkSend: Meerwerk;
   private lastProjects: Project[] = [];
@@ -61,6 +63,7 @@ export class MeerwerkenEditComponent implements OnInit {
   projectEditedByGronwderker: boolean;
   heeftPloegen: boolean;
   hasChangedValue: boolean = false;
+  owAndSchademeldingList: Schademelding[];
   constructor(
     private formBuilder: UntypedFormBuilder,
     private apiService: ApiService,
@@ -69,7 +72,8 @@ export class MeerwerkenEditComponent implements OnInit {
     private formService: FormService,
     private toastrService: NbToastrService,
     private storage: AngularFireStorage,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private variablesService: VariablesService
   ) {
     route.params.subscribe((val) => {
       this.isLoaded = false;
@@ -89,48 +93,41 @@ export class MeerwerkenEditComponent implements OnInit {
 
 
   onPreviousClick() {
-    const index = this.lastProjects.findIndex(x => x._id === this._id);
-    if (index !== 0) {
-      const project = this.lastProjects[index - 1];
-      if(!project.isMeerwerk){
-        if(project.isSlokker == null || project.isSlokker === false){
-          this.checkChangedValue('/pages/projectedit/' + project._id);
-        } else {
-          this.checkChangedValue('/pages/slokkerprojectedit/' + project._id);
-        }
-      } else {
-        this.checkChangedValue('/pages/meerwerkedit/' +  project._id);
-      }
+    let nextObject = this.owAndSchademeldingList[this.index - 1];
+    let route;
+    if(nextObject.isMeerwerk){
+      route = '/pages/meerwerkedit/' + nextObject._id
+    } else {
+      route = '/pages/schademeldingedit/' +  nextObject.group_id  + '/' + nextObject._id
     }
+    this.checkChangedValueAndNavigate(route);
   }
 
   onNextClick() {
-    const index = this.lastProjects.findIndex(x => x._id === this._id);
-    if (this.lastProjects.length > index + 1) {
-      const project = this.lastProjects[index + 1];
-      if(!project.isMeerwerk){
-        if(project.isSlokker == null || project.isSlokker === false){
-          this.checkChangedValue('/pages/projectedit/' + project._id);
-        } else {
-          this.checkChangedValue('/pages/slokkerprojectedit/' + project._id);
-        }
-      } else {
-        this.checkChangedValue('/pages/meerwerkedit/' + project._id);
-      }
-      }
+    let nextObject = this.owAndSchademeldingList[this.index + 1];
+    let route;
+    if(nextObject.isMeerwerk){
+      route = '/pages/meerwerkedit/' + nextObject._id
+    } else {
+      route = '/pages/schademeldingedit/' + nextObject.group_id + '/' + nextObject._id
+    }
+    this.checkChangedValueAndNavigate(route);
     }
 
 
   private loadData() {
     this.hasChangedValue = false;
     this.isSaving = false;
-    this.lastProjects = this.formService.lastProjects;
+    this.owAndSchademeldingList = this.formService.owAndSchademeldingList;
+
     this.projectEditedByGronwderker = false;
     this.apiService.getMeerwerkById(this._id).subscribe(async (x) => {
       this.currentProject = x as Meerwerk;
-
+      if(this.currentProject._id == null){
+        this.currentProject._id = this.currentProject.id;
+      }
       this.group = this.currentProject.group_id;
-
+      this.formService.deleteMeerwerk = this.currentProject;
       if(this.currentProject.lastWorkerDate != null){
         this.currentProject.lastWorkerDate = new Date(this.currentProject.lastWorkerDate);
         let timeBetweenLastEdit = Math.floor((new Date().getTime() - this.currentProject.lastWorkerDate.getTime()) / (1000 * 60 * 60 ));
@@ -158,34 +155,30 @@ export class MeerwerkenEditComponent implements OnInit {
       this.photos = this.currentProject.photos;
 
 
-      const indexer = this.lastProjects.findIndex(x => x._id === this._id);
+      const indexer = this.owAndSchademeldingList?.findIndex(x => x._id === this._id);
       this.index = indexer;
-      this.totalProjectCount = this.lastProjects?.length;
-      if (indexer === 0 || indexer === -1) {
-        this.isFirst = true;
-      } else {
-        this.isFirst = false;
-      }
-      if ( (indexer + 1) === this.formService.lastProjects.length || this.formService.lastProjects.length === 1 || this.formService.lastProjects.length === 0) {
-        this.isLast = true;
-      } else {
-        this.isLast = false;
-      }
+
       while(this.apiService.thisCompany == null){
         await this.delay(50)
       }
       this.company = this.apiService.thisCompany;
       this.companyId = this.company._id;
+      this.formService.isViewingOwAndSchademeldingList = true;
+
       this.isLoaded = true;
       this.meerwerkForm.valueChanges.subscribe(x => {
         this.hasChangedValue = true;
       });
+
+      if(!this.currentProject.hasBeenViewed){
+        this.apiService.updateMeerwerkHasBeenViewed(this._id).subscribe(x => {
+          this.currentProject.hasBeenViewed = true;
+        });
+      }
     });
   }
 
-  goToPrevious() {
-    this.checkChangedValue('/pages/groupview/' + this.group._id);
-  }
+
   dateToDateString(date: Date){
     return this.days[date.getDay()].substring(0,3) + ' ' +('0' + date.getDate()).slice(-2) + '/' + ('0' + (date.getMonth() + 1)).slice(-2) + '/' + ('0' + date.getFullYear()).slice(-2);
   }
@@ -259,6 +252,49 @@ export class MeerwerkenEditComponent implements OnInit {
     }
   }
 
+  async generatePDF() {
+    let title = '';
+    if(this.currentProject.street != null && this.currentProject.street !== '' && (this.currentProject.huisNr == null || this.currentProject.huisNr === '')){
+      title = this.currentProject.street + "-onvoorzien werk";
+    } else if((this.currentProject.street == null || this.currentProject.street === '') && this.currentProject.huisNr != null && this.currentProject.huisNr !== ''){
+      title = this.currentProject.huisNr + "-onvoorzien werk";
+    } else if((this.currentProject.street == null || this.currentProject.street === '') &&  (this.currentProject.huisNr == null || this.currentProject.huisNr === '')){
+      title = "onvoorzien werk";
+    } else {
+      title = this.currentProject.street + '-' + this.currentProject.huisNr + "-onvoorzien werk";
+    }
+    const dialogRef = this.dialog.open(DialogOverviewExampleDialog3, {
+      width: '550px',
+      data: title,
+    });
+
+    dialogRef.afterClosed().subscribe(async (result) => {
+      title = result;
+      if (this.variablesService.cancelDownload === false) {
+        this.toastrService.success('DE PDF IS AAN HET DOWNLOADEN.');
+        this.apiService.makeMeerwerkPdf(this.currentProject._id).subscribe((data:  Data) => {
+          const { pdf: base64PDF } = data;
+
+          // Convert base64 to a blob
+          fetch(`data:application/pdf;base64,${base64PDF}`)
+            .then(res => res.blob())
+            .then(blob => {
+              // Create a link element
+              const url = window.URL.createObjectURL(blob);
+              const link = document.createElement('a');
+              link.href = url;
+              link.setAttribute('download', title + '.pdf'); // or any other filename
+
+              // Automatically download the file
+              document.body.appendChild(link);
+              link.click();
+              link.parentNode.removeChild(link);
+            });
+        });
+      }
+      this.variablesService.cancelDownload = false;
+    });
+  }
 
   generateRandomName(): string {
     const random = Math.floor(100000000 + Math.random() * 900000);
@@ -310,7 +346,7 @@ export class MeerwerkenEditComponent implements OnInit {
       width: '50vw',
     });
   }
-  checkChangedValue(route: string){
+  checkChangedValueAndNavigate(route: string){
     if(this.hasChangedValue){
       this.formService.previousRoute = route;
       const dialogRef = this.dialog.open(HasChangedPopupComponent, {
@@ -421,7 +457,7 @@ export class MeerwerkenEditComponent implements OnInit {
     });
   }
   goToView() {
-    this.checkChangedValue('/pages/meerwerkview/' + this._id);
+    this.checkChangedValueAndNavigate('/pages/meerwerkview/' + this._id);
   }
   setDate(event) {
     if(event !== ''){
@@ -430,4 +466,24 @@ export class MeerwerkenEditComponent implements OnInit {
       this.newDate = null;
     }
   }
+
+  goToPrevious() {
+    this.formService.previousIndexScroll = this.index;
+    this.formService.previousPageForScrollIndex = 'schademelding';
+    this.checkChangedValueAndNavigate('/pages/groupview/' + this.currentProject.group_id._id);
+  }
+  async onDeleteProject() {
+    if(this.currentProject.group_id != null && this.currentProject.group_id?._id == null){
+      this.currentProject.group_id._id = this.currentProject.group_id.id;
+    }
+    this.formService.previousPage = ['/pages/groupview/' + this.currentProject.group_id._id];
+    let dialogRef = this.dialog.open(MeerwerkViewDeleteDialogComponent, {
+      height: '19vh',
+      width: '27vw',
+    });
+  }
+}
+interface Data {
+  pdf: any;  // use a more specific type if possible
+  // add other properties if needed
 }

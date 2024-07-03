@@ -146,9 +146,7 @@ export class ProjectViewComponent implements OnInit,OnDestroy {
             this.currentProject.longitudeList.length - 1
           ];
       }
-      if (this.currentProject._id == null) {
-        this.currentProject._id = this._id;
-      }
+
 
       this.formService.PreloadProject = this.currentProject;
       const indexer = this.lastProjects.findIndex((x) => x._id === this._id);
@@ -206,6 +204,7 @@ export class ProjectViewComponent implements OnInit,OnDestroy {
   }
 
   async onDeleteProject() {
+    this.formService.previousPage = ['/pages/groupview/' + this.currentProject.group_id._id];
     let dialogRef = this.dialog.open(ProjectViewDeleteDialogComponent, {
       height: '19vh',
       width: '29vw',

@@ -1,0 +1,12 @@
+<h2 mat-dialog-title>Kies een bestandsnaam</h2>
+<div mat-dialog-content>
+  <p>Hoe wilt u dit bestand noemen??</p>
+  <mat-form-field style="width: 500px !important;">
+    <mat-label style='margin-left: 15px;'>Naam</mat-label>
+    <input matInput style="min-width: 460px !important; background-color: white !important;" nbInput [(ngModel)]="data">
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button color='warn' (click)="onNoClick()">Annuleer</button>
+  <button mat-button color='primary' (click)="onOpslaanClick()" [mat-dialog-close]="data" cdkFocusInitial>Opslaan</button>
+</div>

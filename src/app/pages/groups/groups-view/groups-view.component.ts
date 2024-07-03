@@ -229,6 +229,7 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
       if (this.schademeldingList != null && this.schademeldingList.length > 0) {
         for (let schademelding of this.schademeldingList) {
           schademelding.createdDate = new Date(schademelding.created);
+          if(schademelding.date)schademelding.date = new Date(schademelding.date);
           schademelding.isMeerwerk = false;
           schademelding.isSelected = false;
           schademelding.isSchademelding = true;
@@ -237,8 +238,23 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
         this.schademeldingList = [];
       }
       this.owAndSchademeldingList = [...this.schademeldingList, ...this.meerwerkenList];
-      this.owAndSchademeldingList.sort((a, b) => { return a.createdDate < b.createdDate ? 1 : -1; });
-      console.log(this.owAndSchademeldingList);
+      this.owAndSchademeldingList.sort((a, b) => {
+        let aDate = a.isMeerwerk? a.startDate : a.date;
+        let bDate = b.isMeerwerk? b.startDate : b.date;
+        if(aDate == null){
+          return 1;
+        }
+        if(bDate == null){
+          return -1;
+        }
+        if(aDate.getTime() < bDate.getTime()){
+          return 1;
+        }
+        if(aDate.getTime() > bDate.getTime()){
+          return -1;
+        }
+      });
+      this.formService.owAndSchademeldingList = this.owAndSchademeldingList;
       this.searchAllProjectsList = this.allProjects;
       this.formService.lastProjects = this.allProjects;
       this.currentProject = new Project();

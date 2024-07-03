@@ -20,6 +20,11 @@ import { MatDialog } from '@angular/material/dialog';
 import moment from 'moment/moment';
 import { HasChangedPopupComponent } from '../../has-changed-popup/has-changed-popup.component';
 import { CdkDragDrop, CdkDragEnd, CdkDragEnter, CdkDragStart, moveItemInArray } from '@angular/cdk/drag-drop';
+import {
+  SlokkerprojectViewDeleteDialogComponent
+} from '../slokkerproject-view/slokkerproject-view-delete-dialog/slokkerproject-view-delete-dialog.component';
+import { DialogOverviewExampleDialog2 } from '../slokkerproject-view/slokkerproject-view.component';
+import { VariablesService } from '../../../../services/variables.service';
 
 
 @Component({
@@ -73,7 +78,8 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
     private formService: FormService,
     private toastrService: NbToastrService,
     private storage: AngularFireStorage,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private variablesService: VariablesService
   ) {
     route.params.subscribe((val) => {
       this.isLoaded = false;
@@ -133,6 +139,10 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
       while(this.apiService.thisCompany == null){
         await this.delay(50)
       }
+      if(this.currentProject._id == null){
+        this.currentProject._id = this.currentProject.id;
+      }
+      this.formService.deleteSlokkerProject = this.currentProject;
       this.company = this.apiService.thisCompany;
       this.companyId = this.company._id;
       this.newDate = null;
@@ -709,7 +719,13 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
       this.slokkerForm.controls['afgewerktDatum'].setValue(null);
     }
   }
-
+  async onDeleteProject() {
+    this.formService.previousPage = ['/pages/groupview/' + this.currentProject.group_id._id];
+    let dialogRef = this.dialog.open(SlokkerprojectViewDeleteDialogComponent, {
+      height: '19vh',
+      width: '27vw',
+    });
+  }
   imagePopUp(photo: string) {
     this.formService._chosenPhoto = photo;
     let dialogRef = this.dialog.open(ProjectViewDialogComponent, {
@@ -748,4 +764,51 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
       this.schetsPhotos[prevIndex] = temp;
     }
   }
+
+
+  async generatePDF() {
+    this.currentProject.equipNrRiolering = this.group.rbProjectNr +  ((this.currentProject.index != null && this.currentProject.index !== '')?  '-kolknr'  + this.currentProject.index : '') ;
+    this.currentProject.naamFiche = 'GEM=' + this.group.gemeenteCode + ' projectnr=' + this.group.rbProjectNr + ' / ' + this.group.aannemerProjectNr +
+      ' adres=' + this.currentProject.street +  ((this.currentProject.index != null && this.currentProject.index !== '')?
+        '-kolknr'  + this.currentProject.index : '') + ' AB-kolk-fiche';
+    let title =  'Kolk' + (this.currentProject.street != null && this.currentProject.street !== '' ? '-' + this.currentProject.street : '') +
+      (this.currentProject.huisNr != null && this.currentProject.huisNr !== '' ? '-' + this.currentProject.huisNr : '') +
+      (this.currentProject.index != null && this.currentProject.index !== '' ? '-' + this.currentProject.index : '');
+    const dialogRef = this.dialog.open(DialogOverviewExampleDialog2, {
+      width: '550px',
+      data: title,
+    });
+
+    dialogRef.afterClosed().subscribe(async (result) => {
+      title = result;
+      if (this.variablesService.cancelDownload === false) {
+        this.toastrService.success('DE PDF IS AAN HET DOWNLOADEN.');
+        this.apiService.makeKolkPdf(this.currentProject._id, title).subscribe((data:  Data) => {
+          const { pdf: base64PDF } = data;
+
+          // Convert base64 to a blob
+          fetch(`data:application/pdf;base64,${base64PDF}`)
+            .then(res => res.blob())
+            .then(blob => {
+              // Create a link element
+              const url = window.URL.createObjectURL(blob);
+              const link = document.createElement('a');
+              link.href = url;
+              link.setAttribute('download', title + '.pdf'); // or any other filename
+
+              // Automatically download the file
+              document.body.appendChild(link);
+              link.click();
+              link.parentNode.removeChild(link);
+            });
+        });
+      }
+      this.variablesService.cancelDownload = false;
+    });
+  }
+
+}
+interface Data {
+  pdf: any;  // use a more specific type if possible
+  // add other properties if needed
 }

@@ -17,6 +17,9 @@ import { MatDialog } from '@angular/material/dialog';
 import moment from 'moment';
 import { HasChangedPopupComponent } from '../../has-changed-popup/has-changed-popup.component';
 import { CdkDragDrop, CdkDragEnter, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { ProjectViewDeleteDialogComponent } from '../project-view/project-view-delete-dialog/project-view-delete-dialog.component';
+import { DialogOverviewExampleDialog } from '../project-view/project-view.component';
+import { VariablesService } from '../../../../services/variables.service';
 
 
 
@@ -100,7 +103,8 @@ export class ProjectEditComponent implements OnInit, OnDestroy {
     private formService: FormService,
     private toastrService: NbToastrService,
     private storage: AngularFireStorage,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private variablesService: VariablesService
   ) {
     route.params.subscribe((val) => {
       this.isLoaded = false;
@@ -159,8 +163,12 @@ export class ProjectEditComponent implements OnInit, OnDestroy {
       while (this.apiService.thisCompany == null) {
         await this.delay(50)
       }
+      if(this.currentProject._id == null){
+        this.currentProject._id = this.currentProject.id;
+      }
       this.company = this.apiService.thisCompany;
       this.companyId = this.company._id;
+      this.formService.PreloadProject = this.currentProject;
       if (this.currentProject.lastWorkerDate != null) {
         this.currentProject.lastWorkerDate = new Date(this.currentProject.lastWorkerDate);
         let timeBetweenLastEdit = Math.floor((new Date().getTime() - this.currentProject.lastWorkerDate.getTime()) / (1000 * 60 * 60));
@@ -957,6 +965,62 @@ export class ProjectEditComponent implements OnInit, OnDestroy {
     return new Promise((resolve) => setTimeout(() => resolve(), timeInMillis));
   }
 
+  async onDeleteProject() {
+    this.formService.previousPage = ['/pages/groupview/' + this.currentProject.group_id._id];
+    let dialogRef = this.dialog.open(ProjectViewDeleteDialogComponent, {
+      height: '19vh',
+      width: '29vw',
+    });
+
+    // this.formService._allProjects = this.formService._allProjects.filter(project => (
+    // project._id !== this.formService._chosenProject._id
+    // ));
+  }
+  async generatePDF() {
+    if(this.currentProject.isWachtAansluiting || this.currentProject.droogWaterAfvoer.isWachtaansluiting || this.currentProject.regenWaterAfvoer.isWachtaansluiting){
+      this.currentProject.naamFiche = 'GEM=' + this.group.gemeenteCode + ' projectnr=' + this.group.rbProjectNr + ' / ' + this.group.aannemerProjectNr +
+        ' adres=' + this.currentProject.street + ((this.currentProject.huisNr != null && this.currentProject.huisNr !== '') ?
+          ' - ' + this.currentProject.huisNr : '') + ((this.currentProject.index != null && this.currentProject.index !== '')? ' volgnr = ' + this.currentProject.index : '') + ' AB-HA-fiche';
+      this.currentProject.equipNrRiolering = this.group.rbProjectNr + ((this.currentProject.index != null && this.currentProject.index !== '')? '-volgnr= ' + this.currentProject.index : '') ;
+      this.currentProject.bestandNaam = 'WA-' + this.currentProject.street + ((this.currentProject.huisNr != null && this.currentProject.huisNr !== '') ? '-' + this.currentProject.huisNr : '') +
+        ((this.currentProject.index != null && this.currentProject.index !== '')? '-' + this.currentProject.index : '');
+    } else {
+      this.currentProject.naamFiche = 'GEM=' + this.group.gemeenteCode + ' projectnr= ' + this.group.rbProjectNr + ' / ' + this.group.aannemerProjectNr +
+        ' adres=' + this.currentProject.street + ' ' + this.currentProject.huisNr + ((this.currentProject.equipNrRiolering != null && this.currentProject.equipNrRiolering !== '') ? ' eq=' + this.currentProject.equipNrRiolering : '');
+      this.currentProject.bestandNaam = 'HA-' + this.currentProject.street + ((this.currentProject.huisNr != null && this.currentProject.huisNr !== '') ? '-' + this.currentProject.huisNr : '');
+    }
+    let title = this.currentProject.bestandNaam;
+    const dialogRef = this.dialog.open(DialogOverviewExampleDialog, {
+      width:'550px',
+      data: title,
+    });
+    dialogRef.afterClosed().subscribe(async (result) => {
+      title = result;
+      if (this.variablesService.cancelDownload === false) {
+        this.toastrService.success('DE PDF WORDT GEDOWNLOAD. Even geduld');
+        if(this.currentProject._id == null) this.currentProject._id = this.currentProject.id;
+        this.apiService.makeHuisaansluitingPdf(this.currentProject._id, title).subscribe((data:  Data) => {
+          const { pdf: base64PDF } = data;
+
+          // Convert base64 to a blob
+          fetch(`data:application/pdf;base64,${base64PDF}`)
+            .then(res => res.blob())
+            .then(blob => {
+              // Create a link element
+              const url = window.URL.createObjectURL(blob);
+              const link = document.createElement('a');
+              link.href = url;
+              link.setAttribute('download', title + '.pdf'); // or any other filename
+
+              // Automatically download the file
+              document.body.appendChild(link);
+              link.click();
+              link.parentNode.removeChild(link);
+            });
+        });
+      }
+    });
+  }
 
   deleteFotoDwa(i: number) {
     let length = this.currentProject.photosDWA.length;
@@ -1180,3 +1244,7 @@ export class ProjectEditComponent implements OnInit, OnDestroy {
 
 }
 
+interface Data {
+  pdf: any;  // use a more specific type if possible
+  // add other properties if needed
+}

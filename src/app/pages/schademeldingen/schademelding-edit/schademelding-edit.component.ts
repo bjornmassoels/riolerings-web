@@ -6,22 +6,27 @@ import {catchError, finalize, forkJoin, mapTo, Observable, of} from "rxjs";
 import {AngularFireStorage} from "@angular/fire/compat/storage";
 import moment from "moment";
 import {map, startWith, tap} from "rxjs/operators";
-import {MatDialog, MatDialogRef} from "@angular/material/dialog";
+import { MatDialog, MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
 import * as html2pdf from 'html2pdf.js';
-import { Group } from '../../../models/groups';
-import { Schademelding } from '../../../models/schademelding';
-import { Company } from '../../../models/company';
-import { User } from '../../../models/user';
-import { ApiService } from '../../../services/api.service';
-import { FormService } from '../../../services/form.service';
-import { Photo } from '../../../models/photo';
-import { HasChangedPopupComponent } from '../has-changed-popup/has-changed-popup.component';
+import { Group } from '../../../../models/groups';
+import { Schademelding } from '../../../../models/schademelding';
+import { Company } from '../../../../models/company';
+import { User } from '../../../../models/user';
+import { ApiService } from '../../../../services/api.service';
+import { FormService } from '../../../../services/form.service';
+import { Photo } from '../../../../models/photo';
+import { HasChangedPopupComponent } from '../../has-changed-popup/has-changed-popup.component';
 import { PhotoPopupDialog } from './photo-popup/photo-popup.component';
+import { MatButton } from '@angular/material/button';
+import {
+  SchademeldingViewDeleteDialogComponent
+} from '../schademeldingen-view/schademelding-view-delete-dialog/schademelding-view-delete-dialog.component';
 
 @Component({
   selector: 'ngx-schademelding-edit',
   templateUrl: './schademelding-edit.component.html',
-  styleUrls: ['./schademelding-edit.component.scss']
+  styleUrls: ['./schademelding-edit.component.scss',
+    '../../styles/project-view.scss']
 })
 export class SchademeldingEditComponent implements OnInit, OnDestroy {
   @ViewChild('addresstext', { static: false }) public addresstext: ElementRef;
@@ -35,7 +40,7 @@ export class SchademeldingEditComponent implements OnInit, OnDestroy {
   tempImages: any[] = [null,null,null,null,null,null];
 
   schademelding: Schademelding;
-  schademeldingen: Schademelding[];
+  owAndSchademeldingList: Schademelding[];
   index: number;
   isNameInvalid: boolean = false;
   editForm;
@@ -82,7 +87,7 @@ export class SchademeldingEditComponent implements OnInit, OnDestroy {
     this._id = this.route.snapshot.paramMap.get('id');
     this.group_id = this.route.snapshot.paramMap.get('groupid');
     this.group = this.formService.currentGroup;
-    console.log('id' + this._id)
+    console.log('id' + this.group_id)
     if(this._id === 'null'){
       this.isNewSchademelding = true;
     } else {
@@ -97,10 +102,13 @@ export class SchademeldingEditComponent implements OnInit, OnDestroy {
     this.isLoaded = false;
     this.company = this.apiService.thisCompany;
     this.schademelding = this.formService.schademelding;
-    this.schademeldingen = this.formService.schademeldingen;
+    this.owAndSchademeldingList = this.formService.owAndSchademeldingList;
     const schademelding$ = !this.isNewSchademelding ?  this.apiService.getSchademelding(this._id).pipe(
       tap(x => {
         this.schademelding = x as Schademelding;
+        if (this.schademelding._id == null) {
+          this.schademelding._id = this.schademelding.id;
+        }
         this.formService.schademelding = this.schademelding;
       }),
       catchError(error => {
@@ -110,13 +118,6 @@ export class SchademeldingEditComponent implements OnInit, OnDestroy {
       mapTo(1)
     ): of(1);
 
-    const schademeldingen$ = this.schademeldingen == null ? this.apiService.getSchademeldingen(this.group_id).pipe(
-      tap(x => {
-        this.schademeldingen = x as Schademelding[];
-        this.formService.schademeldingen = this.schademeldingen;
-      }),
-      mapTo(1)
-    ) : of(1);
     const group$ = this.group == null ? this.apiService.getGroupByIdLighterVersion(this.group_id).pipe(
       tap(x => {
         this.group = x as Group;
@@ -125,15 +126,15 @@ export class SchademeldingEditComponent implements OnInit, OnDestroy {
       mapTo(1)
     ) : of(1);
 
-    forkJoin([schademelding$, schademeldingen$, group$])
-      .pipe(tap(([count1, count2, count3]) => this.loadedCount = count1 + count2 + count3))
+    forkJoin([schademelding$,  group$])
+      .pipe(tap(([count1, count2]) => this.loadedCount = count1 + count2 ))
       .subscribe(() => {
         this.buildForm();
       });
   }
 
   async buildForm(){
-    while(this.loadedCount !== 3){
+    while(this.loadedCount !== 2){
       await this.delay(50);
     }
     if(this.isNewSchademelding){
@@ -144,8 +145,10 @@ export class SchademeldingEditComponent implements OnInit, OnDestroy {
       this.schademelding.hasBeenViewed = true;
     } else {
       this.schademelding.created = new Date(this.schademelding.created);
+      this.schademelding._id = this._id;
+      this.formService.deleteSchademelding = this.schademelding;
     }
-    this.index = this.schademeldingen.findIndex(x => x._id === this._id);
+    this.index = this.owAndSchademeldingList?.findIndex(x => x._id === this._id);
 
     let startTijdHerstelling;
     let eindTijdHerstelling;
@@ -209,6 +212,7 @@ export class SchademeldingEditComponent implements OnInit, OnDestroy {
 
     this.isLoaded = true;
 
+    console.log(this.schademelding)
     if(!this.isNewSchademelding && !this.schademelding.hasBeenViewed){
       this.apiService.updateSchademeldingHasBeenViewed(this.schademelding._id).subscribe(x => {
         this.schademelding.hasBeenViewed = true;
@@ -219,6 +223,7 @@ export class SchademeldingEditComponent implements OnInit, OnDestroy {
       await this.delay(50);
     }
     this.company = this.apiService.thisCompany;
+    this.formService.isViewingOwAndSchademeldingList = true;
   }
 
   addPhoto() {
@@ -294,14 +299,10 @@ export class SchademeldingEditComponent implements OnInit, OnDestroy {
     this.formService.previousPageForScrollIndex = 'schademelding';
   }
 
-  onCloseClick(isDelete: boolean) {
+  goToPrevious() {
     this.formService.previousIndexScroll = this.index;
     this.formService.previousPageForScrollIndex = 'schademelding';
-    if(!isDelete){
-      this.checkChangedValue('/pages/groupview' + this.group_id);
-    } else {
-      this.router.navigate(['/pages/groupview' + this.group_id]);
-    }
+    this.checkChangedValueAndNavigate('/pages/groupview/' + this.group_id);
   }
   delay(timeInMillis: number): Promise<void> {
     return new Promise((resolve) => setTimeout(() => resolve(), timeInMillis));
@@ -342,40 +343,25 @@ export class SchademeldingEditComponent implements OnInit, OnDestroy {
     }
   }
   onDeleteClick() {
-    const dialogRef = this.dialog.open(DeleteDialogSchademelding, {
+    this.formService.previousPage = ['/pages/groupview/' + this.group_id];
+    const dialogRef = this.dialog.open(SchademeldingViewDeleteDialogComponent, {
       width:'450px',
       panelClass: 'mat-dialog-padding'
     });
-    dialogRef.afterClosed().subscribe(async (result) => {
-      if(this.formService.isDelete){
-        this.schademelding._id = this._id;
-        this.apiService.deleteSchademelding(this.schademelding).subscribe(x => {
-          this.schademeldingen.splice(this.index, 1);
-          this.index--;
-          this.toastrService.danger( 'De schademelding is verwijderd', 'Succes!');
-          if(this.schademeldingen.length === 0 ){
-            this.onCloseClick(true);
-          } else if(this.index + 1 !== this.schademeldingen.length){
-            this.onNextClick(true);
-          } else {
-            this.index++;
-            this.onPreviousClick(true)
-          }
-        });
-      }
-    });
-
   }
 
-  onNextClick(isDelete: boolean) {
-    if(!isDelete){
-      this.checkChangedValue('/pages/editschademelding/' + this.group_id + '/' + this.schademeldingen[this.index + 1]._id);
+  onNextClick() {
+    let nextObject = this.owAndSchademeldingList[this.index + 1];
+    let route;
+    if(nextObject.isMeerwerk){
+      route = '/pages/meerwerkedit/' + nextObject._id
     } else {
-      this.router.navigate(['/pages/editschademelding/' + this.group_id + '/' + this.schademeldingen[this.index + 1]._id]);
+      route = '/pages/schademeldingedit/' + this.group_id + '/' + nextObject._id
     }
+    this.checkChangedValueAndNavigate(route);
   }
 
-  checkChangedValue(route: string){
+  checkChangedValueAndNavigate(route: string){
     if(this.hasChangedValue){
       this.formService.previousRoute = route;
       const dialogRef = this.dialog.open(HasChangedPopupComponent, {
@@ -387,12 +373,15 @@ export class SchademeldingEditComponent implements OnInit, OnDestroy {
       this.router.navigate([route]);
     }
   }
-  onPreviousClick(isDelete: boolean) {
-    if(!isDelete){
-      this.checkChangedValue('/pages/editschademelding/' + this.group_id + '/' + this.schademeldingen[this.index - 1]._id);
+  onPreviousClick() {
+    let nextObject = this.owAndSchademeldingList[this.index - 1];
+    let route;
+    if(nextObject.isMeerwerk){
+      route = '/pages/meerwerkedit/' + nextObject._id
     } else {
-      this.router.navigate(['/pages/editschademelding/' + this.group_id + '/' + this.schademeldingen[this.index - 1]._id]);
+      route = '/pages/schademeldingedit/' + this.group_id + '/' + nextObject._id
     }
+    this.checkChangedValueAndNavigate(route);
   }
 
 
@@ -479,23 +468,29 @@ export class SchademeldingEditComponent implements OnInit, OnDestroy {
   async generatePDF() {
     this.apiService.getPopulatedSchademelding(this._id).subscribe(async x => {
       this.printSchademelding =  x as Schademelding;
-      await this.delay(300);
+      if(this.printSchademelding._id == null){
+        this.printSchademelding._id = this.schademelding.id;
+      }
+      if(this.printSchademelding.created != null) this.printSchademelding.created = new Date(this.printSchademelding.created);
+      if(this.printSchademelding.date != null) this.printSchademelding.date = new Date(this.printSchademelding.date);
+
+      await this.delay(100);
 
       this.isPrint = true;
-      await this.delay(200);
+      await this.delay(100);
 
       this.toggleDisplay();
       await this.delay(50);
       let options;
       let fileName
-      fileName = 'Schademelding' + (this.printSchademelding.group_id.rbProjectNaam != null ? '-' + this.printSchademelding.group_id.rbProjectNaam : '') + '.pdf';
+      fileName = 'Schademelding' + (this.printSchademelding.tegenPartij ? '-' + this.printSchademelding.tegenPartij : '') +  (this.printSchademelding.group_id.rbProjectNaam != null ? '-' + this.printSchademelding.group_id.rbProjectNaam : '') + '.pdf';
       options = {
         filename:
         fileName,
         image: {type: 'png'},
         html2canvas: {useCORS: true},
         jsPDF: {orientation: 'portrait', format: 'a4', compressPdf: true},
-        margin: [0.5, 0.5, 0.5, 0.5],
+        margin: [3, 0.5, 0.5, 0.5],
         pagebreak: { mode: 'avoid-all', avoid:  '.pageBreak'}
       };
 
@@ -526,10 +521,25 @@ export class SchademeldingEditComponent implements OnInit, OnDestroy {
       this.apiService.createSchademelding(data).subscribe(async x => {
         let newSchademelding = x as Schademelding;
         newSchademelding.date = new Date(newSchademelding.date);
-        this.schademeldingen.push(newSchademelding);
-        this.schademeldingen.forEach(x => x.date = new Date(x.date));
-        this.schademeldingen.sort((a,b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-        this.formService.schademeldingen = this.schademeldingen;
+        this.owAndSchademeldingList.unshift(newSchademelding);
+        this.owAndSchademeldingList.forEach(x => x.date = new Date(x.date));
+        this.owAndSchademeldingList.sort((a, b) => {
+          let aDate = a.isMeerwerk? a.startDate : a.date;
+          let bDate = b.isMeerwerk? b.startDate : b.date;
+          if(aDate == null){
+            return 1;
+          }
+          if(bDate == null){
+            return -1;
+          }
+          if(aDate.getTime() < bDate.getTime()){
+            return 1;
+          }
+          if(aDate.getTime() > bDate.getTime()){
+            return -1;
+          }
+        });
+        this.formService.schademeldingen = this.owAndSchademeldingList;
         this.formService.schademelding = null;
         this.toastrService.success( 'De schademelding is aangemaakt', 'Succes!');
         this.outputEvent.emit('schademelding');
@@ -541,8 +551,10 @@ export class SchademeldingEditComponent implements OnInit, OnDestroy {
       });
     } else {
       this.apiService.updateSchademelding(data).subscribe(x => {
-        this.schademeldingen[this.index] = data;
-        this.formService.schademeldingen = this.schademeldingen;
+        if(this.owAndSchademeldingList){
+          this.owAndSchademeldingList[this.index] = data;
+        }
+        this.formService.schademeldingen = this.owAndSchademeldingList;
         this.formService.schademelding = data;
         this.hasChangedValue = false;
         this.chosenImageList = [];
@@ -562,30 +574,12 @@ export class SchademeldingEditComponent implements OnInit, OnDestroy {
     }
   }
 
-  goToPrevious() {
-     this.router.navigate(['/pages/groupview', this.group_id]);
+
+
+  goToView() {
+    this.checkChangedValueAndNavigate('/pages/schademeldingview/' + this.group_id + '/' + this._id);
   }
 }
 
-@Component({
-  selector: 'delete-dialog-schademelding',
-  templateUrl: 'delete-dialog.html',
-})
-export class DeleteDialogSchademelding {
-  constructor(
-    public dialogRef: MatDialogRef<DeleteDialogSchademelding>,
-    public formService: FormService
-  ) {
-    this.formService.isDelete = false;
-  }
 
-  onNoClick(): void {
-    this.formService.isDelete = false;
-    this.dialogRef.close();
-  }
 
-  onDeleteClick() {
-    this.formService.isDelete = true;
-    this.dialogRef.close();
-  }
-}

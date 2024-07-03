@@ -42,8 +42,8 @@ button:disabled {
   margin-bottom: -10px;
 }
 .downloadImage{
-  margin-top: -3px;
   margin-left: 7px;
+  margin-bottom: -1px;
 }
 .fotoColumn {
   border: 2px solid lightskyblue;
@@ -140,8 +140,9 @@ button:disabled {
   width: 88vw;
 }
 .form-button {
-  font-size: 16px;
-  font-weight: 600;
+  margin-top: 6px;
+  font-size: 18px;
+  font-weight: 500;
   background-color: black !important;
   color: white !important;
   border: 1px solid black;
@@ -183,13 +184,19 @@ button:disabled {
   width: auto;
   height: 40px;
 }
-.boldText {
-  margin-top: 11px;
-  font-size: 24px;
-  font-weight: 600;
-  margin-left: 15px;
-  margin-right: 15px;
+
+.delete-button {
+  font-weight: 800;
+  letter-spacing: 1.4pt;
+  margin-right:5px;
+  font-size: 1.2em;
+  min-width:50px !important;
+  max-width:50px !important;
+  min-height:40px !important;
+  max-height:40px !important;
+  margin-left: 100px;
 }
+
 .data-container {
   display: flex;
   flex-direction: row;

@@ -43,7 +43,7 @@
       Creëer kolk</button>
   <button mat-raised-button (click)="createMeerwerk()" class="add-button4" [disabled]="checkIfHasSelected()" [ngClass]="checkIfHasSelected()? 'halfOpacity': ''">
     Creëer OW</button>
-  <button style="background-color: #ff7367 !important;" mat-raised-button (click)="createSchademelding()" class="add-button4" [disabled]="checkIfHasSelected()" [ngClass]="checkIfHasSelected()? 'halfOpacity': ''">
+  <button style="background-color: #ffa018 !important;" mat-raised-button (click)="createSchademelding()" class="add-button4" [disabled]="checkIfHasSelected()" [ngClass]="checkIfHasSelected()? 'halfOpacity': ''">
     Creëer Schademelding</button>
 
     <div class="rowFlex">
@@ -99,7 +99,7 @@
     <nb-icon *ngIf="isViewingOwAndSchademeldingList" style="font-size: 24px;margin-right: 10px;margin-left: 10px;border:1px solid gray; border-radius:5px;background-color: #e0e0e0" pack="fa" icon="angle-up"></nb-icon>
 
     <div *ngIf="isOn" class="owSchademeldingToggleDiv">
-      <div style="background-color: #ff3928; border:1px solid red;" class="extraBox">
+      <div style="background-color: #ffa018; border:1px solid orangered;" class="extraBox">
         <p class="extraInfoText"><nb-icon pack="fa" icon="triangle-exclamation"></nb-icon> <span style="font-size: 18px;margin-left: 6px">{{schademeldingList.length}}</span> Schademelding{{schademeldingList.length !== 1? 'en' : ''}}</p>
       </div>
       <div style="background-color: #bec8ff; border:1px solid #689cff" class="extraBox">
@@ -331,7 +331,7 @@
         <td >
           <p *ngIf="schademelding.schadeDoorWat" class="infoTextSchadeOw"><i class="fa-solid fa-snowplow faIcon"></i>{{schademelding.schadeDoorWat}}</p>
           <p *ngIf="schademelding.photos != null && schademelding.photos.length> 0" class="infoTextSchadeOw"><i class="fa-solid fa-camera-retro faIcon"></i>{{schademelding.photos.length}} Foto{{schademelding.photos.length > 1 ? "'s" : ""}}</p>
-          <p *ngIf="schademelding.omschrijvingSchade" style="max-width: 550px;min-width: 420px" class="infoTextSchadeOw"><i class="fa-solid fa-comment faIcon"></i>{{schademelding.omschrijvingSchade}}</p>
+          <p *ngIf="schademelding.omschrijvingSchade" style="max-width: 550px;min-width: 420px;max-height: 160px !important; overflow-y:hidden" class="infoTextSchadeOw"><i class="fa-solid fa-comment faIcon"></i>{{schademelding.omschrijvingSchade}}</p>
         </td>
       </tr>
       <tr *ngIf="schademelding.isMeerwerk" class="item-box-schadeOw schademelding" [ngClass]="!schademelding.hasBeenViewed ? 'hasNotBeenViewBackOW': 'lightBlueBack'" >
@@ -355,7 +355,7 @@
           <p *ngIf="schademelding.photos != null && schademelding.photos.length> 0" class="infoTextSchadeOw"><i class="fa-solid fa-camera-retro faIcon"></i>{{schademelding.photos.length}} Foto{{schademelding.photos.length > 1 ? "'s" : ""}}</p>
         </td>
         <td >
-          <p *ngIf="schademelding.opmerking != null && schademelding.opmerking.trim() !== ''" style="max-width: 550px;min-width: 420px" class="infoTextSchadeOw"><i class="fa-solid fa-comment faIcon"></i>{{schademelding.opmerking}}</p>
+          <p *ngIf="schademelding.opmerking != null && schademelding.opmerking.trim() !== ''" style="max-width: 550px;min-width: 420px;max-height: 160px !important; overflow-y:hidden;" class="infoTextSchadeOw"><i class="fa-solid fa-comment faIcon"></i>{{schademelding.opmerking}}</p>
         </td>
       </tr>
     </ng-container>

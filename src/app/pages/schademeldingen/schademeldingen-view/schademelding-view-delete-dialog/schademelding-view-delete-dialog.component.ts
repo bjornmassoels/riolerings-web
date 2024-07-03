@@ -5,11 +5,11 @@ import { ApiService } from 'services/api.service';
 import { FormService } from 'services/form.service';
 
 @Component({
-  selector: 'slokkerproject-view-delete-dialog',
-  templateUrl: './slokkerproject-view-delete-dialog.component.html',
-  styleUrls: ['./slokkerproject-view-delete-dialog.component.scss']
+  selector: 'schademelding-view-delete-dialog',
+  templateUrl: './schademelding-view-delete-dialog.component.html',
+  styleUrls: ['./schademelding-view-delete-dialog.component.scss']
 })
-export class SlokkerprojectViewDeleteDialogComponent implements OnInit {
+export class SchademeldingViewDeleteDialogComponent implements OnInit {
 
   constructor(
     private dialog: MatDialog,
@@ -31,13 +31,12 @@ export class SlokkerprojectViewDeleteDialogComponent implements OnInit {
   }
 
  async onDelete(){
-    if(this.formService.deleteSlokkerProject._id == null){
-      this.formService.deleteSlokkerProject._id = this.formService.deleteSlokkerProject.id;
+    if(this.formService.deleteSchademelding._id == null){
+      this.formService.deleteSchademelding._id = this.formService.deleteSchademelding.id;
     }
-    this.apiService.deleteSlokkerById(this.formService.deleteSlokkerProject).subscribe(x => {
+    this.apiService.deleteSchademelding(this.formService.deleteSchademelding).subscribe(x => {
       this.closeDialog();
       this.goToPrevious();
     });
-
   }
 }

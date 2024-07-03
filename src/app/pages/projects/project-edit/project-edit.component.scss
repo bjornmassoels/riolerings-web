@@ -507,13 +507,7 @@ input[type=number] {
 button:disabled {
   opacity: 0.5;
 }
-.boldText {
-  font-weight: 600;
-  margin-top: 11px;
-  font-size: 24px;
-  margin-left: 15px;
-  margin-right: 15px;
-}
+
 .data-container3 {
   display: flex;
   flex-direction: row;
@@ -739,4 +733,14 @@ strong {
   background-color: red;
   width:50px;
   min-height:28px;
+}
+.divInsideButton{
+  display:flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+.downloadImage{
+  margin-left: 7px;
+  margin-bottom: -1px;
 }

@@ -22,87 +22,45 @@
 .project-card::-webkit-scrollbar-thumb {
   box-shadow: inset 0 0 0 10px;
 }
-.fotoText6 {
-  font-size: 13px;
-  width: 400px;
-  text-align: center;
-  padding: 0 0px;
-  margin-bottom: 0px;
-  height: 70px !important;
-  overflow-y: auto;
-}
-.fotoColumnSchets {
-  border: 2px solid lightskyblue;
-  border-radius: 10px;
-  margin-left: 6px;
-  margin-right: 6px;
-  padding:3px;
-  width: 420px;
-  height: auto;
-  min-height: 300px !important;
-}
-.smallFotoColumnSchets {
-  border: 2px solid lightskyblue;
-  border-radius: 10px;
-  margin-left: 6px;
-  margin-right: 6px;
-  width: 420px;
-  padding-bottom: 10px;
-}
-p{
-  font-size: 15px;
-}
+
 .fotoText {
+  margin-top: 10px;
   font-size: 15px;
-  font-weight: 500;
+  font-weight: 600;
+  width: 250px;
+  margin-bottom: 0px;
   text-align: center;
-}
-.innerColumn {
-  margin-top: 5px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-}
-.page-title {
-  font-weight: 800;
-  letter-spacing: 1.6pt;
-  margin-left: 26px;
-  height:35px !important;
-  margin-top:-10px !important;
-  margin-bottom:-3px;
 }
 button:disabled {
   opacity: 0.5;
 }
 .fotoText5 {
-  margin-top: 8px;
-  margin-bottom: 3px;
-  font-size: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  width: 250px;
   text-align: center;
+  margin-bottom: -10px;
 }
 .downloadImage{
   margin-left: 7px;
   margin-bottom: -1px;
-}
-.marginTopMin{
-  margin-top: -5px !important;
 }
 .fotoColumn {
   border: 2px solid lightskyblue;
   border-radius: 10px;
   margin-left: 6px;
   margin-right: 6px;
-  margin-bottom: 12px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 438px;
-  padding:3px;
+  height: 390px;
   align-items: center;
-  width: 270px;
+  margin-bottom: 15px;
 }
-
+.minderWidth{
+  width:130px !important;
+  height:150px !important;
+}
 .textColumn {
   display: flex;
   flex-direction: column;
@@ -118,7 +76,7 @@ button:disabled {
   align-items: center;
 }
 .IPtext {
-  letter-spacing: 1.2pt;
+  font-weight: 700;
   margin-left: 10px;
   margin-right: 10px;
 }
@@ -129,9 +87,12 @@ button:disabled {
   justify-content: space-between;
 }
 .page-title {
-  font-weight: 800;
-  letter-spacing: 1.6pt;
-  margin-left: 1rem;
+  font-weight: 700;
+  letter-spacing: 1.4pt;
+  margin-left: 26px;
+  height:35px !important;
+  margin-top:-10px !important;
+  margin-bottom:-3px;
 }
 
 .row-container {
@@ -179,9 +140,8 @@ button:disabled {
   width: 88vw;
 }
 .form-button {
-  margin-top: -30px;
-  font-size: 18px;
-  font-weight: 500;
+  font-size: 16px;
+  font-weight: 600;
   background-color: black !important;
   color: white !important;
   border: 1px solid black;
@@ -217,7 +177,7 @@ button:disabled {
   margin-top: -20px;
   margin-bottom: -18px;
   margin-left: 15px;
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 500;
   border-radius: 5px;
   width: auto;
@@ -231,16 +191,23 @@ button:disabled {
   justify-content: space-between;
 
   .label-text {
-    letter-spacing: 1.2pt;
   }
   .data-text {
     font-weight: 700;
-    letter-spacing: 1.1pt;
   }
   .data-text2 {
+    width: 75%;
+    font-weight: 700;
+  }
+  .data-text-opmerking{
     font-weight: 700;
     width: 75%;
-    letter-spacing: 1.1pt;
+    white-space: pre-wrap;
+  }
+  .data-text-opmerking2{
+    font-weight: 700;
+    width: 75%;
+    white-space: pre-wrap;
   }
 }
 .borderLeft {
@@ -254,29 +221,18 @@ button:disabled {
   justify-content: space-between;
 
   .label-text {
-    letter-spacing: 1.2pt;
   }
 
   .data-text {
-  font-weight: 700;
-    letter-spacing: 1.1pt;
+    font-weight: 700;
   }
 }
 .section-title {
   width: 100%;
-  font-weight: 700;
+  font-weight: 800;
   text-align: center;
-  letter-spacing: 1.4pt;
+  letter-spacing: 1.2pt;
   font-size: 1.2rem;
-  margin-bottom: 8px;
-}
-.lambertTitle{
-  width: 100%;
-  font-weight: 700;
-  letter-spacing: 1.4pt;
-  margin-bottom: 0px !important;
-  font-size: 16px;
-  text-align: start;
 }
 .putRow {
   width: 100%;
@@ -313,12 +269,10 @@ button:disabled {
   justify-content: space-between;
 
   .label-text {
-    letter-spacing: 1.2pt;
   }
 
   .data-text {
     font-weight: 700;
-    letter-spacing: 1.1pt;
   }
 }
 .image-container {
@@ -327,7 +281,7 @@ button:disabled {
   flex-wrap: wrap;
   justify-content: center;
   width: 98%;
-  margin: 1rem 3px;
+  margin: 1rem;
   background-color: rgb(243, 243, 237);
   padding: 1em;
   border-radius: 15px;
@@ -384,12 +338,7 @@ button:disabled {
   margin-right: 40px;
   max-width: 50%;
 }
-.margL {
-  margin-bottom: 0px !important;
-  margin-left: 10px;
-  font-weight: 700;
-  width:42px !important;
-}
+
 .table-container {
   display: flex;
   flex-direction: column;
@@ -397,39 +346,14 @@ button:disabled {
   margin-left: 3rem;
   font-size: 0.9rem !important;
 }
-.data-container-70 {
-  display: flex;
-  flex-direction: row;
-  width: 60%;
-  margin-left: 4%;
-  justify-content: space-between;
-  margin-top:8px;
 
-  .label-text {
-    letter-spacing: 0.9pt;
-  }
-  .data-text {
-    font-weight: 700;
-  }
-  .data-text2 {
-    font-weight: 700;
-    width: 75%;
-  }
-}
 .table-container table tbody tr td {
   border: 1px solid black;
   background-color: white;
   margin: 0;
   padding-left: 0.3rem;
 }
-.section-title2 {
-  width: 100%;
-  font-weight: 600;
-  font-size: 15px;
-  margin-bottom: 0px !important;
-  text-align: center;
-  margin-left: 24px;
-}
+
 .table-container table {
   margin: 0;
   padding: 0;
@@ -446,10 +370,7 @@ button:disabled {
   height: 0;
   padding: 0;
 }
-.minderWidth{
-  width:150px !important;
-  height:300px !important;
-}
+
 .yellow-td {
   background-color: #ffff99 !important;
 }
@@ -531,7 +452,6 @@ button:disabled {
   width:100%;
   max-width:40%;
   .label-text {
-    letter-spacing: 0.9pt;
   }
 }
 .insideRow2{
@@ -562,10 +482,8 @@ button:disabled {
   align-items:center;
   width:100%;
   max-width:50%;
-  margin: 7px 0%;
+  margin: 10px 0%;
   .label-text {
-    letter-spacing: 0.9pt;
-    font-size: 13px;
     margin-bottom: 0px !important;
     max-width: 70%;
   }
@@ -582,24 +500,8 @@ button:disabled {
     margin-bottom: 0 !important;
   }
 }
-.flexWrapper{
-  display:flex;
-  flex-direction:row;
-  justify-content:flex-start;
-  margin-top:3px;
-  align-items:center;
-  width:100%;
-  flex-wrap: wrap;
-}
-.locatieRow{
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  padding:0 12px 0 0;
-}
 .global-location-button {
-  margin-top: 0px !important;
+  margin-top: -12px !important;
   background-color: #008CBA !important; /* Blue background */
   color: white !important;             /* White text */
   padding: 6px 12px !important;       /* Some padding */
@@ -632,3 +534,4 @@ button:disabled {
 strong {
   color: #007bff;
 }
+

@@ -3,33 +3,40 @@
   <button mat-raised-button class="form-button" (click)="goToPrevious()">
     Terug
   </button>
-  <button *ngIf="index != null && index !== -1" [disabled]="index === 0" mat-raised-button class="form-button" (click)="onPreviousClick(false)">
-    Vorige
-  </button>
-  <button  *ngIf="index != null && index !== -1" [disabled]="index === schademeldingen.length - 1" mat-raised-button class="form-button" (click)="onNextClick(false)">
-    Volgende
-  </button>
-  <button [disabled]="isSaving" (click)="onSubmit()" mat-raised-button class="form-button-blue" color="primary" type="submit">
+
+  <div  class="navigation-row">
+    <button *ngIf="index !== -1" [disabled]="index === 0" mat-raised-button class="nav-button" (click)="onPreviousClick()">
+      <i class="fa-solid fa-left-long navIcon"></i>
+    </button>
+    <p *ngIf="index != null && owAndSchademeldingList != null && index !== -1"  class="boldText">{{index + 1}}/{{owAndSchademeldingList.length}}</p>
+    <button  *ngIf="index !== -1" [disabled]="index === owAndSchademeldingList.length - 1" mat-raised-button class="nav-button" (click)="onNextClick()">
+      <i class="fa-solid fa-right-long navIcon"></i>
+    </button>
+  </div>
+
+  <button [disabled]="isSaving" (click)="onSubmit()" mat-raised-button class="form-button-blue" color="primary">
     Opslaan
   </button>
 
   <nb-spinner *ngIf="isSaving" class="opslaan-spinner" size="giant" [message]="'Opslaan..'" status="info"></nb-spinner>
 
-  <p *ngIf="schademeldingen != null && index !== -1"  class="boldText">{{index + 1}}/{{schademeldingen.length}}</p>
-  <button style="margin-left: 35px;" (click)="generatePDF()" mat-raised-button class="nav-button-black" color="primary"><i style="margin-right: 5px" class="fa-solid fa-download"> </i>PDF </button>
-
-
+  <button style=" margin-left: 70px" (click)="goToView()" mat-raised-button class="form-button3" >
+    Ga naar view
+  </button>
+  <button style="width: auto" mat-raised-button class="form-button2" (click)="generatePDF()"><div class="divInsideButton">PDF 	<mat-icon class="downloadImage">cloud_download</mat-icon></div></button>
+  <button *ngIf="!isNewSchademelding"  mat-raised-button class="delete-button" color="warn" type="button"
+          (click)="onDeleteClick()"><i style="margin-left: 2px" class="fa-solid fa-trash-can"></i></button>
 </div>
 
 <button *ngIf="isNewSchademelding" mat-raised-button class="form-button" (click)="goToPrevious()">
   Terug
 </button>
-<mat-card class="edit-card-werf">
-  <form *ngIf="isLoaded" [formGroup]="editForm"  class="outerRowDiv">
+<mat-card  *ngIf="isLoaded" class="project-card">
+    <h3 class="page-title">Schademelding {{isNewSchademelding ? 'aanmaken': 'bewerken'}} <small style='font-size:15px; margin-top:-5px'>   {{group.rbProjectNaam}} | {{group.rbGemeente}} | {{group.aannemerProjectNr}}</small><br><span *ngIf="schademelding.creator_user?.name" class="smallerText"> Gemeld door: <b>{{schademelding.creator_user?.name}} </b><small>- {{("0"+(schademelding.created.getDate())).slice(-2)}}/{{("0"+(schademelding.created.getMonth()+1)).slice(-2)}}/{{schademelding.created.getFullYear().toString().slice(-2)}}</small></span></h3>
+  <form  [formGroup]="editForm"  class="outerRowDiv">
 
     <div  class="groupColDiv">
-      <mat-card-title style="width:fit-content;  line-height:1.2; font-size: 22px; margin-bottom: 12px;">Schademelding {{isNewSchademelding ? 'aanmaken': 'bewerken'}}<br><span *ngIf="schademelding.creator_user?.name" class="smallerText"> Gemeld door: <b>{{schademelding.creator_user?.name}} </b><small>- {{("0"+(schademelding.created.getDate())).slice(-2)}}/{{("0"+(schademelding.created.getMonth()+1)).slice(-2)}}/{{schademelding.created.getFullYear().toString().slice(-2)}}</small><br></span>
-      </mat-card-title>
+
       <div class="flexColumn">
         <p class="inputText"> <nb-icon icon="calendar-check" pack="fa" style="font-size: 16px;"></nb-icon>Tijdstip ongeval</p>
         <div class="smallRow">
@@ -158,8 +165,7 @@
 
 
     </div>
-    <button *ngIf="!isNewSchademelding" style="margin-left: 30px" mat-raised-button class="delete-button" color="warn" type="button"
-            (click)="onDeleteClick()"><i style="margin-left:1px !important;" class="fa-solid fa-trash-can"></i></button>
+
     <div *ngIf="checkIfSchadeGerichtAanIsNutsleidingenOfAndere()" class="extraInfoNutsleidingRow">
       <p style="width:fit-content;margin:6px 0 0 0;font-weight: bold;font-size: 15px">Extra info leidingen</p>
       <div class="flexColumn">
@@ -259,7 +265,7 @@
         <input class="inputField" nbInput type="text" formControlName="gemeentePolitie" placeholder="Gemeente politie.." />
       </div>
 
-      <button *ngIf="isNewSchademelding" mat-raised-button class="save-button" color="primary" (click)="onSubmit()">Opslaan</button>
+      <button *ngIf="isNewSchademelding" style="margin-top: 25px;margin-left: 20px;" mat-raised-button class="form-button-blue" color="primary" (click)="onSubmit()">Opslaan</button>
     </div>
 
     <div *ngIf="group.gebruiktHerstellingBijSchademelding" style="border:1px dashed black;border-radius:10px;  padding:8px;margin-top: 10px;" class="groupRowDiv">
@@ -331,28 +337,6 @@
 </mat-card>
 
 
-<div style="margin-bottom: 600px" *ngIf="!isNewSchademelding" class="topRow">
-  <button mat-raised-button class="form-button" (click)="goToPrevious()">
-    Terug
-  </button>
-  <button *ngIf="index != null && index !== -1" [disabled]="index === 0" mat-raised-button class="form-button" (click)="onPreviousClick(false)">
-    Vorige
-  </button>
-  <button  *ngIf="index != null && index !== -1" [disabled]="index === schademeldingen.length - 1" mat-raised-button class="form-button" (click)="onNextClick(false)">
-    Volgende
-  </button>
-  <button [disabled]="isSaving" (click)="onSubmit()" mat-raised-button class="form-button-blue" color="primary" type="submit">
-    Opslaan
-  </button>
-
-  <nb-spinner *ngIf="isSaving" class="opslaan-spinner" size="giant" [message]="'Opslaan..'" status="info"></nb-spinner>
-
-  <p *ngIf="schademeldingen != null && index !== -1"  class="boldText">{{index + 1}}/{{schademeldingen.length}}</p>
-  <button style="margin-left: 35px;" (click)="generatePDF()" mat-raised-button class="nav-button-black" color="primary"><i style="margin-right: 5px" class="fa-solid fa-download"> </i>PDF </button>
-
-
-</div>
-
-<div *ngIf=" isPrint" style="margin-left:10px; display:none;font-size:12px !important;"  id="printContainer" >
-  <ngx-schademelding-pdf [schademelding]="printSchademelding" [company]="company" [group]="group"></ngx-schademelding-pdf>
+<div *ngIf=" isPrint" style="margin-left:10px; display:none;font-size:12px !important; margin-top: 600px;"   >
+  <ngx-schademelding-pdf id="printContainer" [schademelding]="printSchademelding" [company]="company" [group]="group"></ngx-schademelding-pdf>
 </div>

@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Schademelding } from '../../../models/schademelding';
-import { Company } from '../../../models/company';
-import { Group } from '../../../models/groups';
+import { Schademelding } from '../../../../models/schademelding';
+import { Company } from '../../../../models/company';
+import { Group } from '../../../../models/groups';
 
 @Component({
   selector: 'ngx-schademelding-pdf',
@@ -14,10 +14,13 @@ export class SchademeldingPdfComponent implements OnInit {
   @Input() public group: Group;
   isLoaded: boolean = false;
   constructor() {
+
   }
 
   ngOnInit(): void {
-    this.schademelding.date = new Date(this.schademelding.date);
+    if(this.schademelding.created) this.schademelding.created = new Date(this.schademelding.created);
+    if(this.schademelding.date) this.schademelding.date = new Date(this.schademelding.date);
+
     if(this.schademelding.startTijdHerstelling) this.schademelding.startTijdHerstelling = new Date(this.schademelding.startTijdHerstelling);
     if(this.schademelding.eindTijdHerstelling) this.schademelding.eindTijdHerstelling = new Date(this.schademelding.eindTijdHerstelling);
     this.isLoaded = true;

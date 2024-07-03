@@ -36,7 +36,7 @@ export class AllMeerwerkenComponent implements OnInit {
     let startDate = new Date();
     startDate.setFullYear(startDate.getFullYear() - 1);
     this.oneYearAgoDate = startDate;
-    await this.apiService.getMeerwerken().subscribe((x) => {
+    this.apiService.getMeerwerken().subscribe((x) => {
       this.meerwerken = x as Meerwerk[];
       this.searchProjects = x as Meerwerk[];
         this.sortByDate();
@@ -55,7 +55,6 @@ export class AllMeerwerkenComponent implements OnInit {
         for(let meerwerk of this.searchProjects){
           meerwerk.isMeerwerk = true;
         }
-        this.formService.lastProjects = this.searchProjects as Project[];
         this.filteredProjects = this.searchForm.valueChanges.pipe(
           startWith(''),
           map((value) => (typeof value === 'string' ? value : value.street)),

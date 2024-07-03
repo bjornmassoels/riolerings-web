@@ -23,6 +23,8 @@ export class FormService {
   schademeldingen: Schademelding[];
   schademelding: Schademelding;
   isViewingOwAndSchademeldingList: boolean;
+  owAndSchademeldingList: Schademelding[];
+  deleteSchademelding: Schademelding;
 
   get currentSlokkerProjects(): SlokkerProjects[] {
     return this._currentSlokkerProjects;

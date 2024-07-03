@@ -1,10 +1,10 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormService } from '../../../../services/form.service';
+import { FormService } from '../../../../../services/form.service';
 
 @Component({
   selector: 'photo-popup-dialog',
   templateUrl: './photo-popup.component.html',
-  styleUrls: ['./photo-popup.component.scss']
+  styleUrls: ['./photo-popup.component.scss'],
 })
 export class PhotoPopupDialog implements OnInit {
 

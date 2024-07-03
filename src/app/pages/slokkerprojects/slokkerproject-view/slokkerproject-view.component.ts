@@ -272,6 +272,7 @@ export class SlokkerprojectViewComponent implements OnInit,OnDestroy {
     ]);
   }
   async onDeleteProject() {
+    this.formService.previousPage = ['/pages/groupview/' + this.currentProject.group_id._id];
     let dialogRef = this.dialog.open(SlokkerprojectViewDeleteDialogComponent, {
       height: '19vh',
       width: '27vw',

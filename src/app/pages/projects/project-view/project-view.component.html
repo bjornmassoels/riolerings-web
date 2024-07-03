@@ -2,21 +2,24 @@
   <button mat-raised-button class="form-button" (click)="goToPrevious()">
     Terug
   </button>
-  <button *ngIf="index !== -1" [disabled]="isFirst" mat-raised-button class="form-button" (click)="onPreviousClick()">
-    Vorige
-  </button>
-  <button *ngIf="index !== -1" [disabled]="isLast" mat-raised-button class="form-button" (click)="onNextClick()">
-    Volgende
-  </button>
+  <div class="navigation-row">
+    <button *ngIf="index != null && index !== -1" [disabled]="isFirst" mat-raised-button class="nav-button" (click)="onPreviousClick()">
+      <i class="fa-solid fa-left-long navIcon"></i>
+    </button>
+    <p class="boldText" *ngIf="index != null && index !== -1">{{index + 1}}/{{totalProjectCount}}</p>
+    <button *ngIf="index != null &&index !== -1" [disabled]="isLast" mat-raised-button class="nav-button" (click)="onNextClick()">
+      <i class="fa-solid fa-right-long navIcon"></i>
+    </button>
+  </div>
+
   <button mat-raised-button class="form-button-blue" (click)="goToEdit()">
     Bewerken
   </button>
-  <p class="boldText" *ngIf="index !== -1">{{index + 1}}/{{totalProjectCount}}</p>
-  <button style="width: auto" mat-raised-button class="form-button2" (click)="generatePDF()"><div class="divInsideButton">PDF 	<mat-icon class="downloadImage">cloud_download</mat-icon></div></button>
+  <button style="width: auto; margin-left: 70px" mat-raised-button class="form-button2" (click)="generatePDF()"><div class="divInsideButton">PDF 	<mat-icon class="downloadImage">cloud_download</mat-icon></div></button>
   <button style="width: auto" mat-raised-button class="form-button2" (click)="downloadPhotos()"><div class="divInsideButton">Foto's
     <mat-icon class="downloadImage">cloud_download</mat-icon></div></button>
-  <button style="width: auto" mat-raised-button color="warn" class="form-button3"
-    (click)="onDeleteProject()">Aansluiting verwijderen</button>
+  <button  mat-raised-button class="delete-button" color="warn" type="button"
+          (click)="onDeleteProject()"><i style="margin-left: 2px" class="fa-solid fa-trash-can"></i></button>
 </div>
 
 <mat-card #content id="content" *ngIf="isLoaded" class="project-card">

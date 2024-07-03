@@ -35,8 +35,8 @@ p{
   width: 88vw;
 }
 .downloadImage{
-  margin-top: -3px;
   margin-left: 7px;
+  margin-bottom: -1px;
 }
 button:disabled {
   opacity: 0.5;
@@ -200,13 +200,7 @@ button:disabled {
   margin-bottom: 5px;
   height: 40px;
 }
-.boldText {
-  margin-top: 11px;
-  font-size: 24px;
-  font-weight: 600;
-  margin-left: 15px;
-  margin-right: 20px;
-}
+
 .data-container3 {
   display: flex;
   flex-direction: row;

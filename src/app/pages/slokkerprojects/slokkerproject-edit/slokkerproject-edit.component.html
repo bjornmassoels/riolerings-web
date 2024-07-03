@@ -2,21 +2,25 @@
   <button  mat-raised-button class="form-button" (click)="goToPrevious()">
     Terug
   </button>
-  <button *ngIf="index !== -1" [disabled]="isFirst" mat-raised-button class="form-button" (click)="onPreviousClick()">
-    Vorige
-  </button>
-  <button *ngIf="index !== -1" [disabled]="isLast" mat-raised-button class="form-button" (click)="onNextClick()">
-    Volgende
-  </button>
+  <div *ngIf="index != null"  class="navigation-row">
+    <button *ngIf="index !== -1" [disabled]="isFirst" mat-raised-button class="nav-button" (click)="onPreviousClick()">
+      <i class="fa-solid fa-left-long navIcon"></i>
+    </button>
+    <p class="boldText" *ngIf="index !== -1">{{index + 1}}/{{totalProjectCount}}</p>
+    <button *ngIf="index !== -1" [disabled]="isLast" mat-raised-button class="nav-button" (click)="onNextClick()">
+      <i class="fa-solid fa-right-long navIcon"></i>
+    </button>
+  </div>
   <button (click)="onSubmitForm()" mat-raised-button class="form-button-blue" color="primary" type="submit">
     Opslaan
   </button>
-  <p class="boldText" *ngIf="index !== -1">{{index + 1}}/{{totalProjectCount}}</p>
   <button (click)="goToView()"  mat-raised-button class="form-button3" >
     Ga naar view
   </button>
   <nb-spinner *ngIf="isSaving" class="opslaan-spinner" size="giant" [message]="'Opslaan..'" status="info"></nb-spinner>
-
+  <button style="width: auto; margin-left: 70px" mat-raised-button class="form-button2" (click)="generatePDF()"><div class="divInsideButton">PDF 	<mat-icon class="downloadImage">cloud_download</mat-icon></div></button>
+  <button  mat-raised-button class="delete-button" color="warn" type="button"
+           (click)="onDeleteProject()"><i style="margin-left: 2px" class="fa-solid fa-trash-can"></i></button>
 </div>
 
 <mat-card id="content" *ngIf="isLoaded" class="project-card">

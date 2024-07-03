@@ -97,9 +97,16 @@ import { HasChangedPopupComponent } from './has-changed-popup/has-changed-popup.
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatButtonToggle, MatButtonToggleGroup } from '@angular/material/button-toggle';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
-import { SchademeldingEditComponent } from './schademelding-edit/schademelding-edit.component';
-import { SchademeldingPdfComponent } from './schademelding-pdf/schademelding-pdf.component';
-import { PhotoPopupDialog } from './schademelding-edit/photo-popup/photo-popup.component';
+import { SchademeldingPdfComponent } from './schademeldingen/schademelding-pdf/schademelding-pdf.component';
+import {
+  DialogOverviewExampleDialog5,
+  SchademeldingViewComponent,
+} from './schademeldingen/schademeldingen-view/schademelding-view.component';
+import {
+  SchademeldingViewDeleteDialogComponent
+} from './schademeldingen/schademeldingen-view/schademelding-view-delete-dialog/schademelding-view-delete-dialog.component';
+import {  SchademeldingEditComponent } from './schademeldingen/schademelding-edit/schademelding-edit.component';
+import { PhotoPopupDialog } from './schademeldingen/schademelding-edit/photo-popup/photo-popup.component';
 
 @NgModule({
   imports: [
@@ -205,7 +212,10 @@ import { PhotoPopupDialog } from './schademelding-edit/photo-popup/photo-popup.c
     HasChangedPopupComponent,
     SchademeldingEditComponent,
     SchademeldingPdfComponent,
-    PhotoPopupDialog
+    SchademeldingViewComponent,
+    SchademeldingViewDeleteDialogComponent,
+    PhotoPopupDialog,
+    DialogOverviewExampleDialog5
   ],
   providers: [FormService, ExcelService, MatDatepickerModule, NieuweExcelService, NbMomentDateService],
   exports: [choicePipe],
