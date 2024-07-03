@@ -313,11 +313,14 @@ export class SettingsVariableComponent implements OnInit {
     this.group.slokkerSettings._id = slokkerId;
     this.group.bochtenInGraden = tempGroup.bochtenInGraden;
     this.bochtenInGraden = tempGroup.bochtenInGraden;
+    this.group.gebruiktHerstellingBijSchademelding = tempGroup.gebruiktHerstellingBijSchademelding == null ? true : tempGroup.gebruiktHerstellingBijSchademelding;
+    this.group.gebruiktJurdischeInfoBijSchademelding = tempGroup.gebruiktJurdischeInfoBijSchademelding == null ? false : tempGroup.gebruiktJurdischeInfoBijSchademelding;
 
 
     this.buildFormDWA();
     this.buildFormRWA();
     this.buildFormSlokker();
+    this.buildSchademelding();
   }
 
   private buildSchademelding() {
