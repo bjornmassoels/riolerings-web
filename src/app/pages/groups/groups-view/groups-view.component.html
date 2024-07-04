@@ -1,24 +1,31 @@
 <div class="topRow">
-  <button style="width: 95px;  margin-left: 0px !important; font-size: 16px" mat-raised-button class="form-button2" (click)="goToPrevious()" [disabled]="checkIfHasSelected()" [ngClass]="checkIfHasSelected() ? 'halfOpacity': ''">
+  <button  style="width: 95px;  margin-left: 0px !important; font-size: 16px" mat-raised-button class="form-button2" (click)="goToPrevious()"
+           [disabled]="checkIfHasSelected()" [ngClass]="checkIfHasSelected()? 'halfOpacity': ''">
     Terug
   </button>
-  <button style="width: 90px;" *ngIf="isArchived === false"  mat-raised-button class="form-button2" [disabled]="checkIfHasSelected() " [ngClass]="checkIfHasSelected()  ? 'halfOpacity': ''"
+  <button style="width: 90px;" *ngIf="isArchived === false"  mat-raised-button class="form-button2" [disabled]="checkIfHasSelected() || isViewingOwAndSchademeldingList"
+          [ngClass]="checkIfHasSelected() || isViewingOwAndSchademeldingList ? 'halfOpacity': ''"
     (click)="archiveGroup()">Archiveren</button>
-  <button  style="width: 148px;" *ngIf="isArchived === true" mat-raised-button class="form-button2" [disabled]="checkIfHasSelected() " [ngClass]="checkIfHasSelected()  ? 'halfOpacity': ''"
+  <button  style="width: 148px;" *ngIf="isArchived === true" mat-raised-button class="form-button2" [disabled]="checkIfHasSelected() || isViewingOwAndSchademeldingList"
+           [ngClass]="checkIfHasSelected() || isViewingOwAndSchademeldingList ? 'halfOpacity': ''"
     (click)="unArchiveGroup()">Haal uit archief</button>
-  <button  style="width: 112px;" mat-raised-button class="form-button2" [disabled]="checkIfHasSelected() " [ngClass]="checkIfHasSelected()  ? 'halfOpacity': ''"
+  <button  style="width: 112px;" mat-raised-button class="form-button2" [disabled]="checkIfHasSelected() || isViewingOwAndSchademeldingList"
+           [ngClass]="checkIfHasSelected() || isViewingOwAndSchademeldingList ? 'halfOpacity': ''"
     (click)="goToPostnummers()">Postnummers</button>
-  <button style="width: 114px;"  mat-raised-button class="form-button2" (click)="generatePDF()"><div class="divInsideButton">PDF fiche<mat-icon class="downloadImage">cloud_download</mat-icon></div></button>
+  <button [disabled]="isViewingOwAndSchademeldingList" [ngClass]="isViewingOwAndSchademeldingList ? 'halfOpacity': ''" style="width: 114px;"
+          mat-raised-button class="form-button2" (click)="generatePDF()"><div class="divInsideButton">PDF fiche<mat-icon class="downloadImage">cloud_download</mat-icon></div></button>
 
 
-  <button mat-raised-button class="form-button-green2" (click)="downloadExcelClientData()">
+  <button [disabled]="isViewingOwAndSchademeldingList" [ngClass]="isViewingOwAndSchademeldingList ? 'halfOpacity': ''"  mat-raised-button class="form-button-green2" (click)="downloadExcelClientData()">
     <div class="divInsideButton">Excel Vlario 	<mat-icon class="downloadImage">cloud_download</mat-icon></div>
   </button>
-  <button mat-raised-button class="form-button-green" (click)="downloadExcelClientDataMeetstaat()">
+  <button [disabled]="isViewingOwAndSchademeldingList" [ngClass]="isViewingOwAndSchademeldingList ? 'halfOpacity': ''"  mat-raised-button class="form-button-green" (click)="downloadExcelClientDataMeetstaat()">
     <div class="divInsideButton">Excel meetstaat 	<mat-icon class="downloadImage">cloud_download</mat-icon></div>
   </button>
-  <button mat-raised-button class="form-button4" (click)="setupVariables()" [disabled]="checkIfHasSelected() " [ngClass]="checkIfHasSelected()  ? 'halfOpacity': ''">Zet invulvelden uit</button>
-  <button style="width: 112px;" mat-raised-button class="form-button2" [disabled]="checkIfHasSelected() " [ngClass]="checkIfHasSelected()  ? 'halfOpacity': ''"
+  <button mat-raised-button class="form-button4" (click)="setupVariables()" [disabled]="checkIfHasSelected() || isViewingOwAndSchademeldingList  "
+          [ngClass]="checkIfHasSelected() || isViewingOwAndSchademeldingList ? 'halfOpacity': ''">Zet invulvelden uit</button>
+  <button style="width: 112px;" mat-raised-button class="form-button2" [disabled]="checkIfHasSelected() || isViewingOwAndSchademeldingList"
+          [ngClass]="checkIfHasSelected() || isViewingOwAndSchademeldingList ? 'halfOpacity': ''"
           (click)="readLambertExcel()">Lambertcoord.</button>
 </div>
 
@@ -35,18 +42,18 @@
     <button class='add-button' mat-raised-button color="primary" (click)="goToEdit()" [disabled]="checkIfHasSelected()" [ngClass]="checkIfHasSelected()? 'halfOpacity': ''"
       style=" min-width:auto; width: 95px !important; background-color:#3f51b5!important;">
       Project bewerken</button>
-    <button mat-raised-button (click)="goToAddProject()" class="add-button" [disabled]="checkIfHasSelected()" [ngClass]="checkIfHasSelected()? 'halfOpacity': ''"
+    <button mat-raised-button (click)="goToAddProject()" class="add-button" [disabled]="checkIfHasSelected() || isViewingOwAndSchademeldingList "
+            [ngClass]="checkIfHasSelected() || isViewingOwAndSchademeldingList ? 'halfOpacity': ''"
     >Creëer HA</button>
-    <button mat-raised-button (click)="goToMultipleAddProject()" class="add-button" [disabled]="checkIfHasSelected()" [ngClass]="checkIfHasSelected()? 'halfOpacity': ''"
+    <button mat-raised-button (click)="goToMultipleAddProject()" class="add-button" [disabled]="checkIfHasSelected() || isViewingOwAndSchademeldingList"
+            [ngClass]="checkIfHasSelected()|| isViewingOwAndSchademeldingList ? 'halfOpacity': ''"
     >Creëer meerdere HA's</button>
-    <button mat-raised-button (click)="createSlokker()"  class="add-button3" [disabled]="checkIfHasSelected()" [ngClass]="checkIfHasSelected()? 'halfOpacity': ''">
-      Creëer kolk</button>
-  <button mat-raised-button (click)="createMeerwerk()" class="add-button4" [disabled]="checkIfHasSelected()" [ngClass]="checkIfHasSelected()? 'halfOpacity': ''">
-    Creëer OW</button>
-  <button style="background-color: #ffa018 !important;" mat-raised-button (click)="createSchademelding()" class="add-button4" [disabled]="checkIfHasSelected()" [ngClass]="checkIfHasSelected()? 'halfOpacity': ''">
-    Creëer Schademelding</button>
+    <button mat-raised-button (click)="createSlokker()"  class="add-button3" [disabled]="checkIfHasSelected() || isViewingOwAndSchademeldingList"
+            [ngClass]="checkIfHasSelected() || isViewingOwAndSchademeldingList ? 'halfOpacity': ''">
+      Creëer Kolk</button>
 
-    <div class="rowFlex">
+
+    <div *ngIf="!isViewingOwAndSchademeldingList" class="rowFlex">
       <p class="normalText">Kleurencode:</p>
 
       <button mat-button [matMenuTriggerFor]="menu" style="margin-bottom: 0px; margin-left: -11px" *ngIf="isOn">
@@ -82,19 +89,19 @@
 
 <div style='max-width:1400px'>
   <div *ngIf="isLoadingBar" class="loadingBar">
-    <p *ngIf='!isDownloading && pdfProgressBlocks != null && pdfProgressBlocks.length !== 0' style="font-size: 16px; font-weight: 600; padding-left: 10px;padding-right: 10px; text-align:center;margin:5px 0"> We zijn bezig met het genereren van de fiches in PDF. Gelieve even te wachten...<br>
+    <p *ngIf='!isDownloading && pdfProgressBlocks != null && pdfProgressBlocks.length !== 0' style="font-size: 16px; font-weight: 600; padding-left: 10px;padding-right: 10px; text-align:center;margin:5px 0"> We zijn bezig met het genereren van de {{isViewingOwAndSchademeldingList? 'rapporten': 'fiches'}} in PDF. Gelieve even te wachten...<br>
     </p>
     <br>
-    <p *ngIf='!isDownloading && pdfProgressBlocks != null &&  pdfProgressBlocks.length === 0' style="font-size: 17px; font-weight: 600; padding-left: 10px;padding-right: 10px;  text-align:center;margin:5px 0">De fiches worden momenteel in een zip bestand geplaatst. Even geduld aub...<br>
+    <p *ngIf='!isDownloading && pdfProgressBlocks != null &&  pdfProgressBlocks.length === 0' style="font-size: 17px; font-weight: 600; padding-left: 10px;padding-right: 10px;  text-align:center;margin:5px 0">De {{isViewingOwAndSchademeldingList? 'rapporten': 'fiches'}} worden momenteel in een zip bestand geplaatst. Even geduld aub...<br>
     </p>
-    <p *ngIf='isDownloading'  style="font-size: 17px; font-weight: 600; padding-left: 10px;padding-right: 10px;margin:5px 0">De fiches worden momenteel gedownload...Even geduld aub</p>
-    <p *ngIf='!isDownloading && pdfProgressBlocks != null && pdfProgressBlocks.length !== 0' style="font-size: 17px; font-weight: 600; text-align:center; color: blue;margin:5px 0">U zit aan aansluiting {{(totalProjectCount - pdfProgressBlocks.length)}} van de {{totalProjectCount}}<br> <small style="color:black !important;">(aansluitingen zonder data zijn niet meegeteld)</small>
+    <p *ngIf='isDownloading'  style="font-size: 17px; font-weight: 600; padding-left: 10px;padding-right: 10px;margin:5px 0">De {{isViewingOwAndSchademeldingList? 'rapporten': 'fiches'}} worden momenteel gedownload...Even geduld aub</p>
+    <p *ngIf='!isDownloading && pdfProgressBlocks != null && pdfProgressBlocks.length !== 0' style="font-size: 17px; font-weight: 600; text-align:center; color: blue;margin:5px 0">U zit aan {{isViewingOwAndSchademeldingList? 'rapport': 'fiche'}} {{(totalProjectCount - pdfProgressBlocks.length)}} van de {{totalProjectCount}}
     </p>
     <ngx-loading-bar style='margin-bottom: 40px; margin-top: 30px;' diameter="40px" includeBar="false" fixed="false" color="blue" value="2"></ngx-loading-bar>
   </div>
 </div>
 <div  class="extraInfoRow">
-  <div (click)="toggleOwAndSchademeldingView()" class="rowSchademeldingOuterDiv">
+  <div [ngStyle]="{'background-color': isViewingOwAndSchademeldingList ? '#e3ff62' : ''}" (click)="toggleOwAndSchademeldingView()" class="rowSchademeldingOuterDiv">
     <nb-icon *ngIf="!isViewingOwAndSchademeldingList" style="font-size: 24px;margin-right: 10px;margin-left: 10px;border:1px solid gray; border-radius:5px;background-color: #e0e0e0" pack="fa" icon="angle-down"></nb-icon>
     <nb-icon *ngIf="isViewingOwAndSchademeldingList" style="font-size: 24px;margin-right: 10px;margin-left: 10px;border:1px solid gray; border-radius:5px;background-color: #e0e0e0" pack="fa" icon="angle-up"></nb-icon>
 
@@ -130,6 +137,10 @@
   </button>
 </div>
 
+
+
+
+
 <div *ngIf="isOn" [hidden]='isLoadingBar' class="infoFlex">
   <div *ngIf="group?.rbProjectNaam && showProjectDetails" class="info-row">
     <div class="info-section">
@@ -162,13 +173,27 @@
       </div>
     </div>
   </div>
-  <div *ngIf="isViewingOwAndSchademeldingList" style="margin:14px 0 14px 25px" class="rowFlex">
-    <p class="normalText">Selecteer alles voor pdf download</p>
-    <nb-toggle [checked]="selectEverythingOwAndSchade" class="margLeft" (checkedChange)="selectAllOwAndSchademeldingen()" status="primary">
-    </nb-toggle>
 
-    <button style="width: 135px; margin-left: 100px"  mat-raised-button class="form-button2" (click)="generatePDFoWAndSchademeldingen()"><div class="divInsideButton">PDF rapport<mat-icon class="downloadImage">cloud_download</mat-icon></div></button>
+
+
+  <div *ngIf="isViewingOwAndSchademeldingList" class="infoFlex">
+    <div  style="margin:14px 0 14px 25px" class="rowFlex">
+      <p class="normalText">Selecteer alles voor pdf download</p>
+      <nb-toggle [checked]="selectEverythingOwAndSchade" class="margLeft" (checkedChange)="selectAllOwAndSchademeldingen()" status="primary">
+      </nb-toggle>
+
+      <button  [disabled]="!checkIfHasSelected()" [ngClass]="!checkIfHasSelected() ? 'halfOpacity': ''"  style="width: 135px; margin-left: 20px"
+               mat-raised-button class="form-button2" (click)="generatePDFoWAndSchademeldingen()"><div class="divInsideButton">PDF rapport<mat-icon class="downloadImage">cloud_download</mat-icon></div></button>
+      <button style="background-color: #bec8ff !important;margin-left: 50px" mat-raised-button (click)="createMeerwerk()" class="add-button4" [disabled]="checkIfHasSelected()" [ngClass]="checkIfHasSelected() ? 'halfOpacity': ''">
+        Creëer Onvoorzien werk</button>
+      <button style="background-color: #ffa018 !important;" mat-raised-button (click)="createSchademelding()" class="add-button4" [disabled]="checkIfHasSelected()"
+              [ngClass]="checkIfHasSelected() ? 'halfOpacity': ''" >
+        Creëer Schademelding</button>
+    </div>
   </div>
+
+
+
 
   <div *ngIf="!isViewingOwAndSchademeldingList" class="row3">
     <div style="padding-bottom: 5px;" class="rowFlex">
@@ -247,7 +272,9 @@
 
 
 <div *ngIf="isOn && !isViewingOwAndSchademeldingList" cdkScrollable class="scroll-table">
-  <table  cdkDropList class="item-list">
+  <p class="geenSchadeOfOW" *ngIf="searchAllProjectsList.length === 0">Er zijn nog geen aansluitingen of kolken aangemaakt in dit project.</p>
+
+  <table *ngIf="searchAllProjectsList.length !== 0"  cdkDropList class="item-list">
     <tr style="padding:3px 10px !important;border-bottom: 1px solid gray" class="item-box">
       <th style="max-width:170px !important;min-width:170px !important;text-align: center;margin-left:15px ">Open</th>
       <th style="padding-left: 35px;max-width:150px;"><p style="width:89px;margin-bottom: 0;font-weight: bold">Selecteer</p></th>
@@ -327,13 +354,13 @@
 
 
 
-<div *ngIf="isOn && isViewingOwAndSchademeldingList" cdkScrollable style="max-width:1200px !important; height: calc(100vh - 260px) !important;padding-bottom: 0px;margin-top: 15px; " class="scroll-table">
+<div *ngIf="isOn && isViewingOwAndSchademeldingList" cdkScrollable style="max-width:1200px !important; height: calc(100vh - 305px) !important;padding-bottom: 0px;margin-top: 15px; " class="scroll-table">
   <p class="geenSchadeOfOW" *ngIf="owAndSchademeldingList.length === 0">Er zijn nog geen onvoorziene werken of schademeldingen aangemaakt in dit project.</p>
-  <table class="item-list">
+  <table *ngIf="owAndSchademeldingList.length !== 0" class="item-list">
     <thead>
     <tr class="item-box-schadeOw" style="padding:2px 10px !important;border-bottom: 1px solid gray">
-      <th class="schade-action-container"><p style="margin:0;font-weight: bold">Open &<br>Selecteer</p></th>
-      <th class="schadeMinimuWidth" style="width: 100%;"><p style="margin:0;font-weight: bold;padding-left:10px;">Info</p></th>
+      <th class="schade-action-container"><p style="margin:0;font-weight: bold">Open /<br>Selecteer</p></th>
+      <th class="schadeMinimuWidth" style="width: 100%;"><p style="margin:0;font-weight: bold;padding-left:10px;">Informatie</p></th>
       <th class="schadeMinimuWidth"></th>
       <th class="minMaxWidthComment" ></th>
     </tr>

@@ -1,6 +1,7 @@
 .scroll-table {
   height: calc(100vh - 305px);
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
   max-width:1400px !important;
   border-radius: 15px;
   padding: 2px 4px 13px 0px;
@@ -53,15 +54,15 @@
 .loadingBar{
 display: flex;
 flex-direction: column;
-  border: 2px dashed #3e5bff;
+  border: 2px dashed #4b89ff;
   padding-bottom: 25px;
-padding-top: 15px;
+padding-top: 5px;
 justify-content: space-between;
 align-items: center;
   width: 800px;
   margin:85px auto 15px auto;
   border-radius: 25px;
-  background-color: white;
+  background-color: #e2e9ff;
 }
 
 .scroll-table::-webkit-scrollbar-thumb {
@@ -833,7 +834,7 @@ width: 270px;
 }
 .rowSchademeldingOuterDiv:hover {
   cursor: pointer;
-  background-color: #689cff;
+  background-color: #e3ff62;
   transition: background-color 0.3s ease;
 }
 .extraBox{
@@ -954,15 +955,15 @@ width: 270px;
   padding-left:20px;
 }
 .geenSchadeOfOW{
-  font-size: 19px;
+  font-size: 18px;
   font-weight: 600;
-  padding:3px;
-  border:1px solid darkgray;
+  padding: 20px;
+  border: 1px solid #c2c2c2;
   background-color: #e2f8ff;
   border-radius: 5px;
-  display:block;
+  display: block;
   margin: 100px auto 0 auto;
-  width:fit-content;
+  width: fit-content;
 }
 .minMaxWidthComment{
   max-width: 420px;min-width: 420px;

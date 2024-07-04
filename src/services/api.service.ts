@@ -768,4 +768,21 @@ export class ApiService {
       .get( this.apiURL + '/meerwerken.updateMeerwerkHasBeenViewed' , headers)
       .pipe(tap((x) => {}));
   }
+
+  makeOwAndSchademeldingPdfZip(sendIdArrays: any, _id: string) {
+    let headers = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: this._token,
+        companyid: this.companyid,
+        groupid: _id
+      },
+    };
+
+    return this.http.post(
+      this.apiURL + '/makeOwAndSchademeldingPdfZip',
+      JSON.stringify(sendIdArrays),
+      headers
+    );
+  }
 }

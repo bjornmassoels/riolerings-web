@@ -98,6 +98,7 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
   isViewingOwAndSchademeldingList: boolean;
   newSchademeldingCounter: number;
   newMeerwerkCounter: number;
+
   constructor(
     private apiService: ApiService,
     private router: Router,
@@ -446,7 +447,11 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
   }
 
   checkIfHasSelected(){
-      return this.selectedHuisaansluitingen || this.selectedWachtaansluitingen || this.selectedKolken;
+    if(!this.isViewingOwAndSchademeldingList){
+      return this.selectedHuisaansluitingen || this.selectedWachtaansluitingen || this.selectedKolken
+    } else {
+       return this.owAndSchademeldingList.filter(x => x.isSelected).length > 0;
+    }
   }
 
   async sortByStreet() {
@@ -1477,7 +1482,65 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
     this.owAndSchademeldingList[index].isSelected = !this.owAndSchademeldingList[index].isSelected;
   }
 
-  generatePDFoWAndSchademeldingen() {
+  async generatePDFoWAndSchademeldingen() {
 
+    let owAndSchademeldingen = this.owAndSchademeldingList.filter((x) => {
+      return x.isSelected;
+    }) ;
+
+    if (owAndSchademeldingen != null && owAndSchademeldingen.length !== 0 && !this.isGeneratingPDF) {
+          this.isGeneratingPDF = true;
+            try {
+               let meerwerkenIds = owAndSchademeldingen.filter(x => x.isMeerwerk).map(y => (y._id));
+               let schademeldingenIds = owAndSchademeldingen.filter(x => x.isSchademelding).map(y => (y._id));
+              let sendPdfids = {meerwerkenIds:meerwerkenIds,schademeldingenIds: schademeldingenIds };
+
+              this.isLoadingBar = true;
+              this.pdfProgress = '';
+              this.isDownloading = false;
+              this.progress = 0;
+              this.toastrService.success(
+                'De fiches worden klaargemaakt. Even geduld aub...',
+                'Even geduld',
+                { duration: 4000 },
+              );
+
+              this.pdfProgressBlocks = [];
+              for(let i = 0; i < this.totalProjectCount; i++){
+                this.pdfProgressBlocks.push(i);
+              }
+              await this.initSocket();
+              this.apiService.makeOwAndSchademeldingPdfZip(sendPdfids, this._id).subscribe(async data => {
+                },
+                error => { // This function will be executed when an error is emitted
+                  this.isGeneratingPDF = false;
+                  this.isLoadingBar = false;
+                  this.isDownloading = false;
+                  Pace.stop();
+                  this.progress = 0;
+                  console.log('Error occurred while generating PDF:', error);
+                  if (error.status === 500) { // Check if the error response status is 500
+                    this.toastrService.warning(
+                      'Er is een fout opgetreden bij het genereren van de PDF. Probeer het later opnieuw.',
+                      'Error',
+                      { duration: 4000 },
+                    );
+                  }
+                })
+            } catch (e) {
+              Pace.stop();
+              this.progress = 0;
+              this.isGeneratingPDF = false;
+              this.isLoadingBar = false;
+              this.isDownloading = false;
+            }
+    } else {
+      if(!this.isGeneratingPDF){
+        this.toastrService.warning(
+          'U heeft geen aansluiting geselecteerd. Selecteer minimum 1 aansluiting of kolk.',
+          'Selecteer aansluitingen',
+        );
+      }
+    }
   }
 }
