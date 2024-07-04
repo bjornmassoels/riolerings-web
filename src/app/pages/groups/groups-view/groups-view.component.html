@@ -370,8 +370,9 @@
           <p class="infoTextSchadeOw"><i class="fa-solid fa-location-dot faIcon"></i>{{schademelding.huisNr? schademelding?.street + ' - ' : schademelding.street}}{{schademelding.huisNr}}</p>
         </td>
         <td class="schadeMinimuWidth">
-          <p class="infoTextSchadeOw"><i class="fa-solid fa-user faIcon"></i>{{schademelding.countEmployees}} werknemer{{schademelding.countEmployees !== 1 ? 's' : ''}}</p>
-          <p class="infoTextSchadeOw"><i class="fa-solid fa-clock faIcon"></i>{{convertMinutesToHours(schademelding.minutesWorked)}}</p>
+          <p *ngIf="schademelding.activiteit" class="infoTextSchadeOw"><i class="fa-solid fa-person-digging faIcon"></i>{{schademelding.activiteit}}</p>
+          <p *ngIf="schademelding.countEmployees" class="infoTextSchadeOw"><i class="fa-solid fa-user faIcon"></i>{{schademelding.countEmployees}} werknemer{{schademelding.countEmployees !== 1 ? 's' : ''}}</p>
+          <p *ngIf="schademelding.minutesWorked && schademelding.minutesWorked > 0" class="infoTextSchadeOw"><i class="fa-solid fa-clock faIcon"></i>{{convertMinutesToHours(schademelding.minutesWorked)}}</p>
           <p *ngIf="schademelding.photos != null && schademelding.photos.length> 0" class="infoTextSchadeOw"><i class="fa-solid fa-camera-retro faIcon"></i>{{schademelding.photos.length}} Foto{{schademelding.photos.length > 1 ? "'s" : ""}}</p>
         </td>
         <td >

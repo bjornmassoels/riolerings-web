@@ -70,6 +70,7 @@ export class Schademelding {
   public lastWorkerDate: Date;
   public startDate: Date;
   public postNumber: string;
+  activiteit: string;
   public countEmployees: number;
   id: string;
   xCoordGeoLocationFirsPhoto: number;

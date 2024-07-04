@@ -85,6 +85,7 @@ export class MeerwerkenAddComponent implements OnInit {
           postNumber: this.currentMeerwerk.postNumber,
           street: this.currentMeerwerk.street,
           huisNr: this.currentMeerwerk.huisNr,
+          activiteit: this.currentMeerwerk.activiteit,
           minutesWorked: this.currentMeerwerk.minutesWorked != null ? this.currentMeerwerk.minutesWorked.toString() : '',
           opmerking: this.currentMeerwerk.opmerking,
           countEmployees: this.currentMeerwerk.countEmployees != null ? this.currentMeerwerk.countEmployees.toString() : ''

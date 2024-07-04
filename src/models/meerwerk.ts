@@ -22,6 +22,7 @@ export class Meerwerk {
   public postNumber: string;
   public isMeerwerk: boolean;
   public countEmployees: number;
+  activiteit: string;
   id: string;
   xCoordGeoLocationFirsPhoto: number;
   yCoordGeoLocationFirsPhoto: number;

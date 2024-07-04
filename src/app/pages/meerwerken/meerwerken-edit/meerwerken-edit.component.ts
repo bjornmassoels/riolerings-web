@@ -143,6 +143,7 @@ export class MeerwerkenEditComponent implements OnInit , OnDestroy{
           postNumber: this.currentProject.postNumber,
           street: this.currentProject.street,
           huisNr: this.currentProject.huisNr,
+          activiteit: this.currentProject.activiteit,
           minutesWorked: this.currentProject.minutesWorked != null ? this.currentProject.minutesWorked.toString() : '',
           opmerking: this.currentProject.opmerking,
           countEmployees: this.currentProject.countEmployees != null ? this.currentProject.countEmployees.toString() : '1',
