@@ -27,6 +27,7 @@ import moment from 'moment';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { Schademelding } from '../../../../models/schademelding';
 import { Meerwerk } from '../../../../models/meerwerk';
+import { NbBooleanInput } from '@nebular/theme/components/helpers';
 
 declare var Pace: any;
 
@@ -40,6 +41,8 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
   protected readonly Math = Math;
   showProjectDetails: boolean = false;
   public projectItem: Project = new Project();
+  protected readonly onclick = onclick;
+  selectEverythingOwAndSchade: boolean;
   public hasPreviousPage: boolean = false;
   public group: Group;
   public _id: string;
@@ -148,6 +151,7 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
     this.filterStraatText = '';
     this.isDownloading = false;
     this.selectEverything = false;
+    this.selectEverythingOwAndSchade = false;
     this.isViewingOwAndSchademeldingList = false;
     this.newMeerwerkCounter = 0;
     this.newSchademeldingCounter = 0;
@@ -1436,7 +1440,7 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
     this.router.navigate(['/pages/schademeldingedit/' + this._id + '/' + schademelding._id]);
   }
 
-  protected readonly onclick = onclick;
+
 
   openSchademelding(schademelding: Schademelding) {
     this.formService.previousPage.push('/pages/groupview/' + this._id);
@@ -1459,5 +1463,21 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
     const hours = Math.floor(minutesWorked / 60);
     const minutes = minutesWorked % 60;
     return hours + 'u ' + minutes + 'm';
+  }
+
+  selectAllOwAndSchademeldingen() {
+    this.selectEverythingOwAndSchade = !this.selectEverythingOwAndSchade;
+    this.owAndSchademeldingList.forEach((x) => {
+       x.isSelected = this.selectEverythingOwAndSchade;
+     });
+  }
+
+  selectOwofSchademelding(_id: string) {
+    const index = this.owAndSchademeldingList.findIndex((x) => x._id === _id);
+    this.owAndSchademeldingList[index].isSelected = !this.owAndSchademeldingList[index].isSelected;
+  }
+
+  generatePDFoWAndSchademeldingen() {
+
   }
 }
