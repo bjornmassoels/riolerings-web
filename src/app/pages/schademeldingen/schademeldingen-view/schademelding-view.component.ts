@@ -21,6 +21,7 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dial
 import { Schademelding } from '../../../../models/schademelding';
 import { tap } from 'rxjs/operators';
 import { catchError, forkJoin, mapTo, of } from 'rxjs';
+import { DialogOverviewExampleDialog3 } from '../../meerwerken/meerwerken-view/meerwerken-view.component';
 
 @Component({
   selector: 'ngx-schademeldingen-view',
@@ -47,8 +48,6 @@ export class SchademeldingViewComponent implements OnInit, OnDestroy {
   owAndSchademeldingList: Schademelding[];
   public group: Group;
   loadedCount = 0;
-  printSchademelding: Schademelding;
-  isPrint: boolean;
 
   constructor(
     private formBuilder: UntypedFormBuilder,
@@ -62,7 +61,6 @@ export class SchademeldingViewComponent implements OnInit, OnDestroy {
   ) {
     route.params.subscribe((val) => {
       this.isLoaded = false;
-      this.isPrint = false;
       this.schademelding = null;
       this._id = this.route.snapshot.paramMap.get('id');
       this.group_id = this.route.snapshot.paramMap.get('groupid');
@@ -170,48 +168,43 @@ export class SchademeldingViewComponent implements OnInit, OnDestroy {
       }
   }
   async generatePDF() {
-    this.printSchademelding =  this.schademelding;
-    if(this.printSchademelding._id == null){
-      this.printSchademelding._id = this.schademelding.id;
+    let title = '';
+    if (this.schademelding._id == null) {
+      this.schademelding._id = this.schademelding.id;
     }
-    if(this.printSchademelding.created != null) this.printSchademelding.created = new Date(this.printSchademelding.created);
-    if(this.printSchademelding.date != null) this.printSchademelding.date = new Date(this.printSchademelding.date);
+    let fileName = 'Schademelding' + (this.schademelding.tegenPartij ? '-' + this.schademelding.tegenPartij : '') +  (this.schademelding.group_id.rbProjectNaam != null ? '-' + this.schademelding.group_id.rbProjectNaam : '');
+    const dialogRef = this.dialog.open(DialogOverviewExampleDialog3, {
+      width: '550px',
+      data: fileName,
+    });
 
-    await this.delay(100);
+    dialogRef.afterClosed().subscribe(async (result) => {
+      title = result;
+      if (this.variablesService.cancelDownload === false) {
+        this.toastrService.success('DE PDF IS AAN HET DOWNLOADEN.');
+        this.apiService.makeSchademeldingPdf(this.schademelding._id).subscribe((data:  Data) => {
+          const { pdf: base64PDF } = data;
 
-    this.isPrint = true;
-    await this.delay(100);
+          // Convert base64 to a blob
+          fetch(`data:application/pdf;base64,${base64PDF}`)
+            .then(res => res.blob())
+            .then(blob => {
+              // Create a link element
+              const url = window.URL.createObjectURL(blob);
+              const link = document.createElement('a');
+              link.href = url;
+              link.setAttribute('download', title + '.pdf'); // or any other filename
 
-    this.toggleDisplay();
-    await this.delay(50);
-    let options;
-    let fileName
-    fileName = 'Schademelding' + (this.printSchademelding.tegenPartij ? '-' + this.printSchademelding.tegenPartij : '') +  (this.printSchademelding.group_id.rbProjectNaam != null ? '-' + this.printSchademelding.group_id.rbProjectNaam : '') + '.pdf';
-    options = {
-      filename:
-      fileName,
-      image: {type: 'png'},
-      html2canvas: {useCORS: true},
-      jsPDF: {orientation: 'portrait', format: 'a4', compressPdf: true},
-      margin: [3, 0.5, 0.5, 0.5],
-      pagebreak: { mode: 'avoid-all', avoid:  '.pageBreak'}
-    };
-
-    let element = document.getElementById('printContainer');
-
-    await html2pdf().from(element).set(options).save();
-    this.toggleDisplay();
-    this.toastrService.success( 'Het schaderapport is gedownload.', 'Succes!');
-    this.isPrint = false;
+              // Automatically download the file
+              document.body.appendChild(link);
+              link.click();
+              link.parentNode.removeChild(link);
+            });
+        });
+      }
+    });
   }
-  toggleDisplay() {
-    const element = document.getElementById('printContainer');
-    if (element.style.display === 'block') {
-      element.style.display = 'none';
-    } else {
-      element.style.display = 'block';
-    }
-  }
+
    ngOnDestroy(){
       this.formService.previousIndexScroll = this.index;
       this.formService.previousPageForScrollIndex = 'schademelding';

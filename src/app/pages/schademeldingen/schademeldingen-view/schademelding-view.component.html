@@ -25,6 +25,4 @@
 <mat-card id="content" *ngIf="isLoaded"  class="project-card">
   <ngx-schademelding-pdf   [schademelding]="schademelding" [company]="company" [group]="group"></ngx-schademelding-pdf>
 </mat-card>
-<div *ngIf="isPrint" style="margin-left:10px; display:none;font-size:12px !important;margin-top: 600px;"   >
-  <ngx-schademelding-pdf id="printContainer" [schademelding]="printSchademelding" [company]="company" [group]="group"></ngx-schademelding-pdf>
-</div>
+

@@ -6,7 +6,7 @@ body {
 
 #schademeldingOverzicht {
   border-radius: 8px;
-  max-width:1050px;
+  max-width:950px;
 }
 
 h3{
@@ -24,7 +24,7 @@ h4{
 
 p {
   font-size: 15px;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 span {
@@ -37,7 +37,7 @@ span {
   background-color: #f4f3ff;
   padding:7px;
   border-radius: 8px;
-  margin: 0 10px 20px 10px;
+  margin: 0 0px 20px 0px;
   border:1px solid lightgrey;
 }
 .faIcon{
@@ -51,6 +51,8 @@ span {
 .smallerText{
   font-size:15px !important;
   font-weight:500 !important;
+  margin-left: 13px;
+  padding-right: 10px;
 }
 .two-photo-div{
   display: flex;
@@ -74,15 +76,18 @@ span {
 }
 .foto{
   width: 100%;
-  max-height: 415px;
+  max-height: 430px;
   object-fit: contain;
-  padding:2px;
 }
 .fotoText{
-  padding:4px 10px;
-  font-size: 15px ;
-  width:214px !important;
-  height:65px !important;
+    padding:4px 10px 2px 10px;
+    font-size: 15px ;
+    height:45px !important;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    font-weight: bold;
+    overflow-y:hidden;
 }
 .fotoBoxColumn{
   display: flex;
@@ -126,9 +131,9 @@ span {
 .page-title {
   font-weight: 800;
   letter-spacing: 1.6pt;
-  margin-left: 5px;
+  margin-left: 13px;
   width:80%;
   line-height: 18px;
-  margin-bottom: 13px;
+  margin-bottom: 0px;
   height:35px !important;
 }

@@ -21,6 +21,8 @@ import { MatButton } from '@angular/material/button';
 import {
   SchademeldingViewDeleteDialogComponent
 } from '../schademeldingen-view/schademelding-view-delete-dialog/schademelding-view-delete-dialog.component';
+import { DialogOverviewExampleDialog3 } from '../../meerwerken/meerwerken-view/meerwerken-view.component';
+import { VariablesService } from '../../../../services/variables.service';
 
 @Component({
   selector: 'ngx-schademelding-edit',
@@ -56,8 +58,7 @@ export class SchademeldingEditComponent implements OnInit, OnDestroy {
   chosenImageListIndex: number [] = [];
   imageChangedEvent: any;
   imagePath: any;
-  isPrint: boolean;
-  printSchademelding: Schademelding;
+
   isNewSchademelding: boolean = false;
   group: Group;
   group_id: string;
@@ -70,7 +71,8 @@ export class SchademeldingEditComponent implements OnInit, OnDestroy {
     private toastrService: NbToastrService,
     private dialog: MatDialog,
     private formService: FormService,
-    private storage: AngularFireStorage
+    private storage: AngularFireStorage,
+    private variablesService: VariablesService
   ) {
     for (let i = 0; i < 60; i++) {
       this.allMinutes.push(i);
@@ -98,7 +100,6 @@ export class SchademeldingEditComponent implements OnInit, OnDestroy {
     this.chosenImageListIndex = [];
     this.tempImages = [null,null,null,null,null,null];
     this.isSaving = false;
-    this.isPrint = false;
     this.isLoaded = false;
     this.company = this.apiService.thisCompany;
     this.schademelding = this.formService.schademelding;
@@ -466,50 +467,41 @@ export class SchademeldingEditComponent implements OnInit, OnDestroy {
   }
 
   async generatePDF() {
-    this.apiService.getPopulatedSchademelding(this._id).subscribe(async x => {
-      this.printSchademelding =  x as Schademelding;
-      if(this.printSchademelding._id == null){
-        this.printSchademelding._id = this.schademelding.id;
-      }
-      if(this.printSchademelding.created != null) this.printSchademelding.created = new Date(this.printSchademelding.created);
-      if(this.printSchademelding.date != null) this.printSchademelding.date = new Date(this.printSchademelding.date);
-
-      await this.delay(100);
-
-      this.isPrint = true;
-      await this.delay(100);
-
-      this.toggleDisplay();
-      await this.delay(50);
-      let options;
-      let fileName
-      fileName = 'Schademelding' + (this.printSchademelding.tegenPartij ? '-' + this.printSchademelding.tegenPartij : '') +  (this.printSchademelding.group_id.rbProjectNaam != null ? '-' + this.printSchademelding.group_id.rbProjectNaam : '') + '.pdf';
-      options = {
-        filename:
-        fileName,
-        image: {type: 'png'},
-        html2canvas: {useCORS: true},
-        jsPDF: {orientation: 'portrait', format: 'a4', compressPdf: true},
-        margin: [3, 0.5, 0.5, 0.5],
-        pagebreak: { mode: 'avoid-all', avoid:  '.pageBreak'}
-      };
-
-      let element = document.getElementById('printContainer');
-
-      await html2pdf().from(element).set(options).save();
-      this.toggleDisplay();
-      this.toastrService.success( 'Het schaderapport is gedownload.', 'Succes!');
-      this.isPrint = false;
+    let title = '';
+    if (this.schademelding._id == null) {
+      this.schademelding._id = this.schademelding.id;
+    }
+    let fileName = 'Schademelding' + (this.schademelding.tegenPartij ? '-' + this.schademelding.tegenPartij : '') +  (this.schademelding.group_id.rbProjectNaam != null ? '-' + this.schademelding.group_id.rbProjectNaam : '');
+    const dialogRef = this.dialog.open(DialogOverviewExampleDialog3, {
+      width: '550px',
+      data: fileName,
     });
 
-  }
-  toggleDisplay() {
-    const element = document.getElementById('printContainer');
-    if (element.style.display == 'block') {
-      element.style.display = 'none';
-    } else {
-      element.style.display = 'block';
-    }
+    dialogRef.afterClosed().subscribe(async (result) => {
+      title = result;
+      if (this.variablesService.cancelDownload === false) {
+        this.toastrService.success('DE PDF IS AAN HET DOWNLOADEN.');
+        this.apiService.makeSchademeldingPdf(this.schademelding._id).subscribe((data:  Data) => {
+          const { pdf: base64PDF } = data;
+
+          // Convert base64 to a blob
+          fetch(`data:application/pdf;base64,${base64PDF}`)
+            .then(res => res.blob())
+            .then(blob => {
+              // Create a link element
+              const url = window.URL.createObjectURL(blob);
+              const link = document.createElement('a');
+              link.href = url;
+              link.setAttribute('download', title + '.pdf'); // or any other filename
+
+              // Automatically download the file
+              document.body.appendChild(link);
+              link.click();
+              link.parentNode.removeChild(link);
+            });
+        });
+      }
+    });
   }
 
   private saveOrCreateSchademelding(data) {
@@ -583,3 +575,7 @@ export class SchademeldingEditComponent implements OnInit, OnDestroy {
 
 
 
+interface Data {
+  pdf: any;  // use a more specific type if possible
+  // add other properties if needed
+}

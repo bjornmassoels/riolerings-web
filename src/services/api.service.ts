@@ -785,4 +785,15 @@ export class ApiService {
       headers
     );
   }
+
+  makeSchademeldingPdf(_id: string) {
+    let headers = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: this._token,
+        _id: _id
+      },
+    };
+    return this.http.get(this.apiURL + '/schademeldings.makeSchademeldingPdf', headers);
+  }
 }

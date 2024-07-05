@@ -448,9 +448,9 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
 
   checkIfHasSelected(){
     if(!this.isViewingOwAndSchademeldingList){
-      return this.selectedHuisaansluitingen || this.selectedWachtaansluitingen || this.selectedKolken
+      return this.selectedHuisaansluitingen || this.selectedWachtaansluitingen || this.selectedKolken;
     } else {
-       return this.owAndSchademeldingList.filter(x => x.isSelected).length > 0;
+       return this.owAndSchademeldingList?.filter(x => x.isSelected).length > 0;
     }
   }
 

@@ -1,5 +1,6 @@
 <div id="schademeldingOverzicht">
-  <h3 class="page-title">Schademelding <small style='font-size:15px; margin-top:-5px'>   {{group.rbProjectNaam}} | {{group.rbGemeente}} | {{group.aannemerProjectNr}}</small><br><span *ngIf="schademelding.creator_user?.name" class="smallerText"> Gemeld door: <b>{{schademelding.creator_user?.name}} </b><small>- {{("0"+(schademelding.created.getDate())).slice(-2)}}/{{("0"+(schademelding.created.getMonth()+1)).slice(-2)}}/{{schademelding.created.getFullYear().toString().slice(-2)}}</small></span></h3>
+  <h3 class="page-title">Schademelding <small style='font-size:15px; margin-top:-5px;'>   {{group.rbProjectNaam}} | {{group.rbGemeente}} | {{group.aannemerProjectNr}}</small></h3>
+    <p *ngIf="schademelding.creator_user?.name" class="smallerText"> Gemeld door: <b>{{schademelding.creator_user?.name}} </b><small>- {{("0"+(schademelding.created.getDate())).slice(-2)}}/{{("0"+(schademelding.created.getMonth()+1)).slice(-2)}}/{{schademelding.created.getFullYear().toString().slice(-2)}}</small></p>
 
   <div class="boxColumn">
     <h4>Algemene gegevens</h4>
@@ -12,7 +13,7 @@
     <h4>Details van de Schade</h4>
     <p><nb-icon icon="bullseye" pack="fa" class="smallIcon"></nb-icon>Schade gericht aan: <span id="schadeGerichtAan">{{schademelding.schadeGerichtAan === 'Andere' ? schademelding.schadeGerichtAanAndereString : NullToEmptyStr(schademelding.schadeGerichtAan)}}</span></p>
     <p><nb-icon icon="user" pack="fa" class="smallIcon"></nb-icon>Schade door wie: <span *ngIf="schademelding.schadeDoorWie" id="schadeDoorWie">{{NullToEmptyStr(schademelding.schadeDoorWie)}}</span></p>
-    <p><nb-icon icon="snowplow" pack="fa" class="smallIcon"></nb-icon>Schade door wat: <span id="schadeDoorWat">{{schademelding.schadeDoorWat}}{{schademelding.tempMachineNummer != null? ' - ' + schademelding.tempMachineNummer: ''}}</span></p>
+    <p><nb-icon icon="snowplow" pack="fa" class="smallIcon"></nb-icon>Schade door wat: <span id="schadeDoorWat">{{schademelding.schadeDoorWat}}</span></p>
     <p><nb-icon icon="person-digging" pack="fa" class="smallIcon"></nb-icon>Soort activiteit: <span id="soortActiviteit">{{schademelding.soortActiviteit === 'Andere' ? schademelding.soortActiviteitAndereString : NullToEmptyStr(schademelding.soortActiviteit)}}</span></p>
     <p><nb-icon icon="circle-question" pack="fa" class="smallIcon"></nb-icon>Oorzaak van de schade: <span id="oorzaakSchade">{{schademelding.oorzaakSchade}}</span></p>
     <p *ngIf="checkIfSchadeGerichtAanIsNutsleidingenOfAndere()">Is leiding plan op werf? <span *ngIf="schademelding.isLeidingPlanOpWerf" id="isLeidingPlanOpWerf"><i class="fa-regular fa-square-check faIcon"></i></span>

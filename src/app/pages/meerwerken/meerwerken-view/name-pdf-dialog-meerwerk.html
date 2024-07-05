@@ -6,7 +6,7 @@
     <input matInput style="min-width: 460px !important; background-color: white !important;" nbInput [(ngModel)]="data">
   </mat-form-field>
 </div>
-<div mat-dialog-actions>
-  <button mat-button color='warn' (click)="onNoClick()">Annuleer</button>
-  <button mat-button color='primary' (click)="onOpslaanClick()" [mat-dialog-close]="data" cdkFocusInitial>Opslaan</button>
+<div style="padding-left:25px" mat-dialog-actions>
+  <button mat-raised-button style="margin-right: 50px;" color='warn' (click)="onNoClick()">Annuleer</button>
+  <button mat-raised-button color='primary' (click)="onOpslaanClick()" [mat-dialog-close]="data" cdkFocusInitial>Opslaan</button>
 </div>
