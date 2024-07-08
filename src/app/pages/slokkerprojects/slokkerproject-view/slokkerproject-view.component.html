@@ -264,31 +264,54 @@
             this.currentProject.slokker.aansluitingVrijeUitstroom.substring(0,1).toUpperCase() + this.currentProject.slokker.aansluitingVrijeUitstroom.substring(1) : 'Nee'}}</p>
       </div>
 
-      <p style='font-size: 15px; font-weight: 600; margin-top: 15px; margin-left:20px' *ngIf='group.isProjectForAWV && !checkIfHasCoords(currentProject.slokker)'>Heeft geen lambertcoördinaten</p>
-      <div style='margin-bottom: 10px; margin-top:10px;' *ngIf='group.isProjectForAWV && checkIfHasCoords(currentProject.slokker)'>
-        <p class="lambertTitle">Lambert coordinaten <small style="color:blue">(Verplicht bij projecten AWV)</small></p>
-        <div class='flexWrapper'>
+      <div style='margin-bottom: 10px; margin-top:10px;' *ngIf='group.isProjectForAWV'>
+        <p class="lambertTitle">Lambert coördinaten KOLK<small style="color:blue"> (Verplicht bij projecten AWV)</small></p>
+        <p style='font-size: 15px; font-weight: 600; margin-top: 15px; margin-left:20px' *ngIf='group.isProjectForAWV && !checkIfHasCoords(currentProject.slokker.xCoord, currentProject.slokker.yCoord, currentProject.slokker.zCoord)'>Heeft geen lambertcoördinaten</p>
+        <div *ngIf="checkIfHasCoords(currentProject.slokker.xCoord, currentProject.slokker.yCoord, currentProject.slokker.zCoord)" class='flexWrapper'>
           <div class="insideRow2">
-            <p class="label-text">X-coordinaat</p>
+            <p class="label-text">X-coördinaat</p>
             <p class="data-text">
               {{currentProject.slokker.xCoord}}
             </p>
           </div>
           <div class="insideRow2">
-            <p class="label-text">Y-coordinaat</p>
+            <p class="label-text">Y-coördinaat</p>
             <p class="data-text">
               {{currentProject.slokker.yCoord}}
             </p>
           </div>
           <div class="insideRow2">
-            <p class="label-text">Z-coordinaat</p>
+            <p class="label-text">Z-coördinaat</p>
             <p class="data-text">
               {{currentProject.slokker.zCoord}}
             </p>
           </div>
         </div>
       </div>
-
+      <div style='margin-bottom: 10px; margin-top:10px;' *ngIf='group.isProjectForAWV'>
+        <p class="lambertTitle">Lambert coördinaten AANSLUITING<small style="color:blue"> (Verplicht bij projecten AWV)</small></p>
+        <p style='font-size: 15px; font-weight: 600; margin-top: 15px; margin-left:20px' *ngIf='group.isProjectForAWV && !checkIfHasCoords(currentProject.slokker.x2Coord, currentProject.slokker.y2Coord, currentProject.slokker.z2Coord)'>Heeft geen lambertcoördinaten</p>
+        <div *ngIf="checkIfHasCoords(currentProject.slokker.x2Coord, currentProject.slokker.y2Coord, currentProject.slokker.z2Coord)" class='flexWrapper'>
+          <div class="insideRow2">
+            <p class="label-text">X-coördinaat</p>
+            <p class="data-text">
+              {{currentProject.slokker.x2Coord}}
+            </p>
+          </div>
+          <div class="insideRow2">
+            <p class="label-text">Y-coördinaat</p>
+            <p class="data-text">
+              {{currentProject.slokker.y2Coord}}
+            </p>
+          </div>
+          <div class="insideRow2">
+            <p class="label-text">Z-coördinaat</p>
+            <p class="data-text">
+              {{currentProject.slokker.z2Coord}}
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 

@@ -359,8 +359,8 @@ export class SlokkerprojectViewComponent implements OnInit,OnDestroy {
       return true;
     }
   }
-  checkIfHasCoords(slokker: Slokkers) {
-    if((slokker.xCoord != null && slokker.xCoord !== '') || (slokker.yCoord != null && slokker.yCoord !== '') || (slokker.zCoord != null && slokker.zCoord !== '')){
+  checkIfHasCoords(xCoord: string, yCoord: string, zCoord: string) {
+    if((xCoord != null && xCoord !== '') || (yCoord != null && yCoord !== '') || (zCoord != null && zCoord !== '')){
       return true;
     } else {
       return false;

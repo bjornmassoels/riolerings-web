@@ -44,6 +44,9 @@ export class Slokkers {
     xCoord: string;
     yCoord: string;
     zCoord: string;
+    x2Coord: string;
+    y2Coord: string;
+    z2Coord: string;
     typeKolk: TypeKolkEnum;
 
     constructor() {

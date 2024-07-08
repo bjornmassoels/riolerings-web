@@ -343,7 +343,7 @@
       </div>
       <div *ngIf="group.isProjectForAWV" style='margin-top:5px;' class='flexWrapper'>
         <div class='insideRow2'>
-          <p class="lambertTitle">Lambert coördinaten <small style="color:blue">(Verplicht bij projecten AWV)</small></p>
+          <p class="lambertTitle">Lambert coördinaten KOLK<small style="color:blue"><br>(Verplicht bij projecten AWV)</small></p>
         </div>
         <div class="insideRow2">
           <p class="label-text">X-coord</p>
@@ -356,6 +356,24 @@
         <div class="insideRow2">
           <p class="label-text">Z-coord</p>
           <input class="lambertInput" nbInput type="text" formControlName="zCoord" />
+        </div>
+      </div>
+      <hr style="width:100%">
+      <div *ngIf="group.isProjectForAWV" style='margin-top:5px;' class='flexWrapper'>
+        <div class='insideRow2'>
+          <p class="lambertTitle">Lambert coördinaten AANSLUITING<small style="color:blue"><br>(Verplicht bij projecten AWV)</small></p>
+        </div>
+        <div class="insideRow2">
+          <p class="label-text">X-coord</p>
+          <input class="lambertInput" nbInput type="text" formControlName="x2Coord" />
+        </div>
+        <div class="insideRow2">
+          <p class="label-text">Y-coord</p>
+          <input class="lambertInput" nbInput type="text" formControlName="y2Coord" />
+        </div>
+        <div class="insideRow2">
+          <p class="label-text">Z-coord</p>
+          <input class="lambertInput" nbInput type="text" formControlName="z2Coord" />
         </div>
       </div>
     </div>

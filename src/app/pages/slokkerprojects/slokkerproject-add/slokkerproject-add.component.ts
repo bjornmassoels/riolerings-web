@@ -164,7 +164,10 @@ export class SlokkerprojectAddComponent implements OnInit {
           tBuisStuk: this.currentProject.slokker.tBuisStuk,
           xCoord: this.currentProject.slokker.xCoord,
           yCoord: this.currentProject.slokker.yCoord,
-          zCoord: this.currentProject.slokker.zCoord
+          zCoord: this.currentProject.slokker.zCoord,
+          x2Coord: this.currentProject.slokker.x2Coord,
+          y2Coord: this.currentProject.slokker.y2Coord,
+          z2Coord: this.currentProject.slokker.z2Coord,
         });
         this.uploadForm = this.formBuilder.group({
           file: ['']
@@ -227,6 +230,9 @@ export class SlokkerprojectAddComponent implements OnInit {
       slokker.xCoord = slokkerProject.xCoord;
       slokker.yCoord = slokkerProject.yCoord;
       slokker.zCoord = slokkerProject.zCoord;
+      slokker.x2Coord = slokkerProject.x2Coord;
+      slokker.y2Coord = slokkerProject.y2Coord;
+      slokker.z2Coord = slokkerProject.z2Coord;
       slokker.typeKolk = slokkerProject.typeKolk;
       slokker._id = this.currentProject.slokker._id;
 

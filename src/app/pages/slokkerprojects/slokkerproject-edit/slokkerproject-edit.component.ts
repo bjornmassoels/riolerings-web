@@ -134,6 +134,10 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
     this.lastProjects = this.formService.lastProjects;
     this.projectEditedByGronwderker = false;
     this.hasChangedValue = false;
+    this.chosenImageListIndex = [];
+    this.schetsChosenImageListIndex = [];
+    this.chosenImageList = [];
+    this.schetsChosenImageList = [];
     this.apiService.getSlokkerProjectById(this._id).subscribe(async(x) => {
       this.currentProject = x as SlokkerProjects;
       while(this.apiService.thisCompany == null){
@@ -214,6 +218,9 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
           xCoord: this.currentProject.slokker.xCoord,
           yCoord: this.currentProject.slokker.yCoord,
           zCoord: this.currentProject.slokker.zCoord,
+          x2Coord: this.currentProject.slokker.x2Coord,
+          y2Coord: this.currentProject.slokker.y2Coord,
+          z2Coord: this.currentProject.slokker.z2Coord,
         });
 
       this.uploadForm = this.formBuilder.group({
@@ -326,6 +333,9 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
       slokker.xCoord = slokkerProject.xCoord;
       slokker.yCoord = slokkerProject.yCoord;
       slokker.zCoord = slokkerProject.zCoord;
+      slokker.x2Coord = slokkerProject.x2Coord;
+      slokker.y2Coord = slokkerProject.y2Coord;
+      slokker.z2Coord = slokkerProject.z2Coord;
       slokker._id = this.currentProject.slokker._id;
 
       //project init
