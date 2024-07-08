@@ -88,5 +88,11 @@ export class Group {
   //tempvar
   haCount: number;
   kolkCount: number;
+
+  //AWV velden
+  isProjectForAWV: boolean;
+  aidNummer: string;
+  ident8: string;
+
   constructor() {}
 }

@@ -97,7 +97,7 @@
         </tr>
         <mat-card-title class="title">Gebruikers</mat-card-title>
         <tr>
-          <td class="leftText">Gekoppelde gebruikers:</td>
+          <td class="leftText">Gekoppelde gebruikers</td>
           <td>
             <mat-form-field class='userSelect'  >
               <mat-select placeholder="Wijzig gebruikers" formControlName="users" multiple>
@@ -118,6 +118,30 @@
             <input class="checkbox" nbCheckbox id="name" type="checkbox" formControlName="heeftPloegen" />
           </td>
         </tr>
+
+
+        <tr>
+          <mat-card-title style="margin-left: 0"  class="title">Project voor AWV?<small> (Agentschap Wegen en Verkeer)</small></mat-card-title>
+          <td>
+            <input style="margin-top: 0 !important;" class="checkbox" nbCheckbox id="name" type="checkbox" formControlName="isProjectForAWV" />
+          </td>
+        </tr>
+        <div *ngIf="addForm.get('isProjectForAWV').value" style="border:1px dashed black;border-radius: 10px;">
+        <mat-card-title style="font-size: 21px;margin-top: 10px;margin-left: 10px !important;" *ngIf="addForm.get('isProjectForAWV').value" class="title"><u>Extra velden AWV</u></mat-card-title>
+        <tr>
+          <td class="leftText">AID-nummer</td>
+          <td>
+            <input nbInput type="text" formControlName="aidNummer" />
+          </td>
+        </tr>
+        <tr>
+          <td class="leftText">Ident8</td>
+          <td>
+            <input nbInput type="text" formControlName="ident8">
+          </td>
+        </tr>
+        </div>
+
         <tr>
           <td colspan="2" style="font-size: 17px;margin-top: 20px;font-weight: bold">Suggesties voor straten bij het toevoegen van een nieuwe kolk (mobile)</td>
         </tr>

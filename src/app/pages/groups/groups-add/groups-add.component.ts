@@ -396,7 +396,10 @@ export class GroupsAddComponent implements OnInit {
       yStukMult: 0.5,
       bochtMult: 0.3,
       mofMult: 0.15,
-      possibleKolkStreets: this.formBuilder.array([])
+      possibleKolkStreets: this.formBuilder.array([]),
+      isProjectForAWV: false,
+      aidNummer: '',
+      ident8: ''
     });
   }
   async ngOnInit() {

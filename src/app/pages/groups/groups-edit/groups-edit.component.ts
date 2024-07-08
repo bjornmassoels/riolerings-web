@@ -447,7 +447,11 @@ export class GroupsEditComponent implements OnInit {
       yStukMult: this.group.yStukMult == null ? 0.5 : this.group.yStukMult,
       bochtMult: this.group.bochtMult == null ? 0.3 : this.group.bochtMult,
       mofMult: this.group.mofMult == null ? 0.15 : this.group.mofMult,
-      possibleKolkStreets: possibleKolkStreets
+      possibleKolkStreets: possibleKolkStreets,
+      //AWV velden
+      isProjectForAWV: this.group.isProjectForAWV,
+      aidNummer: this.group.aidNummer,
+      ident8: this.group.ident8,
     });
     while(this.allUsers == null){
       await this.delay(50);
