@@ -204,7 +204,8 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
           andere: this.currentProject.slokker.andere,
           buisType: 'PVC',
           infiltratieKlok: this.currentProject.slokker.infiltratieKlok,
-          aansluitingOpengracht: this.currentProject.slokker.aansluitingOpengracht,
+          aansluitingVrijeUitstroom: this.currentProject.slokker.aansluitingOpengracht === true && this.currentProject.slokker.aansluitingVrijeUitstroom == null
+            ? 'gracht' : this.currentProject.slokker.aansluitingVrijeUitstroom != null ? this.currentProject.slokker.aansluitingVrijeUitstroom : 'nee',
           plaatsAansluiting: this.currentProject.slokker.plaatsAansluiting,
           diameter: this.currentProject.slokker.diameter,
           tBuisStuk: this.currentProject.slokker.tBuisStuk,
@@ -319,7 +320,7 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
       slokker.andere = slokkerProject.andere;
       slokker.buisType = 'PVC';
       slokker.infiltratieKlok = slokkerProject.infiltratieKlok;
-      slokker.aansluitingOpengracht = slokkerProject.aansluitingOpengracht;
+      slokker.aansluitingVrijeUitstroom = slokkerProject.aansluitingVrijeUitstroom;
       slokker.plaatsAansluiting = slokkerProject.plaatsAansluiting;
       slokker.tBuisStuk = slokkerProject.tBuisStuk;
       slokker.xCoord = slokkerProject.xCoord;

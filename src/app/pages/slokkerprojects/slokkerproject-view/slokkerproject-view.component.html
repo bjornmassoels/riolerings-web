@@ -257,14 +257,16 @@
         <p class="label-text">Infiltratiekolk</p>
         <p *ngIf="currentProject.slokker.infiltratieKlok" class="data-text">Ja</p>
       </div>
-      <div  style='margin-left: 10px !important;' class="data-container-70" *ngIf="this.group.slokkerSettings.aansluitingOpengracht">
-        <p class="label-text">Kolk aansluiting op opengracht</p>
-        <p *ngIf="currentProject.slokker.aansluitingOpengracht" class="data-text">Ja</p>
+      <div  style='margin-left: 10px !important;' class="data-container-70">
+        <p class="label-text">Kolk aansluiting op vrije uitstroom</p>
+        <p class="data-text">{{this.currentProject.slokker.aansluitingOpengracht === true && this.currentProject.slokker.aansluitingVrijeUitstroom == null
+          ? 'Gracht' : this.currentProject.slokker.aansluitingVrijeUitstroom != null ?
+            this.currentProject.slokker.aansluitingVrijeUitstroom.substring(0,1).toUpperCase() + this.currentProject.slokker.aansluitingVrijeUitstroom.substring(1) : 'Nee'}}</p>
       </div>
 
-      <p style='font-size: 15px; font-weight: 600; margin-top: 15px; margin-left:20px' *ngIf='!checkIfHasCoords(currentProject.slokker)'>Heeft geen lambertcoördinaten</p>
-      <div style='margin-bottom: 10px; margin-top:10px;' *ngIf='checkIfHasCoords(currentProject.slokker)'>
-        <p class="lambertTitle">Lambert coordinaten <small>(Alleen verplicht projecten voor AWV)</small></p>
+      <p style='font-size: 15px; font-weight: 600; margin-top: 15px; margin-left:20px' *ngIf='group.isProjectForAWV && !checkIfHasCoords(currentProject.slokker)'>Heeft geen lambertcoördinaten</p>
+      <div style='margin-bottom: 10px; margin-top:10px;' *ngIf='group.isProjectForAWV && checkIfHasCoords(currentProject.slokker)'>
+        <p class="lambertTitle">Lambert coordinaten <small style="color:blue">(Verplicht bij projecten AWV)</small></p>
         <div class='flexWrapper'>
           <div class="insideRow2">
             <p class="label-text">X-coordinaat</p>
@@ -304,8 +306,8 @@
         <p style="margin-bottom: 100%;font-size: 18px;font-weight: 600" *ngIf="photo == null">Geen foto</p>
       </div>
   </div>
-  <div class="image-container">
-    <p class="section-title">Schematische voorstelling kolk (schets) <small>(Alleen verplicht projecten voor AWV)</small></p>
+  <div *ngIf="group.isProjectForAWV" class="image-container">
+    <p class="section-title">Schematische voorstelling kolk (schets) <small style="color:blue">(Verplicht bij projecten AWV)</small></p>
     <div *ngFor="let photo of currentProject.schetsPhotos; let i = index"  [ngClass]="photo == null? 'smallFotoColumnSchets' : ''" class="fotoColumnSchets">
       <div class="innerColumn">
         <p class="fotoText6" *ngIf="i === 0">1. Dwarsdoorsnede met aanduiding van referentiepunt (boordstenen/woning/greppel/FP/VP/rijweg….) + bochten in graden, lengtes,... incl. aansluitpunt</p>

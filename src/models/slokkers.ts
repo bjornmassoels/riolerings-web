@@ -31,9 +31,10 @@ export class Slokkers {
     andere: string;
     buisType: string;
     infiltratieKlok: boolean;
-    //aansluitingOpengracht =  zogezegd aangeslotenOpVrijeUitstroom  . boolean behouden voor compatibiliteit
+    //oude variabele, voor invoeging aansluitingVrijeUitstroom 07/2024
     aansluitingOpengracht: boolean;
-    aansluitingOpengrachtString: string;
+    //nieuwe var
+    aansluitingVrijeUitstroom: string;
     plaatsAansluiting: string;
     diameter: string;
     tBuisStuk: string;
@@ -44,8 +45,6 @@ export class Slokkers {
     yCoord: string;
     zCoord: string;
     typeKolk: TypeKolkEnum;
-    aangeslotenOpVrijeUitstroom: boolean;
-    aangeslotenOpVrijeUitstroomString: string;
 
     constructor() {
     }

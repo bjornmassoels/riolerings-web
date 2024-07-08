@@ -315,9 +315,14 @@
         <p class="label-text">Infiltratiekolk</p>
         <nb-toggle class='toggle' formControlName="infiltratieKlok" status="primary"></nb-toggle>
       </div>
-      <div class="data-container4" *ngIf="this.group.slokkerSettings.aansluitingOpengracht">
-        <p class="label-text">Kolk aansluiting op opengracht</p>
-        <nb-toggle class='toggle' formControlName="aansluitingOpengracht" status="primary"></nb-toggle>
+      <div class="data-container4">
+        <p class="label-text">Kolk aansluiting op vrije uitstroom</p>
+        <nb-select style='width: 180px !important;' class="normalInput" formControlName="aansluitingVrijeUitstroom">
+          <nb-option  value="nee" >Nee</nb-option>
+          <nb-option  value="bufferbekken" >Bufferbekken</nb-option>
+          <nb-option  value="gracht" >Gracht</nb-option>
+          <nb-option  value="wadi" >Wadi</nb-option>
+        </nb-select>
       </div>
       <div class="borderBlack" *ngIf="this.group.slokkerSettings.plaatsAansluiting">
         <img class="rioolImage" src="assets/images/gradenOpRiool.png">
@@ -336,9 +341,9 @@
           </div>
         </div>
       </div>
-      <div style='margin-top:5px;' class='flexWrapper'>
+      <div *ngIf="group.isProjectForAWV" style='margin-top:5px;' class='flexWrapper'>
         <div class='insideRow2'>
-          <p class="lambertTitle">Lambert coördinaten <small>(Alleen verplicht projecten voor AWV)</small></p>
+          <p class="lambertTitle">Lambert coördinaten <small style="color:blue">(Verplicht bij projecten AWV)</small></p>
         </div>
         <div class="insideRow2">
           <p class="label-text">X-coord</p>
@@ -384,8 +389,8 @@
       </div>
     </div>
   </div>
-    <div style="width:900px !important;"  class="image-container">
-      <p class="section-title">Schematische voorstelling kolk (schets) <small>(Alleen verplicht projecten voor AWV)</small></p>
+    <div *ngIf="group.isProjectForAWV" style="width:900px !important;"  class="image-container">
+      <p class="section-title">Schematische voorstelling kolk (schets) <small style="color:blue">(Verplicht bij projecten AWV)</small></p>
       <div cdkDropListGroup class="photos-container">
         <div  cdkDropList [cdkDropListData]="i"  *ngFor="let photo of schetsPhotos; let i = index" [ngClass]="photo == null && !getCorrespondingTemporaryImageSchets(i) ? 'smallFotoColumnSchets' : ''" class="fotoColumnSchets">
           <ng-container *ngIf="i < 3">

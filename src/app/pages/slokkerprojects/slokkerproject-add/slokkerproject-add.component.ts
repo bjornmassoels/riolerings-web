@@ -127,6 +127,7 @@ export class SlokkerprojectAddComponent implements OnInit {
         slokker.plaatsAansluiting = "180";
         slokker.diameter = "160";
         slokker.tBuisStuk = 'aanboring';
+        slokker.aansluitingVrijeUitstroom = 'nee';
         this.currentProject.photos = new Array(3).fill(null);
         this.currentProject.slokker = slokker;
         if(this.currentStreet !== ''){
@@ -157,7 +158,7 @@ export class SlokkerprojectAddComponent implements OnInit {
           andere: this.currentProject.slokker.andere,
           buisType: 'PVC',
           infiltratieKlok: this.currentProject.slokker.infiltratieKlok,
-          aansluitingOpengracht: this.currentProject.slokker.aansluitingOpengracht,
+          aansluitingVrijeUitstroom: this.currentProject.slokker.aansluitingVrijeUitstroom,
           plaatsAansluiting: this.currentProject.slokker.plaatsAansluiting,
           diameter: this.currentProject.slokker.diameter,
           tBuisStuk: this.currentProject.slokker.tBuisStuk,
@@ -220,7 +221,7 @@ export class SlokkerprojectAddComponent implements OnInit {
       slokker.andere = slokkerProject.andere;
       slokker.buisType = 'PVC';
       slokker.infiltratieKlok = slokkerProject.infiltratieKlok;
-      slokker.aansluitingOpengracht = slokkerProject.aansluitingOpengracht;
+      slokker.aansluitingVrijeUitstroom = slokkerProject.aansluitingVrijeUitstroom;
       slokker.plaatsAansluiting = slokkerProject.plaatsAansluiting;
       slokker.tBuisStuk = slokkerProject.tBuisStuk;
       slokker.xCoord = slokkerProject.xCoord;

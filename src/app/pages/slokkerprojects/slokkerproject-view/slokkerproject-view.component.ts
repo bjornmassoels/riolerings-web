@@ -343,6 +343,8 @@ export class SlokkerprojectViewComponent implements OnInit,OnDestroy {
   checkHasKolk(kolk: Slokkers) {
     if ((kolk.buis == null || kolk.buis === 0 || kolk.buis.toString() === '') &&
       (kolk.buis2 == null || kolk.buis2 === 0 || kolk.buis2.toString() === '') &&
+      (kolk.buisVert == null || kolk.buisVert === 0 || kolk.buisVert.toString() === '') &&
+      (kolk.buisVert2 == null || kolk.buisVert2 === 0 || kolk.buisVert2.toString() === '') &&
       (kolk.bocht == null || kolk.bocht === 0 || kolk.bocht.toString() === '') &&
       (kolk.bocht2 == null || kolk.bocht2 === 0 || kolk.bocht2.toString() === '') &&
       (kolk.gradenBocht45 == null || kolk.gradenBocht45 === 0 || kolk.gradenBocht45.toString() === '') &&
