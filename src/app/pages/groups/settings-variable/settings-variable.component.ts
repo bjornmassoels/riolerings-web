@@ -186,7 +186,6 @@ export class SettingsVariableComponent implements OnInit {
       diepteAansluitingMv: this.group.slokkerSettings.diepteAansluitingMv,
        diepteAanboringRiool: this.group.slokkerSettings.diepteAanboringRiool,
       infiltratieKlok: this.group.slokkerSettings.infiltratieKlok,
-     aansluitingOpengracht: this.group.slokkerSettings.aansluitingOpengracht,
       plaatsAansluiting: this.group.slokkerSettings.plaatsAansluiting
     });
    }
@@ -240,7 +239,6 @@ export class SettingsVariableComponent implements OnInit {
       diepteAansluitingMv: true,
       diepteAanboringRiool: true,
       infiltratieKlok: true,
-      aansluitingOpengracht: true,
       plaatsAansluiting: true
     });
   }
