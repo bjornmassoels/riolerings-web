@@ -28,5 +28,6 @@ export class Meerwerk {
   yCoordGeoLocationFirsPhoto: number;
   updated: Date;
   hasBeenViewed: boolean;
+  creator_user: User;
   constructor() {}
 }

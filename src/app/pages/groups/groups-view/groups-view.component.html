@@ -106,7 +106,7 @@
     <nb-icon *ngIf="isViewingOwAndSchademeldingList" style="font-size: 24px;margin-right: 10px;margin-left: 10px;border:1px solid gray; border-radius:5px;background-color: #e0e0e0" pack="fa" icon="angle-up"></nb-icon>
 
     <div *ngIf="isOn" class="owSchademeldingToggleDiv">
-      <div style="background-color: #ffa018; border:1px solid orangered;" class="extraBox">
+      <div style="background-color: #ffcf57; border:1px solid orangered;" class="extraBox">
         <p class="extraInfoText"
            [matBadge]="newSchademeldingCounter !== 0 ? newSchademeldingCounter : ''"
            matBadgePosition="after"
@@ -117,7 +117,7 @@
           Schademelding{{schademeldingList.length !== 1? 'en' : ''}}
         </p>
       </div>
-      <div style="background-color: #bec8ff; border:1px solid #689cff" class="extraBox">
+      <div style="background-color: #98bcd4; border:1px solid #98bcd4" class="extraBox">
         <p class="extraInfoText"
            [matBadge]="newMeerwerkCounter !== 0 ? newMeerwerkCounter : ''"
            matBadgePosition="after"
@@ -184,9 +184,9 @@
 
       <button  [disabled]="!checkIfHasSelected()" [ngClass]="!checkIfHasSelected() ? 'halfOpacity': ''"  style="width: 135px; margin-left: 20px"
                mat-raised-button class="form-button2" (click)="generatePDFoWAndSchademeldingen()"><div class="divInsideButton">PDF rapport<mat-icon class="downloadImage">cloud_download</mat-icon></div></button>
-      <button style="background-color: #bec8ff !important;margin-left: 50px" mat-raised-button (click)="createMeerwerk()" class="add-button4" [disabled]="checkIfHasSelected()" [ngClass]="checkIfHasSelected() ? 'halfOpacity': ''">
+      <button style="background-color: #98bcd4 !important;margin-left: 50px" mat-raised-button (click)="createMeerwerk()" class="add-button4" [disabled]="checkIfHasSelected()" [ngClass]="checkIfHasSelected() ? 'halfOpacity': ''">
         Creëer Onvoorzien werk</button>
-      <button style="background-color: #ffa018 !important;" mat-raised-button (click)="createSchademelding()" class="add-button4" [disabled]="checkIfHasSelected()"
+      <button style="background-color: #ffcf57 !important;" mat-raised-button (click)="createSchademelding()" class="add-button4" [disabled]="checkIfHasSelected()"
               [ngClass]="checkIfHasSelected() ? 'halfOpacity': ''" >
         Creëer Schademelding</button>
     </div>
@@ -368,6 +368,8 @@
     <tbody>
     <ng-container *ngFor="let schademelding of owAndSchademeldingList">
       <tr *ngIf="schademelding.isSchademelding" class="item-box-schadeOw schademelding" [ngClass]="!schademelding.hasBeenViewed ? 'hasNotBeenViewBackOrange': 'orangeBack'" >
+
+
         <td  class="schade-action-container">
           <div class="schade-ow-edit-box">
             <p class="nieuwText" *ngIf="!schademelding.hasBeenViewed"><b>NIEUW</b></p>
@@ -382,7 +384,7 @@
         <td class="schadeMinimuWidth" >
           <p class="infoTextSchadeOw"><b>Schademelding</b></p>
           <p class="infoTextSchadeOw"><i class="fa-solid fa-calendar-days faIcon"></i>{{schademelding.date | date: 'dd/MM/yyyy'}}</p>
-          <p class="infoTextSchadeOw"><i class="fa-solid fa-user-pen faIcon"></i>{{schademelding.creator_user.name}}</p>
+          <p class="infoTextSchadeOw"><i class="fa-solid fa-user-plus faIcon"></i>{{schademelding.creator_user?.name}}</p>
           <p *ngIf="schademelding.tegenPartij" class="infoTextSchadeOw"><i class="fa-solid fa-building faIcon"></i>{{schademelding.tegenPartij}}</p>
         </td>
         <td class="schadeMinimuWidth" >
@@ -397,6 +399,8 @@
           <p *ngIf="schademelding.omschrijvingSchade" style="max-height: 160px !important; overflow-y:hidden" class="infoTextSchadeOw"><i class="fa-solid fa-comment faIcon"></i>{{schademelding.omschrijvingSchade}}</p>
         </td>
       </tr>
+
+
       <tr *ngIf="schademelding.isMeerwerk" class="item-box-schadeOw schademelding" [ngClass]="!schademelding.hasBeenViewed ? 'hasNotBeenViewBackOW': 'lightBlueBack'" >
         <td class="schade-action-container">
           <div class="schade-ow-edit-box">
@@ -412,6 +416,7 @@
         <td class="schadeMinimuWidth">
           <p class="infoTextSchadeOw"><b>Onvoorzien werk</b></p>
           <p class="infoTextSchadeOw"><i class="fa-solid fa-calendar-days faIcon"></i>{{schademelding.startDate | date: 'dd/MM/yyyy'}}</p>
+          <p *ngIf="schademelding.creator_user" class="infoTextSchadeOw"><i class="fa-solid fa-user-plus faIcon"></i>{{schademelding.creator_user?.name}}</p>
           <p class="infoTextSchadeOw"><i class="fa-solid fa-location-dot faIcon"></i>{{schademelding.huisNr? schademelding?.street + ' - ' : schademelding.street}}{{schademelding.huisNr}}</p>
         </td>
         <td class="schadeMinimuWidth">

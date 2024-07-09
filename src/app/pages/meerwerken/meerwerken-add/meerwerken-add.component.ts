@@ -120,6 +120,8 @@ export class MeerwerkenAddComponent implements OnInit {
     let meerwerk = this.meerwerkForm.value;
     if(this.newDate != null){
       meerwerk.startDate = this.newDate;
+    } else {
+      meerwerk.startDate = new Date();
     }
     if(this.currentMeerwerk._id == null){
       meerwerk._id = this.currentMeerwerk.id;
@@ -128,6 +130,7 @@ export class MeerwerkenAddComponent implements OnInit {
     }
     meerwerk.group_id = this.group;
     meerwerk.company_id = this.companyId;
+    meerwerk.creator_user = this.apiService.userId;
     this.meerwerkSend = meerwerk;
     if(this.chosenImageList == null || this.chosenImageList.length === 0){
       this.apiService.updateMeerwerk(this.meerwerkSend).subscribe(x => {
