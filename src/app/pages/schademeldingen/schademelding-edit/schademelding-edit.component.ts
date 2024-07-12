@@ -169,6 +169,8 @@ export class SchademeldingEditComponent implements OnInit, OnDestroy {
       tijdstipUur: this.schademelding.date == null ? 8 : +new Date(this.schademelding.date).getHours(),
       tijdstipMinuten: this.schademelding.date == null ? 0 : +new Date(this.schademelding.date).getMinutes(),
       werf: this.schademelding.group_id?.rbProjectNaam != null? this.schademelding.group_id.rbProjectNaam : '',
+      gemeente_en_straat: this.schademelding.gemeente_en_straat,
+      huisnr_of_nummer: this.schademelding.huisnr_of_nummer,
       schadeGerichtAan: this.schademelding.schadeGerichtAan,
       schadeGerichtAanAndereString: this.schademelding.schadeGerichtAanAndereString,
       schadeDoorWie: this.schademelding.schadeDoorWie,
@@ -243,6 +245,9 @@ export class SchademeldingEditComponent implements OnInit, OnDestroy {
         data._id = this._id;
       }
       data.created = this.schademelding.created;
+      if(data.oorzaakSchade === 'Niet van toepassing'){
+        data.oorzaakSchade = null;
+      }
       if(data.date != null){
         data.date = new Date(data.date);
         if(data.tijdstipUur != null && data.tijdstipMinuten != null){

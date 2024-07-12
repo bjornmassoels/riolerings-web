@@ -69,24 +69,16 @@
         <input class="inputField"  nbInput type="text" formControlName="tegenPartij" placeholder="Partij.." />
       </div>
 
+
       <div class="flexColumn">
-        <p class="inputText">
-          <nb-icon icon="tree-city" pack="fa" style="font-size: 16px; margin-right: 4px;"></nb-icon>
-          Plaats van de werken
-        </p>
-        <nb-select class="inputField"  placeholder="Bescherm door.." formControlName="plaatsVanWerken" >
-          <nb-option value="Centrum">Centrum</nb-option>
-          <nb-option value="Woonwijk">Woonwijk</nb-option>
-          <nb-option value="Open veld">Open veld</nb-option>
-          <nb-option value="Rijweg">Rijweg</nb-option>
-          <nb-option value="Berm">Berm</nb-option>
-          <nb-option value="Andere">Andere</nb-option>
-        </nb-select>
-        <p *ngIf="editForm.get('plaatsVanWerken').value === 'Andere'" style="margin-top: 7px;" class="inputText">
-          <nb-icon icon="tree-city" pack="fa" style="font-size: 16px; margin-right: 4px; "></nb-icon>
-          Andere plaats van werken
-        </p>
-        <input *ngIf="editForm.get('plaatsVanWerken').value === 'Andere'" class="inputField"  nbInput type="text" placeholder="Plaats van werken.." formControlName="plaatsVanWerkenAndereString" />
+        <p class="inputText"><nb-icon icon="location-dot" pack="fa" style="font-size: 16px;"></nb-icon> Gemeente & straat</p>
+        <input class="inputField"  nbInput type="text" formControlName="gemeente_en_straat" placeholder="Gemeente & straat.." />
+      </div>
+
+
+      <div class="flexColumn">
+        <p class="inputText"><nb-icon icon="hashtag" pack="fa" style="font-size: 16px;"></nb-icon> Huisnummer/nummer</p>
+        <input class="inputField"  nbInput type="text" formControlName="huisnr_of_nummer" placeholder="Huisnummer/nummer.." />
       </div>
 
       <div *ngIf="photosGetter().length === 1" class="upload-container-empty">
@@ -133,6 +125,26 @@
       </div>
 
 
+      <div class="flexColumn">
+        <p class="inputText">
+          <nb-icon icon="tree-city" pack="fa" style="font-size: 16px; margin-right: 4px;"></nb-icon>
+          Plaats van de werken
+        </p>
+        <nb-select class="inputField"  placeholder="Bescherm door.." formControlName="plaatsVanWerken" >
+          <nb-option value="Centrum">Centrum</nb-option>
+          <nb-option value="Woonwijk">Woonwijk</nb-option>
+          <nb-option value="Open veld">Open veld</nb-option>
+          <nb-option value="Rijweg">Rijweg</nb-option>
+          <nb-option value="Berm">Berm</nb-option>
+          <nb-option value="Andere">Andere</nb-option>
+        </nb-select>
+        <p *ngIf="editForm.get('plaatsVanWerken').value === 'Andere'" style="margin-top: 7px;" class="inputText">
+          <nb-icon icon="tree-city" pack="fa" style="font-size: 16px; margin-right: 4px; "></nb-icon>
+          Andere plaats van werken
+        </p>
+        <input *ngIf="editForm.get('plaatsVanWerken').value === 'Andere'" class="inputField"  nbInput type="text" placeholder="Plaats van werken.." formControlName="plaatsVanWerkenAndereString" />
+      </div>
+
     </div>
     <div class="groupColDiv">
 
@@ -146,6 +158,7 @@
       <div class="flexColumn">
         <p class="inputText"><nb-icon icon="circle-question" pack="fa" style="font-size: 16px;"></nb-icon> Oorzaak van de schade</p>
         <nb-select class="inputField"  placeholder="Selecteer oorzaak" formControlName="oorzaakSchade">
+          <nb-option value="Niet van toepassing">Niet van toepassing</nb-option>
           <nb-option value="Ligging niet vermeld">Ligging niet vermeld</nb-option>
           <nb-option value="Onvoldoende opgezocht">Onvoldoende opgezocht</nb-option>
           <nb-option value="Ligt te ondiep">Ligt te ondiep</nb-option>

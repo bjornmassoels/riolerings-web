@@ -17,6 +17,11 @@ export class Schademelding {
   ploegbaas: User;
   tegenPartij: string;
   hasBeenViewed: boolean;
+  xCoordGeoLocationFirsPhoto: number;
+  yCoordGeoLocationFirsPhoto: number;
+
+  gemeente_en_straat : string;
+  huisnr_of_nummer: string;
 
   //schade
   schadeGerichtAan: string;
@@ -61,7 +66,6 @@ export class Schademelding {
 
   //velden van meerwerk voor in zelfde lijst te kunnen loopen
   public projectNaam: string;
-  public gemeente: string;
   public street: string;
   public huisNr: string;
   public opmerking: string;
@@ -73,8 +77,6 @@ export class Schademelding {
   activiteit: string;
   public countEmployees: number;
   id: string;
-  xCoordGeoLocationFirsPhoto: number;
-  yCoordGeoLocationFirsPhoto: number;
   updated: Date;
 
   constructor() {

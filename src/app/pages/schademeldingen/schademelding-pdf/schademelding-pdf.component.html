@@ -7,6 +7,7 @@
     <p>Projectnummer: <span style="margin-right: 50px;" id="werfNaam">{{NullToEmptyStr(schademelding.group_id?.aannemerProjectNr)}}</span>   Project: <span id="werfNummer">{{schademelding.group_id?.rbProjectNaam}}</span></p>
     <p><nb-icon icon="user" pack="fa" class="smallIcon" ></nb-icon>Werfleider: <span style="padding-right: 50px" id="date">{{NullToEmptyStr(schademelding.group_id?.aannemerWerfleider)}}</span><i class="fa-solid fa-clock smallIcon"></i>Tijdstip ongeval: <span *ngIf="schademelding.date" id="created">{{('0' + schademelding.date.getDate()).slice(-2)}}/{{('0' + (schademelding.date.getMonth() + 1)).slice(-2)}}/{{('0' + schademelding.date.getFullYear()).slice(-2)}} -
       {{('0' + schademelding.date.getHours()).slice(-2)}}:{{('0' + schademelding.date.getMinutes()).slice(-2)}}</span></p>
+    <p><nb-icon icon="location-dot" pack="fa" class="smallIcon" ></nb-icon>Locatie: <span>{{schademelding.gemeente_en_straat}}{{schademelding.huisnr_of_nummer && schademelding.huisnr_of_nummer !== ''? ' - ' + schademelding.huisnr_of_nummer: ''}}</span></p>
     <p *ngIf="schademelding.tegenPartij"><i class="fa-solid fa-building smallIcon"></i>Betrokken partij: <span id="tegenPartij">{{schademelding.tegenPartij}}</span></p>
   </div>
   <div class="boxColumn">

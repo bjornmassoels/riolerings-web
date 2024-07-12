@@ -416,6 +416,10 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
               if (this.newDate != null) {
                 this.currentProject.startDate = realSlokkerProject.startDate;
               }
+              //change voor mogelijks pdf generatie
+              this.currentProject.index = this.slokkerProjectSend.index;
+              this.currentProject.huisNr = this.slokkerProjectSend.huisNr;
+              this.currentProject.street = this.slokkerProjectSend.street;
               this.currentProject.createdDate = new Date(this.currentProject.created);
               if(this.photos.length < 6){
                 this.photos.push(null);
@@ -449,6 +453,10 @@ export class SlokkerprojectEditComponent implements OnInit,OnDestroy {
       if(this.newDate != null){
         this.currentProject.startDate = this.newDate;
       }
+      //change voor mogelijks pdf generatie
+      this.currentProject.index = this.slokkerProjectSend.index;
+      this.currentProject.huisNr = this.slokkerProjectSend.huisNr;
+      this.currentProject.street = this.slokkerProjectSend.street;
       this.hasChangedValue = false;
       this.newDate = null;
     }, error => {
