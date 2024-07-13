@@ -1035,12 +1035,10 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
 
           this.socket.on('progress', (data: number) => {
             this.progress = data;
-            console.log('progress' + data)
             this.pdfProgressBlocks = this.pdfProgressBlocks.filter(x => x !== data);
           });
 
           this.socket.on('completed', (url) => {
-            console.log('completed' + url)
             this.isDownloading = true;
             this.progress = 0;
             Pace.stop();
@@ -1422,7 +1420,6 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
   }
 
   filterOnStreetAutoComplete(street) {
-    console.log(street)
     this.formService.previousStreet = street;
     this.filterStraatText = street;
     this.checkIfSelectedAansluitingen();

@@ -89,7 +89,6 @@ export class SchademeldingEditComponent implements OnInit, OnDestroy {
     this._id = this.route.snapshot.paramMap.get('id');
     this.group_id = this.route.snapshot.paramMap.get('groupid');
     this.group = this.formService.currentGroup;
-    console.log('id' + this.group_id)
     if(this._id === 'null'){
       this.isNewSchademelding = true;
     } else {
@@ -215,7 +214,6 @@ export class SchademeldingEditComponent implements OnInit, OnDestroy {
 
     this.isLoaded = true;
 
-    console.log(this.schademelding)
     if(!this.isNewSchademelding && !this.schademelding.hasBeenViewed){
       this.apiService.updateSchademeldingHasBeenViewed(this.schademelding._id).subscribe(x => {
         this.schademelding.hasBeenViewed = true;
@@ -280,7 +278,6 @@ export class SchademeldingEditComponent implements OnInit, OnDestroy {
         data.created = this.schademelding.created;
         data.creator_user = this.schademelding.creator_user;
       }
-      console.log(data)
       if(this.chosenImageList != null && this.chosenImageList.length > 0){
         this.schademelding = data;
         this.schademelding.photos = this.schademelding.photos.filter(x => x != null && x.src != null && x.src !== '');
@@ -329,7 +326,6 @@ export class SchademeldingEditComponent implements OnInit, OnDestroy {
           finalize(() => {
             fileRef.getDownloadURL().subscribe(async (url) => {
               if (url) {
-                console.log(url)
                 counter++;
                 let index = this.chosenImageListIndex[i];
                 this.schademelding.photos[index] = new Photo();
