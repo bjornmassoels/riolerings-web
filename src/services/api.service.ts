@@ -775,7 +775,8 @@ export class ApiService {
         'Content-Type': 'application/json',
         Authorization: this._token,
         companyid: this.companyid,
-        groupid: _id
+        groupid: _id,
+        userid: this.userId
       },
     };
 
