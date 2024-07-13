@@ -1485,7 +1485,8 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
   }
 
   async generatePDFoWAndSchademeldingen() {
-
+    this.toastrService.warning('Deze functie is dit weekend niet beschikbaar wegens onderhoud. Probeer het later opnieuw.', 'Even geduld', { duration: 4000 });
+      /*
     let owAndSchademeldingen = this.owAndSchademeldingList.filter((x) => {
       return x.isSelected;
     }) ;
@@ -1543,6 +1544,6 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
           'Selecteer aansluitingen',
         );
       }
-    }
+    }*/
   }
 }
