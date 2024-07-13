@@ -13,6 +13,7 @@ import { Router } from '@angular/router';
 import { NbAuthService } from '@nebular/auth';
 import { UpdatePopupDialogComponent } from '../../../pages/update-popup-dialog/update-popup-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import moment from 'moment';
 
 @Component({
   selector: 'ngx-header',
@@ -46,6 +47,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   currentTheme = 'default';
 
   userMenu = [{ title: 'Profile' }, { title: 'Log out' }];
+  isRecentNewUpdate: boolean = false;
+  updateDate: Date = new Date(2024,6,13,0,0)
 
   constructor(
     private sidebarService: NbSidebarService,
@@ -84,6 +87,15 @@ export class HeaderComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$),
       )
       .subscribe((themeName) => (this.currentTheme = themeName));
+
+    //use moment and look if its older than 1 month
+    let dateWithOneMonth = moment(this.updateDate).add(1, 'months').toDate();
+
+    if(dateWithOneMonth > new Date()){
+      this.isRecentNewUpdate = true;
+    } else {
+      this.isRecentNewUpdate = false;
+    }
   }
 
   ngOnDestroy() {
