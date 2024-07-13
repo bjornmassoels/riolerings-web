@@ -2,19 +2,25 @@
   <button  mat-raised-button class="form-button" (click)="goToPrevious()">
     Terug
   </button>
-  <button *ngIf="index !== -1" [disabled]="isFirst" mat-raised-button class="form-button" (click)="onPreviousClick()">
-    Vorige
-  </button>
-  <button *ngIf="index !== -1" [disabled]="isLast" mat-raised-button class="form-button" (click)="onNextClick()">
-    Volgende
-  </button>
+  <div *ngIf="index != null"  class="navigation-row">
+    <button *ngIf="index !== -1" [disabled]="isFirst" mat-raised-button class="nav-button" (click)="onPreviousClick()">
+      <i class="fa-solid fa-left-long navIcon"></i>
+    </button>
+    <p class="boldText" *ngIf="index !== -1">{{index + 1}}/{{totalProjectCount}}</p>
+    <button *ngIf="index !== -1" [disabled]="isLast" mat-raised-button class="nav-button" (click)="onNextClick()">
+      <i class="fa-solid fa-right-long navIcon"></i>
+    </button>
+  </div>
   <button (click)="onSubmitForm()" mat-raised-button class="form-button-blue" color="primary" type="submit">
     Opslaan
   </button>
-  <p class="boldText" *ngIf="index !== -1">{{index + 1}}/{{totalProjectCount}}</p>
   <button (click)="goToView()"  mat-raised-button class="form-button3" >
     Ga naar view
   </button>
+  <nb-spinner *ngIf="isSaving" class="opslaan-spinner" size="giant" [message]="'Opslaan..'" status="info"></nb-spinner>
+  <button style="width: auto; margin-left: 70px" mat-raised-button class="form-button2" (click)="generatePDF()"><div class="divInsideButton">PDF 	<mat-icon class="downloadImage">cloud_download</mat-icon></div></button>
+  <button  mat-raised-button class="delete-button" color="warn" type="button"
+           (click)="onDeleteProject()"><i style="margin-left: 2px" class="fa-solid fa-trash-can"></i></button>
 </div>
 
 <mat-card id="content" *ngIf="isLoaded" class="project-card">
@@ -116,9 +122,16 @@
       <div class='flexWrapper'>
       <div style='width:50%' *ngIf="heeftPloegen == null || !heeftPloegen ">
         <div class="data-container4">
-          <p style='padding-left: 5px !important;' class="label-text">Buizen</p>
+          <p style='padding-left: 5px !important;' class="label-text">Buis hor.</p>
           <div class="smallRow">
             <input nbInput class="smallInput2 margT" type="number" formControlName="buis" />
+            <p style='margin-left:4px !important;' class="data-text margL">meter</p>
+          </div>
+        </div>
+        <div class="data-container4">
+          <p style='padding-left: 5px !important;' class="label-text">Buis vert.</p>
+          <div class="smallRow">
+            <input nbInput class="smallInput2 margT" type="number" formControlName="buisVert" />
             <p style='margin-left:4px !important;' class="data-text margL">meter</p>
           </div>
         </div>
@@ -147,10 +160,19 @@
       <div  style='width:50%; margin-top:-5px;' *ngIf="heeftPloegen != null && heeftPloegen ">
         <p class="section-title3">Fase 1 & Fase 2</p>
         <div class="data-container4">
-          <p style='padding-left: 5px !important;' class="label-text">Buizen</p>
+          <p style='padding-left: 5px !important;' class="label-text">Buis hor.</p>
           <div class="smallRow">
             <input nbInput class="smallInput3 margT" type="number" formControlName="buis" />
             <input nbInput class="smallInput3 margT" type="number" formControlName="buis2" />
+            <p style='margin-left:4px !important;' class="data-text margL">meter</p>
+          </div>
+        </div>
+
+        <div class="data-container4">
+          <p style='padding-left: 5px !important;' class="label-text">Buis vert.</p>
+          <div class="smallRow">
+            <input nbInput class="smallInput3 margT" type="number" formControlName="buisVert" />
+            <input nbInput class="smallInput3 margT" type="number" formControlName="buisVert2" />
             <p style='margin-left:4px !important;' class="data-text margL">meter</p>
           </div>
         </div>
@@ -179,11 +201,20 @@
           </div>
         </div>
       </div>
-        <div style='width:47%;padding-left: 35px;margin-top:20px;' class="insideRow2">
-          <p class="label-text">Diameter buis</p>
-          <div class="smallRow">
-            <input nbInput class="smallInput2" type="number" formControlName="diameter" />
-            <p class="data-text margL">mm</p>
+        <div style='width:45%; margin-left: 5%'>
+          <div class="data-container4">
+            <p style='padding-left: 5px !important;' class="label-text">Diameter buis</p>
+            <div class="smallRow">
+              <input nbInput class="smallInput2" type="number" formControlName="diameter" />
+              <p style='margin-left:4px !important;' class="data-text margL">mm</p>
+            </div>
+          </div>
+          <div class="data-container4">
+            <p style='padding-left: 5px !important;' class="label-text">Type kolk</p>
+            <mat-button-toggle-group class="custom-toggle-group" formControlName="typeKolk" >
+              <mat-button-toggle class="custom-toggle" value="Beton">Beton</mat-button-toggle>
+              <mat-button-toggle class="custom-toggle" value="Gietijzer">Gietijzer</mat-button-toggle>
+            </mat-button-toggle-group>
           </div>
         </div>
       </div>
@@ -244,7 +275,7 @@
           </div>
         </div>
         <div *ngIf="this.group.slokkerSettings.andere" class="insideRow2">
-          <p class="label-text">Andere</p>
+          <p style="margin-right: 10px;" class="label-text">Andere</p>
           <input nbInput class="normalInput" type="text" formControlName="andere" />
         </div>
       </div>
@@ -284,9 +315,14 @@
         <p class="label-text">Infiltratiekolk</p>
         <nb-toggle class='toggle' formControlName="infiltratieKlok" status="primary"></nb-toggle>
       </div>
-      <div class="data-container4" *ngIf="this.group.slokkerSettings.aansluitingOpengracht">
-        <p class="label-text">Kolk aansluiting op opengracht</p>
-        <nb-toggle class='toggle' formControlName="aansluitingOpengracht" status="primary"></nb-toggle>
+      <div class="data-container4">
+        <p class="label-text">Kolk aansluiting op vrije uitstroom</p>
+        <nb-select style='width: 180px !important;' class="normalInput" formControlName="aansluitingVrijeUitstroom">
+          <nb-option  value="nee" >Nee</nb-option>
+          <nb-option  value="bufferbekken" >Bufferbekken</nb-option>
+          <nb-option  value="gracht" >Gracht</nb-option>
+          <nb-option  value="wadi" >Wadi</nb-option>
+        </nb-select>
       </div>
       <div class="borderBlack" *ngIf="this.group.slokkerSettings.plaatsAansluiting">
         <img class="rioolImage" src="assets/images/gradenOpRiool.png">
@@ -305,22 +341,53 @@
           </div>
         </div>
       </div>
+      <div *ngIf="group.isProjectForAWV" style='margin-top:5px;' class='flexWrapper'>
+        <div class='insideRow2'>
+          <p class="lambertTitle">Lambert coördinaten KOLK<small style="color:blue"><br>(Verplicht bij projecten AWV)</small></p>
+        </div>
+        <div class="insideRow2">
+          <p class="label-text">X-coord</p>
+          <input class="lambertInput" nbInput type="text" formControlName="xCoord" />
+        </div>
+        <div class="insideRow2">
+          <p class="label-text">Y-coord</p>
+          <input class="lambertInput" nbInput type="text" formControlName="yCoord" />
+        </div>
+        <div class="insideRow2">
+          <p class="label-text">Z-coord</p>
+          <input class="lambertInput" nbInput type="text" formControlName="zCoord" />
+        </div>
+      </div>
+      <hr style="width:100%">
+      <div *ngIf="group.isProjectForAWV" style='margin-top:5px;' class='flexWrapper'>
+        <div class='insideRow2'>
+          <p class="lambertTitle">Lambert coördinaten AANSLUITING<small style="color:blue"><br>(Verplicht bij projecten AWV)</small></p>
+        </div>
+        <div class="insideRow2">
+          <p class="label-text">X-coord</p>
+          <input class="lambertInput" nbInput type="text" formControlName="x2Coord" />
+        </div>
+        <div class="insideRow2">
+          <p class="label-text">Y-coord</p>
+          <input class="lambertInput" nbInput type="text" formControlName="y2Coord" />
+        </div>
+        <div class="insideRow2">
+          <p class="label-text">Z-coord</p>
+          <input class="lambertInput" nbInput type="text" formControlName="z2Coord" />
+        </div>
+      </div>
     </div>
 
   </div>
 
   <div  class="image-container">
-    <p style="font-size: 14px;font-weight:600;width:fit-content;position: relative;top:-8px;left:20px;margin-bottom: -12px">*Het is nu mogelijk om foto's te verslepen
-      en op een andere plaats zetten</p>
-    <div style='margin-bottom:7px' class="image-header">
       <p class="section-title">Foto's kolk</p>
-
-    </div>
     <div cdkDropListGroup class="photos-container">
       <div  cdkDropList [cdkDropListData]="i"  *ngFor="let photo of photos; let i = index" [ngClass]="photo == null && !getCorrespondingTemporaryImage(i) ? 'smallFotoColumn' : ''" class="fotoColumn">
         <ng-container *ngIf="photos.length < 7">
         <div  class="innerColumn">
-        <input *ngIf="photo != null" (click)="deleteFoto(i)" type="button" value="Verwijder" class="deleteButton">
+          <button *ngIf="photo != null"  (click)="deleteFoto(i)" type="button"
+                  class="deleteButton2"><i style="color:white;padding-left: 2px;" class="fa-solid fa-trash-can"></i></button>
         <p class="fotoText" *ngIf="i === 0">1. boring of opening van aansluiting op hoofdriool</p>
         <p class="fotoText5" *ngIf="i === 1">2. na plaatsing fundering, buizen, hulpstukken en HA-putje, vanaf de aansluitopening richting putje,indien
           niet alle hulpstukken te zien zijn, eventueel ook foto vanuit omgekeerd standpunt</p>
@@ -340,7 +407,31 @@
       </div>
     </div>
   </div>
+    <div *ngIf="group.isProjectForAWV" style="width:900px !important;"  class="image-container">
+      <p class="section-title">Schematische voorstelling kolk (schets) <small style="color:blue">(Verplicht bij projecten AWV)</small></p>
+      <div cdkDropListGroup class="photos-container">
+        <div  cdkDropList [cdkDropListData]="i"  *ngFor="let photo of schetsPhotos; let i = index" [ngClass]="photo == null && !getCorrespondingTemporaryImageSchets(i) ? 'smallFotoColumnSchets' : ''" class="fotoColumnSchets">
+          <ng-container *ngIf="i < 3">
+            <div  class="innerColumn">
+              <button *ngIf="photo != null"  (click)="deleteFotoSchets(i)" type="button"
+                      class="deleteButton2"><i style="color:white;padding-left: 2px;" class="fa-solid fa-trash-can"></i></button>
+              <p class="fotoText6" *ngIf="i === 0">1. Dwarsdoorsnede met aanduiding van referentiepunt (boordstenen/woning/greppel/FP/VP/rijweg….) + bochten in graden, lengtes,... incl. aansluitpunt</p>
+              <p class="fotoText6" *ngIf="i === 1">2. Bovenaanzicht met aanduiding van referentiepunt (boordstenen/woning/greppel/FP/VP/rijweg….) + bochten in graden, lengtes,... incl. aansluitpunt</p>
 
+              <img  cdkDrag [cdkDragData]="i" (cdkDragDropped)="enteredSchets($event)" *ngIf="photo" [src]="photo" (click)="imagePopUp(photo)" class="photo" name="photo">
+
+              <p *ngIf="!photo && !getCorrespondingTemporaryImageSchets(i)" style="margin-top: 30px;font-size: 18px;font-weight: 600">Geen foto</p>
+              <div cdkDrag [cdkDragData]="i" (cdkDragDropped)="entered($event)" *ngIf="photo == null && !getCorrespondingTemporaryImageSchets(i)" class="upload-container-empty">
+                <h3 style="font: 400 16px / 28px Roboto, sans-serif;">Voeg foto toe</h3>
+                <input type="file" name="file" (change)="onFileSelectSchets($event,i)"
+                       accept=".png,.jpg,.jpeg,.tiff" class="uploadButton" />
+              </div>
+            </div>
+            <p style="width:100%;text-align:center;margin-top:12px;font-size:17px;font-weight:600" *ngIf="checkIfIsTemporaryImageSchets(i)">Klaar om op te slaan</p>
+          </ng-container>
+        </div>
+      </div>
+    </div>
 
 
   </form>

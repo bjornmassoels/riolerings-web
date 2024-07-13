@@ -13,6 +13,7 @@ import { User } from 'models/user';
 import {AngularFireStorage} from "@angular/fire/compat/storage";
 import { HasChangedPopupComponent } from '../../has-changed-popup/has-changed-popup.component';
 import { MatDialog } from '@angular/material/dialog';
+import { Waterafvoer } from '../../../../models/waterafvoer';
 
 
 @Component({
@@ -49,12 +50,12 @@ export class SlokkerprojectAddComponent implements OnInit {
   selectedPhoto = false;
   chosenImageList: any[] = [];
   chosenImageListIndex: number [] = [];
-  private group: Group;
+  group: Group;
 
   public company: Company;
   public companyId;
   hasChangedValue: boolean = false;
-
+  isSaving: boolean = false;
   constructor(
     private formBuilder: UntypedFormBuilder,
     private apiService: ApiService,
@@ -67,6 +68,7 @@ export class SlokkerprojectAddComponent implements OnInit {
   ) {
     route.params.subscribe((val) => {
       this.isLoaded = false;
+      this.isSaving = false;
       this._id = this.route.snapshot.paramMap.get('id');
         this.loadData();
     });
@@ -125,6 +127,7 @@ export class SlokkerprojectAddComponent implements OnInit {
         slokker.plaatsAansluiting = "180";
         slokker.diameter = "160";
         slokker.tBuisStuk = 'aanboring';
+        slokker.aansluitingVrijeUitstroom = 'nee';
         this.currentProject.photos = new Array(3).fill(null);
         this.currentProject.slokker = slokker;
         if(this.currentStreet !== ''){
@@ -136,7 +139,9 @@ export class SlokkerprojectAddComponent implements OnInit {
           opmerking: this.currentProject.opmerking,
           index: this.currentProject.index,
           buis: this.currentProject.slokker.buis,
-          bocht: this.group.bochtenInGraden? null : this.currentProject.slokker.bocht,
+          buisVert: this.currentProject.slokker.buisVert,
+          typeKolk: this.currentProject.slokker.typeKolk,
+          bocht: this.group.bochtenInGraden ? null : this.currentProject.slokker.bocht,
           gradenBocht45: !this.group.bochtenInGraden ? null : this.currentProject.slokker.gradenBocht45,
           gradenBocht90: !this.group.bochtenInGraden ? null : this.currentProject.slokker.gradenBocht90,
           reductie: this.currentProject.slokker.reductie,
@@ -153,10 +158,16 @@ export class SlokkerprojectAddComponent implements OnInit {
           andere: this.currentProject.slokker.andere,
           buisType: 'PVC',
           infiltratieKlok: this.currentProject.slokker.infiltratieKlok,
-          aansluitingOpengracht: this.currentProject.slokker.aansluitingOpengracht,
+          aansluitingVrijeUitstroom: this.currentProject.slokker.aansluitingVrijeUitstroom,
           plaatsAansluiting: this.currentProject.slokker.plaatsAansluiting,
           diameter: this.currentProject.slokker.diameter,
-          tBuisStuk: this.currentProject.slokker.tBuisStuk
+          tBuisStuk: this.currentProject.slokker.tBuisStuk,
+          xCoord: this.currentProject.slokker.xCoord,
+          yCoord: this.currentProject.slokker.yCoord,
+          zCoord: this.currentProject.slokker.zCoord,
+          x2Coord: this.currentProject.slokker.x2Coord,
+          y2Coord: this.currentProject.slokker.y2Coord,
+          z2Coord: this.currentProject.slokker.z2Coord,
         });
         this.uploadForm = this.formBuilder.group({
           file: ['']
@@ -184,12 +195,15 @@ export class SlokkerprojectAddComponent implements OnInit {
     }
   }
   onSubmitForm() {
+    if(this.isSaving)return;
+    this.isSaving = true;
     let slokkerProject = this.slokkerForm.value;
 
       // slokker initialisatie
       let slokker = new Slokkers();
       slokker.diameter = slokkerProject.diameter;
       slokker.buis = slokkerProject.buis;
+      slokker.buisVert = slokkerProject.buisVert;
       if(!this.group.bochtenInGraden){
         slokker.bocht = slokkerProject.bocht;
       } else {
@@ -210,9 +224,16 @@ export class SlokkerprojectAddComponent implements OnInit {
       slokker.andere = slokkerProject.andere;
       slokker.buisType = 'PVC';
       slokker.infiltratieKlok = slokkerProject.infiltratieKlok;
-      slokker.aansluitingOpengracht = slokkerProject.aansluitingOpengracht;
+      slokker.aansluitingVrijeUitstroom = slokkerProject.aansluitingVrijeUitstroom;
       slokker.plaatsAansluiting = slokkerProject.plaatsAansluiting;
       slokker.tBuisStuk = slokkerProject.tBuisStuk;
+      slokker.xCoord = slokkerProject.xCoord;
+      slokker.yCoord = slokkerProject.yCoord;
+      slokker.zCoord = slokkerProject.zCoord;
+      slokker.x2Coord = slokkerProject.x2Coord;
+      slokker.y2Coord = slokkerProject.y2Coord;
+      slokker.z2Coord = slokkerProject.z2Coord;
+      slokker.typeKolk = slokkerProject.typeKolk;
       slokker._id = this.currentProject.slokker._id;
 
       //project init
@@ -242,12 +263,16 @@ export class SlokkerprojectAddComponent implements OnInit {
     if(this.chosenImageList == null || this.chosenImageList.length === 0){
       this.apiService.createSlokkerProject(this.slokkerProjectSend, this._id).subscribe(x => {
         this.currentProject = null;
+        this.isSaving = false;
         this.hasChangedValue = false;
         this.chosenImageList = [];
         this.chosenImageListIndex = [];
         this.isLoaded = false;
         this.toastrService.success(slokkerProject.street + '- slokker + ' + slokkerProject.index + ' is aangemaakt', 'Succes!');
         this.loadData();
+      }, error => {
+        this.isSaving = false;
+        this.toastrService.danger('Er is iets misgegaan, probeer het later opnieuw', 'Mislukt!');
       });
     } else {
       this.uploadImages();
@@ -333,6 +358,7 @@ export class SlokkerprojectAddComponent implements OnInit {
                     this.toastrService.success(this.slokkerProjectSend.street + '- slokker + ' + this.slokkerProjectSend.index + ' is aangemaakt', 'Succes!');
                     this.currentProject = null;
                     this.chosenImageList = [];
+                    this.isSaving = false;
                     this.chosenImageListIndex = [];
                     this.hasChangedValue = false;
                     this.isLoaded = false;

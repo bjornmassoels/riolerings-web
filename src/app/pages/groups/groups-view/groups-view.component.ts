@@ -25,6 +25,9 @@ import { Slokkers } from '../../../../models/slokkers';
 import { GroupsViewPdfDownloadDialogComponent } from './groups-view-pdf-download-dialog/groups-view-pdf-download-dialog.component';
 import moment from 'moment';
 import { MatMenuTrigger } from '@angular/material/menu';
+import { Schademelding } from '../../../../models/schademelding';
+import { Meerwerk } from '../../../../models/meerwerk';
+import { NbBooleanInput } from '@nebular/theme/components/helpers';
 
 declare var Pace: any;
 
@@ -38,14 +41,16 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
   protected readonly Math = Math;
   showProjectDetails: boolean = false;
   public projectItem: Project = new Project();
+  protected readonly onclick = onclick;
+  selectEverythingOwAndSchade: boolean;
   public hasPreviousPage: boolean = false;
   public group: Group;
   public _id: string;
   usersBox: any;
   public projects: Array<Project> = [];
   public slokkerProjects: Array<Project> = [];
-  public meerwerkenList: Array<Project> = [];
-  public allProjects: Array<Project> = [];
+  public meerwerkenList: Array<Schademelding> = [];
+  public allProjects: Array<any> = [];
   public allProjectsBetweenDates: Array<Project> = [];
   public isOn: boolean;
   public selectAllCheckbox: any;
@@ -88,6 +93,12 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
   selectedWachtaansluitingenWithValue: number;
   selectedKolkenWithValue: number;
   populatedProjects: Project[];
+  schademeldingList: Schademelding[];
+  owAndSchademeldingList: Schademelding[];
+  isViewingOwAndSchademeldingList: boolean;
+  newSchademeldingCounter: number;
+  newMeerwerkCounter: number;
+
   constructor(
     private apiService: ApiService,
     private router: Router,
@@ -130,7 +141,9 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
       this.filterTussenDateStartString = this.formService.filterTussenDateStartString;
       this.filterTussenDateEndString = this.formService.filterTussenDateEndString;
     }
-
+    if(this.formService.isViewingOwAndSchademeldingList != null){
+      this.isViewingOwAndSchademeldingList = this.formService.isViewingOwAndSchademeldingList;
+    }
 
   }
 
@@ -139,6 +152,10 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
     this.filterStraatText = '';
     this.isDownloading = false;
     this.selectEverything = false;
+    this.selectEverythingOwAndSchade = false;
+    this.isViewingOwAndSchademeldingList = false;
+    this.newMeerwerkCounter = 0;
+    this.newSchademeldingCounter = 0;
     this.dateSorteer = 'Afwerkingsdatum';
     this.allStreetNames = [];
     this.apiService.getGroupByIdLighterVersion(groupId).subscribe(async (x) => {
@@ -200,19 +217,60 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
           this.allProjects.push(slokker);
         }
       }
-      this.meerwerkenList = this.group.meerwerkList as Project[];
-      if (this.meerwerkenList != null) {
+
+      this.meerwerkenList = this.group.meerwerkList as unknown as Schademelding[];
+      if (this.meerwerkenList != null && this.meerwerkenList.length > 0) {
         for (let meerwerk of this.meerwerkenList) {
           meerwerk.createdDate = new Date(meerwerk.created);
           if(meerwerk.updated != null)meerwerk.updated = new Date(meerwerk.updated);
           if (meerwerk.startDate != null) {
             meerwerk.startDate = new Date(meerwerk.startDate);
           }
+          meerwerk.photos = meerwerk.photos.filter(x => x != null);
+
+          if(!meerwerk.hasBeenViewed){
+            this.newMeerwerkCounter++;
+          }
           meerwerk.isMeerwerk = true;
           meerwerk.isSelected = false;
-          this.allProjects.push(meerwerk);
+          meerwerk.isSchademelding = false;
         }
+      } else {
+        this.meerwerkenList = [];
       }
+      this.schademeldingList = this.group.schademeldingList as Schademelding[];
+      if (this.schademeldingList != null && this.schademeldingList.length > 0) {
+        for (let schademelding of this.schademeldingList) {
+          schademelding.createdDate = new Date(schademelding.created);
+          if(schademelding.date)schademelding.date = new Date(schademelding.date);
+          schademelding.isMeerwerk = false;
+          schademelding.isSelected = false;
+          schademelding.isSchademelding = true;
+          if(!schademelding.hasBeenViewed){
+            this.newSchademeldingCounter++;
+          }
+        }
+      } else {
+        this.schademeldingList = [];
+      }
+      this.owAndSchademeldingList = [...this.schademeldingList, ...this.meerwerkenList];
+      this.owAndSchademeldingList.sort((a, b) => {
+        let aDate = a.isMeerwerk? a.startDate : a.date;
+        let bDate = b.isMeerwerk? b.startDate : b.date;
+        if(aDate == null){
+          return 1;
+        }
+        if(bDate == null){
+          return -1;
+        }
+        if(aDate.getTime() < bDate.getTime()){
+          return 1;
+        }
+        if(aDate.getTime() > bDate.getTime()){
+          return -1;
+        }
+      });
+      this.formService.owAndSchademeldingList = this.owAndSchademeldingList;
       this.searchAllProjectsList = this.allProjects;
       this.formService.lastProjects = this.allProjects;
       this.currentProject = new Project();
@@ -239,18 +297,33 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
       this.isOn = true;
       Pace.stop();
       await this.delay(50);
-      if (this.formService.previousIndex != null) {
+      if (this.formService.previousIndex != null || this.formService.previousIndexScroll != null) {
         let behavior: string = 'auto';
-        const rows = document.getElementsByClassName("scroll");
-        setTimeout(() => {
-          if(rows[this.formService.previousIndex] != null){
-            rows[this.formService.previousIndex].scrollIntoView({
-              behavior: <ScrollBehavior>behavior.toString(),
-              block: 'center'
-            });
-            this.formService.previousIndex = null;
-          }
-        }, 10);
+        let rows;
+        if(this.isViewingOwAndSchademeldingList){
+          rows = document.getElementsByClassName("schademelding");
+          setTimeout(() => {
+            if(rows[this.formService.previousIndexScroll] != null){
+              rows[this.formService.previousIndexScroll].scrollIntoView({
+                behavior: <ScrollBehavior>behavior.toString(),
+                block: 'center'
+              });
+              this.formService.previousIndexScroll = null;
+            }
+          }, 10);
+        } else {
+          rows = document.getElementsByClassName("scroll");
+          setTimeout(() => {
+            if(rows[this.formService.previousIndex] != null){
+              rows[this.formService.previousIndex].scrollIntoView({
+                behavior: <ScrollBehavior>behavior.toString(),
+                block: 'center'
+              });
+              this.formService.previousIndex = null;
+            }
+          }, 10);
+        }
+
       }
       this.formService._allProjects = this.allProjects;
     });
@@ -374,7 +447,11 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
   }
 
   checkIfHasSelected(){
+    if(!this.isViewingOwAndSchademeldingList){
       return this.selectedHuisaansluitingen || this.selectedWachtaansluitingen || this.selectedKolken;
+    } else {
+       return this.owAndSchademeldingList?.filter(x => x.isSelected).length > 0;
+    }
   }
 
   async sortByStreet() {
@@ -588,9 +665,7 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
       this.formService.previousPage.push('/pages/groupview/' + this._id);
       if (project.isSlokker) {
         this.router.navigate(['/pages/slokkerprojectview', project._id]);
-      } else if (project.isMeerwerk) {
-        this.router.navigate(['/pages/meerwerkview', project._id]);
-      } else {
+      }else {
         this.router.navigate(['/pages/projectview', project._id]);
       }
     }
@@ -605,9 +680,7 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
       this.formService.previousPage.push('/pages/groupview/' + this._id);
       if (project.isSlokker) {
         this.router.navigate(['/pages/slokkerprojectedit', project._id]);
-      } else if (project.isMeerwerk) {
-        this.router.navigate(['/pages/meerwerkedit', project._id]);
-      } else {
+      }  else {
         this.router.navigate(['/pages/projectedit', project._id]);
       }
     }
@@ -1259,6 +1332,8 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
   checkHasKolk(kolk: Slokkers) {
     if (kolk == null || ((kolk.buis == null || kolk.buis === 0 || kolk.buis.toString() === '') &&
       (kolk.buis2 == null || kolk.buis2 === 0 || kolk.buis2.toString() === '') &&
+      (kolk.buisVert == null || kolk.buisVert === 0 || kolk.buisVert.toString() === '') &&
+      (kolk.buisVert2 == null || kolk.buisVert2 === 0 || kolk.buisVert2.toString() === '') &&
       (kolk.bocht == null || kolk.bocht === 0 || kolk.bocht.toString() === '') &&
       (kolk.bocht2 == null || kolk.bocht2 === 0 || kolk.bocht2.toString() === '') &&
       (kolk.gradenBocht45 == null || kolk.gradenBocht45 === 0 || kolk.gradenBocht45.toString() === '') &&
@@ -1266,7 +1341,8 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
       (kolk.gradenBocht45Fase2 == null || kolk.gradenBocht45Fase2 === 0 || kolk.gradenBocht45Fase2.toString() === '') &&
       (kolk.gradenBocht90Fase2 == null || kolk.gradenBocht90Fase2 === 0 || kolk.gradenBocht90Fase2.toString() === '') &&
       (kolk.reductie == null || kolk.reductie === 0 || kolk.reductie.toString() === '') &&
-      (kolk.stop == null || kolk.stop === 0 || kolk.stop.toString() === ''))) {
+      (kolk.stop == null || kolk.stop === 0 || kolk.stop.toString() === '') &&
+      (kolk.infiltratieKlok == null || kolk.infiltratieKlok === false))) {
       return false;
     } else {
       return true;
@@ -1354,5 +1430,120 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
     this.searchForm.setValue('');
     this.formService.previousStreet = '';
     this.filterStraatText = '';
+  }
+
+  createSchademelding() {
+    this.formService.previousPage.push('/pages/groupview/' + this._id);
+    this.router.navigate(['/pages/schademeldingedit/' + this._id + '/' + null ]);
+  }
+
+  toggleOwAndSchademeldingView() {
+    this.isViewingOwAndSchademeldingList = !this.isViewingOwAndSchademeldingList;
+    this.formService.isViewingOwAndSchademeldingList = this.isViewingOwAndSchademeldingList;
+  }
+
+  editSchademelding(schademelding: Schademelding) {
+    this.formService.previousPage.push('/pages/groupview/' + this._id);
+    this.router.navigate(['/pages/schademeldingedit/' + this._id + '/' + schademelding._id]);
+  }
+
+
+
+  openSchademelding(schademelding: Schademelding) {
+    this.formService.previousPage.push('/pages/groupview/' + this._id);
+    this.router.navigate(['/pages/schademeldingview/' + this._id + '/' + schademelding._id]);
+  }
+
+  openMeerwerk(schademelding: Schademelding) {
+    this.formService.previousPage.push('/pages/groupview/' + this._id);
+    this.router.navigate(['/pages/meerwerkview', schademelding._id]);
+  }
+  editMeerwerk(schademelding: Schademelding) {
+    this.formService.previousPage.push('/pages/groupview/' + this._id);
+    this.router.navigate(['/pages/meerwerkedit' , schademelding._id]);
+  }
+
+  convertMinutesToHours(minutesWorked: number) {
+    if(minutesWorked == null){
+      return '0u 0m';
+    }
+    const hours = Math.floor(minutesWorked / 60);
+    const minutes = minutesWorked % 60;
+    return hours + 'u ' + minutes + 'm';
+  }
+
+  selectAllOwAndSchademeldingen() {
+    this.selectEverythingOwAndSchade = !this.selectEverythingOwAndSchade;
+    this.owAndSchademeldingList.forEach((x) => {
+       x.isSelected = this.selectEverythingOwAndSchade;
+     });
+  }
+
+  selectOwofSchademelding(_id: string) {
+    const index = this.owAndSchademeldingList.findIndex((x) => x._id === _id);
+    this.owAndSchademeldingList[index].isSelected = !this.owAndSchademeldingList[index].isSelected;
+  }
+
+  async generatePDFoWAndSchademeldingen() {
+    this.toastrService.warning('Deze functie is dit weekend niet beschikbaar wegens onderhoud. Probeer het later opnieuw.', 'Even geduld', { duration: 4000 });
+      /*
+    let owAndSchademeldingen = this.owAndSchademeldingList.filter((x) => {
+      return x.isSelected;
+    }) ;
+
+    if (owAndSchademeldingen != null && owAndSchademeldingen.length !== 0 && !this.isGeneratingPDF) {
+          this.isGeneratingPDF = true;
+            try {
+               let meerwerkenIds = owAndSchademeldingen.filter(x => x.isMeerwerk).map(y => (y._id));
+               let schademeldingenIds = owAndSchademeldingen.filter(x => x.isSchademelding).map(y => (y._id));
+              let sendPdfids = {meerwerkenIds:meerwerkenIds,schademeldingenIds: schademeldingenIds };
+
+              this.isLoadingBar = true;
+              this.pdfProgress = '';
+              this.isDownloading = false;
+              this.progress = 0;
+              this.toastrService.success(
+                'De fiches worden klaargemaakt. Even geduld aub...',
+                'Even geduld',
+                { duration: 4000 },
+              );
+
+              this.pdfProgressBlocks = [];
+              for(let i = 0; i < this.totalProjectCount; i++){
+                this.pdfProgressBlocks.push(i);
+              }
+              await this.initSocket();
+              this.apiService.makeOwAndSchademeldingPdfZip(sendPdfids, this._id).subscribe(async data => {
+                },
+                error => { // This function will be executed when an error is emitted
+                  this.isGeneratingPDF = false;
+                  this.isLoadingBar = false;
+                  this.isDownloading = false;
+                  Pace.stop();
+                  this.progress = 0;
+                  console.log('Error occurred while generating PDF:', error);
+                  if (error.status === 500) { // Check if the error response status is 500
+                    this.toastrService.warning(
+                      'Er is een fout opgetreden bij het genereren van de PDF. Probeer het later opnieuw.',
+                      'Error',
+                      { duration: 4000 },
+                    );
+                  }
+                })
+            } catch (e) {
+              Pace.stop();
+              this.progress = 0;
+              this.isGeneratingPDF = false;
+              this.isLoadingBar = false;
+              this.isDownloading = false;
+            }
+    } else {
+      if(!this.isGeneratingPDF){
+        this.toastrService.warning(
+          'U heeft geen aansluiting geselecteerd. Selecteer minimum 1 aansluiting of kolk.',
+          'Selecteer aansluitingen',
+        );
+      }
+    }*/
   }
 }

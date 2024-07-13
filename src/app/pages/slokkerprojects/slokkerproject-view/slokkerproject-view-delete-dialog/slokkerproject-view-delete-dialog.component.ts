@@ -34,9 +34,10 @@ export class SlokkerprojectViewDeleteDialogComponent implements OnInit {
     if(this.formService.deleteSlokkerProject._id == null){
       this.formService.deleteSlokkerProject._id = this.formService.deleteSlokkerProject.id;
     }
-    await this.apiService.deleteSlokkerById(this.formService.deleteSlokkerProject).subscribe(x => {
+    this.apiService.deleteSlokkerById(this.formService.deleteSlokkerProject).subscribe(x => {
+      this.closeDialog();
+      this.goToPrevious();
     });
-   this.closeDialog();
-   this.goToPrevious();
+
   }
 }

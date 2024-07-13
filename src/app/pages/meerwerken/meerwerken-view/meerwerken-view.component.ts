@@ -21,6 +21,7 @@ import { VariablesService } from 'services/variables.service';
 import {Meerwerk} from "../../../../models/meerwerk";
 import { GoogleMapsLocatiePopupComponent } from '../../googleMapsLocatiePopup/googleMapsLocatiePopup.component';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { Schademelding } from '../../../../models/schademelding';
 
 @Component({
   selector: 'ngx-meerwerken-view',
@@ -30,7 +31,7 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dial
     '../../styles/project-view.scss',
   ],
 })
-export class MeerwerkenViewComponent implements OnInit {
+export class MeerwerkenViewComponent implements OnInit, OnDestroy {
   days: string[] = ['Zondag','Maandag','Dinsdag','Woensdag','Donderdag','Vrijdag','Zaterdag'];
 
   public currentProject: Meerwerk;
@@ -39,14 +40,13 @@ export class MeerwerkenViewComponent implements OnInit {
   public index: number;
   public totalProjectCount: number;
   public isLoaded: boolean = false;
-  public isFirst: boolean = false;
-  public isLast: boolean = false;
   public latitude: number;
   public longitude: number;
   public _id: string;
   data: any;
   private lastProjects: Project[] = [];
   public group: Group = new Group();
+  owAndSchademeldingList: Schademelding[];
 
   constructor(
     private formBuilder: UntypedFormBuilder,
@@ -78,46 +78,28 @@ export class MeerwerkenViewComponent implements OnInit {
 
   onCloseClick() {}
 
+
   onPreviousClick() {
-    const index = this.lastProjects.findIndex((x) => x._id === this._id);
-    if (index !== 0) {
-      const project = this.lastProjects[index - 1];
-      if(!project.isMeerwerk) {
-        if (project.isSlokker == null || project.isSlokker === false) {
-          this.formService.PreloadProject = project as Project;
-          this.formService.preloadSlokkerProject = null;
-          this.router.navigate(['/pages/projectview', project._id]);
-        } else {
-          this.formService.preloadSlokkerProject = project as SlokkerProjects;
-          this.formService.PreloadProject = null;
-          this.router.navigate(['/pages/slokkerprojectview', project._id]);
-        }
-      } else {
-        this.router.navigate(['/pages/meerwerkview', project._id]);
-      }
+    let nextObject = this.owAndSchademeldingList[this.index - 1];
+    let route;
+    if(nextObject.isMeerwerk){
+      route = '/pages/meerwerkview/' + nextObject._id
+    } else {
+      route = '/pages/schademeldingview/' + nextObject.group_id + '/' + nextObject._id
     }
+    this.router.navigate([route]);
   }
 
   onNextClick() {
-    const index = this.lastProjects.findIndex((x) => x._id === this._id);
-    if (this.lastProjects.length > index + 1) {
-      const project = this.lastProjects[index + 1];
-      if(!project.isMeerwerk) {
-        if (project.isSlokker == null || project.isSlokker === false) {
-          this.formService.PreloadProject = project as Project;
-          this.formService.preloadSlokkerProject = null;
-          this.router.navigate(['/pages/projectview', project._id]);
-        } else {
-          this.formService.preloadSlokkerProject = project as SlokkerProjects;
-          this.formService.PreloadProject = null;
-          this.router.navigate(['/pages/slokkerprojectview', project._id]);
-        }
-      } else {
-        this.router.navigate(['/pages/meerwerkview', project._id]);
-      }
+    let nextObject = this.owAndSchademeldingList[this.index + 1];
+    let route;
+    if(nextObject.isMeerwerk){
+      route = '/pages/meerwerkview/' + nextObject._id
+    } else {
+      route = '/pages/schademeldingview/' + nextObject.group_id + '/' + nextObject._id
     }
+    this.router.navigate([route]);
   }
-
   imagePopUp(photo: string) {
     this.formService._chosenPhoto = photo;
     let dialogRef = this.dialog.open(MeerwerkViewDialogComponent, {
@@ -127,17 +109,17 @@ export class MeerwerkenViewComponent implements OnInit {
   }
 
   private loadData() {
-    this.lastProjects = this.formService.lastProjects;
+    this.owAndSchademeldingList = this.formService.owAndSchademeldingList;
     this.apiService.getMeerwerkById(this._id).subscribe(async (x) => {
       this.currentProject = x as Meerwerk;
 
       if (this.currentProject._id == null) {
         this.currentProject._id = this.currentProject.id;
       }
-      const indexer = this.lastProjects.findIndex((x) => x._id === this._id);
+      const indexer = this.owAndSchademeldingList?.findIndex((x) => x._id === this._id);
       this.index = indexer;
       this.group = this.currentProject.group_id;
-      this.totalProjectCount = this.lastProjects?.length;
+
       if (this.currentProject.startDate != null) {
         this.currentProject.startDate = new Date(this.currentProject.startDate);
       } else {
@@ -147,25 +129,20 @@ export class MeerwerkenViewComponent implements OnInit {
       if(this.currentProject.updated != null)this.currentProject.updated = new Date(this.currentProject.updated);
       if(this.currentProject.lastWorkerDate != null)this.currentProject.lastWorkerDate = new Date(this.currentProject.lastWorkerDate);
       this.formService.deleteMeerwerk = this.currentProject;
-      if (indexer === 0 || indexer === -1) {
-        this.isFirst = true;
-      } else {
-        this.isFirst = false;
-      }
-      if (
-        indexer + 1 === this.formService.lastProjects.length ||
-        this.formService.lastProjects.length === 1 ||
-        this.formService.lastProjects.length === 0
-      ) {
-        this.isLast = true;
-      } else {
-        this.isLast = false;
-      }
+
       while(this.apiService.thisCompany == null){
         await this.delay(50)
       }
       this.company = this.apiService.thisCompany;
+      this.formService.isViewingOwAndSchademeldingList = true;
+
       this.isLoaded = true;
+
+      if(!this.currentProject.hasBeenViewed){
+        this.apiService.updateMeerwerkHasBeenViewed(this._id).subscribe(x => {
+          this.currentProject.hasBeenViewed = true;
+        });
+      }
     });
   }
   async generatePDF() {
@@ -220,11 +197,16 @@ export class MeerwerkenViewComponent implements OnInit {
       element.style.display = 'block';
     }
   }
-
-  goToPrevious() {
-    this.router.navigate(['/pages/groupview', this.group._id]);
+  ngOnDestroy(){
+    this.formService.previousIndexScroll = this.index;
+    this.formService.previousPageForScrollIndex = 'schademelding';
   }
 
+  goToPrevious() {
+    this.formService.previousIndexScroll = this.index;
+    this.formService.previousPageForScrollIndex = 'schademelding';
+    this.router.navigate(['/pages/groupview', this.group._id]);
+  }
   goToEdit() {
     if (this.currentProject._id == null) {
       this.currentProject._id = this.currentProject.id;
@@ -235,6 +217,10 @@ export class MeerwerkenViewComponent implements OnInit {
     ]);
   }
   async onDeleteProject() {
+    if(this.currentProject.group_id != null && this.currentProject.group_id?._id == null){
+      this.currentProject.group_id._id = this.currentProject.group_id.id;
+    }
+    this.formService.previousPage = ['/pages/groupview/' + this.currentProject.group_id._id];
     let dialogRef = this.dialog.open(MeerwerkViewDeleteDialogComponent, {
       height: '19vh',
       width: '27vw',

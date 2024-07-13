@@ -2,19 +2,28 @@
   <button mat-raised-button class="form-button" (click)="goToPrevious()">
     Terug
   </button>
-  <button *ngIf="index !== -1" [disabled]="isFirst" mat-raised-button class="form-button" (click)="onPreviousClick()">
-    Vorige
-  </button>
-  <button *ngIf="index !== -1" [disabled]="isLast" mat-raised-button class="form-button" (click)="onNextClick()">
-    Volgende
-  </button>
-  <button (click)="onSubmitInfo()" mat-raised-button class="form-button-blue" color="primary" type="submit">
+  <div class="navigation-row">
+    <button *ngIf="index != null && index !== -1" [disabled]="isFirst" mat-raised-button class="nav-button" (click)="onPreviousClick()">
+      <i class="fa-solid fa-left-long navIcon"></i>
+    </button>
+    <p class="boldText" *ngIf="index != null && index !== -1">{{index + 1}}/{{totalProjectCount}}</p>
+    <button *ngIf="index != null && index !== -1" [disabled]="isLast" mat-raised-button class="nav-button" (click)="onNextClick()">
+      <i class="fa-solid fa-right-long navIcon"></i>
+    </button>
+  </div>
+
+  <button [disabled]="isSaving" (click)="onSubmitInfo()" mat-raised-button class="form-button-blue" color="primary" type="submit">
     Opslaan
   </button>
-  <p class="boldText" *ngIf="index !== -1">{{index + 1}}/{{totalProjectCount}}</p>
+
+  <nb-spinner *ngIf="isSaving" class="opslaan-spinner" size="giant" [message]="'Opslaan..'" status="info"></nb-spinner>
+
   <button (click)="goToView()" mat-raised-button class="form-button3" >
     Ga naar view
   </button>
+  <button style="width: auto; margin-left: 70px" mat-raised-button class="form-button2" (click)="generatePDF()"><div class="divInsideButton">PDF 	<mat-icon class="downloadImage">cloud_download</mat-icon></div></button>
+  <button  mat-raised-button class="delete-button" color="warn" type="button"
+          (click)="onDeleteProject()"><i style="margin-left: 2px" class="fa-solid fa-trash-can"></i></button>
 </div>
 
 <mat-card #content id="content" *ngIf="isLoaded" class="project-card">
@@ -425,54 +434,54 @@
         <div class="insideRow2" *ngIf="this.group.dwaSettings.mof">
           <p class="label-text">Mof</p>
           <div class="leftRow">
-            <input class="smallInput" nbInput type="number" formControlName="mof" />
+            <input class="smallInput2" nbInput type="number" formControlName="mof" />
             <p class="texter">stuks</p>
           </div>
         </div>
         <div class="insideRow2" *ngIf="this.group.dwaSettings.krimpMof">
           <p class="label-text">Krimpmof</p>
           <div class="leftRow">
-            <input class="smallInput" nbInput type="number" formControlName="krimpmof" />
+            <input class="smallInput2" nbInput type="number" formControlName="krimpmof" />
             <p class="texter">stuks</p>
           </div>
         </div>
         <div class="insideRow2" *ngIf="this.group.dwaSettings.koppelStuk">
           <p class="label-text">Koppelstuk</p>
           <div class="leftRow">
-            <input class="smallInput" nbInput type="number" formControlName="koppelstuk" />
+            <input class="smallInput2" nbInput type="number" formControlName="koppelstuk" />
             <p class="texter">stuks</p>
           </div>
         </div>
         <div class="insideRow2" *ngIf="this.group.dwaSettings.stop">
           <p class="label-text">Stop</p>
           <div class="leftRow">
-            <input class="smallInput" nbInput type="number" formControlName="stop" />
+            <input class="smallInput2" nbInput type="number" formControlName="stop" />
             <p class="texter">stuks</p>
           </div>
         </div>
         <div class="insideRow2" *ngIf="this.group.dwaSettings.andere">
           <p class="label-text">Andere</p>
-            <input style='margin-left:7px !important;' class="normalInput" nbInput type="text" formControlName="andere" />
+            <input style='margin-left:15px !important;' class="normalInput" nbInput type="text" formControlName="andere" />
         </div>
       </div>
       <div class="data-container" *ngIf="this.group.dwaSettings.afstandPutMof">
         <p class="label-text">Afstand midden stroomafwaartse put tot mof:</p>
         <div class="leftRow">
-          <input class="smallInput" nbInput type="number" formControlName="afstandPutMof" />
+          <input class="smallInput2" nbInput type="number" formControlName="afstandPutMof" />
           <p class="texter">m</p>
         </div>
       </div>
       <div class="data-container" *ngIf="this.group.dwaSettings.diepteAansluitingWoning">
         <p class="label-text">Diepte HA-putje/aansluiting tov MV:</p>
         <div class="leftRow">
-          <input class="smallInput" nbInput type="number" formControlName="diepteAansluitingWoning" />
+          <input class="smallInput2" nbInput type="number" formControlName="diepteAansluitingWoning" />
           <p class="texter">m</p>
         </div>
       </div>
       <div class="data-container" *ngIf="this.group.dwaSettings.diepteRioleringHA">
         <p class="label-text">Diepte aanboring op hoofdriool tov MV:<br>(op bestaande riolering)</p>
         <div class="leftRow">
-          <input class="smallInput" nbInput type="number" formControlName="diepteRioleringHA" />
+          <input class="smallInput2" nbInput type="number" formControlName="diepteRioleringHA" />
           <p class="texter">m</p>
         </div>
       </div>
@@ -519,7 +528,7 @@
         <div class="insideRow2">
           <p class="label-text">Diameter putje/T-stuk</p>
           <div class="leftRow">
-            <input class="smallInput" nbInput type="number" formControlName="diameterPut" />
+            <input class="smallInput2" nbInput type="number" formControlName="diameterPut" />
             <p class="texter">mm</p>
           </div>
         </div>
@@ -559,14 +568,14 @@
       <div *ngIf="this.group.dwaSettings.sifonPutje == null || this.group.dwaSettings.sifonPutje"  class="insideRow2">
         <p class="label-text">Sifonputje</p>
         <div class="leftRow">
-          <input class="smallInput" nbInput type="number" formControlName="sifonPutje" />
+          <input class="smallInput2" nbInput type="number" formControlName="sifonPutje" />
           <p class="texter">stuks</p>
         </div>
       </div>
       <div *ngIf="this.group.dwaSettings.tPutje == null || this.group.dwaSettings.tPutje"  class="insideRow2">
         <p class="label-text">T-putje</p>
         <div class="leftRow">
-          <input class="smallInput" nbInput type="number" formControlName="tPutje" />
+          <input class="smallInput2" nbInput type="number" formControlName="tPutje" />
           <p class="texter">stuks</p>
         </div>
       </div>
@@ -586,7 +595,7 @@
               <nb-option value="f">f</nb-option>
             </nb-select>
             <p class="IPtext">-</p>
-            <input class="smallInput" nbInput type="number" formControlName="putHor" />
+            <input class="smallInput2" nbInput type="number" formControlName="putHor" />
             <p class="texter">m</p>
           </div>
         </div>
@@ -599,7 +608,7 @@
               <nb-option value="h">h</nb-option>
             </nb-select>
             <p class="IPtext">-</p>
-            <input class="smallInput" nbInput type="number" formControlName="putVer" />
+            <input class="smallInput2" nbInput type="number" formControlName="putVer" />
             <p class="texter">m</p>
           </div>
         </div>
@@ -944,54 +953,54 @@
         <div class="insideRow2" *ngIf="this.group.rwaSettings.mof">
           <p class="label-text">Mof</p>
           <div class="leftRow">
-            <input class="smallInput" nbInput type="number" formControlName="mof" />
+            <input class="smallInput2" nbInput type="number" formControlName="mof" />
             <p class="texter">stuks</p>
           </div>
         </div>
         <div class="insideRow2" *ngIf="this.group.rwaSettings.krimpMof">
           <p class="label-text">Krimpmof</p>
           <div class="leftRow">
-            <input class="smallInput" nbInput type="number" formControlName="krimpmof" />
+            <input class="smallInput2" nbInput type="number" formControlName="krimpmof" />
             <p class="texter">stuks</p>
           </div>
         </div>
         <div class="insideRow2" *ngIf="this.group.rwaSettings.koppelStuk">
           <p class="label-text">Koppelstuk</p>
           <div class="leftRow">
-            <input class="smallInput" nbInput type="number" formControlName="koppelstuk" />
+            <input class="smallInput2" nbInput type="number" formControlName="koppelstuk" />
             <p class="texter">stuks</p>
           </div>
         </div>
         <div class="insideRow2" *ngIf="this.group.rwaSettings.stop">
           <p class="label-text">Stop</p>
           <div class="leftRow">
-            <input class="smallInput" nbInput type="number" formControlName="stop" />
+            <input class="smallInput2" nbInput type="number" formControlName="stop" />
             <p class="texter">stuks</p>
           </div>
         </div>
         <div class="insideRow2" *ngIf="this.group.rwaSettings.andere">
           <p class="label-text">Andere</p>
-          <input style='margin-left:7px !important;' class="normalInput" nbInput type="text" formControlName="andere" />
+          <input style='margin-left:15px !important;' class="normalInput" nbInput type="text" formControlName="andere" />
         </div>
       </div>
       <div class="data-container" *ngIf="this.group.rwaSettings.afstandPutMof">
         <p class="label-text">Afstand midden stroomafwaartse put tot mof:</p>
         <div class="leftRow">
-          <input class="smallInput" nbInput type="number" formControlName="afstandPutMof" />
+          <input class="smallInput2" nbInput type="number" formControlName="afstandPutMof" />
           <p class="texter">m</p>
         </div>
       </div>
       <div class="data-container" *ngIf="this.group.rwaSettings.diepteAansluitingWoning">
         <p class="label-text">Diepte HA-putje/aansluiting tov MV:</p>
         <div class="leftRow">
-          <input class="smallInput" nbInput type="number" formControlName="diepteAansluitingWoning" />
+          <input class="smallInput2" nbInput type="number" formControlName="diepteAansluitingWoning" />
           <p class="texter">m</p>
         </div>
       </div>
       <div class="data-container" *ngIf="this.group.rwaSettings.diepteRioleringHA">
         <p class="label-text">Diepte aanboring op hoofdriool tov MV:<br>(op bestaande riolering)</p>
         <div class="leftRow">
-          <input class="smallInput" nbInput type="number" formControlName="diepteRioleringHA" />
+          <input class="smallInput2" nbInput type="number" formControlName="diepteRioleringHA" />
           <p class="texter">m</p>
         </div>
       </div>
@@ -1038,7 +1047,7 @@
         <div class="insideRow2">
           <p class="label-text">Diameter putje/T-stuk</p>
           <div class="leftRow">
-            <input class="smallInput" nbInput type="number" formControlName="diameterPut" />
+            <input class="smallInput2" nbInput type="number" formControlName="diameterPut" />
             <p class="texter">mm</p>
           </div>
         </div>
@@ -1078,13 +1087,13 @@
         <div *ngIf="this.group.rwaSettings.tPutje == null || this.group.rwaSettings.tPutje"  class="insideRow2">
           <p class="label-text">T-putje</p>
           <div class="leftRow">
-            <input class="smallInput" nbInput type="number" formControlName="tPutje" />
+            <input class="smallInput2" nbInput type="number" formControlName="tPutje" />
             <p class="texter">stuks</p>
           </div>
         </div>
         <div class="insideRow2" *ngIf="this.group.rwaSettings.aanslBovRwa">
           <p class="label-text">Aansluitingen bovengrondse regenafvoer</p>
-          <input class="smallInput" nbInput type="number" formControlName="aanslBovRWA" />
+          <input class="smallInput2" nbInput type="number" formControlName="aanslBovRWA" />
           <p class="texter">stuks</p>
         </div>
         <div style='justify-content: flex-start !important; gap:25px !important;' class="insideRow2" *ngIf="this.group.rwaSettings.infilPutje">
@@ -1111,7 +1120,7 @@
               <nb-option value="z">z</nb-option>
             </nb-select>
             <p class="IPtext">-</p>
-            <input class="smallInput" nbInput type="number" formControlName="putHor" />
+            <input class="smallInput2" nbInput type="number" formControlName="putHor" />
             <p class="texter">m</p>
           </div>
         </div>
@@ -1124,7 +1133,7 @@
               <nb-option value="n">n</nb-option>
             </nb-select>
             <p class="IPtext">-</p>
-            <input class="smallInput" nbInput type="number" formControlName="putVer" />
+            <input class="smallInput2" nbInput type="number" formControlName="putVer" />
             <p class="texter">m</p>
           </div>
         </div>
@@ -1149,8 +1158,6 @@
     </form>
   </div>
   <div class="image-container">
-    <p style="font-size: 14px;font-weight:600;width:fit-content;position: relative;top:-8px;left:20px;margin-bottom: -12px">*Het is nu mogelijk om foto's te verslepen
-      en van plaats te veranderen</p>
     <div class="image-header">
       <label class="section-title">Foto's DWA/GEM</label>
     </div>
@@ -1158,9 +1165,8 @@
       <div cdkDropList [cdkDropListData]="i"  *ngFor="let photo of currentProject.photosDWA; let i = index" [ngClass]="photo == null && !getCorrespondingTemporaryImageDWA(i) ? 'smallFotoColumn' : 'fotoColumn'" >
         <ng-container *ngIf="i < 8">
             <div class="innerColumn">
-              <input *ngIf="photo != null" (click)="deleteFotoDwa(i)" type="button" value="Verwijder"
-                class="deleteButton">
-
+              <button *ngIf="photo != null"  (click)="deleteFotoDwa(i)" type="button"
+                      class="deleteButton2"><i style="color:white;padding-left: 2px;" class="fa-solid fa-trash-can"></i></button>
               <p class="infoText" *ngIf="i === 0">1. boring of opening van aansluiting op hoofdriool</p>
               <p class="infoText5" *ngIf="i === 1">2. na plaatsing fundering, buizen, hulpstukken en HA-putje, vanaf de
                 aansluitopening richting putje, indien niet alle hulpstukken te zien zijn ook foto vanuit omgekeerd standpunt</p>
@@ -1184,8 +1190,6 @@
   </div>
 
   <div class="image-container">
-    <p style="font-size: 14px;font-weight:600;width:fit-content;position: relative;top:-8px;left:20px;margin-bottom: -12px">*Het is nu mogelijk om foto's te verslepen
-    en van plaats te veranderen</p>
     <div class="image-header">
       <label class="section-title">Foto's RWA</label>
     </div>
@@ -1193,8 +1197,8 @@
       <div cdkDropList [cdkDropListData]="i"  *ngFor="let photo of currentProject.photosRWA; let i = index" [ngClass]="photo == null && !getCorrespondingTemporaryImageRWA(i) ? 'smallFotoColumn' : 'fotoColumn'" >
         <ng-container *ngIf="i < 8">
           <div class="innerColumn">
-            <input *ngIf="photo != null" (click)="deleteFotoRwa(i)" type="button" value="Verwijder"
-                   class="deleteButton">
+            <button *ngIf="photo != null"  (click)="deleteFotoRwa(i)" type="button"
+                    class="deleteButton2"><i style="color:white;padding-left: 2px;" class="fa-solid fa-trash-can"></i></button>
 
             <p class="infoText" *ngIf="i === 0">1. boring of opening van aansluiting op hoofdriool</p>
             <p class="infoText5" *ngIf="i === 1">2. na plaatsing fundering, buizen, hulpstukken en HA-putje, vanaf de

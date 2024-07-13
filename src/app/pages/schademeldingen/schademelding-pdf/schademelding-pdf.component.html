@@ -1,0 +1,85 @@
+<div id="schademeldingOverzicht">
+  <h3 class="page-title">Schademelding <small style='font-size:15px; margin-top:-5px;'>   {{group.rbProjectNaam}} | {{group.rbGemeente}} | {{group.aannemerProjectNr}}</small></h3>
+    <p *ngIf="schademelding.creator_user?.name" class="smallerText"> Gemeld door: <b>{{schademelding.creator_user?.name}} </b><small>- {{("0"+(schademelding.created.getDate())).slice(-2)}}/{{("0"+(schademelding.created.getMonth()+1)).slice(-2)}}/{{schademelding.created.getFullYear().toString().slice(-2)}}</small></p>
+
+  <div class="boxColumn">
+    <h4>Algemene gegevens</h4>
+    <p>Projectnummer: <span style="margin-right: 50px;" id="werfNaam">{{NullToEmptyStr(schademelding.group_id?.aannemerProjectNr)}}</span>   Project: <span id="werfNummer">{{schademelding.group_id?.rbProjectNaam}}</span></p>
+    <p><nb-icon icon="user" pack="fa" class="smallIcon" ></nb-icon>Werfleider: <span style="padding-right: 50px" id="date">{{NullToEmptyStr(schademelding.group_id?.aannemerWerfleider)}}</span><i class="fa-solid fa-clock smallIcon"></i>Tijdstip ongeval: <span *ngIf="schademelding.date" id="created">{{('0' + schademelding.date.getDate()).slice(-2)}}/{{('0' + (schademelding.date.getMonth() + 1)).slice(-2)}}/{{('0' + schademelding.date.getFullYear()).slice(-2)}} -
+      {{('0' + schademelding.date.getHours()).slice(-2)}}:{{('0' + schademelding.date.getMinutes()).slice(-2)}}</span></p>
+    <p><nb-icon icon="location-dot" pack="fa" class="smallIcon" ></nb-icon>Locatie: <span>{{schademelding.gemeente_en_straat}}{{schademelding.huisnr_of_nummer && schademelding.huisnr_of_nummer !== ''? ' - ' + schademelding.huisnr_of_nummer: ''}}</span></p>
+    <p *ngIf="schademelding.tegenPartij"><i class="fa-solid fa-building smallIcon"></i>Betrokken partij: <span id="tegenPartij">{{schademelding.tegenPartij}}</span></p>
+  </div>
+  <div class="boxColumn">
+    <h4>Details van de Schade</h4>
+    <p><nb-icon icon="bullseye" pack="fa" class="smallIcon"></nb-icon>Schade gericht aan: <span id="schadeGerichtAan">{{schademelding.schadeGerichtAan === 'Andere' ? schademelding.schadeGerichtAanAndereString : NullToEmptyStr(schademelding.schadeGerichtAan)}}</span></p>
+    <p><nb-icon icon="user" pack="fa" class="smallIcon"></nb-icon>Schade door wie: <span *ngIf="schademelding.schadeDoorWie" id="schadeDoorWie">{{NullToEmptyStr(schademelding.schadeDoorWie)}}</span></p>
+    <p><nb-icon icon="snowplow" pack="fa" class="smallIcon"></nb-icon>Schade door wat: <span id="schadeDoorWat">{{schademelding.schadeDoorWat}}</span></p>
+    <p><nb-icon icon="person-digging" pack="fa" class="smallIcon"></nb-icon>Soort activiteit: <span id="soortActiviteit">{{schademelding.soortActiviteit === 'Andere' ? schademelding.soortActiviteitAndereString : NullToEmptyStr(schademelding.soortActiviteit)}}</span></p>
+    <p><nb-icon icon="circle-question" pack="fa" class="smallIcon"></nb-icon>Oorzaak van de schade: <span id="oorzaakSchade">{{schademelding.oorzaakSchade}}</span></p>
+    <p *ngIf="checkIfSchadeGerichtAanIsNutsleidingenOfAndere()">Is leiding plan op werf? <span *ngIf="schademelding.isLeidingPlanOpWerf" id="isLeidingPlanOpWerf"><i class="fa-regular fa-square-check faIcon"></i></span>
+    <span style="padding-left: 30px;font-weight: 500 !important;">Is leiding volgens plan? <span *ngIf="schademelding.isLeidingVolgensPlan" id="isLeidingVolgensPlan"><i class="fa-regular fa-square-check faIcon"></i></span></span></p>
+    <p *ngIf="checkIfSchadeGerichtAanIsNutsleidingenOfAndere()">Diepte van de leiding: <span id="diepteLeiding">{{schademelding.diepteLeiding ? schademelding.diepteLeiding + ' meter' : ''}}</span>
+      <span style="padding-left: 30px;font-weight: 500 !important;">Diepte graafwerken: <span id="diepteGraafwerken">{{schademelding.diepteGraafwerken ? schademelding.diepteGraafwerken + ' meter' : ''}}</span></span></p>
+    <p *ngIf="checkIfSchadeGerichtAanIsNutsleidingenOfAndere() && schademelding.leidingBeschermd">Leiding beschermd: <span id="leidingBeschermd">{{schademelding.leidingBeschermd === 'Andere'? schademelding.leidingBeschermdAndereString : NullToEmptyStr(schademelding.leidingBeschermd)}}</span></p>
+    <p *ngIf="schademelding.plaatsVanWerken"><nb-icon icon="tree-city" pack="fa" class="smallIcon"></nb-icon>Plaats van werken: <span id="plaatsVanWerken">{{schademelding.plaatsVanWerken === 'Andere'? schademelding.plaatsVanWerkenAndereString : NullToEmptyStr(schademelding.plaatsVanWerken)}}</span></p>
+    <p><nb-icon icon="comment" pack="fa" class="smallIcon"></nb-icon>Omschrijving van de schade: <span id="omschrijvingSchade">{{schademelding.omschrijvingSchade}}</span></p>
+  </div>
+  <div *ngIf="group.gebruiktHerstellingBijSchademelding && checkIfHerstellingIsNotEmpty()" class="boxColumn">
+    <h4>Herstelling</h4>
+    <p><nb-icon icon="calendar-check" pack="fa" class="smallIcon"></nb-icon>Starttijd herstelling: <span *ngIf="schademelding.startTijdHerstelling" id="startTijdHerstelling">{{('0' + schademelding.startTijdHerstelling.getDate()).slice(-2)}}/{{('0' + (schademelding.startTijdHerstelling.getMonth() + 1)).slice(-2)}}/{{('0' + schademelding.startTijdHerstelling.getFullYear()).slice(-2)}} -
+      {{('0' + schademelding.startTijdHerstelling.getHours()).slice(-2)}}:{{('0' + schademelding.startTijdHerstelling.getMinutes()).slice(-2)}}</span></p>
+    <p><nb-icon icon="calendar-check" pack="fa" class="smallIcon"></nb-icon>Eindtijd herstelling: <span *ngIf="schademelding.eindTijdHerstelling" id="eindTijdHerstelling">{{('0' + schademelding.eindTijdHerstelling.getDate()).slice(-2)}}/{{('0' + (schademelding.eindTijdHerstelling.getMonth() + 1)).slice(-2)}}/{{('0' + schademelding.eindTijdHerstelling.getFullYear()).slice(-2)}} -
+      {{('0' + schademelding.eindTijdHerstelling.getHours()).slice(-2)}}:{{('0' + schademelding.eindTijdHerstelling.getMinutes()).slice(-2)}}</span></p>
+    <p><nb-icon icon="user" pack="fa" class="smallIcon"></nb-icon>Aantal personen herstelling: <span id="aantalPersonen">{{schademelding.aantalPersonenHerstelling ? schademelding.aantalPersonenHerstelling + ' pers' : ''}}</span></p>
+    <p><nb-icon icon="comment" pack="fa" class="smallIcon"></nb-icon>Details van schadeherstelling: <span id="detailsHerstelling">{{schademelding.detailsHerstelling}}</span></p>
+  </div>
+  <div *ngIf="group.gebruiktJurdischeInfoBijSchademelding && checkIfPolitieIsNotEmpty()" class="boxColumn">
+    <h4>Politie</h4>
+    <p><nb-icon icon="handshake" pack="fa" class="smallIcon"></nb-icon>Minnelijke vaststelling gebeurd? <span id="minnelijkeVaststelling">{{schademelding.isMinnelijkeVaststelling ? 'Ja' : 'Nee'}}</span></p>
+    <p><nb-icon icon="file-alt" pack="fa" class="smallIcon"></nb-icon>Proces-verbaal opgesteld: <span id="isProcesVerbaal">{{schademelding.isProcesVerbaal ? 'Ja' : 'Nee'}}</span></p>
+    <p><nb-icon icon="shield-alt" pack="fa" class="smallIcon"></nb-icon>Gemeente politie: <span id="gemeentePolitie">{{schademelding.gemeentePolitie}}</span></p>
+    <p><nb-icon icon="balance-scale" pack="fa" class="smallIcon"></nb-icon>Is betwisting mogelijk: <span id="isBetwistingMogelijk">{{schademelding.isBetwistingMogelijk ? 'Ja' : 'Nee'}}</span></p>
+  </div>
+
+  <div class="pageBreak">
+    <div class="fotoBoxColumn">
+      <h4 style="padding-left: 10px"><nb-icon icon="camera" pack="fa" class="faIcon" ></nb-icon>Fotos van schade</h4>
+      <div class="two-photo-div">
+        <div *ngIf="schademelding.photos[0]?.src" style="max-width:calc(96% / 2) !important;" class="imageColumn">
+          <p class="fotoText">{{schademelding.photos[0].beschrijving}}</p>
+          <img class="foto" src="{{schademelding.photos[0].src}}" alt="Foto 1">
+        </div>
+        <div *ngIf="schademelding.photos[1]?.src" style="max-width:calc(96% / 2) !important;" class="imageColumn">
+          <p class="fotoText">{{schademelding.photos[1].beschrijving}}</p>
+          <img class="foto" src="{{schademelding.photos[1].src}}" alt="Foto 2">
+        </div>
+      </div>
+      <div class="two-photo-div">
+        <div *ngIf="schademelding.photos[2]?.src" style="max-width:calc(96% / 2) !important;" class="imageColumn">
+          <p class="fotoText">{{schademelding.photos[2].beschrijving}}</p>
+          <img class="foto" src="{{schademelding.photos[2].src}}" alt="Foto 3">
+        </div>
+        <div *ngIf="schademelding.photos[3]?.src" style="max-width:calc(96% / 2) !important;" class="imageColumn">
+          <p class="fotoText">{{schademelding.photos[3].beschrijving}}</p>
+          <img class="foto" src="{{schademelding.photos[3].src}}" alt="Foto 4">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="schademelding.photos[4]?.src || schademelding.photos[5]?.src" class="pageBreak">
+    <div class="fotoBoxColumn">
+      <h4 style="padding-left: 10px">Fotos van schade vervolg</h4>
+      <div class="two-photo-div">
+        <div *ngIf="schademelding.photos[4]?.src" style="max-width:calc(96% / 2) !important;" class="imageColumn">
+          <p class="fotoText">{{schademelding.photos[4].beschrijving}}</p>
+          <img class="foto" src="{{schademelding.photos[4].src}}" alt="Foto 1">
+        </div>
+        <div *ngIf="schademelding.photos[5]?.src" style="max-width:calc(96% / 2) !important;" class="imageColumn">
+          <p class="fotoText">{{schademelding.photos[5].beschrijving}}</p>
+          <img class="foto" src="{{schademelding.photos[5].src}}" alt="Foto 2">
+        </div>
+      </div>
+    </div>
+    </div>
+</div>

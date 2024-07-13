@@ -2,9 +2,10 @@
   <button mat-raised-button class="form-button" (click)="goToPrevious()">
     Terug
   </button>
-  <button (click)="onSubmitInfo()" mat-raised-button class="save-button" color="primary" type="submit">
+  <button *ngIf="!isSaving" (click)="onSubmitInfo()" mat-raised-button class="save-button" color="primary" type="submit">
     Opslaan
   </button>
+  <nb-spinner *ngIf="isSaving" class="opslaan-spinner" size="giant" [message]="'Opslaan..'" status="info"></nb-spinner>
 </div>
 
 
@@ -30,10 +31,6 @@
         <p class="label-text">Wachtaansluiting (DWA & RWA)</p>
         <nb-toggle (checkedChange)="setVolgnummer($event)"  formControlName="isWachtAansluiting" status="primary"></nb-toggle>
       </div>
-      <div *ngIf="currentProject.isWachtAansluiting || currentProject.droogWaterAfvoer.isWachtaansluiting || currentProject.regenWaterAfvoer.isWachtaansluiting" class="data-container">
-        <p class="label-text">Volgnummer</p>
-        <input class="normalInput" nbInput type="text" formControlName="index" />
-      </div>
       <div class="data-container">
         <p class="label-text">Gemengd</p>
         <nb-toggle  formControlName="isGemengd" status="primary"></nb-toggle>
@@ -47,12 +44,16 @@
         <p class="data-text">{{group.rbGemeente}}</p>
       </div>
       <div class="data-container">
-        <p class="label-text">Straat</p>
+        <p class="label-text"><b>Straat</b></p>
         <input nbInput class="normalInput" type="text" formControlName="street" />
       </div>
       <div class="data-container">
-        <p class="label-text">Huisnummer</p>
-        <input class="normalInput" nbInput type="text" formControlName="huisNr" />
+        <p class="label-text"><b>Huisnummer</b></p>
+        <input id="huisNr" class="normalInput" nbInput type="text" formControlName="huisNr" />
+      </div>
+      <div *ngIf="currentProject.isWachtAansluiting || currentProject.droogWaterAfvoer.isWachtaansluiting || currentProject.regenWaterAfvoer.isWachtaansluiting" class="data-container">
+        <p class="label-text"><b>Volgnummer</b></p>
+        <input class="normalInput" nbInput type="text" formControlName="index" />
       </div>
       <div class="data-container">
         <p class="label-text">Opmerking</p>
@@ -64,726 +65,741 @@
 
 
   <div class="row-container">
-        <form *ngIf="isLoaded" [formGroup]="dwaForm" (ngSubmit)="onSubmitInfo()" class="add-form column-container">
-          <p class="section-title">
-            DWA
-          </p>
-          <div class="data-container">
-            <p class="label-text">Wachtaansluiting</p>
-            <nb-toggle (checkedChange)="setWachtaansluiting($event, 'dwa')"  formControlName="isWachtaansluiting" status="primary"></nb-toggle>
-          </div>
-          <div class="putRow">
-            <div class="putColumn">
-              <p class="section-title2">Voor het putje</p>
+    <form *ngIf="isLoaded" [formGroup]="dwaForm" class="add-form column-container">
+      <p class="section-title">
+        DWA
+      </p>
+      <div class="locatieRow">
+        <div style='justify-content: flex-start; margin-bottom:4px' class="data-container">
+          <p style='margin-right:13px' class="label-text">Wachtaansluiting</p>
+          <nb-toggle class='toggle' (checkedChange)="setWachtaansluiting($event, 'dwa')"  formControlName="isWachtaansluiting" status="primary"></nb-toggle>
+        </div>
 
-              <div *ngIf='!group.bochtenInGraden' class="data-container4">
-                <p class="label-text">Bocht</p>
-                <div class="smallRow">
-                  <input nbInput class="smallInput2 margT" type="number" formControlName="bochtVoor" />
-                  <p class="data-text margL">stuks</p>
-                </div>
-              </div>
-              <div *ngIf='group.bochtenInGraden' class="data-container4">
-                <p class="label-text">Bocht 45°</p>
-                <div class="smallRow">
-                  <input nbInput class="smallInput2 margT" type="number" formControlName="gradenBochtVoor45" />
-                  <p class="data-text margL">stuks</p>
-                </div>
-              </div>
-              <div *ngIf='group.bochtenInGraden' class="data-container4">
-                <p class="label-text">Bocht 90°</p>
-                <div class="smallRow">
-                  <input nbInput class="smallInput2 margT" type="number" formControlName="gradenBochtVoor90" />
-                  <p class="data-text margL">stuks</p>
-                </div>
-              </div>
-              <div class="data-container4">
-                <p class="label-text">Buis hor.</p>
-                <div class="smallRow">
-                  <input nbInput class="smallInput2 margT" type="number" formControlName="buisVoorHor" />
-                  <p class="data-text margL">meter</p>
-                </div>
-              </div>
-              <div class="data-container4">
-                <p class="label-text">Buis vert.</p>
-                <div class="smallRow">
-                  <input nbInput class="smallInput2 margT" type="number" formControlName="buisVoorVert" />
-                  <p class="data-text margL">meter</p>
-                </div>
-              </div>
-              <div class="data-container4">
-                <p class="label-text">Reductie</p>
-                <div class="smallRow">
-                  <input nbInput class="smallInput2 margT" type="number" formControlName="reductieVoor" />
-                  <p class="data-text margL">stuks</p>
-                </div>
-              </div>
-              <div class="data-container-small">
-                <p class="label-text">Buis soort</p>
-                <nb-select (selectedChange)='changeMateriaalBuisVoorPutDWA()' formControlName="buisType" id="type">
-                  <nb-option *ngFor="let type of buisTypes" value="{{ type }}" >
-                    {{ type }}
-                  </nb-option>
-                </nb-select>
-              </div>
-              <div class="data-container-small">
-                <p class="label-text">Diameter buis</p>
-                <nb-select (selectedChange)="checkAndereDiameterDWA($event)" class="normalInput" formControlName="diameter" id="type">
-                  <nb-option value="110">110 mm</nb-option>
-                  <nb-option value="125">125 mm</nb-option>
-                  <nb-option value="150">150 mm</nb-option>
-                  <nb-option value="160">160 mm</nb-option>
-                  <nb-option value="200">200 mm</nb-option>
-                  <nb-option value="andere">Andere</nb-option>
-                </nb-select>
-              </div>
-              <div class="data-container-small" *ngIf="isAndereDiameterDWA">
-                <p class="label-text">Andere diameter</p>
-                <input class="smallInput2" nbInput type="number" formControlName="diameterAndere" />
-              </div>
-            </div>
-            <div class="putColumn borderLeft">
-              <p class="section-title2">Achter het putje</p>
+      </div>
 
-              <div *ngIf='!group.bochtenInGraden' class="data-container4">
-                <p class="label-text">Bocht</p>
-                <div class="smallRow">
-                  <input nbInput class="smallInput2 margT" type="number" formControlName="bochtAchter" />
-                  <p class="data-text margL">stuks</p>
-                </div>
-              </div>
-              <div *ngIf='group.bochtenInGraden' class="data-container4">
-                <p class="label-text">Bocht 45°</p>
-                <div class="smallRow">
-                  <input nbInput class="smallInput2 margT" type="number" formControlName="gradenBochtAchter45" />
-                  <p class="data-text margL">stuks</p>
-                </div>
-              </div>
-              <div *ngIf='group.bochtenInGraden' class="data-container4">
-                <p class="label-text">Bocht 90°</p>
-                <div class="smallRow">
-                  <input nbInput class="smallInput2 margT" type="number" formControlName="gradenBochtAchter90" />
-                  <p class="data-text margL">stuks</p>
-                </div>
-              </div>
-              <div class="data-container4">
-                <p class="label-text">Buizen</p>
-                <div class="smallRow">
-                  <input nbInput class="smallInput2 margT" type="number" formControlName="buisAchter" />
-                  <p class="data-text margL">meter</p>
-                </div>
-              </div>
-              <div class="data-container4">
-                <p class="label-text">Reductie</p>
-                <div class="smallRow">
-                  <input nbInput class="smallInput2 margT" type="number" formControlName="reductieAchter" />
-                  <p class="data-text margL">stuks</p>
-                </div>
-              </div>
-              <div class="data-container4">
-                <p class="label-text">Y-stuk</p>
-                <div class="smallRow">
-                  <input nbInput class="smallInput2 margT" type="number" formControlName="YAchter" />
-                  <p class="data-text margL">stuks</p>
-                </div>
-              </div>
-              <div class="data-container-small">
-                <p class="label-text">Buis soort</p>
-                <nb-select formControlName="buisTypeAchter" id="type">
-                  <nb-option *ngFor="let type of buisTypes" value="{{ type }}" >
-                    {{ type }}
-                  </nb-option>
-                </nb-select>
-              </div>
-              <div class="data-container-small">
-                <p class="label-text">Diameter buis</p>
-                <nb-select (selectedChange)="checkAndereDiameterDWAAchter($event)" class="normalInput" formControlName="diameterAchter" id="type">
-                  <nb-option value="110">110 mm</nb-option>
-                  <nb-option value="125">125 mm</nb-option>
-                  <nb-option value="150">150 mm</nb-option>
-                  <nb-option value="160">160 mm</nb-option>
-                  <nb-option value="200">200 mm</nb-option>
-                  <nb-option value="andere">Andere</nb-option>
-                </nb-select>
-              </div>
-              <div class="data-container-small" *ngIf="isAndereDiameterDWAAchter">
-                <p class="label-text">Andere diameter</p>
-                <input class="smallInput2" nbInput type="number" formControlName="diameterAchterAndere" />
-              </div>
-            </div>
-          </div>
-          <div class="data-container" *ngIf="this.group.dwaSettings.mof">
-            <p class="label-text">Mof</p>
-            <div class="leftRow">
-              <input class="smallInput" nbInput type="number" formControlName="mof" />
-              <p class="texter">stuks</p>
-            </div>
-          </div>
-          <div class="data-container" *ngIf="this.group.dwaSettings.krimpMof">
-            <p class="label-text">Krimpmof</p>
-            <div class="leftRow">
-              <input class="smallInput" nbInput type="number" formControlName="krimpmof" />
-              <p class="texter">stuks</p>
-            </div>
-          </div>
-          <div class="data-container" *ngIf="this.group.dwaSettings.koppelStuk">
-            <p class="label-text">Koppelstuk</p>
-            <div class="leftRow">
-              <input class="smallInput" nbInput type="number" formControlName="koppelstuk" />
-              <p class="texter">stuks</p>
-            </div>
-          </div>
-          <div class="data-container" *ngIf="this.group.dwaSettings.stop">
-            <p class="label-text">Stop</p>
-            <div class="leftRow">
-              <input class="smallInput" nbInput type="number" formControlName="stop" />
-              <p class="texter">stuks</p>
-            </div>
-          </div>
-          <div class="data-container" *ngIf="this.group.dwaSettings.andere">
-            <p class="label-text">Andere</p>
-            <input class="normalInput" nbInput type="text" formControlName="andere" />
-          </div>
-          <div  class="data-container" *ngIf="this.group.dwaSettings.afstandPutMof">
-            <p class="label-text">Afstand midden stroomafwaartse put tot mof:</p>
-            <div class="leftRow">
-              <input class="smallInput" nbInput type="number" formControlName="afstandPutMof" />
-              <p class="texter">m</p>
-            </div>
-          </div>
-          <div  class="data-container" *ngIf="this.group.dwaSettings.diepteAansluitingWoning">
-            <p class="label-text">Diepte HA-putje/aansluiting tov MV:</p>
-            <div class="leftRow">
-              <input class="smallInput" nbInput type="number" formControlName="diepteAansluitingWoning" />
-              <p class="texter">m</p>
-            </div>
-          </div>
-          <div  class="data-container" *ngIf="this.group.dwaSettings.diepteRioleringHA">
-            <p class="label-text">Diepte aanboring op hoofdriool tov MV:<br>(op bestaande riolering)</p>
-            <div class="leftRow">
-              <input class="smallInput" nbInput type="number" formControlName="diepteRioleringHA" />
-              <p class="texter">m</p>
-            </div>
-          </div>
-          <div  class="data-container">
-            <p class="label-text">Gelegen tussen volgende IP:</p>
-            <div class="flower">
-              <input class="smallInput2" nbInput type="text" formControlName="tussenIPLinks" />
-              <p class="IPtext">-</p>
-              <input class="smallInput2" nbInput type="text" formControlName="tussenIPRechts" />
-            </div>
-          </div>
-          <div class="borderBlack" *ngIf="this.group.dwaSettings.plaatsAansluiting">
-            <img class="rioolImage" src="assets/images/gradenOpRiool.png">
-            <div class="data-container8" >
+      <div class="putRow">
+        <div class="putColumn">
+          <p class="section-title2">VOOR putje</p>
 
-              <p class="label-text">Plaats aansluiting op riool tov van stroomafw. naar stroomopw.:</p>
-              <div class="leftRow">
-                <nb-select class="smallInput" formControlName="plaatsAansluiting" id="type">
-                  <nb-option value="onbekend">onbekend</nb-option>
-                  <nb-option value="90">90</nb-option>
-                  <nb-option value="135">135</nb-option>
-                  <nb-option value="180">180</nb-option>
-                  <nb-option value="225">225</nb-option>
-                  <nb-option value="270">270</nb-option>
-                </nb-select>
-                <p class="texter">graden</p>
-              </div>
+          <div *ngIf='!group.bochtenInGraden' class="data-container4">
+            <p class="label-text">Bocht</p>
+            <div class="smallRow2">
+              <input  nbInput class="smallInput2 margT" type="number" formControlName="bochtVoor" />
+              <p class="data-text margL">stuks</p>
             </div>
           </div>
-          <div class="data-container">
-            <p class="label-text">Type aansluiting op hoofdbuis</p>
-            <nb-select class="aansluitingInput" formControlName="tBuisStuk" id="type">
-              <nb-option  value="onbekend" >Onbekend</nb-option>
-              <nb-option  value="T-Buis" >T-Buis</nb-option>
-              <nb-option  value="T-Stuk" >T-Stuk</nb-option>
-              <nb-option  value="Y-Stuk" >Y-Stuk</nb-option>
-              <nb-option  value="flexAan" >Flexibele aansluiting</nb-option>
-              <nb-option  value="aanboring" >Aanboring</nb-option>
-              <nb-option  value="Niet van toepassing" >Niet van toepassing</nb-option>
+          <div *ngIf='group.bochtenInGraden' class="data-container4">
+            <p class="label-text">Bocht 45°</p>
+            <div class="smallRow2">
+              <input  nbInput class="smallInput2 margT" type="number" formControlName="gradenBochtVoor45" />
+              <p class="data-text margL">stuks</p>
+            </div>
+          </div>
+          <div *ngIf='group.bochtenInGraden' class="data-container4">
+            <p class="label-text">Bocht 90°</p>
+            <div class="smallRow2">
+              <input  nbInput class="smallInput2 margT" type="number" formControlName="gradenBochtVoor90" />
+              <p class="data-text margL">stuks</p>
+            </div>
+          </div>
+          <div class="data-container4">
+            <p class="label-text">Buis hor.</p>
+            <div class="smallRow2">
+              <input nbInput class="smallInput2 margT" type="number" formControlName="buisVoorHor" />
+              <p class="data-text margL">meter</p>
+            </div>
+          </div>
+          <div class="data-container4">
+            <p class="label-text">Buis vert.</p>
+            <div class="smallRow2">
+              <input nbInput class="smallInput2 margT" type="number" formControlName="buisVoorVert" />
+              <p class="data-text margL">meter</p>
+            </div>
+          </div>
+          <div class="data-container4">
+            <p class="label-text">Reductie</p>
+            <div class="smallRow2">
+              <input nbInput class="smallInput2 margT" type="number" formControlName="reductieVoor" />
+              <p class="data-text margL">stuks</p>
+            </div>
+          </div>
+          <div class="data-container-small">
+            <p class="label-text">Buis soort</p>
+            <nb-select formControlName="buisType" id="type">
+              <nb-option *ngFor="let type of buisTypes" value="{{ type }}" >
+                {{ type }}
+              </nb-option>
             </nb-select>
           </div>
-          <div class="data-container">
-            <p class="label-text">Diameter putje/T-stuk</p>
-            <div class="leftRow">
-              <input class="smallInput" nbInput type="number" formControlName="diameterPut" />
-              <p class="texter">mm</p>
+          <div class="data-container-small">
+            <p class="label-text">Diameter buis</p>
+            <nb-select (selectedChange)="checkAndereDiameterDWA($event)" class="normalInput" formControlName="diameter" id="type">
+              <nb-option value="110">110 mm</nb-option>
+              <nb-option value="125">125 mm</nb-option>
+              <nb-option value="150">150 mm</nb-option>
+              <nb-option value="160">160 mm</nb-option>
+              <nb-option value="200">200 mm</nb-option>
+              <nb-option value="andere">Andere</nb-option>
+            </nb-select>
+          </div>
+          <div class="data-container-small" *ngIf="isAndereDiameterDWA">
+            <p class="label-text">Andere diameter</p>
+            <input class="smallInput2" nbInput type="number" formControlName="diameterAndere" />
+          </div>
+        </div>
+        <div class="putColumn borderLeft">
+          <p class="section-title2">NA putje</p>
+
+          <div *ngIf='!group.bochtenInGraden'  class="data-container4">
+            <p class="label-text">Bocht</p>
+            <div class="smallRow2">
+              <input nbInput class="smallInput2 margT" type="number" formControlName="bochtAchter" />
+              <p class="data-text margL">stuks</p>
             </div>
           </div>
-          <div class="data-container" >
-            <p class="label-text">Ligging</p>
-            <nb-select (selectedChange)="checkAndereLiggingDWA($event)" class="liggingInput" formControlName="ligging" id="type">
+          <div *ngIf='group.bochtenInGraden'  class="data-container4">
+            <p class="label-text">Bocht 45°</p>
+            <div class="smallRow2">
+              <input nbInput class="smallInput2 margT" type="number" formControlName="gradenBochtAchter45" />
+              <p class="data-text margL">stuks</p>
+            </div>
+          </div>
+          <div *ngIf='group.bochtenInGraden'  class="data-container4">
+            <p class="label-text">Bocht 90°</p>
+            <div class="smallRow2">
+              <input nbInput class="smallInput2 margT" type="number" formControlName="gradenBochtAchter90" />
+              <p class="data-text margL">stuks</p>
+            </div>
+          </div>
+          <div class="data-container4">
+            <p class="label-text">Buis</p>
+            <div class="smallRow2">
+              <input nbInput class="smallInput2 margT" type="number" formControlName="buisAchter" />
+              <p class="data-text margL">meter</p>
+            </div>
+          </div>
+          <div class="data-container4">
+            <p class="label-text">Reductie</p>
+            <div class="smallRow2">
+              <input nbInput class="smallInput2 margT" type="number" formControlName="reductieAchter" />
+              <p class="data-text margL">stuks</p>
+            </div>
+          </div>
+          <div class="data-container4">
+            <p class="label-text">Y-stuk</p>
+            <div class="smallRow2">
+              <input nbInput class="smallInput2 margT" type="number" formControlName="YAchter" />
+              <p class="data-text margL">stuks</p>
+            </div>
+          </div>
+          <div class="data-container-small">
+            <p class="label-text">Buis soort</p>
+            <nb-select formControlName="buisTypeAchter" id="type">
+              <nb-option *ngFor="let type of buisTypes" value="{{ type }}" >
+                {{ type }}
+              </nb-option>
+            </nb-select>
+          </div>
+          <div class="data-container-small">
+            <p class="label-text">Diameter buis</p>
+            <nb-select (selectedChange)="checkAndereDiameterDWAAchter($event)" class="normalInput" formControlName="diameterAchter" id="type">
+              <nb-option value="110">110 mm</nb-option>
+              <nb-option value="125">125 mm</nb-option>
+              <nb-option value="150">150 mm</nb-option>
+              <nb-option value="160">160 mm</nb-option>
+              <nb-option value="200">200 mm</nb-option>
+              <nb-option value="andere">Andere</nb-option>
+            </nb-select>
+          </div>
+          <div class="data-container-small" *ngIf="isAndereDiameterDWAAchter">
+            <p class="label-text">Andere diameter</p>
+            <input class="smallInput2" nbInput type="number" formControlName="diameterAchterAndere" />
+          </div>
+        </div>
+      </div>
+
+      <div style='margin-top:4px;' class="data-container">
+        <p class="label-text">Type aansluiting op hoofdbuis</p>
+        <nb-select class="aansluitingInput" formControlName="tBuisStuk" id="type">
+          <nb-option value="onbekend">Onbekend</nb-option>
+          <nb-option value="T-Buis">T-Buis</nb-option>
+          <nb-option value="T-Stuk">T-Stuk</nb-option>
+          <nb-option value="Y-Stuk">Y-Stuk</nb-option>
+          <nb-option value="flexAan">Flexibele aansluiting</nb-option>
+          <nb-option value="aanboring">Aanboring</nb-option>
+          <nb-option  value="Niet van toepassing" >Niet van toepassing</nb-option>
+        </nb-select>
+      </div>
+      <div class='flexWrapper'>
+        <div class="insideRow2" *ngIf="this.group.dwaSettings.mof">
+          <p class="label-text">Mof</p>
+          <div class="leftRow">
+            <input class="smallInput2" nbInput type="number" formControlName="mof" />
+            <p class="texter">stuks</p>
+          </div>
+        </div>
+        <div class="insideRow2" *ngIf="this.group.dwaSettings.krimpMof">
+          <p class="label-text">Krimpmof</p>
+          <div class="leftRow">
+            <input class="smallInput2" nbInput type="number" formControlName="krimpmof" />
+            <p class="texter">stuks</p>
+          </div>
+        </div>
+        <div class="insideRow2" *ngIf="this.group.dwaSettings.koppelStuk">
+          <p class="label-text">Koppelstuk</p>
+          <div class="leftRow">
+            <input class="smallInput2" nbInput type="number" formControlName="koppelstuk" />
+            <p class="texter">stuks</p>
+          </div>
+        </div>
+        <div class="insideRow2" *ngIf="this.group.dwaSettings.stop">
+          <p class="label-text">Stop</p>
+          <div class="leftRow">
+            <input class="smallInput2" nbInput type="number" formControlName="stop" />
+            <p class="texter">stuks</p>
+          </div>
+        </div>
+        <div class="insideRow2" *ngIf="this.group.dwaSettings.andere">
+          <p class="label-text">Andere</p>
+          <input style='margin-left:15px !important;' class="normalInput" nbInput type="text" formControlName="andere" />
+        </div>
+      </div>
+      <div class="data-container" *ngIf="this.group.dwaSettings.afstandPutMof">
+        <p class="label-text">Afstand midden stroomafwaartse put tot mof:</p>
+        <div class="leftRow">
+          <input class="smallInput2" nbInput type="number" formControlName="afstandPutMof" />
+          <p class="texter">m</p>
+        </div>
+      </div>
+      <div class="data-container" *ngIf="this.group.dwaSettings.diepteAansluitingWoning">
+        <p class="label-text">Diepte HA-putje/aansluiting tov MV:</p>
+        <div class="leftRow">
+          <input class="smallInput2" nbInput type="number" formControlName="diepteAansluitingWoning" />
+          <p class="texter">m</p>
+        </div>
+      </div>
+      <div class="data-container" *ngIf="this.group.dwaSettings.diepteRioleringHA">
+        <p class="label-text">Diepte aanboring op hoofdriool tov MV:<br>(op bestaande riolering)</p>
+        <div class="leftRow">
+          <input class="smallInput2" nbInput type="number" formControlName="diepteRioleringHA" />
+          <p class="texter">m</p>
+        </div>
+      </div>
+      <div class="data-container">
+        <p class="label-text">Gelegen tussen volgende IP:</p>
+        <div class="flower">
+          <input class="smallInput2" nbInput type="text" formControlName="tussenIPLinks" />
+          <p class="IPtext">-</p>
+          <input class="smallInput2" nbInput type="text" formControlName="tussenIPRechts" />
+        </div>
+      </div>
+      <div class="borderBlack" *ngIf="this.group.dwaSettings.plaatsAansluiting">
+        <img class="rioolImage" src="assets/images/gradenOpRiool.png">
+        <div class="data-container8">
+
+          <p class="label-text">Plaats aansluiting op riool tov van stroomafw. naar stroomopw.:</p>
+          <div class="leftRow">
+            <nb-select class="smallInput" formControlName="plaatsAansluiting" id="type">
+              <nb-option value="onbekend">onbekend</nb-option>
+              <nb-option value="90">90</nb-option>
+              <nb-option value="135">135</nb-option>
+              <nb-option value="180">180</nb-option>
+              <nb-option value="225">225</nb-option>
+              <nb-option value="270">270</nb-option>
+            </nb-select>
+            <p class="texter">graden</p>
+          </div>
+        </div>
+      </div>
+      <div class='flexWrapper'>
+        <div class="insideRow2">
+          <p class="label-text">Ligging</p>
+          <nb-select (selectedChange)="checkAndereLiggingDWA($event)" class="liggingInput" formControlName="ligging" id="type">
+            <nb-option value="onbekend">Onbekend</nb-option>
+            <nb-option value="oprit">Oprit</nb-option>
+            <nb-option value="voortuin">Voortuin</nb-option>
+            <nb-option value="berm">Berm</nb-option>
+            <nb-option value="voetpad">Voetpad</nb-option>
+            <nb-option value="fietspad">Fietspad</nb-option>
+            <nb-option value="haag">Onder haag door</nb-option>
+            <nb-option value="andere">Andere</nb-option>
+          </nb-select>
+        </div>
+        <div class="insideRow2">
+          <p class="label-text">Diameter putje/T-stuk</p>
+          <div class="leftRow">
+            <input class="smallInput2" nbInput type="number" formControlName="diameterPut" />
+            <p class="texter">mm</p>
+          </div>
+        </div>
+        <div *ngIf="isAndereLiggingDWA" class="insideRow2">
+          <p class="label-text">Andere ligging</p>
+          <input class="normalInput" nbInput type="text" formControlName="liggingAndere" />
+        </div>
+        <div style='justify-content: flex-start !important; gap:25px !important;' class="insideRow2">
+          <p class="label-text">Gietijzer</p>
+          <nb-toggle style='margin-top:6px' status="primary" formControlName="gietijzer" (checkedChange)="editGietijzerDWA()"></nb-toggle>
+        </div>
+        <div style='justify-content: flex-start !important; gap:25px !important;' *ngIf="gietIjzerDWA" class="insideRow2">
+          <p class="label-text">Beton kader</p>
+          <nb-toggle style='margin-top:6px' formControlName="betonkader" status="primary"></nb-toggle>
+        </div>
+        <div style='justify-content: flex-start !important; gap:25px !important;' *ngIf="!gietIjzerDWA" class="insideRow2">
+          <p class="label-text">Aluminium kader</p>
+          <nb-toggle style='margin-top:6px' formControlName="alukader" status="primary"></nb-toggle>
+        </div>
+        <div *ngIf="this.group.dwaSettings.terugSlagKlep" class="insideRow2" >
+          <p class="label-text">Terugslagklep in putje</p>
+          <nb-toggle class='toggle' formControlName="terugslagklep" status="primary"></nb-toggle>
+        </div>
+        <div class="insideRow2" >
+          <p class="label-text">Soort putje</p>
+          <nb-select class="normalInput" (selectedChange)="checkSoortDWA($event)" formControlName="soortPutje" id="type">
+            <nb-option value="kunststof">Kunststof</nb-option>
+            <nb-option value="t-stuk">PVC T-stuk</nb-option>
+            <nb-option value="geen">Geen</nb-option>
+            <nb-option value="andere">Andere</nb-option>
+          </nb-select>
+        </div>
+        <div *ngIf="isAnderPutjeDWA" class="insideRow2">
+          <p class="label-text">Ander putje</p>
+          <input class="normalInput" nbInput type="text" formControlName="anderPutje" />
+        </div>
+        <div *ngIf="this.group.dwaSettings.sifonPutje == null || this.group.dwaSettings.sifonPutje"  class="insideRow2">
+          <p class="label-text">Sifonputje</p>
+          <div class="leftRow">
+            <input class="smallInput2" nbInput type="number" formControlName="sifonPutje" />
+            <p class="texter">stuks</p>
+          </div>
+        </div>
+        <div *ngIf="this.group.dwaSettings.tPutje == null || this.group.dwaSettings.tPutje"  class="insideRow2">
+          <p class="label-text">T-putje</p>
+          <div class="leftRow">
+            <input class="smallInput2" nbInput type="number" formControlName="tPutje" />
+            <p class="texter">stuks</p>
+          </div>
+        </div>
+      </div>
+      <div class="borderBlack" *ngIf="this.group.dwaSettings.ssGrond">
+        <img class="rioolImage2" src="assets/images/afstandputjeDWA.png" />
+        <div class="data-container8">
+          <p class="label-text">Letter & afstand putje HORIZONTAAL</p>
+          <div class="flower">
+            <nb-select class="smallInput" formControlName="letterHor" id="type">
               <nb-option value="onbekend">Onbekend</nb-option>
-              <nb-option value="oprit">Oprit</nb-option>
-              <nb-option value="voortuin">Voortuin</nb-option>
-              <nb-option value="berm">Berm</nb-option>
-              <nb-option value="voetpad">Voetpad</nb-option>
-              <nb-option value="fietspad">Fietspad</nb-option>
-              <nb-option value="haag">Onder haag door</nb-option>
+              <nb-option value="a">a</nb-option>
+              <nb-option value="b">b</nb-option>
+              <nb-option value="c">c</nb-option>
+              <nb-option value="d">d</nb-option>
+              <nb-option value="e">e</nb-option>
+              <nb-option value="f">f</nb-option>
+            </nb-select>
+            <p class="IPtext">-</p>
+            <input class="smallInput2" nbInput type="number" formControlName="putHor" />
+            <p class="texter">m</p>
+          </div>
+        </div>
+        <div class="data-container8">
+          <p class="label-text">Letter & afstand putje VERTICAAL</p>
+          <div class="flower">
+            <nb-select class="smallInput" formControlName="letterVer" id="type">
+              <nb-option value="onbekend">Onbekend</nb-option>
+              <nb-option value="g">g</nb-option>
+              <nb-option value="h">h</nb-option>
+            </nb-select>
+            <p class="IPtext">-</p>
+            <input class="smallInput2" nbInput type="number" formControlName="putVer" />
+            <p class="texter">m</p>
+          </div>
+        </div>
+      </div>
+
+      <div style='margin-top:5px;' class='flexWrapper'>
+        <div class='insideRow2'>
+          <p style='font-size: 16px;text-align: start;text-decoration: underline' class="section-title">Lambert coördinaten</p>
+        </div>
+        <div class="insideRow2">
+          <p class="label-text">X-coord</p>
+          <input class="lambertInput" nbInput type="text" formControlName="xCoord" />
+        </div>
+        <div class="insideRow2">
+          <p class="label-text">Y-coord</p>
+          <input class="lambertInput" nbInput type="text" formControlName="yCoord" />
+        </div>
+        <div class="insideRow2">
+          <p class="label-text">Z-coord</p>
+          <input class="lambertInput" nbInput type="text" formControlName="zCoord" />
+        </div>
+      </div>
+    </form>
+    <form *ngIf="isLoaded" [formGroup]="rwaForm"  class="add-form column-container">
+      <p class="section-title">
+        RWA
+      </p>
+      <div class="locatieRow">
+        <div style='justify-content: flex-start; margin-bottom:4px' class="data-container">
+          <p style='margin-right:13px' class="label-text">Wachtaansluiting</p>
+          <nb-toggle class='toggle' (checkedChange)="setWachtaansluiting($event, 'rwa')"  formControlName="isWachtaansluiting" status="primary"></nb-toggle>
+        </div>
+      </div>
+      <div  class="putRow">
+        <div class="putColumn">
+          <p class="section-title2">VOOR putje</p>
+
+          <div *ngIf='!group.bochtenInGraden' class="data-container4">
+            <p class="label-text">Bocht</p>
+            <div class="smallRow2">
+              <input nbInput class="smallInput2 margT" type="number" formControlName="bochtVoor" />
+              <p class="data-text margL">stuks</p>
+            </div>
+          </div>
+          <div *ngIf='group.bochtenInGraden' class="data-container4">
+            <p class="label-text">Bocht 45°</p>
+            <div class="smallRow2">
+              <input nbInput class="smallInput2 margT" type="number" formControlName="gradenBochtVoor45" />
+              <p class="data-text margL">stuks</p>
+            </div>
+          </div>
+          <div *ngIf='group.bochtenInGraden' class="data-container4">
+            <p class="label-text">Bocht 90°</p>
+            <div class="smallRow2">
+              <input nbInput class="smallInput2 margT" type="number" formControlName="gradenBochtVoor90" />
+              <p class="data-text margL">stuks</p>
+            </div>
+          </div>
+          <div class="data-container4">
+            <p class="label-text">Buis hor.</p>
+            <div class="smallRow2">
+              <input nbInput class="smallInput2 margT" type="number" formControlName="buisVoorHor" />
+              <p class="data-text margL">meter</p>
+            </div>
+          </div>
+          <div class="data-container4">
+            <p class="label-text">Buis vert.</p>
+            <div class="smallRow2">
+              <input nbInput class="smallInput2 margT" type="number" formControlName="buisVoorVert" />
+              <p class="data-text margL">meter</p>
+            </div>
+          </div>
+          <div class="data-container4">
+            <p class="label-text">Reductie</p>
+            <div class="smallRow2">
+              <input nbInput class="smallInput2 margT" type="number" formControlName="reductieVoor" />
+              <p class="data-text margL">stuks</p>
+            </div>
+          </div>
+          <div class="data-container-small">
+            <p class="label-text">Buis soort</p>
+            <nb-select formControlName="buisType" id="type">
+              <nb-option *ngFor="let type of buisTypesRWA" value="{{ type }}" >
+                {{ type }}
+              </nb-option>
+            </nb-select>
+          </div>
+          <div class="data-container-small">
+            <p class="label-text">Diameter buis</p>
+            <nb-select (selectedChange)="checkAndereDiameterRWA($event)" class="normalInput" formControlName="diameter" id="type">
+              <nb-option value="110">110 mm</nb-option>
+              <nb-option value="125">125 mm</nb-option>
+              <nb-option value="150">150 mm</nb-option>
+              <nb-option value="160">160 mm</nb-option>
+              <nb-option value="200">200 mm</nb-option>
               <nb-option value="andere">Andere</nb-option>
             </nb-select>
           </div>
-          <div class="data-container" *ngIf="isAndereLiggingDWA">
-            <p class="label-text">Andere ligging</p>
-            <input class="normalInput" nbInput type="text" formControlName="liggingAndere" />
+          <div class="data-container-small" *ngIf="isAndereDiameterRWA">
+            <p class="label-text">Andere diameter</p>
+            <input class="smallInput2" nbInput type="number" formControlName="diameterAndere" />
           </div>
-          <div class="data-container">
-            <p class="label-text">Gietijzer</p>
-              <nb-toggle  status="primary"  formControlName="gietijzer" (checkedChange)="editGietijzerDWA()" ></nb-toggle>
+        </div>
+        <div class="putColumn borderLeft">
+          <p class="section-title2">NA putje</p>
+
+          <div *ngIf='!group.bochtenInGraden' class="data-container4">
+            <p class="label-text">Bocht</p>
+            <div class="smallRow2">
+              <input nbInput class="smallInput2 margT" type="number" formControlName="bochtAchter" />
+              <p class="data-text margL">stuks</p>
+            </div>
           </div>
-          <div *ngIf="gietIjzerDWA" class="data-container">
-            <p class="label-text">Beton kader</p>
-              <nb-toggle  formControlName="betonkader" status="primary" ></nb-toggle>
+          <div *ngIf='group.bochtenInGraden' class="data-container4">
+            <p class="label-text">Bocht 45°</p>
+            <div class="smallRow2">
+              <input nbInput class="smallInput2 margT" type="number" formControlName="gradenBochtAchter45" />
+              <p class="data-text margL">stuks</p>
+            </div>
           </div>
-          <div *ngIf="!gietIjzerDWA" class="data-container">
-            <p class="label-text">Aluminium kader</p>
-              <nb-toggle  formControlName="alukader" status="primary" ></nb-toggle>
+          <div *ngIf='group.bochtenInGraden' class="data-container4">
+            <p class="label-text">Bocht 90°</p>
+            <div class="smallRow2">
+              <input nbInput class="smallInput2 margT" type="number" formControlName="gradenBochtAchter90" />
+              <p class="data-text margL">stuks</p>
+            </div>
           </div>
-          <div class="data-container" *ngIf="this.group.dwaSettings.terugSlagKlep">
-            <p class="label-text">Terugslagklep in putje</p>
-            <nb-toggle  formControlName="terugslagklep" status="primary"></nb-toggle>
+          <div class="data-container4">
+            <p class="label-text">Buis</p>
+            <div class="smallRow2">
+              <input nbInput class="smallInput2 margT" type="number" formControlName="buisAchter" />
+              <p class="data-text margL">meter</p>
+            </div>
           </div>
-          <div class="data-container">
-            <p class="label-text">Soort putje</p>
-            <nb-select class="normalInput" (selectedChange)="checkSoortDWA($event)" formControlName="soortPutje" id="type">
-              <nb-option value="kunststof">Kunststof</nb-option>
-              <nb-option value="t-stuk">PVC T-stuk</nb-option>
-              <nb-option value="geen">Geen</nb-option>
+          <div class="data-container4">
+            <p class="label-text">Reductie</p>
+            <div class="smallRow2">
+              <input nbInput class="smallInput2 margT" type="number" formControlName="reductieAchter" />
+              <p class="data-text margL">stuks</p>
+            </div>
+          </div>
+          <div class="data-container4">
+            <p class="label-text">Y-stuk</p>
+            <div class="smallRow2">
+              <input nbInput class="smallInput2 margT" type="number" formControlName="YAchter" />
+              <p class="data-text margL">stuks</p>
+            </div>
+          </div>
+          <div class="data-container-small">
+            <p class="label-text">Buis soort</p>
+            <nb-select formControlName="buisTypeAchter" id="type">
+              <nb-option *ngFor="let type of buisTypesRWA" value="{{ type }}" >
+                {{ type }}
+              </nb-option>
+            </nb-select>
+          </div>
+          <div class="data-container-small">
+            <p class="label-text">Diameter buis</p>
+            <nb-select (selectedChange)="checkAndereDiameterRWAAchter($event)" class="normalInput" formControlName="diameterAchter" id="type">
+              <nb-option value="110">110 mm</nb-option>
+              <nb-option value="125">125 mm</nb-option>
+              <nb-option value="150">150 mm</nb-option>
+              <nb-option value="160">160 mm</nb-option>
+              <nb-option value="200">200 mm</nb-option>
               <nb-option value="andere">Andere</nb-option>
             </nb-select>
           </div>
-          <div class="data-container" *ngIf="isAnderPutjeDWA">
-            <p class="label-text">Ander putje</p>
-            <input class="normalInput" nbInput type="text" formControlName="anderPutje" />
+          <div class="data-container-small" *ngIf="isAndereDiameterRWAAchter">
+            <p class="label-text">Andere diameter</p>
+            <input class="smallInput2" nbInput type="number" formControlName="diameterAchterAndere" />
           </div>
-          <div class="data-container" *ngIf="this.group.dwaSettings.sifonPutje == null || this.group.dwaSettings.sifonPutje">
-            <p class="label-text">Sifonputje</p>
-            <div class="leftRow">
-              <input class="smallInput" nbInput type="number" formControlName="sifonPutje" />
-              <p class="texter">stuks</p>
-            </div>
+        </div>
+      </div>
+      <div  style='margin-top:4px;' class="data-container">
+        <p class="label-text">Type aansluiting op hoofdbuis</p>
+        <nb-select class="aansluitingInput" formControlName="tBuisStuk" id="type">
+          <nb-option value="onbekend">Onbekend</nb-option>
+          <nb-option value="T-Buis">T-Buis</nb-option>
+          <nb-option value="T-Stuk">T-Stuk</nb-option>
+          <nb-option value="Y-Stuk">Y-Stuk</nb-option>
+          <nb-option value="flexAan">Flexibele aansluiting</nb-option>
+          <nb-option value="aanboring">Aanboring</nb-option>
+          <nb-option  value="Niet van toepassing" >Niet van toepassing</nb-option>
+        </nb-select>
+      </div>
+      <div class='flexWrapper'>
+        <div class="insideRow2" *ngIf="this.group.rwaSettings.mof">
+          <p class="label-text">Mof</p>
+          <div class="leftRow">
+            <input class="smallInput2" nbInput type="number" formControlName="mof" />
+            <p class="texter">stuks</p>
           </div>
-          <div class="data-container" *ngIf="this.group.dwaSettings.tPutje == null || this.group.dwaSettings.tPutje">
-            <p class="label-text">T-putje</p>
-            <div class="leftRow">
-              <input class="smallInput" nbInput type="number" formControlName="tPutje" />
-              <p class="texter">stuks</p>
-            </div>
+        </div>
+        <div class="insideRow2" *ngIf="this.group.rwaSettings.krimpMof">
+          <p class="label-text">Krimpmof</p>
+          <div class="leftRow">
+            <input class="smallInput2" nbInput type="number" formControlName="krimpmof" />
+            <p class="texter">stuks</p>
           </div>
-          <div class="borderBlack" *ngIf="this.group.dwaSettings.ssGrond">
-            <img class="rioolImage2" src="assets/images/afstandputjeDWA.png"    />
-            <div class="data-container8">
-              <p class="label-text">Letter & afstand putje HORIZONTAAL</p>
-              <div class="flower">
-                <nb-select class="smallInput" formControlName="letterHor" id="type">
-                  <nb-option  value="onbekend" >Onbekend</nb-option>
-                  <nb-option  value="a" >a</nb-option>
-                  <nb-option  value="b" >b</nb-option>
-                  <nb-option  value="c" >c</nb-option>
-                  <nb-option  value="d" >d</nb-option>
-                  <nb-option  value="e" >e</nb-option>
-                  <nb-option  value="f" >f</nb-option>
-                </nb-select>
-                <p class="IPtext">-</p>
-                <input class="smallInput" nbInput type="number" formControlName="putHor" />
-                <p class="texter">m</p>
-              </div>
-            </div>
-            <div class="data-container8">
-              <p class="label-text">Letter & afstand putje VERTICAAL</p>
-              <div class="flower">
-                <nb-select class="smallInput" formControlName="letterVer" id="type">
-                  <nb-option  value="onbekend" >Onbekend</nb-option>
-                  <nb-option  value="g" >g</nb-option>
-                  <nb-option  value="h" >h</nb-option>
-                </nb-select>
-                <p class="IPtext">-</p>
-                <input class="smallInput" nbInput type="number" formControlName="putVer" />
-                <p class="texter">m</p>
-              </div>
-            </div>
+        </div>
+        <div class="insideRow2" *ngIf="this.group.rwaSettings.koppelStuk">
+          <p class="label-text">Koppelstuk</p>
+          <div class="leftRow">
+            <input class="smallInput2" nbInput type="number" formControlName="koppelstuk" />
+            <p class="texter">stuks</p>
           </div>
-          <hr>
-
-          <div>
-            <p class="section-title">Lambert coordinaten</p>
-            <div class="data-container">
-              <p class="label-text">X-coordinaat</p>
-              <input class="normalInput" nbInput type="text" formControlName="xCoord" />
-            </div>
-            <div class="data-container">
-              <p class="label-text">Y-coordinaat</p>
-              <input class="normalInput" nbInput type="text" formControlName="yCoord" />
-            </div>
-            <div class="data-container">
-              <p class="label-text">Z-coordinaat</p>
-              <input class="normalInput" nbInput type="text" formControlName="zCoord" />
-            </div>
+        </div>
+        <div class="insideRow2" *ngIf="this.group.rwaSettings.stop">
+          <p class="label-text">Stop</p>
+          <div class="leftRow">
+            <input class="smallInput2" nbInput type="number" formControlName="stop" />
+            <p class="texter">stuks</p>
           </div>
+        </div>
+        <div class="insideRow2" *ngIf="this.group.rwaSettings.andere">
+          <p class="label-text">Andere</p>
+          <input style='margin-left:15px !important;' class="normalInput" nbInput type="text" formControlName="andere" />
+        </div>
+      </div>
+      <div class="data-container" *ngIf="this.group.rwaSettings.afstandPutMof">
+        <p class="label-text">Afstand midden stroomafwaartse put tot mof:</p>
+        <div class="leftRow">
+          <input class="smallInput2" nbInput type="number" formControlName="afstandPutMof" />
+          <p class="texter">m</p>
+        </div>
+      </div>
+      <div class="data-container" *ngIf="this.group.rwaSettings.diepteAansluitingWoning">
+        <p class="label-text">Diepte HA-putje/aansluiting tov MV:</p>
+        <div class="leftRow">
+          <input class="smallInput2" nbInput type="number" formControlName="diepteAansluitingWoning" />
+          <p class="texter">m</p>
+        </div>
+      </div>
+      <div class="data-container" *ngIf="this.group.rwaSettings.diepteRioleringHA">
+        <p class="label-text">Diepte aanboring op hoofdriool tov MV:<br>(op bestaande riolering)</p>
+        <div class="leftRow">
+          <input class="smallInput2" nbInput type="number" formControlName="diepteRioleringHA" />
+          <p class="texter">m</p>
+        </div>
+      </div>
+      <div class="data-container">
+        <p class="label-text">Gelegen tussen volgende IP:</p>
+        <div class="flower">
+          <input class="smallInput2" nbInput type="text" formControlName="tussenIPLinks" />
+          <p class="IPtext">-</p>
+          <input class="smallInput2" nbInput type="text" formControlName="tussenIPRechts" />
+        </div>
+      </div>
+      <div class="borderBlack" *ngIf="this.group.rwaSettings.plaatsAansluiting">
+        <img class="rioolImage" src="assets/images/gradenOpRiool.png">
+        <div class="data-container8">
 
-        </form>
-          <form *ngIf="isLoaded" [formGroup]="rwaForm" (ngSubmit)="onSubmitInfo()" class="add-form column-container">
-            <p class="section-title">
-              RWA
-            </p>
-            <div class="data-container">
-              <p class="label-text">Wachtaansluiting</p>
-              <nb-toggle (checkedChange)="setWachtaansluiting($event, 'rwa')"  formControlName="isWachtaansluiting" status="primary"></nb-toggle>
-            </div>
-
-            <div class="putRow">
-              <div class="putColumn">
-                <p class="section-title2">Voor het putje</p>
-
-                <div *ngIf='!group.bochtenInGraden' class="data-container4">
-                  <p class="label-text">Bocht</p>
-                  <div class="smallRow">
-                    <input nbInput class="smallInput2 margT" type="number" formControlName="bochtVoor" />
-                    <p class="data-text margL">stuks</p>
-                  </div>
-                </div>
-                <div *ngIf='group.bochtenInGraden' class="data-container4">
-                  <p class="label-text">Bocht 45°</p>
-                  <div class="smallRow">
-                    <input nbInput class="smallInput2 margT" type="number" formControlName="gradenBochtVoor45" />
-                    <p class="data-text margL">stuks</p>
-                  </div>
-                </div>
-                <div *ngIf='group.bochtenInGraden' class="data-container4">
-                  <p class="label-text">Bocht 90°</p>
-                  <div class="smallRow">
-                    <input nbInput class="smallInput2 margT" type="number" formControlName="gradenBochtVoor90" />
-                    <p class="data-text margL">stuks</p>
-                  </div>
-                </div>
-                <div class="data-container4">
-                  <p class="label-text">Buis hor.</p>
-                  <div class="smallRow">
-                    <input nbInput class="smallInput2 margT" type="number" formControlName="buisVoorHor" />
-                    <p class="data-text margL">meter</p>
-                  </div>
-                </div>
-                <div class="data-container4">
-                  <p class="label-text">Buis vert.</p>
-                  <div class="smallRow">
-                    <input nbInput class="smallInput2 margT" type="number" formControlName="buisVoorVert" />
-                    <p class="data-text margL">meter</p>
-                  </div>
-                </div>
-                <div class="data-container4">
-                  <p class="label-text">Reductie</p>
-                  <div class="smallRow">
-                    <input nbInput class="smallInput2 margT" type="number" formControlName="reductieVoor" />
-                    <p class="data-text margL">stuks</p>
-                  </div>
-                </div>
-                <div class="data-container-small">
-                  <p class="label-text">Buis soort</p>
-                  <nb-select (selectedChange)="changeMateriaalBuisVoorPutRWA()" formControlName="buisType" id="type">
-                    <nb-option *ngFor="let type of buisTypesRWA" value="{{ type }}" >
-                      {{ type }}
-                    </nb-option>
-                  </nb-select>
-                </div>
-                <div class="data-container-small">
-                  <p class="label-text">Diameter buis</p>
-                  <nb-select (selectedChange)="checkAndereDiameterRWA($event)" class="normalInput" formControlName="diameter" id="type">
-                    <nb-option value="110">110 mm</nb-option>
-                    <nb-option value="125">125 mm</nb-option>
-                    <nb-option value="150">150 mm</nb-option>
-                    <nb-option value="160">160 mm</nb-option>
-                    <nb-option value="200">200 mm</nb-option>
-                    <nb-option value="andere">Andere</nb-option>
-                  </nb-select>
-                </div>
-                <div class="data-container-small" *ngIf="isAndereDiameterRWA">
-                  <p class="label-text">Andere diameter</p>
-                  <input class="smallInput2" nbInput type="number" formControlName="diameterAndere" />
-                </div>
-              </div>
-              <div class="putColumn borderLeft">
-                <p class="section-title2">Achter het putje</p>
-
-                <div *ngIf='!group.bochtenInGraden' class="data-container4">
-                  <p class="label-text">Bocht</p>
-                  <div class="smallRow">
-                    <input nbInput class="smallInput2 margT" type="number" formControlName="bochtAchter" />
-                    <p class="data-text margL">stuks</p>
-                  </div>
-                </div>
-                <div *ngIf='group.bochtenInGraden' class="data-container4">
-                  <p class="label-text">Bocht 45°</p>
-                  <div class="smallRow">
-                    <input nbInput class="smallInput2 margT" type="number" formControlName="gradenBochtAchter45" />
-                    <p class="data-text margL">stuks</p>
-                  </div>
-                </div>
-                <div *ngIf='group.bochtenInGraden' class="data-container4">
-                  <p class="label-text">Bocht 90°</p>
-                  <div class="smallRow">
-                    <input nbInput class="smallInput2 margT" type="number" formControlName="gradenBochtAchter90" />
-                    <p class="data-text margL">stuks</p>
-                  </div>
-                </div>
-                <div class="data-container4">
-                  <p class="label-text">Buizen</p>
-                  <div class="smallRow">
-                    <input nbInput class="smallInput2 margT" type="number" formControlName="buisAchter" />
-                    <p class="data-text margL">meter</p>
-                  </div>
-                </div>
-                <div class="data-container4">
-                  <p class="label-text">Reductie</p>
-                  <div class="smallRow">
-                    <input nbInput class="smallInput2 margT" type="number" formControlName="reductieAchter" />
-                    <p class="data-text margL">stuks</p>
-                  </div>
-                </div>
-                <div class="data-container4">
-                  <p class="label-text">Y-stuk</p>
-                  <div class="smallRow">
-                    <input nbInput class="smallInput2 margT" type="number" formControlName="YAchter" />
-                    <p class="data-text margL">stuks</p>
-                  </div>
-                </div>
-                <div class="data-container-small">
-                  <p class="label-text">Buis soort</p>
-                  <nb-select formControlName="buisTypeAchter" id="type">
-                    <nb-option *ngFor="let type of buisTypesRWA" value="{{ type }}" >
-                      {{ type }}
-                    </nb-option>
-                  </nb-select>
-                </div>
-                <div class="data-container-small">
-                  <p class="label-text">Diameter buis</p>
-                  <nb-select (selectedChange)="checkAndereDiameterRWAAchter($event)" class="normalInput" formControlName="diameterAchter" id="type">
-                    <nb-option value="110">110 mm</nb-option>
-                    <nb-option value="125">125 mm</nb-option>
-                    <nb-option value="150">150 mm</nb-option>
-                    <nb-option value="160">160 mm</nb-option>
-                    <nb-option value="200">200 mm</nb-option>
-                    <nb-option value="andere">Andere</nb-option>
-                  </nb-select>
-                </div>
-                <div class="data-container-small" *ngIf="isAndereDiameterRWAAchter">
-                  <p class="label-text">Andere diameter</p>
-                  <input class="smallInput2" nbInput type="number" formControlName="diameterAchterAndere" />
-                </div>
-              </div>
-            </div>
-            <div class="data-container" *ngIf="this.group.rwaSettings.mof">
-              <p class="label-text">Mof</p>
-              <div class="leftRow">
-                <input class="smallInput" nbInput type="number" formControlName="mof" />
-                <p class="texter">stuks</p>
-              </div>
-            </div>
-            <div class="data-container" *ngIf="this.group.rwaSettings.krimpMof">
-              <p class="label-text">Krimpmof</p>
-              <div class="leftRow">
-                <input class="smallInput" nbInput type="number" formControlName="krimpmof" />
-                <p class="texter">stuks</p>
-              </div>
-            </div>
-            <div class="data-container" *ngIf="this.group.rwaSettings.koppelStuk">
-              <p class="label-text">Koppelstuk</p>
-              <div class="leftRow">
-                <input class="smallInput" nbInput type="number" formControlName="koppelstuk" />
-                <p class="texter">stuks</p>
-              </div>
-            </div>
-            <div class="data-container" *ngIf="this.group.rwaSettings.stop">
-              <p class="label-text">Stop</p>
-              <div class="leftRow">
-                <input class="smallInput" nbInput type="number" formControlName="stop" />
-                <p class="texter">stuks</p>
-              </div>
-            </div>
-            <div class="data-container" *ngIf="this.group.rwaSettings.andere">
-              <p class="label-text">Andere</p>
-              <input class="normalInput" nbInput type="text" formControlName="andere" />
-            </div>
-            <div  class="data-container" *ngIf="this.group.rwaSettings.afstandPutMof">
-              <p class="label-text">Afstand midden stroomafwaartse put tot mof:</p>
-              <div class="leftRow">
-                <input class="smallInput" nbInput type="number" formControlName="afstandPutMof" />
-                <p class="texter">m</p>
-              </div>
-            </div>
-            <div  class="data-container" *ngIf="this.group.rwaSettings.diepteAansluitingWoning">
-              <p class="label-text">Diepte HA-putje/aansluiting tov MV:<br>(op bestaande riolering)</p>
-              <div class="leftRow">
-                <input class="smallInput" nbInput type="number" formControlName="diepteAansluitingWoning" />
-                <p class="texter">m</p>
-              </div>
-            </div>
-            <div  class="data-container" *ngIf="this.group.rwaSettings.diepteRioleringHA">
-              <p class="label-text">Diepte aanboring op hoofdriool tov MV:</p>
-              <div class="leftRow">
-                <input class="smallInput" nbInput type="number" formControlName="diepteRioleringHA" />
-                <p class="texter">m</p>
-              </div>
-            </div>
-            <div  class="data-container">
-              <p class="label-text">Gelegen tussen volgende IP:</p>
-              <div class="flower">
-                <input class="smallInput2" nbInput type="text" formControlName="tussenIPLinks" />
-                <p class="IPtext">-</p>
-                <input class="smallInput2" nbInput type="text" formControlName="tussenIPRechts" />
-              </div>
-            </div>
-            <div class="borderBlack" *ngIf="this.group.rwaSettings.plaatsAansluiting">
-              <img class="rioolImage" src="assets/images/gradenOpRiool.png">
-              <div class="data-container8" >
-
-                <p class="label-text">Plaats aansluiting op riool tov van stroomafw. naar stroomopw.:</p>
-                <div class="leftRow">
-                  <nb-select class="smallInput" formControlName="plaatsAansluiting" id="type">
-                    <nb-option value="onbekend">onbekend</nb-option>
-                    <nb-option value="90">90</nb-option>
-                    <nb-option value="135">135</nb-option>
-                    <nb-option value="180">180</nb-option>
-                    <nb-option value="225">225</nb-option>
-                    <nb-option value="270">270</nb-option>
-                  </nb-select>
-                  <p class="texter">graden</p>
-                </div>
-              </div>
-            </div>
-            <div class="data-container">
-              <p class="label-text">Type aansluiting op hoofdbuis</p>
-              <nb-select class="aansluitingInput" formControlName="tBuisStuk" id="type">
-                <nb-option  value="onbekend">Onbekend</nb-option>
-                <nb-option  value="T-Buis" >T-Buis</nb-option>
-                <nb-option  value="T-Stuk" >T-Stuk</nb-option>
-                <nb-option  value="Y-Stuk" >Y-Stuk</nb-option>
-                <nb-option  value="flexAan" >Flexibele aansluiting</nb-option>
-                <nb-option  value="aanboring" >Aanboring</nb-option>
-                <nb-option  value="Niet van toepassing" >Niet van toepassing</nb-option>
-              </nb-select>
-            </div>
-            <div class="data-container">
-              <p class="label-text">Diameter putje/T-stuk</p>
-              <div class="leftRow">
-                <input class="smallInput" nbInput type="number" formControlName="diameterPut" />
-                <p class="texter">mm</p>
-              </div>
-            </div>
-            <div class="data-container" >
-              <p class="label-text">Ligging</p>
-              <nb-select (selectedChange)="checkAndereLiggingRWA($event)" class="liggingInput" formControlName="ligging" id="type">
-                <nb-option value="onbekend">Onbekend</nb-option>
-                <nb-option value="oprit">Oprit</nb-option>
-                <nb-option value="voortuin">Voortuin</nb-option>
-                <nb-option value="berm">Berm</nb-option>
-                <nb-option value="voetpad">Voetpad</nb-option>
-                <nb-option value="fietspad">Fietspad</nb-option>
-                <nb-option value="haag">Onder haag door</nb-option>
-                <nb-option value="andere">Andere</nb-option>
-              </nb-select>
-            </div>
-            <div class="data-container" *ngIf="isAndereLiggingRWA">
-              <p class="label-text">Andere ligging</p>
-              <input class="normalInput" nbInput type="text" formControlName="liggingAndere" />
-            </div>
-            <div class="data-container">
-              <p class="label-text">Gietijzer</p>
-              <nb-toggle  status="primary"formControlName="gietijzer" (checkedChange)="editGietijzerRWA()" ></nb-toggle>
-            </div>
-            <div *ngIf="gietIjzerRWA" class="data-container">
-              <p class="label-text">Beton kader</p>
-              <nb-toggle formControlName="betonkader" status="primary" ></nb-toggle>
-            </div>
-            <div *ngIf="!gietIjzerRWA" class="data-container">
-              <p class="label-text">Aluminium kader</p>
-              <nb-toggle formControlName="alukader" status="primary" ></nb-toggle>
-            </div>
-            <div class="data-container" *ngIf="this.group.rwaSettings.terugSlagKlep">
-              <p class="label-text">Terugslagklep in putje</p>
-              <nb-toggle  formControlName="terugslagklep" status="primary"></nb-toggle>
-            </div>
-            <div class="data-container">
-              <p class="label-text">Soort putje</p>
-              <nb-select class="normalInput" (selectedChange)="checkSoortRWA($event)" formControlName="soortPutje" id="type">
-                <nb-option value="kunststof">Kunststof</nb-option>
-                <nb-option value="t-stuk">PVC T-stuk</nb-option>
-                <nb-option value="geen">Geen</nb-option>
-                <nb-option value="andere">Andere</nb-option>
-              </nb-select>
-            </div>
-            <div class="data-container" *ngIf="isAnderPutjeRWA">
-              <p class="label-text">Ander putje</p>
-              <input class="normalInput" nbInput type="text" formControlName="anderPutje" />
-            </div>
-            <div class="data-container" *ngIf="this.group.rwaSettings.infilPutje">
-              <p class="label-text">Infiltratieputje</p>
-              <nb-toggle  formControlName="infilPutje" status="primary"></nb-toggle>
-            </div>
-            <div class="data-container" *ngIf="this.group.rwaSettings.tPutje == null || this.group.rwaSettings.tPutje">
-              <p class="label-text">T-putje</p>
-              <div class="leftRow">
-                <input class="smallInput" nbInput type="number" formControlName="tPutje" />
-                <p class="texter">stuks</p>
-              </div>
-            </div>
-            <div class="data-container" *ngIf="this.group.rwaSettings.aanslBovRwa">
-              <p class="label-text">Aansluitingen bovengrondse regenafvoer</p>
-              <input class="smallInput" nbInput type="number" formControlName="aanslBovRWA" />
-              <p class="texter">stuks</p>
-            </div>
-            <div class="data-container" *ngIf="this.group.rwaSettings.aanslOpenRwa">
-              <p class="label-text">Aansluiting op opengracht</p>
-              <nb-toggle  formControlName="aanslOpenRWA" status="primary"></nb-toggle>
-            </div>
-            <div class="borderBlack" *ngIf="this.group.rwaSettings.ssGrond">
-              <img class="rioolImage2" src="assets/images/afstandputjeRWA.png"    />
-              <div class="data-container8">
-                <p class="label-text">Letter & afstand putje HORIZONTAAL</p>
-                <div class="flower">
-                  <nb-select class="smallInput" formControlName="letterHor" id="type">
-                    <nb-option  value="onbekend" >Onbekend</nb-option>
-                    <nb-option  value="u" >u</nb-option>
-                    <nb-option  value="v" >v</nb-option>
-                    <nb-option  value="w" >w</nb-option>
-                    <nb-option  value="x" >x</nb-option>
-                    <nb-option  value="y" >y</nb-option>
-                    <nb-option  value="z" >z</nb-option>
-                  </nb-select>
-                  <p class="IPtext">-</p>
-                  <input class="smallInput" nbInput type="number" formControlName="putHor" />
-                  <p class="texter">m</p>
-                </div>
-              </div>
-              <div class="data-container8">
-                <p class="label-text">Letter & afstand putje VERTICAAL</p>
-                <div class="flower">
-                  <nb-select class="smallInput" formControlName="letterVer" id="type">
-                    <nb-option  value="onbekend" >Onbekend</nb-option>
-                    <nb-option  value="m" >m</nb-option>
-                    <nb-option  value="n" >n</nb-option>
-                  </nb-select>
-                  <p class="IPtext">-</p>
-                  <input class="smallInput" nbInput type="number" formControlName="putVer" />
-                  <p class="texter">m</p>
-                </div>
-              </div>
-            </div>
-            <hr>
-            <div >
-              <p class="section-title">Lambert coordinaten</p>
-              <div class="data-container">
-                <p class="label-text">X-coordinaat</p>
-                <input class="normalInput" nbInput type="text" formControlName="xCoord" />
-              </div>
-              <div class="data-container">
-                <p class="label-text">Y-coordinaat</p>
-                <input class="normalInput" nbInput type="text" formControlName="yCoord" />
-              </div>
-              <div class="data-container">
-                <p class="label-text">Z-coordinaat</p>
-                <input class="normalInput" nbInput type="text" formControlName="zCoord" />
-              </div>
-            </div>
+          <p class="label-text">Plaats aansluiting op riool tov van stroomafw. naar stroomopw.:</p>
+          <div class="leftRow">
+            <nb-select class="smallInput" formControlName="plaatsAansluiting" id="type">
+              <nb-option value="onbekend">onbekend</nb-option>
+              <nb-option value="90">90</nb-option>
+              <nb-option value="135">135</nb-option>
+              <nb-option value="180">180</nb-option>
+              <nb-option value="225">225</nb-option>
+              <nb-option value="270">270</nb-option>
+            </nb-select>
+            <p class="texter">graden</p>
+          </div>
+        </div>
+      </div>
+      <div class='flexWrapper'>
+        <div class="insideRow2">
+          <p class="label-text">Ligging</p>
+          <nb-select (selectedChange)="checkAndereLiggingRWA($event)" class="liggingInput" formControlName="ligging" id="type">
+            <nb-option value="onbekend">Onbekend</nb-option>
+            <nb-option value="oprit">Oprit</nb-option>
+            <nb-option value="voortuin">Voortuin</nb-option>
+            <nb-option value="berm">Berm</nb-option>
+            <nb-option value="voetpad">Voetpad</nb-option>
+            <nb-option value="fietspad">Fietspad</nb-option>
+            <nb-option value="haag">Onder haag door</nb-option>
+            <nb-option value="andere">Andere</nb-option>
+          </nb-select>
+        </div>
+        <div class="insideRow2">
+          <p class="label-text">Diameter putje/T-stuk</p>
+          <div class="leftRow">
+            <input class="smallInput2" nbInput type="number" formControlName="diameterPut" />
+            <p class="texter">mm</p>
+          </div>
+        </div>
+        <div *ngIf="isAndereLiggingRWA" class="insideRow2">
+          <p class="label-text">Andere ligging</p>
+          <input class="normalInput" nbInput type="text" formControlName="liggingAndere" />
+        </div>
+        <div style='justify-content: flex-start !important; gap:25px !important;' class="insideRow2">
+          <p class="label-text">Gietijzer</p>
+          <nb-toggle style='margin-top:6px' status="primary" formControlName="gietijzer" (checkedChange)="editGietijzerRWA()"></nb-toggle>
+        </div>
+        <div style='justify-content: flex-start !important; gap:25px !important;' *ngIf="gietIjzerRWA" class="insideRow2">
+          <p class="label-text">Beton kader</p>
+          <nb-toggle style='margin-top:6px' formControlName="betonkader" status="primary"></nb-toggle>
+        </div>
+        <div style='justify-content: flex-start !important; gap:25px !important;' *ngIf="!gietIjzerRWA" class="insideRow2">
+          <p class="label-text">Aluminium kader</p>
+          <nb-toggle style='margin-top:6px' formControlName="alukader" status="primary"></nb-toggle>
+        </div>
+        <div *ngIf="this.group.rwaSettings.terugSlagKlep" class="insideRow2" >
+          <p class="label-text">Terugslagklep in putje</p>
+          <nb-toggle  style='margin-top:6px' formControlName="terugslagklep" status="primary"></nb-toggle>
+        </div>
+        <div class="insideRow2" >
+          <p class="label-text">Soort putje</p>
+          <nb-select class="normalInput" (selectedChange)="checkSoortRWA($event)" formControlName="soortPutje" id="type">
+            <nb-option value="kunststof">Kunststof</nb-option>
+            <nb-option value="t-stuk">PVC T-stuk</nb-option>
+            <nb-option value="geen">Geen</nb-option>
+            <nb-option value="andere">Andere</nb-option>
+          </nb-select>
+        </div>
+        <div *ngIf="isAnderPutjeRWA" class="insideRow2">
+          <p class="label-text">Ander putje</p>
+          <input class="normalInput" nbInput type="text" formControlName="anderPutje" />
+        </div>
+        <div *ngIf="this.group.rwaSettings.tPutje == null || this.group.rwaSettings.tPutje"  class="insideRow2">
+          <p class="label-text">T-putje</p>
+          <div class="leftRow">
+            <input class="smallInput2" nbInput type="number" formControlName="tPutje" />
+            <p class="texter">stuks</p>
+          </div>
+        </div>
+        <div class="insideRow2" *ngIf="this.group.rwaSettings.aanslBovRwa">
+          <p class="label-text">Aansluitingen bovengrondse regenafvoer</p>
+          <input class="smallInput2" nbInput type="number" formControlName="aanslBovRWA" />
+          <p class="texter">stuks</p>
+        </div>
+        <div style='justify-content: flex-start !important; gap:25px !important;' class="insideRow2" *ngIf="this.group.rwaSettings.infilPutje">
+          <p class="label-text">Infiltratieputje</p>
+          <nb-toggle style='margin-top:6px'  formControlName="infilPutje" status="primary"></nb-toggle>
+        </div>
+        <div style='justify-content: flex-start !important; gap:25px !important;' class="insideRow2" *ngIf="this.group.rwaSettings.aanslOpenRwa">
+          <p style='max-width:130px !important;' class="label-text">Aansluiting op opengracht</p>
+          <nb-toggle style='margin-top:6px' formControlName="aanslOpenRWA" status="primary"></nb-toggle>
+        </div>
+      </div>
+      <div class="borderBlack" *ngIf="this.group.rwaSettings.ssGrond">
+        <img class="rioolImage2" src="assets/images/afstandputjeRWA.png" />
+        <div class="data-container8">
+          <p class="label-text">Letter & afstand putje HORIZONTAAL</p>
+          <div class="flower">
+            <nb-select class="smallInput" formControlName="letterHor" id="type">
+              <nb-option value="onbekend">Onbekend</nb-option>
+              <nb-option value="u">u</nb-option>
+              <nb-option value="v">v</nb-option>
+              <nb-option value="w">w</nb-option>
+              <nb-option value="x">x</nb-option>
+              <nb-option value="y">y</nb-option>
+              <nb-option value="z">z</nb-option>
+            </nb-select>
+            <p class="IPtext">-</p>
+            <input class="smallInput2" nbInput type="number" formControlName="putHor" />
+            <p class="texter">m</p>
+          </div>
+        </div>
+        <div class="data-container8">
+          <p class="label-text">Letter & afstand putje VERTICAAL</p>
+          <div class="flower">
+            <nb-select class="smallInput" formControlName="letterVer" id="type">
+              <nb-option value="onbekend">Onbekend</nb-option>
+              <nb-option value="m">m</nb-option>
+              <nb-option value="n">n</nb-option>
+            </nb-select>
+            <p class="IPtext">-</p>
+            <input class="smallInput2" nbInput type="number" formControlName="putVer" />
+            <p class="texter">m</p>
+          </div>
+        </div>
+      </div>
+      <div style='margin-top:5px;' class='flexWrapper'>
+        <div class='insideRow2'>
+          <p style='font-size: 16px;text-align: start;text-decoration: underline' class="section-title">Lambert coördinaten</p>
+        </div>
+        <div class="insideRow2">
+          <p class="label-text">X-coord</p>
+          <input class="lambertInput" nbInput type="text" formControlName="xCoord" />
+        </div>
+        <div class="insideRow2">
+          <p class="label-text">Y-coord</p>
+          <input class="lambertInput" nbInput type="text" formControlName="yCoord" />
+        </div>
+        <div class="insideRow2">
+          <p class="label-text">Z-coord</p>
+          <input class="lambertInput" nbInput type="text" formControlName="zCoord" />
+        </div>
+      </div>
     </form>
   </div>
 </mat-card>
@@ -793,7 +809,7 @@
   <button *ngIf="hasPreviousPage" mat-raised-button class="form-button" (click)="goToPrevious()">
     Terug
   </button>
-  <button (click)="onSubmitInfo()" mat-raised-button class="save-button" color="primary" type="submit">
+  <button *ngIf="!isSaving" (click)="onSubmitInfo()" mat-raised-button class="save-button" color="primary" type="submit">
     Opslaan
   </button>
 </div>

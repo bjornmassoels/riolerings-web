@@ -11,7 +11,6 @@ export class slokkerSettings {
     diepteAansluitingMv: boolean = true;
     diepteAanboringRiool: boolean = true;
     infiltratieKlok: boolean = true;
-    aansluitingOpengracht: boolean = true;
     plaatsAansluiting: boolean = true;
 
 

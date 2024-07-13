@@ -84,7 +84,6 @@ export class ProjectViewComponent implements OnInit,OnDestroy {
     const index = this.lastProjects.findIndex((x) => x._id === this._id);
     if (index !== 0) {
       const project = this.lastProjects[index - 1];
-      if(!project.isMeerwerk) {
         if (project.isSlokker == null || project.isSlokker === false) {
           this.formService.PreloadProject = project as Project;
           this.formService.preloadSlokkerProject = null;
@@ -94,9 +93,6 @@ export class ProjectViewComponent implements OnInit,OnDestroy {
           this.formService.PreloadProject = null;
           this.router.navigate(['/pages/slokkerprojectview', project._id]);
         }
-      } else {
-        this.router.navigate(['/pages/meerwerkview', project._id]);
-      }
     }
   }
 
@@ -104,7 +100,6 @@ export class ProjectViewComponent implements OnInit,OnDestroy {
     const index = this.lastProjects.findIndex((x) => x._id === this._id);
     if (this.lastProjects.length > index + 1) {
       const project = this.lastProjects[index + 1];
-      if(!project.isMeerwerk) {
         if (project.isSlokker == null || project.isSlokker === false) {
           this.formService.PreloadProject = project as Project;
           this.formService.preloadSlokkerProject = null;
@@ -114,9 +109,6 @@ export class ProjectViewComponent implements OnInit,OnDestroy {
           this.formService.PreloadProject = null;
           this.router.navigate(['/pages/slokkerprojectview', project._id]);
         }
-      } else {
-        this.router.navigate(['/pages/meerwerkview', project._id]);
-      }
     }
   }
 
@@ -154,9 +146,7 @@ export class ProjectViewComponent implements OnInit,OnDestroy {
             this.currentProject.longitudeList.length - 1
           ];
       }
-      if (this.currentProject._id == null) {
-        this.currentProject._id = this._id;
-      }
+
 
       this.formService.PreloadProject = this.currentProject;
       const indexer = this.lastProjects.findIndex((x) => x._id === this._id);
@@ -214,6 +204,7 @@ export class ProjectViewComponent implements OnInit,OnDestroy {
   }
 
   async onDeleteProject() {
+    this.formService.previousPage = ['/pages/groupview/' + this.currentProject.group_id._id];
     let dialogRef = this.dialog.open(ProjectViewDeleteDialogComponent, {
       height: '19vh',
       width: '29vw',

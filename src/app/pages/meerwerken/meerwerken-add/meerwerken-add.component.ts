@@ -31,7 +31,7 @@ export class MeerwerkenAddComponent implements OnInit {
   public photos: string[];
   public imagePath;
   public currentUser: User;
-
+  isSaving: boolean = false;
 
 
   uploadForm: UntypedFormGroup;
@@ -85,6 +85,7 @@ export class MeerwerkenAddComponent implements OnInit {
           postNumber: this.currentMeerwerk.postNumber,
           street: this.currentMeerwerk.street,
           huisNr: this.currentMeerwerk.huisNr,
+          activiteit: this.currentMeerwerk.activiteit,
           minutesWorked: this.currentMeerwerk.minutesWorked != null ? this.currentMeerwerk.minutesWorked.toString() : '',
           opmerking: this.currentMeerwerk.opmerking,
           countEmployees: this.currentMeerwerk.countEmployees != null ? this.currentMeerwerk.countEmployees.toString() : ''
@@ -111,12 +112,16 @@ export class MeerwerkenAddComponent implements OnInit {
   }
 
   onSubmitForm() {
+    if(this.isSaving)return;
+    this.isSaving = true;
     if(this.group._id == null){
       this.group._id = this.group.id;
     }
     let meerwerk = this.meerwerkForm.value;
     if(this.newDate != null){
       meerwerk.startDate = this.newDate;
+    } else {
+      meerwerk.startDate = new Date();
     }
     if(this.currentMeerwerk._id == null){
       meerwerk._id = this.currentMeerwerk.id;
@@ -125,15 +130,20 @@ export class MeerwerkenAddComponent implements OnInit {
     }
     meerwerk.group_id = this.group;
     meerwerk.company_id = this.companyId;
+    meerwerk.creator_user = this.apiService.userId;
     this.meerwerkSend = meerwerk;
     if(this.chosenImageList == null || this.chosenImageList.length === 0){
       this.apiService.updateMeerwerk(this.meerwerkSend).subscribe(x => {
         this.currentMeerwerk = null;
         this.chosenImageList = [];
         this.chosenImageListIndex = [];
+        this.isSaving = false;
         this.isLoaded = false;
         this.toastrService.success(this.meerwerkSend.street + '- Onvoorzien werk + ' + this.meerwerkSend.huisNr + ' is aangemaakt', 'Succes!');
         this.loadData();
+      }, error => {
+        this.isSaving = false;
+        this.toastrService.warning('Er is iets misgegaan, probeer het opnieuw.', 'Oops!');
       });
     } else {
       this.uploadImages();
@@ -189,12 +199,16 @@ export class MeerwerkenAddComponent implements OnInit {
                 if(counter === this.chosenImageList.length){
                   this.meerwerkSend.photos = this.photos;
                   this.apiService.updateMeerwerk(this.meerwerkSend).subscribe( x =>{
+                    this.isSaving = false;
                     this.toastrService.success(this.meerwerkSend.street + '- onvoorzien werk + ' + this.meerwerkSend.huisNr + ' is aangemaakt', 'Succes!');
                     this.meerwerkSend = null;
                     this.chosenImageList = [];
                     this.chosenImageListIndex = [];
                     this.isLoaded = false;
                     this.loadData();
+                  }, error => {
+                    this.isSaving = false;
+                    this.toastrService.warning('Er is iets misgegaan, probeer het opnieuw.', 'Oops!');
                   });
                 }
               }

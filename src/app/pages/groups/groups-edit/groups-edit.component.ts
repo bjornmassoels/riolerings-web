@@ -23,6 +23,7 @@ export class GroupsEditComponent implements OnInit {
   addForm: UntypedFormGroup;
   public isLoaded: boolean = false;
   _id: string;
+  isSaving: boolean = false;
   group: Group;
 
   gemeentes: string[] = ['Aalst', 'Aalter', 'Aarschot', 'Aartselaar', 'Affligem', 'Alken', 'Alveringem', 'Antwerpen', 'Anzegem', 'Ardooie', 'Arendonk', 'As', 'Asse', 'Assenede', 'Avelgem', 'Baarle-Hertog', 'Balen', 'Beernem', 'Beerse', 'Beersel', 'Begijnendijk', 'Bekkevoort', 'Beringen', 'Berlaar', 'Berlare', 'Bertem', 'Bever', 'Beveren', 'Bierbeek', 'Bilzen', 'Blankenberge', 'Bocholt', 'Boechout', 'Bonheiden', 'Boom', 'Boortmeerbeek', 'Borgloon', 'Bornem', 'Borsbeek', 'Boutersem', 'Brakel', 'Brasschaat', 'Brecht', 'Bredene', 'Bree', 'Brugge', 'Buggenhout', 'Damme', 'De Haan', 'De Panne', 'De Pinte', 'Deerlijk', 'Deinze', 'Denderleeuw', 'Dendermonde', 'Dentergem', 'Dessel', 'Destelbergen', 'Diepenbeek', 'Diest', 'Diksmuide', 'Dilbeek', 'Dilsen-Stokkem', 'Drogenbos', 'Duffel', 'Edegem', 'Eeklo', 'Erpe-Mere', 'Essen', 'Evergem', 'Galmaarden', 'Gavere', 'Geel', 'Geetbets', 'Genk', 'Gent', 'Geraardsbergen', 'Gingelom', 'Gistel', 'Glabbeek', 'Gooik', 'Grimbergen', 'Grobbendonk', 'Haacht', 'Haaltert', 'Halen', 'Halle', 'Ham', 'Hamme', 'Hamont-Achel', 'Harelbeke', 'Hasselt', 'Hechtel-Eksel', 'Heers', 'Heist-op-den-Berg', 'Hemiksem', 'Herent', 'Herentals', 'Herenthout', 'Herk-de-Stad', 'Herne', 'Herselt', 'Herstappe', 'Herzele', 'Heusden-Zolder', 'Heuvelland', 'Hoegaarden', 'Hoeilaart', 'Hoeselt', 'Holsbeek', 'Hooglede', 'Hoogstraten', 'Horebeke', 'Houthalen-Helchteren', 'Houthulst', 'Hove', 'Huldenberg', 'Hulshout', 'Ichtegem', 'Ieper', 'Ingelmunster', 'Izegem', 'Jabbeke', 'Kalmthout', 'Kampenhout', 'Kapellen', 'Kapelle-op-den-Bos', 'Kaprijke', 'Kasterlee', 'Keerbergen', 'Kinrooi', 'Kluisbergen', 'Knokke-Heist', 'Koekelare', 'Koksijde', 'Kontich', 'Kortemark', 'Kortenaken', 'Kortenberg', 'Kortessem', 'Kortrijk', 'Kraainem', 'Kruibeke', 'Kruisem', 'Kuurne', 'Laakdal', 'Laarne', 'Lanaken', 'Landen','Langemark-Poelkapelle', 'Lebbeke', 'Lede', 'Ledegem', 'Lendelede', 'Lennik', 'Leopoldsburg','Leuven', 'Lichtervelde', 'Liedekerke', 'Lier', 'Lierde', 'Lievegem', 'Lille', 'Linkebeek', 'Lint', 'Linter', 'Lochristi', 'Lokeren', 'Lommel', 'Londerzeel', 'Lo-Reninge', 'Lubbeek', 'Lummen', 'Maarkedal', 'Maaseik', 'Maasmechelen', 'Machelen', 'Maldegem', 'Malle', 'Mechelen', 'Meerhout', 'Meise', 'Melle', 'Menen', 'Merchtem', 'Merelbeke', 'Merksplas', 'Mesen', 'Meulebeke', 'Middelkerke', 'Moerbeke', 'Mol', 'Moorslede', 'Mortsel', 'Nazareth', 'Niel', 'Nieuwerkerken', 'Nieuwpoort', 'Nijlen', 'Ninove', 'Olen', 'Oostende', 'Oosterzele', 'Oostkamp', 'Oostrozebeke', 'Opwijk', 'Oudenaarde', 'Oudenburg', 'Oud-Heverlee', 'Oudsbergen', 'Oud-Turnhout', 'Overijse', 'Peer', 'Pelt', 'Pepingen', 'Pittem', 'Poperinge', 'Putte', 'Puurs-Sint-Amands', 'Ranst', 'Ravels', 'Retie', 'Riemst', 'Rijkevorsel', 'Roeselare', 'Ronse', 'Roosdaal', 'Rotselaar', 'Ruiselede', 'Rumst', 'Schelle', 'Scherpenheuvel-Zichem', 'Schilde', 'Schoten', 'Sint-Genesius-Rode', 'Sint-Gillis-Waas', 'Sint-Katelijne-Waver','Sint-Laureins', 'Sint-Lievens-Houtem', 'Sint-Martens-Latem', 'Sint-Niklaas', 'Sint-Pieters-Leeuw', 'Sint-Truiden', 'Spiere-Helkijn','Stabroek', 'Staden', 'Steenokkerzeel', 'Stekene', 'Temse', 'Ternat', 'Tervuren', 'Tessenderlo', 'Tielt', 'Tielt-Winge', 'Tienen', 'Tongeren', 'Torhout', 'Tremelo', 'Turnhout', 'Veurne', 'Vilvoorde', 'Vleteren', 'Voeren', 'Vorselaar', 'Vosselaar', 'Waasmunster', 'Wachtebeke', 'Waregem', 'Wellen', 'Wemmel', 'Wervik', 'Westerlo','Wetteren', 'Wevelgem', 'Wezembeek-Oppem', 'Wichelen', 'Wielsbeke', 'Wijnegem', 'Willebroek', 'Wingene', 'Wommelgem', 'Wortegem-Petegem','Wuustwezel', 'Zandhoven', 'Zaventem', 'Zedelgem', 'Zele', 'Zelzate', 'Zemst', 'Zoersel', 'Zonhoven', 'Zonnebeke', 'Zottegem', 'Zoutleeuw' ,'Zuienkerke', 'Zulte', 'Zutendaal', 'Zwalm', 'Zwevegem', 'Zwijndrecht'];
@@ -362,6 +363,7 @@ export class GroupsEditComponent implements OnInit {
     route.params.subscribe((val) => {
       this._id = this.route.snapshot.paramMap.get('id');
       this.hasChangedValue = false;
+      this.isSaving = false;
       this.apiService.getUsers().subscribe((x) => {
         let users = x as User[];
         users = users
@@ -445,7 +447,11 @@ export class GroupsEditComponent implements OnInit {
       yStukMult: this.group.yStukMult == null ? 0.5 : this.group.yStukMult,
       bochtMult: this.group.bochtMult == null ? 0.3 : this.group.bochtMult,
       mofMult: this.group.mofMult == null ? 0.15 : this.group.mofMult,
-      possibleKolkStreets: possibleKolkStreets
+      possibleKolkStreets: possibleKolkStreets,
+      //AWV velden
+      isProjectForAWV: this.group.isProjectForAWV,
+      aidNummer: this.group.aidNummer,
+      ident8: this.group.ident8,
     });
     while(this.allUsers == null){
       await this.delay(50);
@@ -472,6 +478,8 @@ export class GroupsEditComponent implements OnInit {
   }
 
   onSubmit(groupData: Group) {
+    if(this.isSaving)return;
+    this.isSaving = true;
     groupData._id = this.group._id;
     groupData.secondMogOn = this.secondMogOn;
     groupData.thirdMogOn = this.thirdMogOn;
@@ -539,7 +547,10 @@ export class GroupsEditComponent implements OnInit {
     );
     this.apiService.updateGroup(groupData).subscribe((x) => {
       this.hasChangedValue = false;
+      this.isSaving = false;
       this.router.navigate(['/pages/groupview'  , this.group._id]);
+    }, error => {
+      this.toastBadForm();
     });
   }
 
@@ -571,6 +582,7 @@ export class GroupsEditComponent implements OnInit {
   }
 
   toastBadForm() {
+    this.isSaving = false;
     this.toastrService.warning('Probeer het opnieuw', 'Oops!');
   }
   checkChangedValue(route: string){

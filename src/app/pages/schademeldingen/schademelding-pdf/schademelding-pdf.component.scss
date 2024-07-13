@@ -1,0 +1,139 @@
+body {
+  font-family: 'Arial', sans-serif;
+  margin: 20px;
+  background-color: #f4f4f4;
+}
+
+#schademeldingOverzicht {
+  border-radius: 8px;
+  max-width:950px;
+}
+
+h3{
+  color: #333;
+  font-weight: 500;
+}
+
+h4{
+  border-bottom: 2px solid #0067a5;
+  color: #0067a5;
+  margin-bottom: 8px;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+p {
+  font-size: 15px;
+  margin-bottom: 10px;
+}
+
+span {
+  font-weight: bold;
+}
+.boxColumn{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: #f4f3ff;
+  padding:7px;
+  border-radius: 8px;
+  margin: 0 0px 20px 0px;
+  border:1px solid lightgrey;
+}
+.faIcon{
+  font-size: 21px;
+  margin-right: 5px;
+}
+.smallIcon{
+  font-size: 16px;
+  width:22px;
+}
+.smallerText{
+  font-size:15px !important;
+  font-weight:500 !important;
+  margin-left: 13px;
+  padding-right: 10px;
+}
+.two-photo-div{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: flex-start;
+  margin-top: 12px !important;
+  max-width: 760px!important;
+  min-width:760px !important;
+}
+.imageColumn {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border:1px solid black;
+  padding-top:5px;
+  padding-bottom:5px;
+  flex:1;
+  background-color: white;
+}
+.foto{
+  width: 100%;
+  max-height: 430px;
+  object-fit: contain;
+}
+.fotoText{
+    padding:4px 10px 2px 10px;
+    font-size: 15px ;
+    height:45px !important;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    font-weight: bold;
+    overflow-y:hidden;
+}
+.fotoBoxColumn{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: #f4f3ff;
+  border-radius: 8px;
+  border:1px solid lightgrey;
+  width:100%;
+  margin-top: 25px;
+}
+/* Specifieke kleur en stijl voor iconen naast tekst */
+.fa-user-pen, .fa-calendar-days, .fa-location-dot, .fa-building,
+.fa-bullseye, .fa-person-circle-exclamation, .fa-circle-question, .fa-snowplow, .fa-comment {
+  color: #0056b3; /* Blauwe kleur voor iconen */
+}
+
+
+
+/* Specifieke kleuren voor verschillende soorten informatie */
+.fa-user-pen { color: #428bca; } /* Blauw voor gebruikersnamen */
+.fa-calendar-days { color: #5cb85c; } /* Groen voor datums */
+.fa-location-dot { color: #f0ad4e; } /* Oranje voor locaties */
+.fa-building { color: #5bc0de; } /* Lichtblauw voor gebouwen */
+.fa-bullseye { color: #d9534f; } /* Rood voor schade richting */
+.fa-person-circle-exclamation { color: #5cb85c; } /* Groen voor verantwoordelijke persoon */
+.fa-circle-question { color: #f0ad4e; } /* Oranje voor schadeoorzaak */
+.fa-snowplow { color: #428bca; } /* Blauw voor schade door wat */
+.fa-comment { color: #d9534f; } /* Rood voor opmerkingen */
+.fa-clock {color: rosybrown}
+.fa-user { color: #151a30}
+.fa-tree-city {
+  color: #2e8b57; /* Zeegroen */
+}
+.fa-person-digging {
+  color: #A0522D; /* Sienna */
+}
+.fa-calendar-check{
+  color: rebeccapurple;
+}
+.page-title {
+  font-weight: 800;
+  letter-spacing: 1.6pt;
+  margin-left: 13px;
+  width:80%;
+  line-height: 18px;
+  margin-bottom: 0px;
+  height:35px !important;
+}

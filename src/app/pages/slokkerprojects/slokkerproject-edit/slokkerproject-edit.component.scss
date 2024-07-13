@@ -209,6 +209,15 @@ button:disabled {
   height: 60px !important;
   overflow-y: auto;
 }
+.fotoText6 {
+  font-size: 13px;
+  width: 400px;
+  text-align: center;
+  padding: 0 0px;
+  margin-bottom: 0px;
+  height: 65px !important;
+  overflow-y: auto;
+}
 .fotoText2 {
   font-size: 14px;
   width: 250px;
@@ -224,12 +233,31 @@ button:disabled {
   height: auto;
   min-height: 300px !important;
 }
+
 .smallFotoColumn {
   border: 2px solid lightskyblue;
   border-radius: 10px;
   margin-left: 6px;
   margin-right: 6px;
   width: 265px;
+  padding-bottom: 10px;
+}
+.fotoColumnSchets {
+  border: 2px solid lightskyblue;
+  border-radius: 10px;
+  margin-left: 6px;
+  margin-right: 6px;
+  padding:3px;
+  width: 420px;
+  height: auto;
+  min-height: 300px !important;
+}
+.smallFotoColumnSchets {
+  border: 2px solid lightskyblue;
+  border-radius: 10px;
+  margin-left: 6px;
+  margin-right: 6px;
+  width: 420px;
   padding-bottom: 10px;
 }
 .innerColumn {
@@ -403,13 +431,7 @@ input::-webkit-inner-spin-button {
   top:0px; /* Aligns the bar to the top of the viewport */
   z-index: 1000; /* Ensures it stays on top of other content */
 }
-.boldText {
-  font-weight: 600;
-  margin-top: 11px;
-  font-size: 24px;
-  margin-left: 15px;
-  margin-right: 15px;
-}
+
 .data-container3 {
   display: flex;
   flex-direction: row;
@@ -460,6 +482,15 @@ input::-webkit-inner-spin-button {
   font-size: 1.2rem;
   margin-top:3px;
   margin-bottom: 5px !important;
+  width:100%;
+}
+.lambertTitle{
+  width: 100%;
+  font-weight: 700;
+  letter-spacing: 1.4pt;
+  margin-bottom: 0px !important;
+  font-size: 16px;
+  text-align: start;
 }
 .section-title3 {
   width: 100%;
@@ -501,17 +532,14 @@ input::-webkit-inner-spin-button {
   box-shadow: 0px 0px 2px lightgrey;
   cursor: move;
 }
-.photo2 {
-  height: 25rem;
-  width: 75%;
-}
+
 .image-container {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   gap: 5px 12px;
   width: 98%;
-  margin: 1rem;
+  margin: 13px auto 0 auto;
   background-color: rgb(243, 243, 237);
   padding: 1em;
   border-radius: 15px;
@@ -555,7 +583,6 @@ input::-webkit-inner-spin-button {
   max-width:50%;
   padding: 5px 12px 5px 6px;
   .label-text {
-    letter-spacing: 0.9pt;
     margin-bottom: 0px !important;
   }
   .texter{
@@ -588,6 +615,9 @@ input::-webkit-inner-spin-button {
   font-size:15px;
   margin:0 13px 0px 7px !important;
   letter-spacing: 1pt;
+}
+.lambertInput {
+  width:180px !important;
 }
 .clear-button {
   background-color: grey; /* Green */
@@ -663,3 +693,77 @@ strong {
 }
 
 
+.insideRow2{
+  display:flex;
+  flex-direction:row;
+  justify-content:space-between;
+  align-items:center;
+  width:100%;
+  max-width:50%;
+  padding: 5px 12px 5px 6px;
+  .label-text {
+    letter-spacing: 0.9pt;
+    margin-bottom: 0px !important;
+  }
+  .texter{
+    margin-top:0 !important;
+    margin-bottom: 0 !important;
+  }
+}
+
+.flexWrapper{
+  display:flex;
+  flex-direction:row;
+  justify-content:flex-start;
+  margin-top:3px;
+  align-items:center;
+  width:100%;
+  flex-wrap: wrap;
+}
+.deleteButton2 {
+  border:1px solid darkred;
+  border-radius: 15px;
+  font-weight: 600;
+  letter-spacing: 1.4pt;
+  font-size: 15px;
+  background-color: red;
+  width:50px;
+  min-height:28px;
+}
+.custom-toggle-group {
+  display: flex;
+  justify-content: space-around;
+}
+
+.custom-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px; /* Reduced height */
+  background-color: #aeb1c0; /* Light blue background */
+  color: white;
+  margin-right: 3px;
+  &.mat-button-toggle-checked {
+    background-color: #0288d1; /* Darker blue when selected */
+    color: white;
+
+    mat-icon {
+      margin-left: 8px;
+    }
+  }
+}
+
+.mat-button-toggle-group-appearance-standard {
+  border:none !important;
+  border-radius: unset;
+}
+.divInsideButton{
+  display:flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+.downloadImage{
+  margin-left: 7px;
+  margin-bottom: -1px;
+}

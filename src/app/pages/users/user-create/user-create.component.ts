@@ -27,11 +27,12 @@ export class UserCreateComponent implements OnInit {
   isPassword2Invalid: boolean = false;
   isFunctieInvalid: boolean = false;
   newUser: User;
-  talen: string[] = ['Nederlands', 'Frans', 'Engels'];
+  talen: string[] = ['Nederlands', 'Frans', 'Engels', 'Pools'];
   public functies: string[] = ["Werfleider", "Grondwerker"];
   public myCompany: Company;
   public adminCode: string;
   public code: string;
+  isSaving: boolean = false;
 
   constructor(
     private formBuilder: UntypedFormBuilder,
@@ -57,6 +58,7 @@ export class UserCreateComponent implements OnInit {
     return new Promise((resolve) => setTimeout(() => resolve(), timeInMillis));
   }
   public buildForm() {
+    this.isSaving = false;
     this.addForm = this.formBuilder.group({
       voornaam: '',
       achternaam: '',
@@ -70,6 +72,8 @@ export class UserCreateComponent implements OnInit {
     });
   }
   onSubmit(groupData: User) {
+    if(this.isSaving)return;
+    this.isSaving = true;
     this.isVoornaamInvalid = false;
     this.isAchterNaamInvalid = false;
     this.isGebruikersNaamInvalid = false;
@@ -141,20 +145,25 @@ export class UserCreateComponent implements OnInit {
       } else if(x === 'succes'){
         this.toastrService.success("De gebruiker " + this.newUser.gebruikersnaam + ' is aangemaakt', 'Succes!');
         this.addForm.reset();
+        this.isSaving = false;
         this.outputEvent.emit('added user');
         this.addForm.controls['taal'].setValue('Nederlands');
         this.addForm.controls['functieNaam'].setValue(this.newUser.functieNaam);
         this.addForm.controls['password'].setValue(groupData.password);
         this.addForm.controls['password2'].setValue(groupData.password);
       }
+    }, error => {
+    this.failedToast('Er is iets misgegaan.');
     });
   }
 
   failedToast(text: string) {
+    this.isSaving = false;
     this.toastrService.warning(text, 'Oops!');
   }
 
   toastBadForm() {
+    this.isSaving = false;
     this.toastrService.warning('Probeer het opnieuw', 'Oops!');
   }
 

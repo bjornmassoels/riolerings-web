@@ -5,6 +5,7 @@ import {Group} from "../models/groups";
 import {User} from "../models/user";
 import { Company } from 'models/company';
 import {Meerwerk} from "../models/meerwerk";
+import { Schademelding } from '../models/schademelding';
 
 @Injectable({
   providedIn: 'root',
@@ -15,6 +16,15 @@ export class FormService {
   previousDateSorteer: string;
   previousSorteer: string;
   previousRoute: string;
+  allGroups: Array<Group>;
+  schademeldingGroupFilter: string;
+  previousIndexScroll: number;
+  previousPageForScrollIndex: string;
+  schademeldingen: Schademelding[];
+  schademelding: Schademelding;
+  isViewingOwAndSchademeldingList: boolean;
+  owAndSchademeldingList: Schademelding[];
+  deleteSchademelding: Schademelding;
 
   get currentSlokkerProjects(): SlokkerProjects[] {
     return this._currentSlokkerProjects;

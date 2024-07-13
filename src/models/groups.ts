@@ -10,12 +10,14 @@ import { slokkerSettings } from './slokkerSettings';
 import {Meerwerk} from "./meerwerk";
 import { TotaalMeetstaat } from './totaalMeestaat';
 import { SlokkerTotaalMeetstaat } from './slokkerTotaalMeetstaat';
+import { Schademelding } from './schademelding';
 
 export class Group {
   public _id: string;
   public projectList: Project[];
   public slokkerProjectList: SlokkerProjects[];
   public meerwerkList: Meerwerk[];
+  schademeldingList: Schademelding[];
   public street: string;
   public company_id: Company;
   public chosen: boolean;
@@ -79,8 +81,18 @@ export class Group {
   bochtenInGraden: boolean;
   possibleKolkStreets: string[];
 
+  //popup settings schademelding
+  gebruiktHerstellingBijSchademelding: boolean;
+  gebruiktJurdischeInfoBijSchademelding: boolean;
+
   //tempvar
   haCount: number;
   kolkCount: number;
+
+  //AWV velden
+  isProjectForAWV: boolean;
+  aidNummer: string;
+  ident8: string;
+
   constructor() {}
 }

@@ -1,6 +1,7 @@
-import { Component, Directive, HostListener } from '@angular/core';
+import { Component, Directive, HostListener, OnInit } from '@angular/core';
 
 import { MENU_ITEMS } from './pages-menu';
+import { NbIconLibraries } from '@nebular/theme';
 
 @Component({
   selector: 'ngx-pages',
@@ -12,8 +13,16 @@ import { MENU_ITEMS } from './pages-menu';
     </ngx-one-column-layout>
   `,
 })
-export class PagesComponent {
+export class PagesComponent implements OnInit{
+  constructor(private iconLibraries: NbIconLibraries){
+
+  }
 
   menu = MENU_ITEMS;
+  async ngOnInit() {
+    this.iconLibraries.registerFontPack('fa', {
+      packClass: 'fa', iconClassPrefix: 'fa'
+    });
+  }
 }
 

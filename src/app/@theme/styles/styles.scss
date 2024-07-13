@@ -47,6 +47,8 @@ html,
 body {
   height: 100%;
   margin: 0;
+  --mdc-checkbox-state-layer-size: 32px;
+  --mdc-checkbox-state-size: 32px;
 }
 
 
@@ -75,5 +77,6 @@ nb-sidebar{
 nb-select .placeholder{
   opacity:1 !important;
 }
+
 
 

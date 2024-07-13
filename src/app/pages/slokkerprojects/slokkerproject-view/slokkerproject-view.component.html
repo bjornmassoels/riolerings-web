@@ -2,21 +2,23 @@
   <button  mat-raised-button class="form-button" (click)="goToPrevious()">
     Terug
   </button>
-  <button *ngIf="index !== -1" [disabled]="isFirst" mat-raised-button class="form-button" (click)="onPreviousClick()">
-    Vorige
-  </button>
-  <button *ngIf="index !== -1" [disabled]="isLast" mat-raised-button class="form-button" (click)="onNextClick()">
-    Volgende
-  </button>
+  <div *ngIf="index != null"  class="navigation-row">
+    <button *ngIf="index !== -1" [disabled]="isFirst" mat-raised-button class="nav-button" (click)="onPreviousClick()">
+      <i class="fa-solid fa-left-long navIcon"></i>
+    </button>
+    <p class="boldText" *ngIf="index !== -1">{{index + 1}}/{{totalProjectCount}}</p>
+    <button *ngIf="index !== -1" [disabled]="isLast" mat-raised-button class="nav-button" (click)="onNextClick()">
+      <i class="fa-solid fa-right-long navIcon"></i>
+    </button>
+  </div>
   <button mat-raised-button class="form-button-blue" (click)="goToEdit()">
     Bewerken
   </button>
-  <p class="boldText" *ngIf="index !== -1">{{index + 1}}/{{totalProjectCount}}</p>
-  <button style="width: auto" mat-raised-button class="form-button2" (click)="generatePDF()"><div class="divInsideButton">PDF 	<mat-icon class="downloadImage">cloud_download</mat-icon></div></button>
+  <button style="width: auto; margin-left: 70px" mat-raised-button class="form-button2" (click)="generatePDF()"><div class="divInsideButton">PDF 	<mat-icon class="downloadImage">cloud_download</mat-icon></div></button>
   <button style="width: auto" mat-raised-button class="form-button2" (click)="downloadPhotos()"><div class="divInsideButton">Foto's
     <mat-icon class="downloadImage">cloud_download</mat-icon></div></button>
-  <button style="width: auto" mat-raised-button color="warn" class="form-button3"
-    (click)="onDeleteProject()">Kolk Verwijderen</button>
+  <button  mat-raised-button class="delete-button" color="warn" type="button"
+           (click)="onDeleteProject()"><i style="margin-left: 2px" class="fa-solid fa-trash-can"></i></button>
 
 </div>
 <mat-card id="content" *ngIf="isLoaded" class="project-card">
@@ -104,7 +106,7 @@
         <p *ngIf='!currentProject.slokker.xCoordGeoLocationFirsPhoto && ! currentProject.slokker.yCoordGeoLocationFirsPhoto' style='width:130px !important;'> </p>
       </div>
       <div class="data-container-70">
-        <p style='margin-bottom: 0px' class="label-text">Type aansluiting op hoofdbuis:</p>
+        <p style='margin-bottom: 0px; margin-right: 8px;' class="label-text">Type aansluiting op hoofdbuis:</p>
         <p  style='margin-bottom: 0px' *ngIf="currentProject.slokker.tBuisStuk === 'flexAan'" class="data-text">flexibele aansluiting</p>
         <p  style='margin-bottom: 0px' *ngIf="currentProject.slokker.tBuisStuk != null && currentProject.slokker.tBuisStuk !== 'flexAan'"
            class="data-text">{{currentProject.slokker.tBuisStuk}}</p>
@@ -114,44 +116,67 @@
 
       <div class='flexWrapper'>
         <div class="insideRow2">
+          <p *ngIf="heeftPloegen != null && heeftPloegen === true" class="section-title2">Fase 1 & Fase 2</p>
         </div>
         <div class="insideRow2">
-          <p *ngIf="heeftPloegen != null && heeftPloegen === true" class="section-title2">Fase 1 & Fase 2</p>
+        </div>
+          <div *ngIf="heeftPloegen == null || heeftPloegen === false" class="insideRow2">
+            <p style="min-width:69px;" class="label-text">Buis hor.</p>
+            <p class="data-text">{{addMeterString(currentProject.slokker.buis)}}</p>
+          </div>
+        <div *ngIf="heeftPloegen != null && heeftPloegen === true" class="insideRow2">
+          <p  style="min-width:69px;" class="label-text">Buis hor.</p>
+          <p style='min-height: 20px;min-width: 20px;'  class="data-text">{{NullToZero(currentProject.slokker.buis)}} | {{NullToZero(currentProject.slokker.buis2)}}</p>
+          <p class="margL">meter</p>
         </div>
         <div class="insideRow2">
           <p class="label-text">Diameter buis</p>
           <p class="data-text">{{currentProject.slokker.diameter}} mm</p>
         </div>
-          <div *ngIf="heeftPloegen == null || heeftPloegen === false" class="insideRow2">
-            <p class="label-text">Buizen</p>
-            <p class="data-text">{{addMeterString(currentProject.slokker.buis)}}</p>
-          </div>
+        <div *ngIf="heeftPloegen == null || heeftPloegen === false" class="insideRow2">
+          <p  style="min-width:69px;" class="label-text">Buis vert.</p>
+          <p class="data-text">{{addMeterString(currentProject.slokker.buisVert)}}</p>
+        </div>
         <div *ngIf="heeftPloegen != null && heeftPloegen === true" class="insideRow2">
-          <p class="label-text">Buizen</p>
-          <p style='min-height: 20px;min-width: 20px;'  class="data-text">{{NullToZero(currentProject.slokker.buis)}} | {{NullToZero(currentProject.slokker.buis2)}}</p>
+          <p  style="min-width:69px;" class="label-text">Buis vert.</p>
+          <p style='min-height: 20px;min-width: 20px;'  class="data-text">{{NullToZero(currentProject.slokker.buisVert)}} | {{NullToZero(currentProject.slokker.buisVert2)}}</p>
           <p class="margL">meter</p>
+        </div>
+        <div class="insideRow2">
+          <p class="label-text">Type kolk</p>
+          <p  class="data-text">{{currentProject.slokker.typeKolk}}
+          </p>
+        </div>
+          <div *ngIf="(heeftPloegen == null || heeftPloegen === false) && !group.bochtenInGraden" class="insideRow2">
+            <p  style="min-width:69px;" class="label-text">Bocht</p>
+            <p class="data-text">{{addStuksString(currentProject.slokker.bocht)}}</p>
+          </div>
+        <div *ngIf="(heeftPloegen == null || heeftPloegen === false) && group.bochtenInGraden" class="insideRow2">
+          <p  style="min-width:69px;" class="label-text">Bocht 45°</p>
+          <p class="data-text">{{addStuksString(currentProject.slokker.gradenBocht45)}}</p>
+        </div>
+          <div *ngIf="(heeftPloegen != null && heeftPloegen === true) && !group.bochtenInGraden " class="insideRow2">
+            <p  style="min-width:69px;" class="label-text">Bocht</p>
+            <p style='min-height: 20px;min-width: 20px;' class="data-text">{{NullToZero(currentProject.slokker.bocht)}} | {{NullToZero(currentProject.slokker.bocht2)}}</p>
+            <p class="margL">stuks</p>
+          </div>
+        <div *ngIf="(heeftPloegen != null && heeftPloegen === true) && group.bochtenInGraden " class="insideRow2">
+          <p  style="min-width:69px;" class="label-text">Bocht 45°</p>
+          <p style='min-height: 20px;min-width: 20px;' class="data-text">{{NullToZero(currentProject.slokker.gradenBocht45)}} | {{NullToZero(currentProject.slokker.gradenBocht45Fase2)}}</p>
+          <p class="margL">stuks</p>
         </div>
         <div class="insideRow2">
           <p class="label-text">Reductie</p>
           <p  class="data-text">{{addStuksString(currentProject.slokker.reductie)}}
           </p>
         </div>
-          <div *ngIf="(heeftPloegen == null || heeftPloegen === false) && !group.bochtenInGraden" class="insideRow2">
-            <p class="label-text">Bocht</p>
-            <p class="data-text">{{addStuksString(currentProject.slokker.bocht)}}</p>
-          </div>
         <div *ngIf="(heeftPloegen == null || heeftPloegen === false) && group.bochtenInGraden" class="insideRow2">
-          <p class="label-text">Bocht 45°</p>
-          <p class="data-text">{{addStuksString(currentProject.slokker.gradenBocht45)}}</p>
+          <p  style="min-width:69px;" class="label-text">Bocht 90°</p>
+          <p class="data-text">{{addStuksString(currentProject.slokker.gradenBocht90)}}</p>
         </div>
-          <div *ngIf="(heeftPloegen != null && heeftPloegen === true) && !group.bochtenInGraden " class="insideRow2">
-            <p class="label-text">Bocht</p>
-            <p style='min-height: 20px;min-width: 20px;' class="data-text">{{NullToZero(currentProject.slokker.bocht)}} | {{NullToZero(currentProject.slokker.bocht2)}}</p>
-            <p class="margL">stuks</p>
-          </div>
         <div *ngIf="(heeftPloegen != null && heeftPloegen === true) && group.bochtenInGraden " class="insideRow2">
-          <p class="label-text">Bocht 45°</p>
-          <p style='min-height: 20px;min-width: 20px;' class="data-text">{{NullToZero(currentProject.slokker.gradenBocht45)}} | {{NullToZero(currentProject.slokker.gradenBocht45Fase2)}}</p>
+          <p  style="min-width:69px;" class="label-text">Bocht 90°</p>
+          <p style='min-height: 20px;min-width: 20px;' class="data-text">{{NullToZero(currentProject.slokker.gradenBocht90)}} | {{NullToZero(currentProject.slokker.gradenBocht90Fase2)}}</p>
           <p class="margL">stuks</p>
         </div>
         <div class="insideRow2">
@@ -159,16 +184,6 @@
           <p class="data-text">{{addStuksString(currentProject.slokker.Y)}}
           </p>
         </div>
-        <div *ngIf="(heeftPloegen == null || heeftPloegen === false) && group.bochtenInGraden" class="insideRow2">
-          <p class="label-text">Bocht 90°</p>
-          <p class="data-text">{{addStuksString(currentProject.slokker.gradenBocht90)}}</p>
-        </div>
-        <div *ngIf="(heeftPloegen != null && heeftPloegen === true) && group.bochtenInGraden " class="insideRow2">
-          <p class="label-text">Bocht 90°</p>
-          <p style='min-height: 20px;min-width: 20px;' class="data-text">{{NullToZero(currentProject.slokker.gradenBocht90)}} | {{NullToZero(currentProject.slokker.gradenBocht90Fase2)}}</p>
-          <p class="margL">stuks</p>
-        </div>
-
         <div class="insideRow2" *ngIf="this.group.slokkerSettings.mof">
           <p class="label-text">Mof</p>
           <p class="data-text">
@@ -242,12 +257,61 @@
         <p class="label-text">Infiltratiekolk</p>
         <p *ngIf="currentProject.slokker.infiltratieKlok" class="data-text">Ja</p>
       </div>
-      <div  style='margin-left: 10px !important;' class="data-container-70" *ngIf="this.group.slokkerSettings.aansluitingOpengracht">
-        <p class="label-text">Kolk aansluiting op opengracht</p>
-        <p *ngIf="currentProject.slokker.aansluitingOpengracht" class="data-text">Ja</p>
+      <div  style='margin-left: 10px !important;' class="data-container-70">
+        <p class="label-text">Kolk aansluiting op vrije uitstroom</p>
+        <p class="data-text">{{this.currentProject.slokker.aansluitingOpengracht === true && this.currentProject.slokker.aansluitingVrijeUitstroom == null
+          ? 'Gracht' : this.currentProject.slokker.aansluitingVrijeUitstroom != null ?
+            this.currentProject.slokker.aansluitingVrijeUitstroom.substring(0,1).toUpperCase() + this.currentProject.slokker.aansluitingVrijeUitstroom.substring(1) : 'Nee'}}</p>
       </div>
 
-
+      <div style='margin-bottom: 10px; margin-top:10px;' *ngIf='group.isProjectForAWV'>
+        <p class="lambertTitle">Lambert coördinaten KOLK<small style="color:blue"> (Verplicht bij projecten AWV)</small></p>
+        <p style='font-size: 15px; font-weight: 600; margin-top: 15px; margin-left:20px' *ngIf='group.isProjectForAWV && !checkIfHasCoords(currentProject.slokker.xCoord, currentProject.slokker.yCoord, currentProject.slokker.zCoord)'>Heeft geen lambertcoördinaten</p>
+        <div *ngIf="checkIfHasCoords(currentProject.slokker.xCoord, currentProject.slokker.yCoord, currentProject.slokker.zCoord)" class='flexWrapper'>
+          <div class="insideRow2">
+            <p class="label-text">X-coördinaat</p>
+            <p class="data-text">
+              {{currentProject.slokker.xCoord}}
+            </p>
+          </div>
+          <div class="insideRow2">
+            <p class="label-text">Y-coördinaat</p>
+            <p class="data-text">
+              {{currentProject.slokker.yCoord}}
+            </p>
+          </div>
+          <div class="insideRow2">
+            <p class="label-text">Z-coördinaat</p>
+            <p class="data-text">
+              {{currentProject.slokker.zCoord}}
+            </p>
+          </div>
+        </div>
+      </div>
+      <div style='margin-bottom: 10px; margin-top:10px;' *ngIf='group.isProjectForAWV'>
+        <p class="lambertTitle">Lambert coördinaten AANSLUITING<small style="color:blue"> (Verplicht bij projecten AWV)</small></p>
+        <p style='font-size: 15px; font-weight: 600; margin-top: 15px; margin-left:20px' *ngIf='group.isProjectForAWV && !checkIfHasCoords(currentProject.slokker.x2Coord, currentProject.slokker.y2Coord, currentProject.slokker.z2Coord)'>Heeft geen lambertcoördinaten</p>
+        <div *ngIf="checkIfHasCoords(currentProject.slokker.x2Coord, currentProject.slokker.y2Coord, currentProject.slokker.z2Coord)" class='flexWrapper'>
+          <div class="insideRow2">
+            <p class="label-text">X-coördinaat</p>
+            <p class="data-text">
+              {{currentProject.slokker.x2Coord}}
+            </p>
+          </div>
+          <div class="insideRow2">
+            <p class="label-text">Y-coördinaat</p>
+            <p class="data-text">
+              {{currentProject.slokker.y2Coord}}
+            </p>
+          </div>
+          <div class="insideRow2">
+            <p class="label-text">Z-coördinaat</p>
+            <p class="data-text">
+              {{currentProject.slokker.z2Coord}}
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -265,6 +329,17 @@
         <p style="margin-bottom: 100%;font-size: 18px;font-weight: 600" *ngIf="photo == null">Geen foto</p>
       </div>
   </div>
+  <div *ngIf="group.isProjectForAWV" class="image-container">
+    <p class="section-title">Schematische voorstelling kolk (schets) <small style="color:blue">(Verplicht bij projecten AWV)</small></p>
+    <div *ngFor="let photo of currentProject.schetsPhotos; let i = index"  [ngClass]="photo == null? 'smallFotoColumnSchets' : ''" class="fotoColumnSchets">
+      <div class="innerColumn">
+        <p class="fotoText6" *ngIf="i === 0">1. Dwarsdoorsnede met aanduiding van referentiepunt (boordstenen/woning/greppel/FP/VP/rijweg….) + bochten in graden, lengtes,... incl. aansluitpunt</p>
+        <p class="fotoText6" *ngIf="i === 1">2. Bovenaanzicht met aanduiding van referentiepunt (boordstenen/woning/greppel/FP/VP/rijweg….) + bochten in graden, lengtes,... incl. aansluitpunt</p>
 
+        <img [ngClass]="i === 1 ? 'marginTopMin' : '' " *ngIf="photo != null" src="{{photo}}" class="photo" name="photo" (click)="imagePopUp(photo)">
+        <p style="margin-top: 30px;font-size: 18px;font-weight: 600" *ngIf="photo == null">Geen foto</p>
+      </div>
+    </div>
+  </div>
 
 </mat-card>

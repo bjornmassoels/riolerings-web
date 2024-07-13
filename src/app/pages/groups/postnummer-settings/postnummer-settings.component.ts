@@ -26,6 +26,7 @@ export class PostnummerSettingsComponent implements OnInit {
   public isLoaded: boolean = false;
   _id: string;
   company: Company;
+  isSaving: boolean = false;
 
   isBuisVoorInvalid: boolean = false;
   isBochtVoorInvalid: boolean = false;
@@ -61,6 +62,7 @@ export class PostnummerSettingsComponent implements OnInit {
     });
   }
     private loadData(_id: string) {
+    this.isSaving = false;
       this.apiService.getGroupById(_id).subscribe((x) => {
         this.group = (x as unknown) as Group;
         if(this.group._id == null || this.group._id === ''){
@@ -141,6 +143,7 @@ export class PostnummerSettingsComponent implements OnInit {
       ytStuk: this.group.slokkerPostNumbers.ytStuk,
       flexAan: this.group.slokkerPostNumbers.flexAan,
       buis: this.group.slokkerPostNumbers.buis,
+      buisVert: this.group.slokkerPostNumbers.buisVert,
       bocht: this.group.slokkerPostNumbers.bocht,
       reductie: this.group.slokkerPostNumbers.reductie,
       funOmh: this.group.slokkerPostNumbers.funOmh,
@@ -197,6 +200,8 @@ export class PostnummerSettingsComponent implements OnInit {
   }
 
   onSubmitDwa(data) {
+    if(this.isSaving)return;
+    this.isSaving = true;
     let sendGroup = Object.assign({}, this.group);
     sendGroup.dwaPostNumbers = this.dwaForm.value as Postnumbers;
     if(sendGroup._id == null || sendGroup._id === ''){
@@ -210,10 +215,13 @@ export class PostnummerSettingsComponent implements OnInit {
     sendGroup.slokkerSettings = undefined;
 
     this.apiService.updateSettings(sendGroup).subscribe(x => {
+      this.isSaving = false;
       this.toastrService.success( 'De postnummers van DWA zijn opgeslagen', 'Succes!');
       });
   }
   onSubmitRwa(data) {
+    if(this.isSaving)return;
+    this.isSaving = true;
     let sendGroup = Object.assign({}, this.group);
     sendGroup.rwaPostNumbers = this.rwaForm.value as Postnumbers;
     if(sendGroup._id == null || sendGroup._id === ''){
@@ -226,6 +234,7 @@ export class PostnummerSettingsComponent implements OnInit {
     sendGroup.rwaSettings = undefined;
     sendGroup.slokkerSettings = undefined;
     this.apiService.updateSettings(sendGroup).subscribe(x => {
+      this.isSaving = false;
       this.toastrService.success( 'De postnummers van RWA zijn opgeslagen', 'Succes!');
     });
   }
@@ -239,6 +248,8 @@ export class PostnummerSettingsComponent implements OnInit {
     this.router.navigate(['/pages/groupview', this._id]);
   }
   onSubmitSlokker(data) {
+    if(this.isSaving)return;
+    this.isSaving = true;
     let sendGroup = Object.assign({}, this.group);
     sendGroup.slokkerPostNumbers = this.slokkerForm.value as SlokkerPostnumbers;
     if(sendGroup._id == null || sendGroup._id === ''){
@@ -251,6 +262,7 @@ export class PostnummerSettingsComponent implements OnInit {
     sendGroup.rwaSettings = undefined;
     sendGroup.slokkerSettings = undefined;
     this.apiService.updateSettings(sendGroup).subscribe(x => {
+      this.isSaving = false;
       this.toastrService.success( 'De postnummers van kolken zijn opgeslagen', 'Succes!');
     });
   }

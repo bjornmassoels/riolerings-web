@@ -4,7 +4,15 @@ import { CommonModule } from '@angular/common';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {UsersRoutingModule} from "./users.routing.module";
 import {UsersComponent} from "./users.component";
-import { NbAutocompleteModule, NbButtonModule, NbCheckboxModule, NbInputModule, NbSelectModule, NbTabsetModule } from '@nebular/theme';
+import {
+  NbAutocompleteModule,
+  NbButtonModule,
+  NbCheckboxModule,
+  NbInputModule,
+  NbSelectModule,
+  NbSpinnerModule,
+  NbTabsetModule,
+} from '@nebular/theme';
 import { DeleteDialogUser, UserEditComponent } from './user-edit/user-edit.component';
 import {UserCreateComponent} from "./user-create/user-create.component";
 import {MatButtonModule} from "@angular/material/button";
@@ -34,6 +42,7 @@ import { MatIconModule } from '@angular/material/icon';
     MatDialogTitle,
     MatIconModule,
     NbButtonModule,
+    NbSpinnerModule,
   ],
   declarations: [UsersComponent, UserCreateComponent,  UserEditComponent,  DeleteDialogUser, UserDeleteDialogComponent],
 })

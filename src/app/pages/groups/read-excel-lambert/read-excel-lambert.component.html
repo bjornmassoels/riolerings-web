@@ -8,6 +8,8 @@
   <button *ngIf="isInfoOpen" mat-raised-button class="form-button2" (click)="goToInfo()">
     Sluit info
   </button>
+  <nb-spinner *ngIf="isSaving" class="opslaan-spinner" size="giant" [message]="'Opslaan..'" status="info"></nb-spinner>
+
 </div>
 <div style="margin-top: 35px" *ngIf="isInfoOpen">
   <h5>U moet de landmeter de velden van B to E laten genereren in een excel</h5>
@@ -16,18 +18,20 @@
   <img src='../../../../assets/lambertExample.png'>
 </div>
 <div *ngIf="!isInfoOpen">
-  <h5 style="margin-top: 29px">Upload hier uw excel met lambertcoordinaten om deze te koppelen aan huisaansluitingen.</h5>
+  <h5 style="margin-top: 29px">Upload hier uw excel met lambertcoördinaten om deze te koppelen aan huisaansluitingen.</h5>
 
   <input type="file" class="form-control upload" (change)="addfile($event)" placeholder="Upload file"
          accept=".xlsx, .xls, .csv, .xlsm">
   <h2 style="color:blue; margin-top: 15px" *ngIf="isloading">Het bestand wordt ingelezen...</h2>
-  <div style="width: 90%" *ngIf="output != null">
-    <h3>Gelukte aansluitingen:</h3>
-    <p style="display:inline" *ngFor="let project of output; let i = index">{{project.isSucces && project.Laag.toLowerCase() === 'dwa'? project.Straat + ' ' + project.Huisnummer + ' DWA,' : project.isSucces && project.Laag.toLowerCase() === 'rwa' ? project.Straat + ' ' + project.Huisnummer + ' RWA,' : null }}</p>
+  <div style="margin-top: 20px;" class="aansluitingDiv" *ngIf="succesAansluitingen != null && succesAansluitingen.length !== 0">
+    <h4 style="width:215px"><i class="fa-solid fa-check-circle faIcon"></i>Succesvol ({{succesAansluitingen.length}}) : </h4>
+    <p class="aansluitingText lightGreen" *ngFor="let project of succesAansluitingen; let i = index">{{project.isSucces && project.Laag.toLowerCase() === 'dwa'? project.Straat + ' ' + project.Huisnummer + ' DWA' : project.isSucces && project.Laag.toLowerCase() === 'rwa' ? project.Straat + ' ' + project.Huisnummer + ' RWA' : null }}</p>
   </div>
-  <div style="width: 90%" *ngIf="output != null">
-    <h3>Mislukte aansluitingen:</h3>
-    <p style="display:inline" *ngFor="let project of output;let i = index">{{!project.isSucces && project.Laag.toLowerCase() === 'dwa' ? project.Straat + ' ' + project.Huisnummer + ' DWA,' :  !project.isSucces && project.Laag.toLowerCase() === 'rwa' ? project.Straat + ' ' + project.Huisnummer + ' RWA,' : null }}</p>
+  <div *ngIf="succesAansluitingen != null" class="aansluitingDiv" >
+    <ng-container *ngIf="mislukeAansluitingen != null && mislukeAansluitingen.length !== 0">
+      <h4 style="width:215px"><i class="fa fa-xmark-circle faIcon"></i>Mislukt ({{mislukeAansluitingen.length}}) : </h4>
+      <p class="aansluitingText lightRed" *ngFor="let project of mislukeAansluitingen;let i = index">{{!project.isSucces && project.Laag.toLowerCase() === 'dwa' ? project.Straat + ' ' + project.Huisnummer + ' DWA' :  !project.isSucces && project.Laag.toLowerCase() === 'rwa' ? project.Straat + ' ' + project.Huisnummer + ' RWA' : null }}</p>
+    </ng-container>
   </div>
 </div>
 

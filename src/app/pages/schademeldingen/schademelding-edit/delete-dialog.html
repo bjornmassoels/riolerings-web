@@ -1,0 +1,8 @@
+<h1 mat-dialog-title>Attentie!</h1>
+<div mat-dialog-content>
+  <p>Bent u zeker dat u deze schademelding wilt verwijderen?</p>
+</div>
+<div style="margin-left: 10px;" mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Annuleer</button>
+  <button mat-button style="background-color: red" (click)="onDeleteClick()"  cdkFocusInitial>Verwijderen</button>
+</div>

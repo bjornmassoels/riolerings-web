@@ -7,6 +7,7 @@ import {ApiService} from "../../../../services/api.service";
 import {ExcelObject} from "../../../../models/excelObject";
 import {LambertObject} from "../../../../models/lambertObject";
 import {Group} from "../../../../models/groups";
+import { NbToastrService } from '@nebular/theme';
 
 @Component({
   selector: 'read-excel-lambert',
@@ -22,10 +23,13 @@ export class ReadExcelLambertComponent implements OnInit {
   isLoaded: boolean = false;
   infoForm: any;
   _id: string;
-  output: LambertObject[] ;
+  succesAansluitingen: LambertObject[] ;
+  mislukeAansluitingen: LambertObject[] ;
   isInfoOpen: boolean = false;
   isloading: boolean = false;
-  constructor(private formBuilder: UntypedFormBuilder, private formService:FormService, private router: Router, private apiService: ApiService, private route: ActivatedRoute) {
+  isSaving: boolean = false;
+  constructor(private formBuilder: UntypedFormBuilder, private formService: FormService, private router: Router,
+              private apiService: ApiService, private route: ActivatedRoute, private toastController: NbToastrService) {
     route.params.subscribe((val) => {
       this._id = this.route.snapshot.paramMap.get('id');
     });
@@ -37,6 +41,8 @@ export class ReadExcelLambertComponent implements OnInit {
 
 
   addfile(event) {
+    if(this.isSaving)return
+    this.isSaving = true;
     this.isloading = true;
     this.file = event.target.files[0];
     const fileReader = new FileReader();
@@ -55,9 +61,24 @@ export class ReadExcelLambertComponent implements OnInit {
       //this.group.rbNaam = arraylist[1].__EMPTY;
 
       this.apiService.setLambertCoordinates(this._id, arraylist).subscribe(x => {
-          this.output = x as LambertObject [];
+         let response = x as LambertObject [];
+          let filteredEmpty = response.filter(x => !x.isSucces);
+          if(response == null || response.length === 0 || filteredEmpty.length === 0) {
+            this.succesAansluitingen = null;
+            this.mislukeAansluitingen = response;
+            this.toastController.show('Er is een fout opgetreden bij het inlezen van de excel. Zorg dat hij zoals het aangegeven formaat is genereerd.', 'Error', {status: 'danger'});
+          } else {
+            this.succesAansluitingen = response.filter(x => x.isSucces);
+            this.mislukeAansluitingen = response.filter(x => !x.isSucces);
+          }
           this.isloading = false;
+          this.isSaving = false;
           this.isLoaded = true;
+      }, error => {
+        this.toastController.show('Er is een fout opgetreden bij het inlezen van de excel. Zorg dat hij zoals het aangegeven formaat is genereerd.', 'Error', {status: 'danger'});
+        this.isloading = false;
+        this.isSaving = false;
+        this.isLoaded = true;
       });
     };
   }

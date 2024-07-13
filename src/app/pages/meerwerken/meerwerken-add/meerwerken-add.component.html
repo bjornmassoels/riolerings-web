@@ -5,11 +5,13 @@
   <button (click)="onSubmitForm()" mat-raised-button class="save-button" color="primary" type="submit">
     Opslaan
   </button>
+  <nb-spinner *ngIf="isSaving" class="opslaan-spinner" size="giant" [message]="'Opslaan..'" status="info"></nb-spinner>
+
 </div>
 
 <mat-card id="content" *ngIf="isLoaded" class="project-card">
   <form *ngIf="isLoaded" [formGroup]="meerwerkForm" (ngSubmit)="onSubmit(meerwerkForm.value)" class="add-form">
-    <h2 class="page-title">Onvoorzien werk</h2>
+    <h2 class="page-title">Nieuw onvoorzien werk aanmaken</h2>
     <div class="row-container">
       <div class="column-container">
         <div class="data-container">
@@ -37,7 +39,7 @@
           </ng-template>
         </div>
         <div class="data-container">
-          <p class="label-text">Plaats/straat</p>
+          <p class="label-text">Gemeente & straat</p>
           <input nbInput class="normalInput" type="text" formControlName="street" />
         </div>
         <div class="data-container">
@@ -51,6 +53,10 @@
       </div>
 
       <div class="column-container">
+        <div class="data-container">
+          <p class="label-text">Activiteit</p>
+          <input class="activiteitInput" nbInput type="text" formControlName="activiteit" />
+        </div>
         <div class="data-container">
           <p class="label-text">Aantal werkuren</p>
           <nb-select class="bigInput" formControlName="minutesWorked" id="type">

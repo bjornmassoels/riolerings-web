@@ -35,6 +35,7 @@
   <button *ngIf="isUserCreate" mat-raised-button class="form-button-close" (click)="toggleUserCreate()">Toevoegen sluiten</button>
 </div>
 
+<nb-spinner *ngIf="isSaving" class="opslaan-spinner" size="giant" [message]="'Opslaan..'" status="info"></nb-spinner>
 
 <user-create (outputEvent)="onAddUser()"  *ngIf="isUserCreate"></user-create>
 

@@ -87,7 +87,6 @@ export class SlokkerprojectViewComponent implements OnInit,OnDestroy {
     const index = this.lastProjects.findIndex((x) => x._id === this._id);
     if (index !== 0) {
       const project = this.lastProjects[index - 1];
-      if(!project.isMeerwerk) {
         if (project.isSlokker == null || project.isSlokker === false) {
           this.formService.PreloadProject = project as Project;
           this.formService.preloadSlokkerProject = null;
@@ -97,9 +96,6 @@ export class SlokkerprojectViewComponent implements OnInit,OnDestroy {
           this.formService.PreloadProject = null;
           this.router.navigate(['/pages/slokkerprojectview', project._id]);
         }
-      } else {
-        this.router.navigate(['/pages/meerwerkview', project._id]);
-      }
     }
   }
 
@@ -107,7 +103,6 @@ export class SlokkerprojectViewComponent implements OnInit,OnDestroy {
     const index = this.lastProjects.findIndex((x) => x._id === this._id);
     if (this.lastProjects.length > index + 1) {
       const project = this.lastProjects[index + 1];
-      if(!project.isMeerwerk) {
         if (project.isSlokker == null || project.isSlokker === false) {
           this.formService.PreloadProject = project as Project;
           this.formService.preloadSlokkerProject = null;
@@ -117,9 +112,6 @@ export class SlokkerprojectViewComponent implements OnInit,OnDestroy {
           this.formService.PreloadProject = null;
           this.router.navigate(['/pages/slokkerprojectview', project._id]);
         }
-      } else {
-        this.router.navigate(['/pages/meerwerkview', project._id]);
-      }
     }
   }
 
@@ -153,6 +145,9 @@ export class SlokkerprojectViewComponent implements OnInit,OnDestroy {
       }
       if(this.currentProject.afgewerktDatum != null){
         this.currentProject.afgewerktDatum = new Date(this.currentProject.afgewerktDatum);
+      }
+      if(this.currentProject.schetsPhotos == null){
+        this.currentProject.schetsPhotos = [null, null];
       }
       if(this.currentProject.created != null) this.currentProject.createdDate = new Date(this.currentProject.created);
       if(this.currentProject.updated != null)this.currentProject.updated = new Date(this.currentProject.updated);
@@ -277,6 +272,7 @@ export class SlokkerprojectViewComponent implements OnInit,OnDestroy {
     ]);
   }
   async onDeleteProject() {
+    this.formService.previousPage = ['/pages/groupview/' + this.currentProject.group_id._id];
     let dialogRef = this.dialog.open(SlokkerprojectViewDeleteDialogComponent, {
       height: '19vh',
       width: '27vw',
@@ -347,6 +343,8 @@ export class SlokkerprojectViewComponent implements OnInit,OnDestroy {
   checkHasKolk(kolk: Slokkers) {
     if ((kolk.buis == null || kolk.buis === 0 || kolk.buis.toString() === '') &&
       (kolk.buis2 == null || kolk.buis2 === 0 || kolk.buis2.toString() === '') &&
+      (kolk.buisVert == null || kolk.buisVert === 0 || kolk.buisVert.toString() === '') &&
+      (kolk.buisVert2 == null || kolk.buisVert2 === 0 || kolk.buisVert2.toString() === '') &&
       (kolk.bocht == null || kolk.bocht === 0 || kolk.bocht.toString() === '') &&
       (kolk.bocht2 == null || kolk.bocht2 === 0 || kolk.bocht2.toString() === '') &&
       (kolk.gradenBocht45 == null || kolk.gradenBocht45 === 0 || kolk.gradenBocht45.toString() === '') &&
@@ -354,10 +352,18 @@ export class SlokkerprojectViewComponent implements OnInit,OnDestroy {
       (kolk.gradenBocht45Fase2 == null || kolk.gradenBocht45Fase2 === 0 || kolk.gradenBocht45Fase2.toString() === '') &&
       (kolk.gradenBocht90Fase2 == null || kolk.gradenBocht90Fase2 === 0 || kolk.gradenBocht90Fase2.toString() === '') &&
       (kolk.reductie == null || kolk.reductie === 0 || kolk.reductie.toString() === '') &&
-      (kolk.stop == null || kolk.stop === 0 || kolk.stop.toString() === '')) {
+      (kolk.stop == null || kolk.stop === 0 || kolk.stop.toString() === '') &&
+      (kolk.infiltratieKlok == null || kolk.infiltratieKlok === false)){
       return false;
     } else {
       return true;
+    }
+  }
+  checkIfHasCoords(xCoord: string, yCoord: string, zCoord: string) {
+    if((xCoord != null && xCoord !== '') || (yCoord != null && yCoord !== '') || (zCoord != null && zCoord !== '')){
+      return true;
+    } else {
+      return false;
     }
   }
   deleteFoto(i: number) {

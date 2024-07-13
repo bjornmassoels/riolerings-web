@@ -5,6 +5,8 @@
   <button (click)='onSubmit(addForm.value)' mat-raised-button class="form-button-blue" style='margin: 0px !important' color="primary">
     Opslaan
   </button>
+  <nb-spinner *ngIf="isSaving" class="opslaan-spinner" size="giant" [message]="'Opslaan..'" status="info"></nb-spinner>
+
   <button  mat-raised-button color="warn" class="form-button3"
            (click)="onDeleteGroup()">Project verwijderen</button>
 </div>
@@ -95,7 +97,7 @@
         </tr>
         <mat-card-title class="title">Gebruikers</mat-card-title>
         <tr>
-          <td class="leftText">Gekoppelde gebruikers:</td>
+          <td class="leftText">Gekoppelde gebruikers</td>
           <td>
             <mat-form-field class='userSelect'  >
               <mat-select placeholder="Wijzig gebruikers" formControlName="users" multiple>
@@ -116,8 +118,33 @@
             <input class="checkbox" nbCheckbox id="name" type="checkbox" formControlName="heeftPloegen" />
           </td>
         </tr>
+
+
         <tr>
-          <td colspan="2" style="font-size: 17px;margin-top: 20px;font-weight: bold">Suggesties voor straten bij het toevoegen van een nieuwe kolk (mobile)</td>
+          <mat-card-title style="margin-left: 0"  class="title">Project voor AWV?<small> (Agentschap Wegen en Verkeer)</small></mat-card-title>
+          <td>
+            <input style="margin-top: 0 !important;" class="checkbox" nbCheckbox id="name" type="checkbox" formControlName="isProjectForAWV" />
+          </td>
+        </tr>
+        <div *ngIf="addForm.get('isProjectForAWV').value" style="border:1px dashed black;border-radius: 10px;">
+        <mat-card-title style="font-size: 21px;margin-top: 10px;margin-left: 10px !important;" *ngIf="addForm.get('isProjectForAWV').value" class="title"><u>Extra velden AWV</u></mat-card-title>
+        <tr>
+          <td class="leftText">AID-nummer</td>
+          <td>
+            <input nbInput type="text" formControlName="aidNummer" />
+          </td>
+        </tr>
+        <tr>
+          <td class="leftText">Ident8</td>
+          <td>
+            <input nbInput type="text" formControlName="ident8">
+          </td>
+        </tr>
+        </div>
+
+        <tr>
+          <td colspan="2" style="font-size: 17px; margin-top: 25px"><b>STRAAT suggesties bij het aanmaken van nieuwe aansluitingen, kolken, onvoorziene werkzaamheden of schademelding (in mobiele app)</b>
+            <p style="margin:7px 0px 5px 0;padding-left:15px;max-width:420px;border:1px dashed gray;border-radius:15px" *ngIf="possibleKolkStreets.length === 0">Voorbeeld: <img style="height: 60%;width: 60%;" src="assets/straatsuggesties.png"></p></td>
         </tr>
         <tr>
           <td colspan="2">

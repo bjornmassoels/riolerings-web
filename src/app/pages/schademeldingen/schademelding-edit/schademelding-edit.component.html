@@ -1,0 +1,350 @@
+
+<div *ngIf="!isNewSchademelding" class="topRow">
+  <button mat-raised-button class="form-button" (click)="goToPrevious()">
+    Terug
+  </button>
+
+  <div  class="navigation-row">
+    <button *ngIf="index != null && index !== -1" [disabled]="index === 0" mat-raised-button class="nav-button" (click)="onPreviousClick()">
+      <i class="fa-solid fa-left-long navIcon"></i>
+    </button>
+    <p *ngIf="index != null && owAndSchademeldingList != null && index !== -1"  class="boldText">{{index + 1}}/{{owAndSchademeldingList.length}}</p>
+    <button  *ngIf="index != null &&  index !== -1" [disabled]="index === owAndSchademeldingList.length - 1" mat-raised-button class="nav-button" (click)="onNextClick()">
+      <i class="fa-solid fa-right-long navIcon"></i>
+    </button>
+  </div>
+
+  <button [disabled]="isSaving" (click)="onSubmit()" mat-raised-button class="form-button-blue" color="primary">
+    Opslaan
+  </button>
+
+  <nb-spinner *ngIf="isSaving" class="opslaan-spinner" size="giant" [message]="'Opslaan..'" status="info"></nb-spinner>
+
+  <button style=" margin-left: 70px" (click)="goToView()" mat-raised-button class="form-button3" >
+    Ga naar view
+  </button>
+  <button style="width: auto" mat-raised-button class="form-button2" (click)="generatePDF()"><div class="divInsideButton">PDF 	<mat-icon class="downloadImage">cloud_download</mat-icon></div></button>
+  <button *ngIf="!isNewSchademelding"  mat-raised-button class="delete-button" color="warn" type="button"
+          (click)="onDeleteClick()"><i style="margin-left: 2px" class="fa-solid fa-trash-can"></i></button>
+</div>
+
+<button *ngIf="isNewSchademelding" mat-raised-button class="form-button" (click)="goToPrevious()">
+  Terug
+</button>
+<mat-card  *ngIf="isLoaded" class="project-card">
+    <h3 class="page-title">Schademelding {{isNewSchademelding ? 'aanmaken': 'bewerken'}} <small style='font-size:15px; margin-top:-5px'>   {{group.rbProjectNaam}} | {{group.rbGemeente}} | {{group.aannemerProjectNr}}</small><br><span *ngIf="schademelding.creator_user?.name" class="smallerText"> Gemeld door: <b>{{schademelding.creator_user?.name}} </b><small>- {{("0"+(schademelding.created.getDate())).slice(-2)}}/{{("0"+(schademelding.created.getMonth()+1)).slice(-2)}}/{{schademelding.created.getFullYear().toString().slice(-2)}}</small></span></h3>
+  <form  [formGroup]="editForm"  class="outerRowDiv">
+
+    <div  class="groupColDiv">
+
+      <div class="flexColumn">
+        <p class="inputText"> <nb-icon icon="calendar-check" pack="fa" style="font-size: 16px;"></nb-icon>Tijdstip ongeval</p>
+        <div class="smallRow">
+
+          <input  class="selectBox" nbInput placeholder="Kies een datum" formControlName="date" [nbDatepicker]="datePicker">
+          <nb-datepicker  #datePicker></nb-datepicker>
+          <button  class="closeButton" [ngClass]="editForm.get('date').value == null  ? 'hideButton' : ''"
+                   nbButton status="warning" (click)="clearDatum()">
+            <nb-icon style="font-size: 22px" pack="fa" icon="xmark"></nb-icon>
+          </button>
+        </div>
+        <div style="margin-top: 6px"  class="form-group row">
+          <div class="col-sm-10">
+            <div  class="uurFlexer">
+              <nb-select  class="smallSelect" formControlName="tijdstipUur">
+                <nb-option *ngFor="let hour of allHours" [value]="hour">{{hour}}</nb-option>
+              </nb-select>
+              <p class="extraText">Uur</p>
+              <nb-select class="smallSelect" formControlName="tijdstipMinuten">
+                <nb-option *ngFor="let number of allMinutes" [value]="number">{{number}}</nb-option>
+              </nb-select>
+              <p class="extraText">Min</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flexColumn">
+        <p class="inputText"><nb-icon icon="building" pack="fa" style="font-size: 16px;"></nb-icon> Betrokken partij</p>
+        <input class="inputField"  nbInput type="text" formControlName="tegenPartij" placeholder="Partij.." />
+      </div>
+
+
+      <div class="flexColumn">
+        <p class="inputText"><nb-icon icon="location-dot" pack="fa" style="font-size: 16px;"></nb-icon> Gemeente & straat</p>
+        <input class="inputField"  nbInput type="text" formControlName="gemeente_en_straat" placeholder="Gemeente & straat.." />
+      </div>
+
+
+      <div class="flexColumn">
+        <p class="inputText"><nb-icon icon="hashtag" pack="fa" style="font-size: 16px;"></nb-icon> Huisnummer/nummer</p>
+        <input class="inputField"  nbInput type="text" formControlName="huisnr_of_nummer" placeholder="Huisnummer/nummer.." />
+      </div>
+
+      <div *ngIf="photosGetter().length === 1" class="upload-container-empty">
+        <p style="font-weight: bold">Voeg foto toe</p>
+        <input  type="file" name="file" (change)="onFileSelect($event,0)"
+               accept=".png,.jpg,.jpeg,.tiff" class="uploadButton2" />
+      </div>
+    </div>
+    <div class="groupColDiv">
+
+
+      <div class="flexColumn">
+        <p class="inputText"><nb-icon icon="person-digging" pack="fa" style="font-size: 16px;"></nb-icon> Activiteit waardoor schade is veroorzaakt</p>
+        <nb-select class="inputField"  placeholder="Soort werk.." formControlName="soortActiviteit">
+          <nb-option value="Riolering">Riolering</nb-option>
+          <nb-option value="Huisaansluitingen">Huisaansluitingen</nb-option>
+          <nb-option value="Grondwerk">Grondwerk</nb-option>
+          <nb-option value="Verhardingswerken">Verhardingswerken</nb-option>
+          <nb-option value="Andere">Andere</nb-option>
+        </nb-select>
+        <p style="margin-top: 7px;" *ngIf="editForm.get('soortActiviteit').value === 'Andere'" class="inputText">
+          <nb-icon icon="person-digging" pack="fa" style="font-size: 16px; "></nb-icon> Ander soort werk:
+        </p>
+        <input  class="inputField"  nbInput *ngIf="editForm.get('soortActiviteit').value === 'Andere'" type="text" formControlName="soortActiviteitAndereString" placeholder="Andere.." />
+      </div>
+
+      <div class="flexColumn">
+        <p class="inputText"><nb-icon icon="user" pack="fa" style="font-size: 16px;"></nb-icon> Schade door wie</p>
+        <input class="inputField"  nbInput type="text" formControlName="schadeDoorWie" placeholder="Schade door..." />
+      </div>
+
+      <div class="flexColumn">
+        <p class="inputText"><nb-icon icon="bullseye" pack="fa" style="font-size: 16px;"></nb-icon> Schade gericht aan</p>
+        <nb-select class="inputField"  placeholder="Schade gericht aan.." formControlName="schadeGerichtAan" >
+          <nb-option value="Nutsleidingen">Nutsleidingen</nb-option>
+          <nb-option value="Privé eigendom">Privé eigendom</nb-option>
+          <nb-option value="Auto">Auto</nb-option>
+          <nb-option value="Andere">Andere</nb-option>
+        </nb-select>
+        <p style="margin-top: 7px;" *ngIf="editForm.get('schadeGerichtAan').value === 'Andere'" class="inputText">
+          <nb-icon icon="bullseye" pack="fa" style="font-size: 16px; "></nb-icon> Schade gericht aan:
+        </p>
+        <input class="inputField" style=" margin-top: 8px" nbInput *ngIf="editForm.get('schadeGerichtAan').value === 'Andere'" type="text" formControlName="schadeGerichtAanAndereString" placeholder="Andere.." />
+      </div>
+
+
+      <div class="flexColumn">
+        <p class="inputText">
+          <nb-icon icon="tree-city" pack="fa" style="font-size: 16px; margin-right: 4px;"></nb-icon>
+          Plaats van de werken
+        </p>
+        <nb-select class="inputField"  placeholder="Bescherm door.." formControlName="plaatsVanWerken" >
+          <nb-option value="Centrum">Centrum</nb-option>
+          <nb-option value="Woonwijk">Woonwijk</nb-option>
+          <nb-option value="Open veld">Open veld</nb-option>
+          <nb-option value="Rijweg">Rijweg</nb-option>
+          <nb-option value="Berm">Berm</nb-option>
+          <nb-option value="Andere">Andere</nb-option>
+        </nb-select>
+        <p *ngIf="editForm.get('plaatsVanWerken').value === 'Andere'" style="margin-top: 7px;" class="inputText">
+          <nb-icon icon="tree-city" pack="fa" style="font-size: 16px; margin-right: 4px; "></nb-icon>
+          Andere plaats van werken
+        </p>
+        <input *ngIf="editForm.get('plaatsVanWerken').value === 'Andere'" class="inputField"  nbInput type="text" placeholder="Plaats van werken.." formControlName="plaatsVanWerkenAndereString" />
+      </div>
+
+    </div>
+    <div class="groupColDiv">
+
+
+
+      <div class="flexColumn">
+        <p class="inputText"><nb-icon icon="snowplow" pack="fa" style="font-size: 16px;"></nb-icon> Schade door wat?(machine of andere)</p>
+        <input class="biggerFieldInput"  nbInput type="text" formControlName="schadeDoorWat" placeholder="Schade door wat.." />
+      </div>
+
+      <div class="flexColumn">
+        <p class="inputText"><nb-icon icon="circle-question" pack="fa" style="font-size: 16px;"></nb-icon> Oorzaak van de schade</p>
+        <nb-select class="inputField"  placeholder="Selecteer oorzaak" formControlName="oorzaakSchade">
+          <nb-option value="Niet van toepassing">Niet van toepassing</nb-option>
+          <nb-option value="Ligging niet vermeld">Ligging niet vermeld</nb-option>
+          <nb-option value="Onvoldoende opgezocht">Onvoldoende opgezocht</nb-option>
+          <nb-option value="Ligt te ondiep">Ligt te ondiep</nb-option>
+          <nb-option value="Ligging niet volgens plan">Ligging niet volgens plan</nb-option>
+          <nb-option value="Inkalving sleufwand">Inkalving sleufwand</nb-option>
+          <nb-option value="Onoplettendheid">Onoplettendheid</nb-option>
+        </nb-select>
+      </div>
+
+      <div class="flexColumn">
+        <p class="inputText">
+          <nb-icon icon="comment" pack="fa" style="font-size: 16px;"></nb-icon>
+          Omschrijving van de schade<small><br>(materieel, dia-leiding, e.a.)</small>
+        </p>
+        <textarea class="biggerFieldInput" nbInput fullWidth [rows]="4" formControlName="omschrijvingSchade" placeholder="Voeg een omschrijving toe..."></textarea>
+      </div>
+
+
+    </div>
+
+    <div *ngIf="checkIfSchadeGerichtAanIsNutsleidingenOfAndere()" class="extraInfoNutsleidingRow">
+      <p style="width:fit-content;margin:6px 0 0 0;font-weight: bold;font-size: 15px">Extra info leidingen</p>
+      <div class="flexColumn">
+        <p class="inputText"><nb-icon icon="shield" pack="fa" style="font-size: 16px;"></nb-icon> Was de leiding beschermd?</p>
+        <nb-select class="inputField"  placeholder="Bescherming type" formControlName="leidingBeschermd">
+          <nb-option value="nee">Nee</nb-option>
+          <nb-option value="Dekpannen">Dekpannen</nb-option>
+          <nb-option value="Betontegels">Betontegels</nb-option>
+          <nb-option value="Signalisatielint">Signalisatielint</nb-option>
+          <nb-option value="Andere">Andere</nb-option>
+        </nb-select>
+        <p style="margin-top: 7px;" *ngIf="editForm.get('leidingBeschermd').value === 'Andere'" class="inputText">
+          <nb-icon icon="shield" pack="fa" style="font-size: 16px; "></nb-icon> Andere bescherming:
+        </p>
+        <input  class="inputField"  nbInput *ngIf="editForm.get('leidingBeschermd').value === 'Andere'" type="text" formControlName="leidingBeschermdAndereString" placeholder="Andere.." />
+      </div>
+      <div class="flexColumn">
+        <nb-toggle formControlName="isLeidingPlanOpWerf" labelPosition="left">
+          <nb-icon icon="map" pack="fa" style="font-size: 16px"></nb-icon>
+          Ligt het nutsleidingenplan op de werf?
+        </nb-toggle>
+
+        <nb-toggle formControlName="isLeidingVolgensPlan" labelPosition="left">
+          <nb-icon icon="map" pack="fa" style="font-size: 16px;"></nb-icon>
+          Ligt de leiding volgens plan?
+        </nb-toggle>
+      </div>
+      <div class="flexColumn">
+        <p class="inputText">
+          <nb-icon icon="ruler-vertical" pack="fa" style="font-size: 16px; "></nb-icon>
+          Hoe diep ligt de beschadigde leiding?
+        </p>
+        <div style="display: flex; flex-direction: row; gap: 8px;">
+          <input nbInput type="number" placeholder="..." formControlName="diepteLeiding" class="shortNumberInput"/>
+          <p style="margin-top: 14px;">meter</p>
+        </div>
+        <p style="margin-top: 8px" class="inputText">
+          <nb-icon icon="ruler-vertical" pack="fa" style="font-size: 16px; "></nb-icon>
+          Hoe diep zijn de graafwerken?
+        </p>
+        <div style="display: flex; flex-direction: row; gap: 8px;">
+          <input nbInput type="number" placeholder="..." formControlName="diepteGraafwerken" class="shortNumberInput"/>
+          <p style="margin-top: 14px;">meter</p>
+        </div>
+      </div>
+    </div>
+      <form style="margin-top:3px;max-width:1150px;width: 100%" *ngIf="isLoaded && photosGetter().length > 1" [formGroup]="uploadForm">
+        <p class="section-title">Foto's van schade</p>
+        <div formArrayName="photos" class="fotoRow">
+          <div *ngFor="let photo of photosGetter().controls; let i=index" [formGroupName]="i">
+            <div class="fotoColumn">
+              <div class="innerColumn">
+                <button *ngIf="photo.value.src != null && photo.value.src !== ''"  (click)="removePhoto(i)" type="button"
+                        class="deleteButton2"><i style="color:white;padding-left: 2px;" class="fa-solid fa-trash-can"></i></button>
+                <input (keyup)="changeBeschrijving()" nbInput class="fotoInput"  type="text" placeholder="Extra foto" formControlName="beschrijving">
+                <img *ngIf="photo.value.src != null && photo.value.src !== '' && tempImages[i] == null" src="{{photo.value.src}}" class="photo" name="photo" (click)="imagePopUp(photo.value.src)" alt="Foto"/>
+                <img *ngIf="(photo.value.src == null || photo.value.src === '') && tempImages[i] != null" [src]="tempImages[i]" class="photo" name="photo" (click)="imagePopUp(tempImages[i])" alt="Foto"/>
+                <p style="margin-bottom: 30%;font-size: 18px;font-weight: 600" *ngIf="(photo.value.src == null || photo.value.src === '') && tempImages[i] == null">Geen foto</p>
+                <p style="width:100%;text-align:center;margin-top:15px;font-size:16px;font-weight:600" *ngIf="(photo.value.src == null || photo.value.src === '') && tempImages[i] != null">Klaar om op te slaan</p>
+
+              </div>
+              <div *ngIf="(photo.value.src == null || photo.value.src === '') && tempImages[i] == null" class="upload-container">
+                <input type="file" name="file" (change)="onFileSelect($event,i)"
+                       accept=".png,.jpg,.jpeg,.tiff" class="uploadButton" />
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </form>
+
+
+
+
+
+
+
+    <div  style="margin-top: 15px;min-width:200px !important;" class="groupColDiv">
+      <div *ngIf="group.gebruiktJurdischeInfoBijSchademelding" class="flexColumn">
+        <nb-toggle formControlName="isBetwistingMogelijk" labelPosition="left">
+          <nb-icon icon="balance-scale" pack="fa" style="font-size: 16px;margin-right: 5px;"></nb-icon>
+          Is betwisting mogelijk?
+        </nb-toggle>
+
+        <nb-toggle formControlName="isMinnelijkeVaststelling" labelPosition="left">
+          <nb-icon icon="handshake" pack="fa" style="font-size: 16px;margin-right: 5px;"></nb-icon>
+          Minnelijke vaststelling gebeurd?
+        </nb-toggle>
+
+        <nb-toggle formControlName="isProcesVerbaal" labelPosition="left">
+          <nb-icon icon="file-alt" pack="fa" style="font-size: 16px;"></nb-icon>
+          Proces verbaal gemaakt?
+        </nb-toggle>
+      </div>
+      <div *ngIf="group.gebruiktJurdischeInfoBijSchademelding" class="flexColumn">
+        <p class="inputText"><nb-icon icon="shield-alt" pack="fa" style="font-size: 16px;"></nb-icon> Gemeente van politie</p>
+        <input class="inputField" nbInput type="text" formControlName="gemeentePolitie" placeholder="Gemeente politie.." />
+      </div>
+
+      <button *ngIf="isNewSchademelding" style="margin-top: 25px;margin-left: 20px;" mat-raised-button class="form-button-blue" color="primary" (click)="onSubmit()">Opslaan</button>
+    </div>
+
+    <div *ngIf="group.gebruiktHerstellingBijSchademelding" style="border:1px dashed black;border-radius:10px;  padding:8px;margin-top: 10px;" class="groupRowDiv">
+      <div style="align-items: center !important;" class="flexColumn">
+        <p class="herstelTitle">Herstelling</p>
+
+        <p class="inputText"> <nb-icon icon="calendar-check" pack="fa" style="font-size: 16px;"></nb-icon>Datum</p>
+        <div class="smallRow">
+
+          <input  class="selectBox" nbInput placeholder="Kies een datum" formControlName="datumHerstelling" [nbDatepicker]="datePicker2">
+          <nb-datepicker  #datePicker2></nb-datepicker>
+          <button  class="closeButton" [ngClass]="editForm.get('datumHerstelling').value == null  ? 'hideButton' : ''"
+                   nbButton status="warning" (click)="clearDatumHerstelling()">
+            <nb-icon style="font-size: 22px" pack="fa" icon="xmark"></nb-icon>
+          </button>
+        </div>
+        <div style="margin-top: 6px"  class="form-group row">
+          <div class="col-sm-10">
+            <div  class="uurFlexer">
+              <p class="extraText">van</p>
+              <nb-select  class="smallSelect" formControlName="herstelStartUur">
+                <nb-option *ngFor="let hour of allHours" [value]="hour">{{hour}}</nb-option>
+              </nb-select>
+              <p class="extraText">Uur</p>
+              <nb-select class="smallSelect" formControlName="herstelStartMinuten">
+                <nb-option *ngFor="let number of allMinutes" [value]="number">{{number}}</nb-option>
+              </nb-select>
+              <p class="extraText">Min</p>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top: 6px"  class="form-group row">
+          <div class="col-sm-10">
+            <div  class="uurFlexer">
+              <p class="extraText">tot</p>
+              <nb-select  class="smallSelect" formControlName="herstelEindUur">
+                <nb-option *ngFor="let hour of allHours" [value]="hour">{{hour}}</nb-option>
+              </nb-select>
+              <p class="extraText">Uur</p>
+              <nb-select class="smallSelect" formControlName="herstelEindMinuten">
+                <nb-option *ngFor="let number of allMinutes" [value]="number">{{number}}</nb-option>
+              </nb-select>
+              <p class="extraText">Min</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="flexColumn">
+        <p class="inputText">
+          <nb-icon icon="user" pack="fa" style="font-size: 16px; "></nb-icon>
+          Aantal personen herstelling?
+        </p>
+        <div style="display: flex; flex-direction: row; gap: 8px;">
+          <input nbInput type="number" placeholder="..." formControlName="aantalPersonenHerstelling" class="shortNumberInput"/>
+          <p style="margin-top: 14px;">pers</p>
+        </div>
+        <p class="inputText">
+          <nb-icon icon="comment" pack="fa" style="font-size: 16px;"></nb-icon>
+          Details van schadeherstelling
+        </p>
+        <textarea class="biggerFieldInput" nbInput fullWidth [rows]="4" formControlName="detailsHerstelling" placeholder="Detaiils herstelling.."></textarea>
+      </div>
+    </div>
+
+
+  </form>
+</mat-card>

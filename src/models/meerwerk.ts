@@ -22,9 +22,12 @@ export class Meerwerk {
   public postNumber: string;
   public isMeerwerk: boolean;
   public countEmployees: number;
+  activiteit: string;
   id: string;
   xCoordGeoLocationFirsPhoto: number;
   yCoordGeoLocationFirsPhoto: number;
   updated: Date;
+  hasBeenViewed: boolean;
+  creator_user: User;
   constructor() {}
 }

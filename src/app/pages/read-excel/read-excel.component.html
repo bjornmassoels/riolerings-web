@@ -46,14 +46,16 @@
       </div>
       <div class='nameFlex'><span *ngFor='let user of infoForm.value.users' class='user'>{{convertIdToNameString(user)}}</span></div>
 
-      <p style="font-size: 16px;margin-top: 20px;font-weight: bold;margin-bottom: 5px;">Mogelijke straten voorstellen bij toevoegen nieuwe kolk in mobiele app</p>
+      <p style="margin-bottom: 5px"><b>STRAAT suggesties bij het aanmaken van nieuwe aansluitingen, kolken, onvoorziene werkzaamheden of schademelding (in mobiele app)</b>
+      <p style="margin:7px 0px 5px 0;padding-left:15px;max-width:420px;border:1px dashed gray;border-radius:15px" *ngIf="possibleKolkStreets.length === 0">Voorbeeld: <img style="height: 60%;width: 60%;" src="assets/straatsuggesties.png"></p>
+
       <div style="margin-bottom: 10px" formArrayName="possibleKolkStreets">
         <div *ngFor="let street of possibleKolkStreets.controls; let i=index" class="form-group">
           <input style="margin-bottom: 8px;width:260px;" nbInput placeholder="Straatnaam.." [formControlName]="i" />
           <nb-icon nbSuffix style="margin-left: 6px;" icon="trash-2-outline" (click)="removeStreet(i)"></nb-icon>
         </div>
       </div>
-      <button style="background-color: #a08582 !important;color: white !important;margin-left: 10px;margin-top: 7px;width: 180px;"  nbButton status="primary" (click)="addStreet()"><i style="margin-right: 5px;" class="fa fa-plus"></i>Voeg straat toe</button>
+      <button style="background-color: #a08582 !important;color: white !important;margin-left: 10px;margin-top: 4px; margin-bottom:15px;width: 180px;"  nbButton status="primary" (click)="addStreet()"><i style="margin-right: 5px;" class="fa fa-plus"></i>Voeg straat toe</button>
 
 
       <div class="data-container shorterRow">

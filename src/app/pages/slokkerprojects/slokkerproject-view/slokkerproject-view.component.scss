@@ -22,7 +22,33 @@
 .project-card::-webkit-scrollbar-thumb {
   box-shadow: inset 0 0 0 10px;
 }
-
+.fotoText6 {
+  font-size: 13px;
+  width: 400px;
+  text-align: center;
+  padding: 0 0px;
+  margin-bottom: 0px;
+  height: 70px !important;
+  overflow-y: auto;
+}
+.fotoColumnSchets {
+  border: 2px solid lightskyblue;
+  border-radius: 10px;
+  margin-left: 6px;
+  margin-right: 6px;
+  padding:3px;
+  width: 420px;
+  height: auto;
+  min-height: 300px !important;
+}
+.smallFotoColumnSchets {
+  border: 2px solid lightskyblue;
+  border-radius: 10px;
+  margin-left: 6px;
+  margin-right: 6px;
+  width: 420px;
+  padding-bottom: 10px;
+}
 p{
   font-size: 15px;
 }
@@ -30,6 +56,13 @@ p{
   font-size: 15px;
   font-weight: 500;
   text-align: center;
+}
+.innerColumn {
+  margin-top: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
 }
 .page-title {
   font-weight: 800;
@@ -49,8 +82,8 @@ button:disabled {
   text-align: center;
 }
 .downloadImage{
-  margin-top: -3px;
   margin-left: 7px;
+  margin-bottom: -1px;
 }
 .marginTopMin{
   margin-top: -5px !important;
@@ -190,13 +223,7 @@ button:disabled {
   width: auto;
   height: 40px;
 }
-.boldText {
-  font-weight: 600;
-  margin-top: 11px;
-  font-size: 24px;
-  margin-left: 15px;
-  margin-right: 15px;
-}
+
 .data-container {
   display: flex;
   flex-direction: row;
@@ -242,6 +269,14 @@ button:disabled {
   letter-spacing: 1.4pt;
   font-size: 1.2rem;
   margin-bottom: 8px;
+}
+.lambertTitle{
+  width: 100%;
+  font-weight: 700;
+  letter-spacing: 1.4pt;
+  margin-bottom: 0px !important;
+  font-size: 16px;
+  text-align: start;
 }
 .putRow {
   width: 100%;
@@ -506,11 +541,9 @@ button:disabled {
   align-items:center;
   width:100%;
   max-width:42%;
-  margin: 9px 4%;
+  margin: 7px 4%;
   .label-text {
-    letter-spacing: 0.9pt;
     margin-bottom: 0px !important;
-    min-width:78px !important;
   }
   .data-text{
     font-weight: 700;

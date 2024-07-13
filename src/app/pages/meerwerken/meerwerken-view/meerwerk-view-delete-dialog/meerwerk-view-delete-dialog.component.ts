@@ -34,9 +34,10 @@ export class MeerwerkViewDeleteDialogComponent implements OnInit {
     if(this.formService.deleteMeerwerk._id == null){
       this.formService.deleteMeerwerk._id = this.formService.deleteMeerwerk.id;
     }
-    await this.apiService.deleteMeerwerkById(this.formService.deleteMeerwerk).subscribe(x => {
+    this.apiService.deleteMeerwerkById(this.formService.deleteMeerwerk).subscribe(x => {
+      this.closeDialog();
+      this.goToPrevious();
     });
-   this.closeDialog();
-   this.goToPrevious();
+
   }
 }

@@ -51,7 +51,6 @@
 }
 .text{
   font-size:15px;
-  letter-spacing: 0.9pt;
   margin:0 13px 0px 7px !important;
 }
 .clear-button {
@@ -85,7 +84,7 @@
   flex-direction: row;
   justify-content: flex-end;
   align-items: center;
-  width: 180px !important;
+  width: 160px !important;
 }
 .form-button2 {
   font-size: 18px;
@@ -130,7 +129,6 @@
   margin-top: 2px;
   justify-content: space-between;
   .label-text {
-    letter-spacing: 0.9pt;
     margin-top:0px !important;
     margin-bottom:0px !important;
   }
@@ -150,7 +148,6 @@
   justify-content: space-between;
   align-items: center;
   .label-text {
-    letter-spacing: 0.9pt;
     margin:0px !important;
   }
 
@@ -169,7 +166,6 @@
   align-items: center;
   justify-content: space-between;
   .label-text {
-    letter-spacing: 0.9pt;
     margin-bottom: 0px !important;
   }
   .data-text {
@@ -281,7 +277,7 @@
 }
 .page-title {
   font-weight: 800;
-  letter-spacing: 1.6pt;
+  letter-spacing: 1.5pt;
   margin-left: 26px;
   height:35px !important;
   margin-top:-10px !important;
@@ -304,7 +300,6 @@
   max-width:50%;
   padding: 5px 12px 5px 6px;
   .label-text {
-    letter-spacing: 0.9pt;
     margin-bottom: 0px !important;
   }
   .texter{
@@ -345,7 +340,6 @@ input[type=number] {
 }
 .label-text2 {
   font-weight: 500;
-  letter-spacing: 0.9pt;
 }
 .smallInput3 {
   width: 65px;
@@ -388,6 +382,7 @@ input[type=number] {
   height: 80px;
   width: 200px !important;
 }
+
 .normalInput {
 }
 .lambertInput {
@@ -409,7 +404,6 @@ input[type=number] {
 
 .IPtext {
   margin-top: 5px;
-  letter-spacing: 0.9pt;
   margin-left: 10px;
   font-size: 15px;
   margin-right: 10px;
@@ -472,7 +466,6 @@ input[type=number] {
   justify-content: space-between;
   height: 55px;
   .label-text {
-    letter-spacing: 0.9pt;
   }
   .data-text {
   }
@@ -488,7 +481,6 @@ input[type=number] {
   justify-content: space-between;
   height: 55px;
   .label-text {
-    letter-spacing: 0.9pt;
   }
   .data-text {
   }
@@ -515,13 +507,7 @@ input[type=number] {
 button:disabled {
   opacity: 0.5;
 }
-.boldText {
-  font-weight: 600;
-  margin-top: 11px;
-  font-size: 24px;
-  margin-left: 15px;
-  margin-right: 15px;
-}
+
 .data-container3 {
   display: flex;
   flex-direction: row;
@@ -531,7 +517,6 @@ button:disabled {
   justify-content: space-between;
 
   .label-text {
-    letter-spacing: 0.9pt;
   }
 
   .data-text {
@@ -544,7 +529,6 @@ button:disabled {
   justify-content: space-between;
 
   .label-text {
-    letter-spacing: 0.9pt;
   }
 
   .data-text {
@@ -558,7 +542,6 @@ button:disabled {
   justify-content: space-between;
   align-items: center;
   .label-text {
-    letter-spacing: 0.9pt;
     margin-bottom: 0px !important;
   }
 
@@ -570,7 +553,7 @@ button:disabled {
   width: 100%;
   font-weight: 700;
   text-align: center;
-  letter-spacing: 1.4pt;
+  letter-spacing: 1.2pt;
   font-size: 1.2rem;
   margin-bottom: 0px !important;
 }
@@ -580,7 +563,7 @@ button:disabled {
   width: 100%;
   font-weight: 700;
   text-align: center;
-  letter-spacing: 1.4pt;
+  letter-spacing: 1.2pt;
   font-size: 1rem;
 }
 .section-title3 {
@@ -740,4 +723,24 @@ strong {
   flex-wrap: wrap;
   width:100%;
   gap:12px 5px;
+}
+.deleteButton2 {
+  border:1px solid darkred;
+  border-radius: 15px;
+  font-weight: 600;
+  letter-spacing: 1.2pt;
+  font-size: 15px;
+  background-color: red;
+  width:50px;
+  min-height:28px;
+}
+.divInsideButton{
+  display:flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+.downloadImage{
+  margin-left: 7px;
+  margin-bottom: -1px;
 }

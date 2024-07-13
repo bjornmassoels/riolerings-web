@@ -99,3 +99,62 @@ image-cropper {
   flex-direction: row;
   flex-wrap: wrap;
 }
+.opslaan-spinner{
+  background-color: white;
+  width:160px;
+  height:170px;
+  --spinner-text-font-size:24px !important;
+  --spinner-height-giant: 5rem;
+  //poisiton center
+  position: fixed;
+  top: calc(50% - 90px);
+  left: calc(46% - 90px);
+  border-radius: 10px;
+  box-shadow:  0 0 10px 5px rgba(0, 0, 0, 0.2);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap: 40px 0;
+  align-items:center;
+}
+.nav-button{
+  font-size: 16px;
+  font-weight: 600;
+  background-color: lightgray !important;
+  color: black !important;
+  border: 1px solid gray;
+  border-radius: 5px;
+  width: auto;
+  height: 40px;
+  min-width: 100px;
+  letter-spacing: 1.4pt;
+}
+.nav-button-1-margin{
+  margin-right:-28px!important;
+}
+.navIcon{
+  font-size: 32px;
+}
+.delete-button {
+  font-weight: 800;
+  letter-spacing: 1.4pt;
+  margin-right:5px;
+  font-size: 1.2em;
+  min-width:50px !important;
+  max-width:50px !important;
+  min-height:40px !important;
+  max-height:40px !important;
+  margin-left: 100px;
+}
+.navigation-row{
+  display:flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 0 70px 0 45px;
+}
+.boldText {
+  font-size: 24px;
+  font-weight: 600;
+  margin:0 7px;
+}

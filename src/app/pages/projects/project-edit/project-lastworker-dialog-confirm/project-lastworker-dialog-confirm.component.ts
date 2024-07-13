@@ -30,11 +30,13 @@ export class ProjectLastworkerDialogConfirmComponent implements OnInit {
   }
 
   async onChange() {
-    await this.apiService.updateProject(this.formService.currentProject).subscribe(async() => {
+    this.apiService.updateProject(this.formService.currentProject).subscribe(async() => {
       this.toastrService.success( 'De aansluiting is gewijzigd', 'Succes!');
       await this.delay(500);
       this.dialog.closeAll();
       this.formService.isUpdated = true;
+    }, error => {
+      this.toastrService.danger('Er is iets misgegaan', 'Error');
     });
   }
   delay(timeInMillis: number): Promise<void> {

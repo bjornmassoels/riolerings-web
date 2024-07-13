@@ -37,7 +37,7 @@ export class ProjectViewDeleteDialogComponent implements OnInit {
     if(this.formService.PreloadProject._id == null){
       this.formService.PreloadProject._id = this.formService.PreloadProject.id;
     }
-    await this.apiService.deleteProjectById(this.formService.PreloadProject).subscribe(x => {
+    this.apiService.deleteProjectById(this.formService.PreloadProject).subscribe(x => {
       this.closeDialog();
       this.goToPrevious();
     });

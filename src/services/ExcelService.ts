@@ -445,7 +445,7 @@ export class ExcelService {
     infoRow.getCell('K').alignment = { vertical: 'middle', horizontal: 'center' };
 
     let headers = ['Straat','Huisnr','Equipmentnr. riolering','aard water\n (RWA/DWA/\nGEM)', 'soort\n(HA,WA)', 'diameter\n(mm)', 'materiaal',
-      'X coördinaat', 'Y coördinaat', 'Z coördinaat', 'Mof\n(st)', 'Buis\n(m)', 'Bocht\n(st)', 'Y/T-stuk\n(st)', 'Krimpmof\n(st)', 'Koppelstuk\n(st)', 'Reductie\n(st)',
+      'X-coördinaat', 'Y-coördinaat', 'Z-coördinaat', 'Mof\n(st)', 'Buis\n(m)', 'Bocht\n(st)', 'Y/T-stuk\n(st)', 'Krimpmof\n(st)', 'Koppelstuk\n(st)', 'Reductie\n(st)',
       'Stop\n(st)', 'Andere', 'diameter\nHA-putje of\nT-stuk\n(mm)', 'Terugslag-\nklep in HA-\nputje', 'naamgeving fiche'];
 
     //Add Header Row
@@ -1799,7 +1799,7 @@ export class ExcelService {
     infoRow2.getCell('K').alignment = { vertical: 'middle', horizontal: 'center' };
 
     let headers2 = ['Straat\n( + eventueel huisnummer)','Volgnr.','Equipmentnr. riolering','aard water\n (RWA/DWA/\nGEM)', 'soort\n(HA,WA)', 'diameter\n(mm)', 'materiaal',
-      'X coördinaat', 'Y coördinaat', 'Z coördinaat', 'Mof\n(st)', 'Buis\n(m)', 'Bocht\n(st)', 'Y/T-stuk\n(st)', 'Krimpmof\n(st)', 'Koppelstuk\n(st)', 'Reductie\n(st)',
+      'X-coördinaat', 'Y-coördinaat', 'Z-coördinaat', 'Mof\n(st)', 'Buis\n(m)', 'Bocht\n(st)', 'Y/T-stuk\n(st)', 'Krimpmof\n(st)', 'Koppelstuk\n(st)', 'Reductie\n(st)',
       'Stop\n(st)', 'Andere', 'diameter\nHA-putje of\nT-stuk\n(mm)', 'Terugslag-\nklep in HA-\nputje', 'naamgeving fiche'];
 
     //Add Header Row
@@ -3107,6 +3107,11 @@ export class ExcelService {
     gemRow2.alignment = {vertical: 'middle', horizontal: 'center'};
 
 
+
+
+
+
+
     //page project kolk
 
     let worksheet4 = workbook.addWorksheet('Project Kolk', {
@@ -3126,21 +3131,41 @@ export class ExcelService {
     let emptyRow7 = worksheet4.addRow([""]);
     let infoRow3 = worksheet4.addRow([""]);
 
-    worksheet4.mergeCells('H3:P3');
-    infoRow3.getCell('H').value = "HOEVEELHEDEN aansluiting";
-    infoRow3.getCell('H').border = {
+    let letterStartHoeveelheden = 'H';
+    let letterEindeHoeveelheden = 'Q';
+    if(dataList.isProjectForAWV){
+      letterStartHoeveelheden = 'K';
+      letterEindeHoeveelheden = 'T';
+      worksheet4.mergeCells('H3:J3');
+      infoRow3.getCell('H').value = "Lambert coördinaten";
+      infoRow3.getCell('H').border = {
+        top: { style: 'medium' },
+        left: { style: 'medium' },
+        bottom: { style: 'medium' },
+        right: { style: 'medium' },
+      };
+      infoRow3.getCell('H').font = { name: 'Arial', family: 4, size: 11, bold: true};
+      infoRow3.getCell('H').alignment = { vertical: 'middle', horizontal: 'center' };
+    }
+
+    worksheet4.mergeCells(letterStartHoeveelheden + '3:' + letterEindeHoeveelheden + '3');
+    infoRow3.getCell(letterStartHoeveelheden).value = "HOEVEELHEDEN aansluiting";
+    infoRow3.getCell(letterStartHoeveelheden).border = {
       top: { style: 'medium' },
       left: { style: 'medium' },
       bottom: { style: 'medium' },
       right: { style: 'medium' },
     };
-    infoRow3.getCell('H').font = { name: 'Arial', family: 4, size: 11, bold: true};
-    infoRow3.getCell('H').alignment = { vertical: 'middle', horizontal: 'center' };
+    infoRow3.getCell(letterStartHoeveelheden).font = { name: 'Arial', family: 4, size: 11, bold: true};
+    infoRow3.getCell(letterStartHoeveelheden).alignment = { vertical: 'middle', horizontal: 'center' };
 
     let headers3 = ['Straat\n( + eventueel huisnummer)','Volgnr.','Equipmentnr. riolering','aard water\n (RWA/DWA/\nGEM)', 'soort', 'diameter\n(mm)', 'materiaal',
-       'Mof\n(st)', 'Buis\n(m)', 'Bocht\n(st)', 'Y/T-stuk\n(st)', 'Krimpmof\n(st)', 'Koppelstuk\n(st)', 'Reductie\n(st)',
+       'X-coördinaat','Y-coördinaat', 'Z-coördinaat', 'Mof\n(st)', 'Buis hor.\n(m)', 'Buis vert.\n(m)', 'Bocht\n(st)', 'Y/T-stuk\n(st)', 'Krimpmof\n(st)', 'Koppelstuk\n(st)', 'Reductie\n(st)',
       'Stop\n(st)', 'Andere','naamgeving fiche'];
 
+    if(!dataList.isProjectForAWV){
+      headers3 = headers3.filter(x => x !== 'X-coördinaat' && x !== 'Y-coördinaat' && x !== 'Z-coördinaat');
+    }
     //Add Header Row
     let headerRow3 = worksheet4.addRow(headers3);
     // Cell Style : Fill and Border
@@ -3180,19 +3205,35 @@ export class ExcelService {
         column.width = 11;
       } else if(i === 3 ){
         column.width = 15;
-      } else if( i === 16 ){
-        column.width = 110;
-      } else if(  i === 7 || i === 8 || i === 9 || i === 14 ){
-        column.width = 9;
       } else if(i === 2){
         column.width = 35;
       } else {
-        column.width = 13;
+        if(!dataList.isProjectForAWV){
+          if( i === 17 ){
+            column.width = 110;
+          } else if(  i === 7 || i === 15 ){
+            column.width = 9;
+          } else {
+            column.width = 13;
+          }
+        } else {
+          if( i === 20 ){
+            column.width = 110;
+          } else if( i === 7 || i === 8 || i === 9){
+            column.width = 14;
+          } else if(  i === 10 || i === 18 ){
+            column.width = 9;
+          } else {
+            column.width = 13;
+          }
+        }
+
       }
     });
 
     mofCountRWA = 0;
-    buisCountRWA = 0;
+    let buisHorCountRWA = 0;
+    let buisVertCountRWA = 0;
     let yStukCountRWA = 0;
     bochtCountRWA = 0;
     reductieCountRWA = 0;
@@ -3204,7 +3245,8 @@ export class ExcelService {
     for (let data of dataList.slokkerProjectList) {
       let project = data;
       if (project.slokker != null) {
-        buisCountRWA += this.NullToZero(project.slokker.buis) + this.NullToZero(project.slokker.buis2);
+        buisHorCountRWA += this.NullToZero(project.slokker.buis) + this.NullToZero(project.slokker.buis2);
+        buisVertCountRWA += this.NullToZero(project.slokker.buisVert) + this.NullToZero(project.slokker.buisVert2);
         let bochtenCount = 0;
         if(!dataList.bochtenInGraden){
           bochtenCount += this.NullToZero(project.slokker.bocht)  + this.NullToZero(project.slokker.bocht2);
@@ -3243,8 +3285,14 @@ export class ExcelService {
           "kolk",
           this.NullToZero(+project.slokker.diameter),
           this.NullToString(project.slokker.buisType),
+          ...(!dataList.isProjectForAWV ? [] : [
+            this.NullToString(project.slokker.xCoord),
+            this.NullToString(project.slokker.yCoord),
+            this.NullToString(project.slokker.zCoord)
+          ]),
           this.NullToZero(mof),
           this.NullToZero(project.slokker.buis) + this.NullToZero(project.slokker.buis2),
+          this.NullToZero(project.slokker.buisVert) + this.NullToZero(project.slokker.buisVert2),
           bochtenCount,
           this.NullToZero(ytStuk),
           this.NullToZero(project.slokker.krimpmof),
@@ -3255,7 +3303,7 @@ export class ExcelService {
           this.NullToString(project.naamFiche)
         ]);
         dataRow2.alignment = {vertical: 'middle', horizontal: 'center'};
-        dataRow2.getCell('Q').value = 'GEM=' + dataList.gemeenteCode + ' projectnr=' + dataList.rbProjectNr +
+        dataRow2.getCell(!dataList.isProjectForAWV ? 'R' : 'U').value = 'GEM=' + dataList.gemeenteCode + ' projectnr=' + dataList.rbProjectNr +
           ' adres=' + project.street + ' ko=' + dataList.rbProjectNr + '-kolknr' +  project.index + ' AB-kolk-fiche';
         dataRow2.getCell('C').value = dataList.rbProjectNr + '-kolknr' +  project.index;
         dataRow2.eachCell({includeEmpty: true}, (cell, number) => {
@@ -3299,19 +3347,19 @@ export class ExcelService {
         dataRow2.getCell('H').fill = {
           type: 'pattern',
           pattern: 'solid',
-          fgColor: {argb: 'fceea7'},
+          fgColor: {argb: (!dataList.isProjectForAWV ? 'fbf8e6': 'fceea7')},
           bgColor: {argb: '44c7db'},
         };
         dataRow2.getCell('I').fill = {
           type: 'pattern',
           pattern: 'solid',
-          fgColor: {argb: 'fceea7'},
+          fgColor: {argb: (!dataList.isProjectForAWV ? 'fbf8e6': 'fceea7')},
           bgColor: {argb: '44c7db'},
         };
         dataRow2.getCell('J').fill = {
           type: 'pattern',
           pattern: 'solid',
-          fgColor: {argb: 'fceea7'},
+          fgColor: {argb: (!dataList.isProjectForAWV ? 'fbf8e6': 'fceea7')},
           bgColor: {argb: '44c7db'},
         };
         dataRow2.getCell('K').fill = {
@@ -3350,10 +3398,37 @@ export class ExcelService {
           fgColor: {argb: 'fbf8e6'},
           bgColor: {argb: 'fbf8e6'},
         };
+        dataRow2.getCell('Q').fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: {argb: 'fbf8e6'},
+          bgColor: {argb: 'fbf8e6'},
+        };
+        if(dataList.isProjectForAWV){
+          dataRow2.getCell('R').fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: {argb: 'fbf8e6'},
+            bgColor: {argb: 'fbf8e6'},
+          };
+          dataRow2.getCell('S').fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: {argb: 'fbf8e6'},
+            bgColor: {argb: 'fbf8e6'},
+          };
+          dataRow2.getCell('T').fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: {argb: 'fbf8e6'},
+            bgColor: {argb: 'fbf8e6'},
+          };
+        }
+
       }
     }
-    let rwaRow3 = worksheet4.addRow([ 'Totale hoeveelheden' , 'RWA' , '', '', '', '', '',
-      mofCountRWA,buisCountRWA.toFixed(2),bochtCountRWA,yStukCountRWA,krimpmofCountRWA,koppelstukCountRWA,reductieCountRWA,stopCountRWA
+    let rwaRow3 = worksheet4.addRow([ 'Totale hoeveelheden' , 'RWA' , '', '', '', '', '', ...(!dataList.isProjectForAWV ? [] : ['', '', '']),
+      mofCountRWA, buisHorCountRWA.toFixed(2), buisVertCountRWA.toFixed(2), bochtCountRWA,yStukCountRWA,krimpmofCountRWA,koppelstukCountRWA,reductieCountRWA,stopCountRWA
     ]);
     rwaRow3.eachCell((cell, number) => {
       cell.fill = {

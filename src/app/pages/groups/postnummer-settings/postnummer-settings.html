@@ -1,6 +1,8 @@
 <button  mat-raised-button class="form-button" (click)="goToPrevious()">
   Terug
 </button>
+<nb-spinner *ngIf="isSaving" class="opslaan-spinner" size="giant" [message]="'Opslaan..'" status="info"></nb-spinner>
+
 <mat-card class="add-card-special">
   <h3 style='margin-left: 25px; margin-bottom: 0px;'>Instellingen postnummers DWA</h3>
   <form *ngIf="isLoaded" [formGroup]="dwaForm" style='justify-content: flex-start !important;' class="add-form">
@@ -525,9 +527,15 @@
       <div class='borderContainer'>
         <h6>Kolk</h6>
         <tr>
-          <td class='longerText'>Buis</td>
+          <td class='longerText'>Buis horizontaal</td>
           <td >
             <input class='longerInput' nbInput id="name" type="text" formControlName="buis" />
+          </td>
+        </tr>
+        <tr>
+          <td class='longerText'>Buis verticaal</td>
+          <td >
+            <input class='longerInput' nbInput id="name" type="text" formControlName="buisVert" />
           </td>
         </tr>
         <tr *ngIf='!group.bochtenInGraden'>

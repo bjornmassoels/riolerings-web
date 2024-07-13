@@ -7,8 +7,9 @@ export class SlokkerTotaalMeetstaat {
   tBuis: number;
   ytStuk: number;
   flexAan: number;
+  //buis = buis horizontaal
   buis: number;
-
+  buisVert: number;
   bocht: number;
   reductie: number;
   funOmh: number;
@@ -21,7 +22,7 @@ export class SlokkerTotaalMeetstaat {
   infiltratieKolk: number;
   gradenBocht45: number;
   gradenBocht90: number;
-  constructor( indrukmof: number,tBuis: number,ytStuk: number,flexAan: number,buis: number,
+  constructor( indrukmof: number,tBuis: number,ytStuk: number,flexAan: number,buis: number, buisVert: number,
                bocht: number,reductie: number,funOmh: number,mof: number,krimpmof: number,koppelstuk: number,
                stop: number,andere: number,infiltratieKolk: number, gradenBocht45: number, gradenBocht90: number) {
     this.indrukmof = indrukmof;
@@ -29,6 +30,7 @@ export class SlokkerTotaalMeetstaat {
     this.ytStuk = ytStuk;
     this.flexAan = flexAan;
     this.buis = buis;
+    this.buisVert = buisVert;
     this.bocht = bocht;
     this.reductie = reductie;
     this.funOmh = funOmh;

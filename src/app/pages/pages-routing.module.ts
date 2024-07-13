@@ -26,6 +26,8 @@ import {ReadExcelLambertComponent} from "./groups/read-excel-lambert/read-excel-
 import {MeerwerkenViewComponent} from "./meerwerken/meerwerken-view/meerwerken-view.component";
 import {MeerwerkenEditComponent} from "./meerwerken/meerwerken-edit/meerwerken-edit.component";
 import {MeerwerkenAddComponent} from "./meerwerken/meerwerken-add/meerwerken-add.component";
+import { SchademeldingViewComponent } from './schademeldingen/schademeldingen-view/schademelding-view.component';
+import { SchademeldingEditComponent } from './schademeldingen/schademelding-edit/schademelding-edit.component';
 
 const routes: Routes = [{
   path: '',
@@ -110,6 +112,14 @@ const routes: Routes = [{
     {
       path: 'project-add/:id',
       component: ProjectAddComponent
+    },
+    {
+      path: 'schademeldingedit/:groupid/:id',
+      component: SchademeldingEditComponent
+    },
+    {
+      path: 'schademeldingview/:groupid/:id',
+      component: SchademeldingViewComponent
     },
     {
       path: 'users',

@@ -27,8 +27,8 @@
   border: 1px solid dodgerblue;
   border-radius: 5px;
   position: relative !important;
-  bottom: 28px;
-  left:60px;
+  top: -240px;
+  left:85px;
 }
 .variableSelect{
   min-width: 350px !important;
@@ -55,7 +55,6 @@
   margin-bottom: 12px;
 }
 .flexer{
-  width: 380px !important;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -96,4 +95,29 @@
   right: -5px;
   font-weight: bold;
   font-size: 17px;
+}
+.opslaan-spinner{
+  background-color: white;
+  width:160px;
+  height:170px;
+  --spinner-text-font-size:24px !important;
+  --spinner-height-giant: 5rem;
+  //poisiton center
+  position: fixed;
+  top: calc(50% - 90px);
+  left: calc(46% - 90px);
+  border-radius: 10px;
+  box-shadow:  0 0 10px 5px rgba(0, 0, 0, 0.2);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap: 40px 0;
+  align-items:center;
+}
+.outerColumnRight{
+  display:flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px 0;
 }
