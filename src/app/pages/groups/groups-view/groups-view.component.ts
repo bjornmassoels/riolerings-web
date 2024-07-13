@@ -1035,10 +1035,12 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
 
           this.socket.on('progress', (data: number) => {
             this.progress = data;
+            console.log('progress')
             this.pdfProgressBlocks = this.pdfProgressBlocks.filter(x => x !== data);
           });
 
           this.socket.on('completed', (url) => {
+            console.log('completed' + url)
             this.isDownloading = true;
             this.progress = 0;
             Pace.stop();
@@ -1509,7 +1511,7 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
               );
 
               this.pdfProgressBlocks = [];
-              for(let i = 0; i < this.totalProjectCount; i++){
+              for(let i = 0; i < owAndSchademeldingen.length; i++){
                 this.pdfProgressBlocks.push(i);
               }
               await this.initSocket();
