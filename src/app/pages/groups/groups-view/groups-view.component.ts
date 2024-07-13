@@ -1035,7 +1035,7 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
 
           this.socket.on('progress', (data: number) => {
             this.progress = data;
-            console.log('progress')
+            console.log('progress' + data)
             this.pdfProgressBlocks = this.pdfProgressBlocks.filter(x => x !== data);
           });
 
@@ -1493,9 +1493,12 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
       return x.isSelected;
     }) ;
 
+
     if (owAndSchademeldingen != null && owAndSchademeldingen.length !== 0 && !this.isGeneratingPDF) {
           this.isGeneratingPDF = true;
             try {
+              this.totalProjectCount = owAndSchademeldingen.length;
+
                let meerwerkenIds = owAndSchademeldingen.filter(x => x.isMeerwerk).map(y => (y._id));
                let schademeldingenIds = owAndSchademeldingen.filter(x => x.isSchademelding).map(y => (y._id));
               let sendPdfids = {meerwerkenIds:meerwerkenIds,schademeldingenIds: schademeldingenIds };
@@ -1511,7 +1514,7 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
               );
 
               this.pdfProgressBlocks = [];
-              for(let i = 0; i < owAndSchademeldingen.length; i++){
+              for(let i = 0; i < this.totalProjectCount; i++){
                 this.pdfProgressBlocks.push(i);
               }
               await this.initSocket();
