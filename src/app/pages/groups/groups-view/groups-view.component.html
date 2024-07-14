@@ -51,13 +51,13 @@
       <div *ngIf="isViewIngevuldeAansluitingen" class="aansluitingDiv">
         <p class="aansluitingTitle">Ingevulde aansluitingen:</p>
         <p class="aansluitingText lightGreen" *ngFor="let project of ingevuldeAansluitingenSelected; let i = index">{{
-            (project.isSlokker ? 'Kolk: ' : project.isWachtAansluiting || project.droogWaterAfvoer?.isWachtaansluiting || project.regenWaterAfvoer?.isWachtaansluiting ? 'WA: ' : 'HA: ') +
+            (project.slokker ? 'Kolk: ' : project.isWachtAansluiting || project.droogWaterAfvoer?.isWachtaansluiting || project.regenWaterAfvoer?.isWachtaansluiting ? 'WA: ' : 'HA: ') +
             project.street + (project.huisNr ? ' ' + project.huisNr: '') + (project.index? ' volgnr: ' + project.index : '')}}</p>
       </div>
       <div *ngIf="isViewEmptyAansluitingen" class="aansluitingDiv">
         <p class="aansluitingTitle">Lege aansluitingen:</p>
         <p class="aansluitingText lightRed" *ngFor="let project of legeAansluitingenSelected; let i = index">{{
-            (project.isSlokker ? 'Kolk: ' : project.isWachtAansluiting || project.droogWaterAfvoer?.isWachtaansluiting || project.regenWaterAfvoer?.isWachtaansluiting ? 'WA: ' : 'HA: ') +
+            (project.slokker ? 'Kolk: ' : project.isWachtAansluiting || project.droogWaterAfvoer?.isWachtaansluiting || project.regenWaterAfvoer?.isWachtaansluiting ? 'WA: ' : 'HA: ') +
             project.street + (project.huisNr ? ' ' + project.huisNr: '') + (project.index? ' volgnr: ' + project.index : '')}}</p>
       </div>
     </div>
