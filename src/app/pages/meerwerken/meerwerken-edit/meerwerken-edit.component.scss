@@ -48,6 +48,7 @@
   border: 1px solid black;
   border-radius: 5px;
   width: 124px !important;
+  min-width: 100px !important;
   height: 40px;
 }
 .form-button-blue {
@@ -60,6 +61,7 @@
   border: 1px solid dodgerblue;
   border-radius: 5px;
   width: 110px !important;
+  min-width:110px !important;
   height: 40px;
 }
 .form-button2 {
@@ -84,6 +86,7 @@
   border-radius: 5px;
   height: 40px;
   width: 135px !important;
+  min-width:115px !important;
 }
 .bottomRow {
   margin-left: 2%;

@@ -58,6 +58,7 @@ nb-select ::ng-deep {
   border: 1px solid dodgerblue;
   border-radius: 5px;
   width: 110px !important;
+  min-width:110px !important;
   height: 40px;
   margin-left: 5px;
 }
@@ -392,6 +393,8 @@ button:disabled {
   border-radius: 5px;
   height: 40px;
   width: 135px !important;
+  min-width:115px !important;
+
 }
 .divInsideButton{
   display:flex;

@@ -172,9 +172,10 @@ export class SchademeldingViewComponent implements OnInit, OnDestroy {
     if (this.schademelding._id == null) {
       this.schademelding._id = this.schademelding.id;
     }
-    let fileName = 'Schademelding' + (this.schademelding.tegenPartij ? '-' + this.schademelding.tegenPartij : '') +  (this.schademelding.group_id.rbProjectNaam != null ? '-' + this.schademelding.group_id.rbProjectNaam : '');
+    let fileName = 'Schademelding' + (this.schademelding.tegenPartij ? '-' + this.schademelding.tegenPartij : '') + (this.schademelding.gemeente_en_straat? '-' + this.schademelding.gemeente_en_straat : '') +
+      (this.schademelding.huisnr_of_nummer? ' ' + this.schademelding.huisnr_of_nummer : '') +  (this.group.rbProjectNaam ? '-' + this.group.rbProjectNaam : '');
     const dialogRef = this.dialog.open(DialogOverviewExampleDialog3, {
-      width: '550px',
+      width: '700px',
       data: fileName,
     });
 

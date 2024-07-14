@@ -255,17 +255,10 @@ export class MeerwerkenEditComponent implements OnInit , OnDestroy{
 
   async generatePDF() {
     let title = '';
-    if(this.currentProject.street != null && this.currentProject.street !== '' && (this.currentProject.huisNr == null || this.currentProject.huisNr === '')){
-      title = this.currentProject.street + "-onvoorzien werk";
-    } else if((this.currentProject.street == null || this.currentProject.street === '') && this.currentProject.huisNr != null && this.currentProject.huisNr !== ''){
-      title = this.currentProject.huisNr + "-onvoorzien werk";
-    } else if((this.currentProject.street == null || this.currentProject.street === '') &&  (this.currentProject.huisNr == null || this.currentProject.huisNr === '')){
-      title = "onvoorzien werk";
-    } else {
-      title = this.currentProject.street + '-' + this.currentProject.huisNr + "-onvoorzien werk";
-    }
+    title = (this.currentProject.activiteit ? this.currentProject.activiteit + '-' : '') + this.currentProject.street + (this.currentProject.huisNr ? '-' + this.currentProject.huisNr : '') + "-onvoorzien werk";
+    title = title.replace('/', '-');
     const dialogRef = this.dialog.open(DialogOverviewExampleDialog3, {
-      width: '550px',
+      width: '700px',
       data: title,
     });
 
