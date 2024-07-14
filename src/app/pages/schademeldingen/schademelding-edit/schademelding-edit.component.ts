@@ -453,9 +453,9 @@ export class SchademeldingEditComponent implements OnInit, OnDestroy {
     });
   }
   generateRandomName(): string {
-    if(this.company._id == null) this.company._id = this.company.id;
-    const random = Math.floor(100000000 + Math.random() * 900000);
-    const name = 'fotos/' + this.company._id + '/' + random;
+    const timestamp = Date.now();
+    const random = Math.floor(100000000 + Math.random() * 900000000);
+    const name = `fotos/${this.company._id}/${timestamp}-${random}`;
     return name;
   }
 

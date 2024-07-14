@@ -34,10 +34,35 @@
          style="margin:0px 10px 0px 0">Project</h2>
   <!--SELECTEDPOPOVER-->
   <ng-template #templateRef>
-          <span  *ngIf="selectedHuisaansluitingen != null || selectedWachtaansluitingen != null || selectedKolken != null">
+    <div style="display: flex;flex-direction: column; width:fit-content; max-width: 880px;border-radius: 10px">
+      <div style="display: flex;flex-direction: row;">
+      <span  *ngIf="selectedHuisaansluitingen != null || selectedWachtaansluitingen != null || selectedKolken != null">
             <h3 style="line-height: 2 !important;" class="selectedTitle">Geselecteerd:  <span><b>{{selectedHuisaansluitingen}}</b> HA   <b>{{selectedWachtaansluitingen}}</b> WA     <b>{{selectedKolken}}</b> Kolk</span></h3>
             <h3 class="selectedTitle">Ingevuld en geselecteerd:  <span style="color:blue"><b>{{selectedHuisaansluitingenWithValue}}</b> HA   <b>{{selectedWachtaansluitingenWithValue}}</b> WA     <b>{{selectedKolkenWithValue}}</b> Kolk</span></h3>
           </span>
+        <div style="display:flex;flex-direction: column; gap:7px 0;">
+          <button class='add-button' mat-raised-button color="primary" (click)="viewIngevuldeAansluitingen()"
+                  style=" min-width:auto; width: auto !important; background-color:#3f51b5!important;">{{!isViewIngevuldeAansluitingen? 'Bekijk': 'Verberg'}} ingevulde aansluitingen</button>
+          <button class='add-button' mat-raised-button color="primary" (click)="viewEmptyAansluitingen()"
+                  style=" min-width:auto; width: auto !important; background-color:#3f51b5!important;">{{!isViewEmptyAansluitingen? 'Bekijk': 'Verberg'}} lege aansluitingen</button>
+        </div>
+
+      </div>
+      <div *ngIf="isViewIngevuldeAansluitingen" class="aansluitingDiv">
+        <p class="aansluitingTitle">Ingevulde aansluitingen:</p>
+        <p class="aansluitingText lightGreen" *ngFor="let project of ingevuldeAansluitingenSelected; let i = index">{{
+            (project.isSlokker ? 'Kolk: ' : project.isWachtAansluiting || project.droogWaterAfvoer?.isWachtaansluiting || project.regenWaterAfvoer?.isWachtaansluiting ? 'WA: ' : 'HA: ') +
+            project.street + (project.huisNr ? ' ' + project.huisNr: '') + (project.index? ' volgnr: ' + project.index : '')}}</p>
+      </div>
+      <div *ngIf="isViewEmptyAansluitingen" class="aansluitingDiv">
+        <p class="aansluitingTitle">Lege aansluitingen:</p>
+        <p class="aansluitingText lightRed" *ngFor="let project of legeAansluitingenSelected; let i = index">{{
+            (project.isSlokker ? 'Kolk: ' : project.isWachtAansluiting || project.droogWaterAfvoer?.isWachtaansluiting || project.regenWaterAfvoer?.isWachtaansluiting ? 'WA: ' : 'HA: ') +
+            project.street + (project.huisNr ? ' ' + project.huisNr: '') + (project.index? ' volgnr: ' + project.index : '')}}</p>
+      </div>
+    </div>
+
+
   </ng-template>
     <button class='add-button' mat-raised-button color="primary" (click)="goToEdit()" [disabled]="checkIfHasSelected()" [ngClass]="checkIfHasSelected()? 'halfOpacity': ''"
       style=" min-width:auto; width: 95px !important; background-color:#3f51b5!important;">

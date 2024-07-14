@@ -48,21 +48,21 @@
       <div class="two-photo-div">
         <div *ngIf="schademelding.photos[0]?.src" style="max-width:calc(96% / 2) !important;" class="imageColumn">
           <p class="fotoText">{{schademelding.photos[0].beschrijving}}</p>
-          <img class="foto" src="{{schademelding.photos[0].src}}" alt="Foto 1">
+          <img (click)="imagePopUp(schademelding.photos[0].src)" class="foto" src="{{schademelding.photos[0].src}}" alt="Foto 1">
         </div>
         <div *ngIf="schademelding.photos[1]?.src" style="max-width:calc(96% / 2) !important;" class="imageColumn">
           <p class="fotoText">{{schademelding.photos[1].beschrijving}}</p>
-          <img class="foto" src="{{schademelding.photos[1].src}}" alt="Foto 2">
+          <img (click)="imagePopUp(schademelding.photos[1].src)" class="foto" src="{{schademelding.photos[1].src}}" alt="Foto 2">
         </div>
       </div>
       <div class="two-photo-div">
         <div *ngIf="schademelding.photos[2]?.src" style="max-width:calc(96% / 2) !important;" class="imageColumn">
           <p class="fotoText">{{schademelding.photos[2].beschrijving}}</p>
-          <img class="foto" src="{{schademelding.photos[2].src}}" alt="Foto 3">
+          <img (click)="imagePopUp(schademelding.photos[2].src)" class="foto" src="{{schademelding.photos[2].src}}" alt="Foto 3">
         </div>
         <div *ngIf="schademelding.photos[3]?.src" style="max-width:calc(96% / 2) !important;" class="imageColumn">
           <p class="fotoText">{{schademelding.photos[3].beschrijving}}</p>
-          <img class="foto" src="{{schademelding.photos[3].src}}" alt="Foto 4">
+          <img (click)="imagePopUp(schademelding.photos[3].src)" class="foto" src="{{schademelding.photos[3].src}}" alt="Foto 4">
         </div>
       </div>
     </div>
@@ -73,11 +73,11 @@
       <div class="two-photo-div">
         <div *ngIf="schademelding.photos[4]?.src" style="max-width:calc(96% / 2) !important;" class="imageColumn">
           <p class="fotoText">{{schademelding.photos[4].beschrijving}}</p>
-          <img class="foto" src="{{schademelding.photos[4].src}}" alt="Foto 1">
+          <img (click)="imagePopUp(schademelding.photos[4].src)" class="foto" src="{{schademelding.photos[4].src}}" alt="Foto 1">
         </div>
         <div *ngIf="schademelding.photos[5]?.src" style="max-width:calc(96% / 2) !important;" class="imageColumn">
           <p class="fotoText">{{schademelding.photos[5].beschrijving}}</p>
-          <img class="foto" src="{{schademelding.photos[5].src}}" alt="Foto 2">
+          <img (click)="imagePopUp(schademelding.photos[5].src)" class="foto" src="{{schademelding.photos[5].src}}" alt="Foto 2">
         </div>
       </div>
     </div>

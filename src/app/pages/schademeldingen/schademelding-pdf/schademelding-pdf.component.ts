@@ -2,6 +2,9 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Schademelding } from '../../../../models/schademelding';
 import { Company } from '../../../../models/company';
 import { Group } from '../../../../models/groups';
+import { PhotoPopupDialog } from '../schademelding-edit/photo-popup/photo-popup.component';
+import { FormService } from '../../../../services/form.service';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'ngx-schademelding-pdf',
@@ -13,7 +16,7 @@ export class SchademeldingPdfComponent implements OnInit {
   @Input() public company: Company;
   @Input() public group: Group;
   isLoaded: boolean = false;
-  constructor() {
+  constructor(private formService: FormService, private dialog: MatDialog) {
 
   }
 
@@ -26,6 +29,16 @@ export class SchademeldingPdfComponent implements OnInit {
     this.isLoaded = true;
 
   }
+
+  imagePopUp(photo: string) {
+    this.formService._chosenPhoto = photo;
+    let dialogRef = this.dialog.open(PhotoPopupDialog, {
+      height: '98vh',
+      width: '42vw',
+      panelClass: 'mat-dialog-padding'
+    });
+  }
+
   checkIfSchadeGerichtAanIsNutsleidingenOfAndere() {
     if(this.schademelding.schadeGerichtAan && (this.schademelding.schadeGerichtAan === 'Nutsleidingen' || this.schademelding.schadeGerichtAan === 'Andere')){
       return true;

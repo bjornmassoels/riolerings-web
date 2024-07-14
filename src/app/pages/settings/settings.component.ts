@@ -53,8 +53,9 @@ export class SettingsComponent implements OnInit {
 
   }
   generateRandomName(): string {
-    const random = Math.floor(100000000 + Math.random() * 900000);
-    const name = 'fotos/' + this.companyId + '/' + random;
+    const timestamp = Date.now();
+    const random = Math.floor(100000000 + Math.random() * 900000000);
+    const name = `fotos/${this.companyId}/${timestamp}-${random}`;
     return name;
   }
   delay(timeInMillis: number): Promise<void> {

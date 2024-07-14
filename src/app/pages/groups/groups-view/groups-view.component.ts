@@ -28,6 +28,7 @@ import { MatMenuTrigger } from '@angular/material/menu';
 import { Schademelding } from '../../../../models/schademelding';
 import { Meerwerk } from '../../../../models/meerwerk';
 import { NbBooleanInput } from '@nebular/theme/components/helpers';
+import { SlokkerProjects } from '../../../../models/slokker-projects';
 
 declare var Pace: any;
 
@@ -98,6 +99,10 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
   isViewingOwAndSchademeldingList: boolean;
   newSchademeldingCounter: number;
   newMeerwerkCounter: number;
+  legeAansluitingenSelected: Project[];
+  ingevuldeAansluitingenSelected: Project[];
+  isViewEmptyAansluitingen: boolean;
+  isViewIngevuldeAansluitingen: boolean;
 
   constructor(
     private apiService: ApiService,
@@ -154,6 +159,8 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
     this.selectEverything = false;
     this.selectEverythingOwAndSchade = false;
     this.isViewingOwAndSchademeldingList = false;
+    this.isViewEmptyAansluitingen = false;
+    this.isViewIngevuldeAansluitingen = false;
     this.newMeerwerkCounter = 0;
     this.newSchademeldingCounter = 0;
     this.dateSorteer = 'Afwerkingsdatum';
@@ -435,11 +442,31 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
         && (x.isWachtAansluiting || x.droogWaterAfvoer.isWachtaansluiting || x.regenWaterAfvoer.isWachtaansluiting)).length;
       this.selectedKolkenWithValue = tempSelectedPopulatedProjects.filter(x => x?.slokker != null && this.checkHasKolk(x.slokker)).length;
 
+      this.ingevuldeAansluitingenSelected = tempSelectedPopulatedProjects.filter(x => {
+          if(x.slokker){
+            let kolk = x as SlokkerProjects;
+            return this.checkHasKolk(kolk.slokker);
+          } else {
+            return this.checkHasAfvoer(x.droogWaterAfvoer) || this.checkHasAfvoer(x.regenWaterAfvoer);
+          }
+      });
+
+      this.legeAansluitingenSelected = tempSelectedPopulatedProjects.filter(x => {
+          if(x.slokker){
+            let kolk = x as SlokkerProjects;
+            return this.checkHasKolk(kolk.slokker) === false;
+          } else {
+            return this.checkHasAfvoer(x.droogWaterAfvoer) === false && this.checkHasAfvoer(x.regenWaterAfvoer) === false;
+          }
+      });
+
       this.popover.show();
     } else {
       this.selectedHuisaansluitingen = null;
       this.selectedWachtaansluitingen = null;
       this.selectedKolken = null;
+      this.legeAansluitingenSelected = null;
+      this.ingevuldeAansluitingenSelected = null;
       if(this.popover){
         this.popover.hide();
       }
@@ -1484,12 +1511,9 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
   }
 
   async generatePDFoWAndSchademeldingen() {
-    //this.toastrService.warning('Deze functie is dit weekend niet beschikbaar wegens onderhoud. Probeer het later opnieuw.', 'Even geduld', { duration: 4000 });
-
     let owAndSchademeldingen = this.owAndSchademeldingList.filter((x) => {
       return x.isSelected;
     }) ;
-
 
     if (owAndSchademeldingen != null && owAndSchademeldingen.length !== 0 && !this.isGeneratingPDF) {
           this.isGeneratingPDF = true;
@@ -1546,6 +1570,20 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
           'Selecteer aansluitingen',
         );
       }
+    }
+  }
+
+  viewEmptyAansluitingen() {
+    this.isViewEmptyAansluitingen = !this.isViewEmptyAansluitingen;
+    if(this.isViewEmptyAansluitingen){
+      this.isViewIngevuldeAansluitingen = false;
+    }
+  }
+
+  viewIngevuldeAansluitingen() {
+    this.isViewIngevuldeAansluitingen = !this.isViewIngevuldeAansluitingen;
+    if(this.isViewIngevuldeAansluitingen){
+      this.isViewEmptyAansluitingen = false;
     }
   }
 }

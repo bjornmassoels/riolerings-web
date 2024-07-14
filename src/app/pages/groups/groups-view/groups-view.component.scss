@@ -858,7 +858,18 @@ width: 270px;
 }
 
 
-
+.showAansluitingenRow{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 3px 7px;
+  padding:4px;
+  width:fit-content;
+  border: 1px solid #c1c1c1;
+  border-radius: 5px;
+}
 
 //css schademelding en ow
 
@@ -876,8 +887,38 @@ width: 270px;
   font-size: 20px;
   margin-right:5px;
 }
-
-
+.lightGreen{
+  background-color: lightgreen !important;
+}
+.lightRed{
+  background-color: lightcoral !important;
+}
+.aansluitingText{
+  font-size: 15px;
+  padding:1px 3px;
+  border:1px solid black;
+  font-weight: 600;
+  color: black;
+  width:fit-content;
+  margin-bottom: 0;
+  background-color: white;
+}
+.aansluitingDiv{
+  display:flex;
+  flex-direction:row;
+  justify-content:flex-start;
+  align-items:center;
+  gap:4px;
+  flex-wrap: wrap;
+  padding:20px;
+}
+.aansluitingTitle{
+  font-size: 20px;
+  font-weight: bold;
+  margin:0;
+  padding-right: 5px;
+  padding-bottom: 2px;
+}
 .hasNotBeenViewBackOW{
   background-color: #6ea5ca !important;
 }
