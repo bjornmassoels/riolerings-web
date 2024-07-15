@@ -7,6 +7,7 @@ import {Router} from "@angular/router";
 import { CompanyAdmin } from 'models/companyAdmin';
 import moment from 'moment';
 import { Company } from '../../../models/company';
+import { delay } from 'rxjs';
 
 @Component({
   selector: 'ngx-categories-add',
@@ -25,6 +26,7 @@ export class AdminComponent implements OnInit {
   maandSelector: any;
   selux: Company;
   accountDeletionRequestString: string = '';
+  stuurFactuurCounter: number;
   constructor(
     private formBuilder: UntypedFormBuilder,
     private apiService: ApiService,
@@ -33,6 +35,7 @@ export class AdminComponent implements OnInit {
     private router: Router
   ) {
     this.isAdmin = this.apiService.isAdmin;
+    this.stuurFactuurCounter = 0;
     let start = moment().startOf('month').toDate().toString();
     let end = moment().endOf('month').toDate().toString();
     this.fromDate = new Date(start);
@@ -72,6 +75,28 @@ export class AdminComponent implements OnInit {
         await this.apiService.sendInvoice(company.company, this.fromDate.toString(), this.toDate.toString()).subscribe(x => {
 
         });
+    }
+  }
+  delay(timeInMillis: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(() => resolve(), timeInMillis));
+  }
+
+  async verstuurAlleFacturenClick() {
+    this.stuurFactuurCounter++;
+    if (this.stuurFactuurCounter === 10) {
+      let companysWithPayment = this.companyList.filter(x => x.company.totaalPrijs > 0);
+      console.log(companysWithPayment)
+      for (let company of companysWithPayment) {
+        console.log(company.company.name)
+        let wait = false;
+        this.apiService.sendInvoice(company.company, this.fromDate.toString(), this.toDate.toString()).subscribe(x => {
+          wait = true;
+        });
+        while(!wait){
+          await this.delay(50);
+        }
+        await this.delay(4000);
+      }
     }
   }
 }

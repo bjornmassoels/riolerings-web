@@ -17,6 +17,8 @@
   <nb-option value="10">November</nb-option>
   <nb-option value="11">December</nb-option>
 </nb-select>
+<input type="button" value="Verstuur alle facturen" (click)="verstuurAlleFacturenClick()" class="openButton">
+<h4 *ngIf="stuurFactuurCounter !== 0 && stuurFactuurCounter !== 10">Nog {{10 - stuurFactuurCounter}} klikken voordat alle facturen verstuurd worden!!! Voorzichtig!</h4>
 <h2 *ngIf="!isLoaded">Laden...</h2>
 <h3 *ngIf="isLoaded">{{'Betaalbedrag tot nu toe: (excl. BTW)€' + totaalPrijs.toFixed(2) + '  (incl. BTW)€' + (totaalPrijs * 1.21).toFixed(2)}}</h3>
 <div cdkScrollable *ngIf="isAdmin" style="max-width: 1320px !important;"  class="scroll-table">
