@@ -265,7 +265,7 @@ export class MeerwerkenEditComponent implements OnInit , OnDestroy{
     dialogRef.afterClosed().subscribe(async (result) => {
       title = result;
       if (this.variablesService.cancelDownload === false) {
-        this.toastrService.success('DE PDF IS AAN HET DOWNLOADEN.');
+        this.toastrService.success('De pdf wordt gedownload...', 'Even geduld');
         this.apiService.makeMeerwerkPdf(this.currentProject._id).subscribe((data:  Data) => {
           const { pdf: base64PDF } = data;
 

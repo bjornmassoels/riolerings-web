@@ -223,7 +223,7 @@ export class SlokkerprojectViewComponent implements OnInit,OnDestroy {
     dialogRef.afterClosed().subscribe(async (result) => {
       title = result;
       if (this.variablesService.cancelDownload === false) {
-        this.toastrService.success('DE PDF IS AAN HET DOWNLOADEN.');
+        this.toastrService.success('De pdf wordt gedownload...', 'Even geduld');
         this.apiService.makeKolkPdf(this.currentProject._id, title).subscribe((data:  Data) => {
           const { pdf: base64PDF } = data;
 

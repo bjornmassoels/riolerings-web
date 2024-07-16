@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NbPopoverDirective, NbToastrService } from '@nebular/theme';
-import { delay, Observable } from 'rxjs';
-import { FormControl, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
-import { startWith, map, timeout, tap } from 'rxjs/operators';
+import { NbGlobalPhysicalPosition, NbPopoverDirective, NbToastrService } from '@nebular/theme';
+import { Observable } from 'rxjs';
+import { FormControl } from '@angular/forms';
+import { map, startWith, tap } from 'rxjs/operators';
 import { ApiService } from '../../../../services/api.service';
 import { FormService } from '../../../../services/form.service';
 import { Project } from '../../../../models/project';
@@ -13,21 +13,17 @@ import { GroupsViewDeleteDialogComponent } from './groups-view-delete-dialog/gro
 import { ExcelService } from '../../../../services/ExcelService';
 import { Company } from '../../../../models/company';
 import { ArchivePopupComponent } from '../archive-popup/archive-popup.component';
-import {GroupsViewMeetstaatDialogComponent} from "./groups-view-meetstaat-dialog/groups-view-meetstaat-dialog.component";
-import FileSaver, {saveAs} from "file-saver";
+import { GroupsViewMeetstaatDialogComponent } from './groups-view-meetstaat-dialog/groups-view-meetstaat-dialog.component';
+import FileSaver from 'file-saver';
 import { NieuweExcelService } from '../../../../services/NieuweExcelService';
 import { SendPdfID } from '../../../../models/sendPdfID';
-import {io} from 'socket.io-client';
+import { io } from 'socket.io-client';
 import { HttpClient } from '@angular/common/http';
-import { makePdfResponse } from '../../../../models/makePdfResponse';
 import { Waterafvoer } from '../../../../models/waterafvoer';
 import { Slokkers } from '../../../../models/slokkers';
 import { GroupsViewPdfDownloadDialogComponent } from './groups-view-pdf-download-dialog/groups-view-pdf-download-dialog.component';
 import moment from 'moment';
-import { MatMenuTrigger } from '@angular/material/menu';
 import { Schademelding } from '../../../../models/schademelding';
-import { Meerwerk } from '../../../../models/meerwerk';
-import { NbBooleanInput } from '@nebular/theme/components/helpers';
 import { SlokkerProjects } from '../../../../models/slokker-projects';
 
 declare var Pace: any;
@@ -103,6 +99,7 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
   ingevuldeAansluitingenSelected: Project[];
   isViewEmptyAansluitingen: boolean;
   isViewIngevuldeAansluitingen: boolean;
+  isGenerating: boolean = false;
 
   constructor(
     private apiService: ApiService,
@@ -119,6 +116,7 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
 
   async ngOnInit(): Promise<void> {
     this._id = this.route.snapshot.paramMap.get('id');
+    this.isGenerating = false;
     this.loadData(this._id);
     if (this.formService.previousSorteer != null) {
       this.sorteerItem = this.formService.previousSorteer;
@@ -891,6 +889,7 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
     tempProjects.sort(this.sortIndex);
     tempSlokkerProjects.sort(this.sortIndex);
     if (hasSelected === true) {
+      this.isGenerating = true;
       tempGroup.projectList = tempProjects;
       tempGroup.slokkerProjectList = tempSlokkerProjects;
 
@@ -926,10 +925,12 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
           this.company.logo,
           this.company.name,
         );
+        this.toastrService.success( 'De vlario excel is succesvol gedownload.', 'Download voltooid', { duration: 2000 , position: NbGlobalPhysicalPosition.TOP_RIGHT});
+        this.isGenerating = false;
       });
 
-
     } else {
+      this.isGenerating = false;
       this.toastrService.warning(
         'U heeft geen aansluiting geselecteed. Selecteer minimum 1 aansluiting of slokker.',
         'Selecteer aansluitingen',
@@ -1231,6 +1232,7 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
       });
       dialogRef.afterClosed().subscribe(() => {
         if(this.formService.isNewExcel){
+          this.isGenerating = true;
           let title = 'Huis- en wachtaansluitingen DWA';
           let headers = [
             'Straat',
@@ -1297,10 +1299,13 @@ export class GroupsViewComponent implements OnInit, OnDestroy {
               this.company.name,
               this.formService.isVordering
             );
+            this.toastrService.success( 'De meetstaat excel is succesvol gedownload.', 'Download voltooid', { duration: 2000 , position: NbGlobalPhysicalPosition.TOP_RIGHT});
+            this.isGenerating = false;
           });
         }
       });
     } else {
+      this.isGenerating = false;
       this.toastrService.warning(
         'U heeft geen aansluiting geselecteerd. Selecteer minimum 1 aansluiting of kolk.',
         'Selecteer aansluitingen',
