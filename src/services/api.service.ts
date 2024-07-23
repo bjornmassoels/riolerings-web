@@ -632,7 +632,9 @@ export class ApiService {
       headers: {
         'Content-Type': 'application/json',
         Authorization: this._token,
-        _id: _id
+        _id: _id,
+        logourl: this.thisCompany.logo != null ? this.thisCompany.logo : '',
+        companyname: this.thisCompany.name
       },
     };
     return this.http.get(this.apiURL + '/meerwerken.makeMeerwerkPdf', headers);
@@ -792,7 +794,9 @@ export class ApiService {
       headers: {
         'Content-Type': 'application/json',
         Authorization: this._token,
-        _id: _id
+        _id: _id,
+        logourl: this.thisCompany.logo != null ? this.thisCompany.logo : '',
+        companyname: this.thisCompany.name
       },
     };
     return this.http.get(this.apiURL + '/schademeldings.makeSchademeldingPdf', headers);
