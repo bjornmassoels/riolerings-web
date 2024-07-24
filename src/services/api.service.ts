@@ -778,7 +778,9 @@ export class ApiService {
         Authorization: this._token,
         companyid: this.companyid,
         groupid: _id,
-        userid: this.userId
+        userid: this.userId,
+        logourl: this.thisCompany.logo != null ? this.thisCompany.logo : '',
+        companyname: this.thisCompany.name
       },
     };
 
