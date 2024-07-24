@@ -414,6 +414,7 @@
           <p class="infoTextSchadeOw"><i class="fa-solid fa-calendar-days faIcon"></i>{{schademelding.date | date: 'dd/MM/yyyy'}}</p>
           <p class="infoTextSchadeOw"><i class="fa-solid fa-user-plus faIcon"></i>{{schademelding.creator_user?.name}}</p>
           <p *ngIf="schademelding.tegenPartij" class="infoTextSchadeOw"><i class="fa-solid fa-building faIcon"></i>{{schademelding.tegenPartij}}</p>
+          <p class="infoTextSchadeOw"><i class="fa-solid fa-location-dot faIcon"></i>{{schademelding.gemeente_en_straat}} {{schademelding.huisnr_of_nummer}}</p>
         </td>
         <td class="schadeMinimuWidth" >
           <p *ngIf="schademelding.oorzaakSchade" class="infoTextSchadeOw"><i  class="fa-solid fa-bullseye faIcon"></i>
